@@ -285,28 +285,30 @@ class App extends Component {
           // this.setActiveUser(user);
           this.setState({responseClass: 'success'});
           // Add the user to the local user array
-        } else {
-          this.setState({responseClass: 'error'});          
-        }
-        this.setState({response: JSON.stringify(res, null, '\t')}, () => {
-          this.refreshEnv();
           
-          let user = this.state.activeUser;
-          const private_key = wallet.privateKey;
-          const envApp = (this.state.sandbox) ? 'sandbox' : 'live';
-          user.private_key = private_key;
-          let users = this.state.users;
-          for (let i = 0; i < users.length + 1; i++) {
-            if (users[i].handle === user.handle) {
-              users[i] = user;
-              break;
+          this.setState({response: JSON.stringify(res, null, '\t')}, () => {
+            this.refreshEnv();
+            
+            let user = this.state.activeUser;
+            const private_key = wallet.privateKey;
+            const envApp = (this.state.sandbox) ? 'sandbox' : 'live';
+            user.private_key = private_key;
+            let users = this.state.users;
+            for (let i = 0; i < users.length + 1; i++) {
+              if (users[i].handle === user.handle) {
+                users[i] = user;
+                break;
+              }
             }
-          }
-          const allUsers = JSON.parse(localStorage.getItem('users'));
-          allUsers[this.state.environment][envApp] = users;
-          localStorage.setItem('users', JSON.stringify(allUsers));
-          this.setState({activeUser: user, users: users});
-        });
+            const allUsers = JSON.parse(localStorage.getItem('users'));
+            allUsers[this.state.environment][envApp] = users;
+            localStorage.setItem('users', JSON.stringify(allUsers));
+            this.setState({activeUser: user, users: users});
+          });
+        } else {
+          this.setState({responseClass: 'error'});    
+          this.setState({response: JSON.stringify(res, null, '\t')});
+        }
       })
       .catch(err => {
         console.log('  ... FAILED\n\n*** END REGISTER USER ***\n');
