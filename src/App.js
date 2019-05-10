@@ -466,7 +466,7 @@ class App extends Component {
                     plaidLinkProps={{
                       clientName: 'Plaid Walkthrough Demo',
                       key: 'fa9dd19eb40982275785b09760ab79',
-                      env: 'production',
+                      env: (this.state.environment === 'prod' && !this.state.sandbox) ? 'production' : 'sandbox',
                       product: ['auth'],
                       webhook: 'https://requestb.in',
                       onSuccess: (token, meta) => {
