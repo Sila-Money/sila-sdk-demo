@@ -24,7 +24,7 @@
     "react-syntax-highlighter": "^12.2.1",
     "react-transition-group": "^4.4.1",
     "request-promise": "^4.2.5",
-    "sila-sdk": "^0.2.2",
+    "sila-sdk": "^0.2.7-rc.0",
     "simplebar-react": "^2.2.0",
     "stickybits": "^3.7.7"
   },

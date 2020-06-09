@@ -286,7 +286,7 @@ const Transact = () => {
               <InputGroup.Prepend>
                 <InputGroup.Text><i className="sila-icon sila-icon-sila"></i></InputGroup.Text>
               </InputGroup.Prepend>
-              <Form.Control type="number" name="issue" id="issue" className="w-100 m-0" value={forms.issue.values.issue || ''} placeholder="# of Sila" isInvalid={forms.issue.errors.issue ? true : false} onChange={(e) => handleChange(e, 'issue')} />
+              <Form.Control type="number" name="issue" id="issue" className="m-0" value={forms.issue.values.issue || ''} placeholder="# of Sila" isInvalid={forms.issue.errors.issue ? true : false} onChange={(e) => handleChange(e, 'issue')} />
               {forms.issue.errors.issue && <Form.Control.Feedback type="invalid">{forms.issue.errors.issue}</Form.Control.Feedback>}
             </InputGroup>
             <Button className="text-nowrap ml-2" variant="primary" type="submit" disabled={!forms.issue.values.issue}>GO</Button>
@@ -316,7 +316,7 @@ const Transact = () => {
               <InputGroup.Prepend>
                 <InputGroup.Text><i className="sila-icon sila-icon-sila"></i></InputGroup.Text>
               </InputGroup.Prepend>
-              <Form.Control type="number" name="redeem" id="redeem" className="w-100 m-0" value={forms.redeem.values.redeem || ''} placeholder="# of Sila" isInvalid={forms.redeem.errors.issue ? true : false} onChange={(e) => handleChange(e, 'redeem')} />
+              <Form.Control type="number" name="redeem" id="redeem" className="m-0" value={forms.redeem.values.redeem || ''} placeholder="# of Sila" isInvalid={forms.redeem.errors.issue ? true : false} onChange={(e) => handleChange(e, 'redeem')} />
             </InputGroup>
             {forms.redeem.errors.issue && <Form.Control.Feedback type="invalid">{forms.redeem.errors.issue}</Form.Control.Feedback>}
             <Button className="text-nowrap ml-2" variant="primary" type="submit" disabled={!forms.redeem.values.redeem}>GO</Button>
@@ -349,11 +349,11 @@ const Transact = () => {
                   <InputGroup.Prepend>
                     <InputGroup.Text><i className="sila-icon sila-icon-sila"></i></InputGroup.Text>
                   </InputGroup.Prepend>
-                  <Form.Control type="number" name="transfer" id="transfer" className="w-100 rounded-right-0 mb-2 mb-md-0" value={forms.transfer.values.transfer || ''} onChange={(e) => handleChange(e, 'transfer')} placeholder="# of Sila" />
+                  <Form.Control type="number" name="transfer" id="transfer" className="rounded-right-0 mb-2 mb-md-0" value={forms.transfer.values.transfer || ''} onChange={(e) => handleChange(e, 'transfer')} placeholder="# of Sila" />
                 </InputGroup>
               </Col>
               <Col sm="12" md="6">
-                <Form.Control name="destination" id="destination" className="w-100 rounded-left-0" value={forms.transfer.values.destination || ''} onChange={(e) => handleChange(e, 'transfer')} placeholder="Destination handle" style={{ marginLeft: '-1px' }} />
+                <Form.Control name="destination" id="destination" className="rounded-left-0" value={forms.transfer.values.destination || ''} onChange={(e) => handleChange(e, 'transfer')} placeholder="Destination handle" style={{ marginLeft: '-1px' }} />
               </Col>
             </Row>
             <Button className="text-nowrap ml-2" variant="primary" type="submit" disabled={!forms.transfer.values.transfer || !forms.transfer.values.destination}>GO</Button>
