@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 
-const ConfirmModal = ({ show, onHide, onSucces, message }) => {
+const ConfirmModal = ({ show, onHide, onSuccess, message }) => {
   return (
     <Modal
       show={show ? true : false}
@@ -12,7 +12,7 @@ const ConfirmModal = ({ show, onHide, onSucces, message }) => {
         <p className="text-lg mb-4">{message}</p>
         <p>
           <Button variant="outline-primary" size="sm" className="mr-3" style={{ width: '100px' }} onClick={onHide}>Cancel</Button>
-          <Button variant="primary" size="sm" style={{ width: '100px' }} onClick={onSucces}>OK</Button>
+          <Button variant="primary" size="sm" style={{ width: '100px' }} onClick={onSuccess}>OK</Button>
         </p>
       </Modal.Body>
     </Modal>
@@ -31,7 +31,7 @@ ConfirmModal.propTypes = {
   /**
    * The function to be called when the callback is successful
    */
-  onSucces: PropTypes.func.isRequired,
+  onSuccess: PropTypes.func.isRequired,
   /**
    * The confirm message
    */

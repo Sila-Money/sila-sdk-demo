@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Table, Button } from 'react-bootstrap';
 import { usePlaidLink } from 'react-plaid-link';
 
@@ -113,19 +113,17 @@ const Accounts = ({ page }) => {
     }
   }
 
-  const updateSuccess = useCallback(() => {
-    if (userAccounts.length && !app.success.includes(page)) updateApp({ success: [...app.success, page] });
-  }, [app.accounts, app.success, updateApp, page]);
-
   useEffect(() => {
     if (error) updateApp({ alert: { message: error, style: 'danger' }});
-  }, [error, updateApp]);
+  }, [error]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     getAccounts();
   }, [app.activeUser]); // eslint-disable-line react-hooks/exhaustive-deps
-  
-  useEffect(updateSuccess, []);
+
+  useEffect(() => {
+    if (userAccounts.length && !app.success.includes(page)) updateApp({ success: [...app.success, page] });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Container fluid className="main-content-container d-flex flex-column flex-grow-1 loaded">

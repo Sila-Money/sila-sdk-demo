@@ -15,6 +15,8 @@ const defaultForms = {
   redeem: { values: {}, errors: {}, validated: false }
 };
 
+const defaultConfirm = { show: false, message: '', onSuccess: () => { } };
+
 const formatNumber = (num) => {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
@@ -26,9 +28,9 @@ const Transact = () => {
   const [wallet, setWallet] = useState(userWallets.find(wallet => wallet.default) || userWallets[0]);
   const [account, setAccount] = useState(userAccounts[0]);
   const [balance, setBalance] = useState('Checking Balance ...');
-  const [confirm, setConfirm] = useState({ show: false, message: '', onSuccess: () => { } });
   const [loaded, setLoaded] = useState(false);
   const [forms, setForms] = useState(defaultForms);
+  const [confirm, setConfirm] = useState(defaultConfirm);
 
   const handleChange = (e, form) => setForms({ ...forms, [form]: { ...forms[form], values: { ...forms[form].values, [e.target.name]: e.target.value } } });
   const handleFormError = (form, name, error) => setForms({ ...forms, [form]: { ...forms[form], errors: { ...forms[form].errors, [name]: error } } });
@@ -67,7 +69,6 @@ const Transact = () => {
 
   const issueSila = async (amount) => {
     console.log(`Issuing ${amount} sila ...`);
-    console.log(amount, app.activeUser.handle, app.activeUser.private_key, account.account_name);
     try {
       const res = await api.issueSila(amount, app.activeUser.handle, app.activeUser.private_key, account.account_name);
       let result = {};
@@ -99,9 +100,7 @@ const Transact = () => {
       let result = {};
       console.log('  ... completed!');
       if (res.data.status === 'SUCCESS') {
-        result = {
-          alert: { message: 'Sila successfully redeemed', style: 'success' }
-        }
+        result.alert = { message: 'Sila successfully redeemed', style: 'success' };
         refreshTransactions();
       } else {
         result.alert = { message: res.data.message, style: 'success' };
@@ -127,9 +126,7 @@ const Transact = () => {
       let result = {};
       console.log('  ... completed!');
       if (res.data.status === 'SUCCESS') {
-        result = {
-          alert: { message: 'Sila successfully transferred', style: 'success' }
-        }
+        result.alert = { message: 'Sila successfully transferred', style: 'success' };
         refreshTransactions();
       } else {
         result.alert = { message: res.data.message, style: 'danger' };
@@ -148,7 +145,7 @@ const Transact = () => {
     }
   };
 
-  const refreshTransactions = async () => {
+  const refreshTransactions = async (showResponse) => {
     console.log('Refreshing transactions ...');
     setLoaded(false);
     try {
@@ -160,14 +157,18 @@ const Transact = () => {
       } else {
         result.alert = { message: res.data.message, style: 'danger' };
       }
-      setAppData({
-        responses: [...app.responses, {
-          endpoint: '/get_transactions',
-          result: JSON.stringify(res, null, '\t')
-        }]
-      }, () => {
+      if (showResponse) {
+        setAppData({
+          responses: [...app.responses, {
+            endpoint: '/get_transactions',
+            result: JSON.stringify(res, null, '\t')
+          }]
+        }, () => {
+          updateApp({ ...result });
+        });
+      } else {
         updateApp({ ...result });
-      });
+      }
       setLoaded(true);
     } catch (err) {
       console.log('  ... looks like we ran into an issue!');
@@ -180,7 +181,7 @@ const Transact = () => {
   }, [wallet]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    refreshTransactions();
+    refreshTransactions(true);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
@@ -232,7 +233,7 @@ const Transact = () => {
 
       <div className="d-flex mb-2">
         <h2>Transactions</h2>
-        <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none" onClick={refreshTransactions}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk">Refresh</span></Button>
+        <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none" onClick={() => refreshTransactions(true)}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk">Refresh</span></Button>
       </div>
 
       <div className="transactions position-relative mb-4">
@@ -268,13 +269,13 @@ const Transact = () => {
           <Form noValidate validated={forms.issue.validated} autoComplete="off" className="d-flex mt-auto" onSubmit={(e) => {
             e.preventDefault();
             const amount = parseFloat(e.target.issue.value);
-            if (isNaN(amount) || amount < 1000) {
-              handleFormError('issue', 'issue', 'Please enter a whole number amount at least 1000');
+            if (isNaN(amount) || amount % 1 !== 0) {
+              handleFormError('issue', 'issue', 'Please enter a whole number');
             } else {
               setConfirm({
                 show: true,
                 message: `Please confirm that you would like to convert $${formatNumber(amount / 100)} USD fom your primary linked account to ${formatNumber(amount)} Sila in your linked wallet.`,
-                onSucces: () => {
+                onSuccess:() => {
                   issueSila(amount);
                   setConfirm({ show: false });
                 }
@@ -298,13 +299,13 @@ const Transact = () => {
           <Form noValidate validated={forms.redeem.validated} autoComplete="off" className="d-flex mt-auto" onSubmit={(e) => {
             e.preventDefault();
             const amount = parseFloat(e.target.redeem.value);
-            if (isNaN(amount) || amount < 1000) {
-              handleFormError('redeem', 'redeem', 'Please enter a whole number amount at least 1000');
+            if (isNaN(amount) || amount % 1 !== 0) {
+              handleFormError('redeem', 'redeem', 'Please enter a whole number');
             } else {
               setConfirm({
                 show: true,
                 message: `Please confirm that you would like to convert ${formatNumber(amount)} Sila from your linked wallet to $${formatNumber(amount / 100)} USD in your primary linked account.`,
-                onSucces: () => {
+                onSuccess:() => {
                   redeemSila(amount);
                   setConfirm({ show: false });
                 }
@@ -329,13 +330,13 @@ const Transact = () => {
             e.preventDefault();
             const amount = parseFloat(e.target.transfer.value);
             const destination = e.target.destination.value;
-            if (isNaN(amount)) {
+            if (isNaN(amount) || amount % 1 !== 0) {
               handleFormError('transfer', 'transfer', 'Please enter a whole number');
             } else {
               setConfirm({
                 show: true,
                 message: `Please confirm that you would like to transfer ${formatNumber(amount)} Sila from your linked wallet to ${destination}.`,
-                onSucces: () => {
+                onSuccess:() => {
                   transferSila(amount, destination);
                   setConfirm({ show: false });
                 }
@@ -363,7 +364,7 @@ const Transact = () => {
 
       {app.alert.message && <div className="mt-4"><AlertMessage message={app.alert.message} style={app.alert.style} /></div>}
 
-      <ConfirmModal show={confirm.show} message={confirm.message} onHide={() => setConfirm({ show: false })} onSucces={confirm.onSucces} />
+      <ConfirmModal show={confirm.show} message={confirm.message} onHide={() => setConfirm(defaultConfirm)} onSuccess={confirm.onSuccess} />
 
     </Container>
   );
