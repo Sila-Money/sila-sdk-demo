@@ -114,7 +114,7 @@ const Accounts = ({ page }) => {
   }
 
   const updateSuccess = useCallback(() => {
-    if (app.accounts.length && !app.success.includes(page)) updateApp({ success: [...app.success, page] });
+    if (userAccounts.length && !app.success.includes(page)) updateApp({ success: [...app.success, page] });
   }, [app.accounts, app.success, updateApp, page]);
 
   useEffect(() => {
@@ -191,7 +191,7 @@ const Accounts = ({ page }) => {
         next={app.success.includes(page) ? '/transact' : undefined}
         currentPage={page} />
 
-      <LinkAccountModal />
+      <LinkAccountModal onSuccess={getAccounts} />
       <PlaidFaqModal show={showPlaidFaq} onHide={() => setShowPlaidFaq(false)} />
 
     </Container>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { useAppContext } from '../context/AppDataProvider';
 
-const LinkAccountModal = () => {
+const LinkAccountModal = ({ onSuccess }) => {
   const [validated, setValidated] = useState(false);
   const [errors, setErrors] = useState({});
   const { app, updateApp, setAppData, api, handleError } = useAppContext();
@@ -24,6 +24,7 @@ const LinkAccountModal = () => {
             manageLinkAccount: false
           }
           if (Object.keys(errors).length) setErrors({});
+          onSuccess();
         } else if (res.data.validation_details) {
           setErrors(res.data.validation_details)
         }
