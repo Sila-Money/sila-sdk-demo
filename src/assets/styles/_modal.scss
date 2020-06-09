@@ -1,0 +1,23 @@
+// Modal Adjustments
+
+.modal {
+  .close {
+    font-size: 2rem;
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+  }
+  &-header {
+    display: block;
+    text-align: center;
+    position: relative;
+  }
+  &-header,
+  &-footer {
+    border: 0;
+  }
+  &-content {
+    border-radius: 10px;
+  }
+}

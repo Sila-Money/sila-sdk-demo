@@ -1,0 +1,45 @@
+// Popover adjustments
+
+.popover {
+  box-shadow: $box-shadow-light;
+  border: 1px solid $border-color-light;
+}
+
+.bs-popover-top {
+  .arrow::before {
+    border-top-color: $border-color-light;
+  }
+
+  .arrow::after {
+    border-top-color: $white;
+  }
+}
+
+.bs-popover-right {
+  .arrow::before {
+    border-right-color: $border-color-light;
+  }
+
+  .arrow::after {
+    border-right-color: $white;
+  }
+}
+
+.bs-popover-bottom {
+  .arrow::before {
+    border-bottom-color: $border-color-light;
+  }
+
+  .arrow::after {
+    border-bottom-color: $white;
+  }
+}
+
+.bs-popover-left {
+  .arrow::before {
+    border-left-color: $border-color-light;
+  }
+  .arrow::after {
+    border-left-color: $white;
+  }
+}

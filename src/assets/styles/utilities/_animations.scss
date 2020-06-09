@@ -1,0 +1,121 @@
+// Animations
+
+@keyframes fadeout {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@-moz-keyframes fadeout {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@-webkit-keyframes fadeout {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@-ms-keyframes fadeout {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@-moz-keyframes fadein {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes fadein {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@-ms-keyframes fadein {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes circle {
+  from {
+    @include rotate(0);
+  }
+
+  to {
+    @include rotate(360);
+  }
+}
+
+@-moz-keyframes circle {
+  from {
+    @include rotate(0);
+  }
+
+  to {
+    @include rotate(360);
+  }
+}
+
+@-webkit-keyframes circle {
+  from {
+    @include rotate(0);
+  }
+
+  to {
+    @include rotate(360);
+  }
+}
+
+@-ms-keyframes circle {
+  from {
+    @include rotate(0);
+  }
+
+  to {
+    @include rotate(360);
+  }
+}

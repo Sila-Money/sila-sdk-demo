@@ -1,0 +1,85 @@
+// Fonts
+
+@font-face {
+    font-family: 'sila-icons';
+    src: url('../fonts/sila-icons.eot?isvtzr');
+    src: url('../fonts/sila-icons.eot?isvtzr#iefix') format('embedded-opentype'),
+        url('../fonts/sila-icons.ttf?isvtzr') format('truetype'),
+        url('../fonts/sila-icons.woff?isvtzr') format('woff'),
+        url('../fonts/sila-icons.svg?isvtzr#sila-icons') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+}
+
+.sila-icon {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'sila-icons' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    font-size: 1.1rem;
+    position: relative;
+    top: 2px;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.sila-icon-wait {
+    &:before {
+        content: "\e900";
+    }
+}
+
+.sila-icon-edit {
+    &:before {
+        content: "\e901";
+    }
+}
+
+.sila-icon-save {
+    &:before {
+        content: "\e902";
+    }
+}
+
+.sila-icon-delete {
+    &:before {
+        content: "\e903";
+    }
+}
+
+.sila-icon-refresh {
+    &:before {
+        content: "\e904";
+    }
+}
+
+.sila-icon-danger {
+    &:before {
+        content: "\e906";
+    }
+}
+
+.sila-icon-success {
+    &:before {
+        content: "\e905";
+    }
+}
+
+.sila-icon-info {
+    &:before {
+        content: "\e907";
+    }
+}
+
+.sila-icon-sila {
+    &:before {
+        content: "\e908";
+    }
+}

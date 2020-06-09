@@ -1,0 +1,31 @@
+// Table Adjustments
+
+.table {
+  margin: 0;
+  &-bordered {
+    border: 0;
+  }
+  th,
+  td {
+    border-color: $border-color-light;
+  }
+  thead {
+    th {
+      border: 0;
+      padding: 0 0 1rem 0;
+      font-weight: 400;
+    }
+  }
+
+  &.table-hover tbody {
+    tr:not(.disabled) {
+      cursor: pointer;
+    }
+    tr.no-hover:hover {
+      background: none transparent;
+    }
+    tr:not(.no-hover):hover {
+      background: rgba($border-color, 0.10);
+    }
+  }
+}

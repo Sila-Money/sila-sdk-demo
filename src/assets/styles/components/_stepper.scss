@@ -1,0 +1,161 @@
+// Stepper
+
+.stepper {
+    position: fixed;
+    left: 0;
+    top: $main-navbar-height;
+    z-index: 2;
+    background: $white;
+}
+
+.step {
+    position: relative;
+    padding: 1.375rem;
+    flex-grow: 1;
+    flex-shrink: 0;
+
+    &:hover,
+    &.active {
+        text-decoration: none;
+    }
+
+    &:first-child.active {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+
+    &:last-child.active {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    &:first-child .step-bar-left,
+    &:last-child .step-bar-right {
+        display: none;
+    }
+
+    .step-bar-left,
+    &:not(.active) .step-bar-right,
+    .step-circle,
+    +.step .step-bar-left {
+        opacity: 1;
+        background: $primary;
+    }
+
+    &.active .step-bar-right,
+    &.active~* .step-bar-left,
+    &.active~* .step-bar-right {
+        background: #A5B5B9;
+        opacity: 0.12;
+    }
+
+    &.active~* .step-circle,
+    +.step:not(.active) .step-circle {
+        background: #8C8C8C;
+        opacity: 0.24;
+    }
+}
+
+.step-circle {
+    width: 6px;
+    height: 6px;
+    margin: 0 auto;
+    border-radius: 50%;
+    overflow: hidden;
+    text-indent: -999em;
+    position: absolute;
+    top: 70px;
+    left: 50%;
+    margin-left: -3px;
+    z-index: 2;
+
+    .has-description & {
+        top: 80px;
+    }
+
+    .step.active & {
+        background-color: $white;
+        border: 4px solid $primary;
+        width: 24px;
+        height: 24px;
+        opacity: 1;
+        margin-left: -12px;
+        top: 60px;
+    }
+
+    .has-description .step.active & {
+        top: 70px;
+    }
+
+    .step:last-child:not(.active) & {
+        background-color: $white !important;
+        border: 1px solid $primary !important;
+        opacity: 1 !important;
+    }
+}
+
+.step-title {
+    font-weight: 600;
+    color: $body-color;
+
+    a.step:hover & {
+        color: $primary;
+    }
+}
+
+.step-bar-left,
+.step-bar-right {
+    position: absolute;
+    height: 6px;
+    top: 70px;
+
+    .has-description & {
+        top: 80px;
+    }
+}
+
+.step-bar-right {
+    right: 0;
+    left: 50%;
+}
+
+.step-bar-left {
+    left: 0;
+    right: 50%;
+}
+
+@include media-breakpoint-up(md) {
+    .stepper {
+        height: $stepper-height;
+    }
+}
+
+@include media-breakpoint-up(md) {
+    .step-title {
+        font-size: 1rem;
+    }
+}
+
+@include media-breakpoint-down(lg) {
+    .step {
+        padding: 1.375rem 0.75rem;
+    }
+
+    .step-title {
+        font-size: 0.75rem;
+    }
+}
+
+@include media-breakpoint-down(lg) {
+    .stepper-menu {
+
+        .dropdown-toggle,
+        .dropdown-menu {
+            width: 100%;
+        }
+    }
+
+    .stepper {
+        height: $stepper-height-mobile;
+    }
+}

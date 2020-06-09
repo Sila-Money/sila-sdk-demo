@@ -1,0 +1,67 @@
+// Dropdown adjustments
+
+.dropdown-item {
+  transition: background-color $transition-duration $ease-in-out-circ, color $transition-duration $ease-in-out-circ;
+
+  &:active,
+  &:active {
+    transition: color $transition-duration $ease-in-out-circ;
+    color: $white !important;
+  }
+}
+
+.dropdown-menu {
+  z-index: 1008;
+  min-width: 10rem;
+  padding: 10px 0;
+  margin: 0 0 0;
+  font-size: 1rem;
+  background-color: $white;
+  border: 1px solid $border-color-light;
+  border-radius: .375rem;
+  box-shadow: $box-shadow-heavy;
+}
+
+.dropdown-menu-small {
+  padding: .25rem 0;
+  box-shadow: $box-shadow-light;
+
+  .dropdown-item {
+    padding: .375rem .875rem;
+    font-size: .813rem;
+  }
+}
+
+.dropdown-toggle::after {
+  transform: rotate(0) scale(1);
+  transition: transform $transition-duration $ease-in-out-circ;
+
+  .select-menu & {
+    position: absolute;
+    top: $btn-padding-x-sm * 2;
+    right: $btn-padding-x;
+    width: 11px;
+    height: 7px;
+    background-size: cover;
+    background: 0 0 url("data:image/svg+xml,%3Csvg width='11' height='7' viewBox='0 0 11 7' xmlns='http://www.w3.org/2000/svg'%3E %3Cpath d='M5.48 6a.618.618 0 01-.412-.171L1.19 2.077a.63.63 0 01-.016-.885.62.62 0 01.879-.018L5.5 4.51l3.447-3.336a.62.62 0 01.88.018.63.63 0 01-.017.885L5.932 5.83a.618.618 0 01-.451.17z' fill='%23D5D5D5' fill-rule='nonzero' stroke='%23D5D5D5' stroke-width='.3'/%3E %3C/svg%3E") no-repeat;
+    border: 0;
+    margin: 0;
+    transform: rotate(0) scale(2);
+  }
+
+  .select-menu.dropdown-small & {
+    transform: rotate(0) scale(1);
+    top: $btn-padding-y;
+    right: $btn-padding-x-sm;
+  }
+
+  .show &,
+  .select-menu.dropdown-small.show & {
+    transform: rotate(180deg) scale(1);
+  }
+
+  .select-menu.show & {
+    transform: rotate(180deg) scale(2);
+  }
+
+}

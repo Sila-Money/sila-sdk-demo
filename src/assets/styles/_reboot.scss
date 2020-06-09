@@ -1,0 +1,59 @@
+// Reboot adjustments
+
+// HTML
+html {
+  font-size: 16px;
+  font-weight: 500;
+
+  // Adjust font sizes for 144dpi+ (including retina).
+  @media (-webkit-min-device-pixel-ratio: 1.5),
+  (min-resolution: 144dpi) {
+    font-size: 16px;
+    font-weight: 400;
+  }
+}
+
+
+// Body
+body {
+  background: $body-background;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+
+// Links
+a {
+  color: $primary;
+
+  @include hover {
+    color: darken($primary, 15%);
+  }
+}
+
+// Labels
+label {
+  font-weight: 400;
+}
+
+// Strong / Bold
+strong, b {
+  font-weight: normal;
+  font-weight: 500;
+}
+
+// headers
+h1, h2, h3 {
+  font-weight: 400;
+}
+h1 {
+  font-size: 1.875rem;
+  font-weight: 500;
+}
+h2 {
+  font-size: 1.4375rem;
+}
+h3 {
+  font-size: 1.1875rem;
+  font-weight: 300;
+}
