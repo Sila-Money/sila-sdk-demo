@@ -24,7 +24,7 @@ const NavbarUsers = () => {
     size="sm" 
     onChange={setActiveUser} 
     className="ml-4 text-uppercase"
-    options={app.users.filter(user => user.handle !== app.activeUser.handle).map(user => ({ label: user.handle, value: user }))}
+    options={app.users.map(user => ({ label: user.handle, value: user }))}
     action={location.pathname !== '/check_handle' ? { to: '/check_handle', label: 'Add User +' } : undefined} />;
 }
 
