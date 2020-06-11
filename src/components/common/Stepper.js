@@ -8,7 +8,12 @@ import { useAppContext } from '../context/AppDataProvider';
 
 const StepperItem = ({ item, number }) => {
   const { app } = useAppContext();
-  const classes = classNames('step', 'text-center');
+  const location = useLocation();
+  const classes = classNames(
+    'step', 
+    'text-center',
+    item.path === location.pathname && 'active'
+  );
   const StepperContent = () => (
     <>
       <div className="step-title">{item.title}</div>
