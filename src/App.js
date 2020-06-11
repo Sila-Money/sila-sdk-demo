@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Switch, Route, useHistory } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
 import classNames from 'classnames';
@@ -22,28 +22,26 @@ const App = () => {
     'p-0'
   );
 
-  const handleRedirect = useCallback(() => {
-    if (!app.activeUser) setRedirect(true);
-  }, [app.activeUser, setRedirect]);
-
-  const initApp = useCallback(() => {
-    updateApp({ loaded: true });
-    handleRedirect();
-  }, [updateApp, handleRedirect]);
+  const handleRedirect = (location) => {
+    if ((!app.activeUser) || (location.state && location.state.from && !app.success.includes(location.state.from))) setRedirect(true);
+  };
 
   useEffect(() => {
     if (redirect) history.push('/check_handle');
-  }, [redirect, history]);
+  }, [redirect]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    const unlisten = history.listen(() => {
-      handleRedirect();
+    const unlisten = history.listen((location) => {
+      handleRedirect(location);
       updateApp({ alert: {} });
     });
     return unlisten;
-  }, [history, handleRedirect, updateApp]);
+  }, [history]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(initApp, []);
+  useEffect(() => {
+    updateApp({ loaded: true });
+    handleRedirect(history.location);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Container fluid className="p-0">

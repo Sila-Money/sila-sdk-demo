@@ -181,7 +181,7 @@ const Wallets = ({ page }) => {
 
       <h1 className="mb-4">Digital Wallets</h1>
 
-      {loaded && app.wallets[0].nickname && !app.wallets[0].nickname.length && <p className="text-lg text-meta">An Ethereum Wallet has been automatically created for this user.  Give this wallet a name and add additional wallets here.</p>}
+      {loaded && app.wallets.length && app.wallets[0].nickname && !app.wallets[0].nickname.length && <p className="text-lg text-meta">An Ethereum Wallet has been automatically created for this user.  Give this wallet a name and add additional wallets here.</p>}
 
       <p className="text-meta">This page represents <a href="https://docs.silamoney.com/#register_wallet" target="_blank" rel="noopener noreferrer">/register_wallet</a>, <a href="https://docs.silamoney.com/#delete_wallet" target="_blank" rel="noopener noreferrer">/delete_wallet</a>, <a href="https://docs.silamoney.com/#update_wallet" target="_blank" rel="noopener noreferrer">/update_wallet</a> functionality.</p>
 
