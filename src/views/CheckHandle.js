@@ -20,19 +20,14 @@ const CheckHandle = ({ page }) => {
       let result = {};
       console.log('  ... completed!');
       if (res.data.status === 'SUCCESS') {
-        result = { 
-          alert: { message: 'Success! Handle available.', style: 'success' },
-          success: [...app.success, page]
-        };
+        result.alert = { message: 'Success! Handle available.', style: 'success' };
         resetForm();
       } else {
         const errorMessage = res.data.validation_details ? res.data.validation_details.header.user_handle : 'Error! Handle is taken.';
-        result = { 
-          alert: { message: errorMessage, style: 'danger' },
-          success: app.success.filter(p => p !== page)
-        };
+        result.alert = { message: errorMessage, style: 'danger' };
         setError(errorMessage);
       }
+      result.success = res.data.status && !app.success.includes(page) ? [...app.success, page] : app.success.filter(p => p !== page);
       setAppData({
         responses: [...app.responses, {
           endpoint: '/check_handle',

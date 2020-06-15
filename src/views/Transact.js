@@ -21,14 +21,13 @@ const formatNumber = (num) => {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
-const Transact = () => {
+const Transact = ({ page }) => {
   const { app, api, setAppData, updateApp, handleError } = useAppContext();
   const userWallets = app.wallets.filter(wallet => wallet.handle === app.activeUser.handle).sort((x, y) => x.default ? -1 : y.default ? 1 : 0);
   const userAccounts = app.accounts.filter(account => account.handle === app.activeUser.handle);
   const [wallet, setWallet] = useState(userWallets.find(wallet => wallet.default) || userWallets[0]);
   const [account, setAccount] = useState(userAccounts[0]);
   const [balance, setBalance] = useState('Checking Balance ...');
-  const [loaded, setLoaded] = useState(false);
   const [forms, setForms] = useState(defaultForms);
   const [confirm, setConfirm] = useState(defaultConfirm);
 
@@ -50,6 +49,7 @@ const Transact = () => {
       if (res.statusCode === 200) {
         setBalance(res.data.silaBalance);
         result.alert = { message: res.data.message, style: 'success' }
+        if (!app.success.includes(page)) result.success = [...app.success, page];
       } else {
         result.alert = { message: res.data.message, style: 'danger' }
       }
@@ -147,7 +147,7 @@ const Transact = () => {
 
   const refreshTransactions = async (showResponse) => {
     console.log('Refreshing transactions ...');
-    setLoaded(false);
+    updateApp({ transactions: false });
     try {
       const res = await api.getTransactions(app.activeUser.handle, app.activeUser.private_key);
       let result = {};
@@ -169,7 +169,6 @@ const Transact = () => {
       } else {
         updateApp({ ...result });
       }
-      setLoaded(true);
     } catch (err) {
       console.log('  ... looks like we ran into an issue!');
       handleError(err);
@@ -200,7 +199,7 @@ const Transact = () => {
       {userAccounts.length === 0 && <Alert variant="warning" className="mb-4">An an active account is required to initiate a transaction.  <NavLink to="/accounts" className="text-reset text-underline">Link an account</NavLink></Alert>}
 
       <div className="d-flex mb-2">
-        <h2>Wallet Ballance</h2>
+        <h2>Wallet Balance</h2>
         <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none" onClick={refreshBalance}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk">Refresh</span></Button>
       </div>
 
@@ -212,7 +211,7 @@ const Transact = () => {
                 <Form.Label className="m-0" htmlFor="wallet"><h3 className="m-0 text-white">Wallet</h3></Form.Label>
               </Card.Header>
               <Card.Body className="p-0">
-                <SelectMenu fullWidth id="wallet" className="border-top-0 rounded-top-0 rounded-br-0 border-light py-3" onChange={handleWallet} options={userWallets.map((wallet, index) => ({ label: `${wallet.nickname ? wallet.nickname : wallet.private_key === app.activeUser.private_key ? 'My Wallet' : `Wallet Name`}${wallet.default ? ' (Default)' : ''}`, value: index }))} />
+                <SelectMenu fullWidth id="wallet" className="border-top-0 rounded-top-0 rounded-br-0 border-light py-3" onChange={handleWallet} options={userWallets.map((wallet, index) => ({ label: `${wallet.nickname ? wallet.nickname : wallet.private_key === app.activeUser.private_key ? 'My Wallet' : `Wallet Name`}${wallet.default || (!wallet.default && wallet.private_key === app.activeUser.private_key) ? ' (Default)' : ''}`, value: index }))} />
               </Card.Body>
             </Card>
           </Form.Group>
@@ -237,7 +236,7 @@ const Transact = () => {
       </div>
 
       <div className="transactions position-relative mb-4">
-        {!loaded && <Loader overlay />}
+        {!app.transactions && <Loader overlay />}
         <Table bordered responsive>
           <thead>
             <tr>

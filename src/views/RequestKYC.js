@@ -19,13 +19,11 @@ const RequestKYC = ({ page }) => {
         result = { 
           kyc: { message: 'Submitted for review', style: 'primary' }, 
           alert: { message: 'Submitted for KYC Review', style: 'primary' },
-          success: app.success.filter(p => p !== page)
         };
       } else {
-        result = { 
-          kyc: { message: res.data.message, style: 'danger' }, 
-        };
+        result.kyc = { message: res.data.message, style: 'danger' };
       }
+      result.success = app.success.filter(p => p !== page);
       setAppData({
         responses: [...app.responses, {
           endpoint: '/request_kyc',
@@ -49,16 +47,15 @@ const RequestKYC = ({ page }) => {
       if (res.data.status === 'SUCCESS') {
         result = { 
           kyc: { message: 'Passed ID verification', style: 'success' }, 
-          alert: { message: `Success! ${app.activeUser.handle} has passsed ID verifcation!`, style: 'success' },
-          success: [...app.success, page]
+          alert: { message: `Success! ${app.activeUser.handle} has passsed ID verifcation!`, style: 'success' }
         };
       } else {
         result = { 
           kyc: !res.data.message.includes('requested') ? { message: 'Pending ID verification', style: 'primary' } : {}, 
-          alert: res.data.message.includes('requested') ? { message: res.data.message, style: 'danger' } : { message: `${app.activeUser.handle} is still pending ID verification.`, style: 'wait' },
-          success: app.success.filter(p => p !== page)
+          alert: res.data.message.includes('requested') ? { message: res.data.message, style: 'danger' } : { message: `${app.activeUser.handle} is still pending ID verification.`, style: 'wait' }
         };
       }
+      result.success = res.data.status === 'SUCCESS' && !app.success.includes(page) ? [...app.success, page] : app.success.filter(p => p !== page);
       setAppData({
         responses: [...app.responses, {
           endpoint: '/check_kyc',
@@ -77,12 +74,12 @@ const RequestKYC = ({ page }) => {
     <Container fluid className="main-content-container d-flex flex-column flex-grow-1 loaded">
 
       <h1 className="mb-4">
-        Request Non Documentary {/* {app.kycType[0].toUpperCase() + app.kycType.slice(1)} */} KYC
+        Request Non-documentary {/* {app.kycType[0].toUpperCase() + app.kycType.slice(1)} */} KYC
       </h1>
 
-      <p className="text-lg text-meta">We must verify that all users of the Sila platform are who they say they are, present a low fraud risk, and are not on any watchlists. We do this by submitting end-user information for KYC review by our identity verification partner, Alloy. The user will not be able to transact until the user is verified.</p>
+      <p className="text-lg text-meta">We must verify that all users of the Sila platform are who they say they are, present a low fraud risk, and are not on any watchlists. We do this by submitting end-user information for KYC review by our identity verification partner, Alloy. The user will not be able to transact until the user is verified.  With great power comes great responsibility.</p>
 
-      <p className="text-lg text-meta">Verification may take a few minutes, so make sure to refresh and check your status. With great power comes great responsibility.</p>
+      <p className="text-lg text-meta">Verification may take a few minutes, so make sure to refresh and check your status.</p>
 
       <p className="text-meta">This page represents <a href="https://docs.silamoney.com/#request_kyc" target="_blank" rel="noopener noreferrer">/request_kyc</a> and <a href="https://docs.silamoney.com/#check_kyc" target="_blank" rel="noopener noreferrer">/check_kyc</a> functionality.</p>
 

@@ -47,8 +47,7 @@ const RegisterForm = ({ page, onPrevious }) => {
         user.active = true;
         result = {
           activeUser: user,
-          alert: { message: `Success! ${app.handle} is now registered.`, style: 'success' },
-          success: [...app.success, page]
+          alert: { message: `Success! ${app.handle} is now registered.`, style: 'success' }
         };
         appData = {
           users: [...app.users.map(({ active, ...u }) => u), user],
@@ -58,13 +57,15 @@ const RegisterForm = ({ page, onPrevious }) => {
             private_key: wallet.privateKey,
             nickname: 'Default Wallet'
           }]
-        }
+        };
         if (Object.keys(errors).length) setErrors({});
       } else if (res.data.validation_details) {
         setErrors(res.data.validation_details);
       }
+      result.success = res.data.status === 'SUCCESS' && !app.success.includes(page) ? [...app.success, page] : app.success.filter(p => p !== page);
       setAppData({
         ...appData,
+        success: result.success,
         responses: [...app.responses, {
           endpoint: '/register',
           result: JSON.stringify(res, null, '\t')
@@ -207,7 +208,7 @@ const RegisterForm = ({ page, onPrevious }) => {
 
         <div className="d-flex mt-4">
           {app.alert.message && <AlertMessage message={app.alert.message} style={app.alert.style} />}
-          <Button type="submit" className="ml-auto" disabled={!app.handle || app.success.includes(page)}>Register user</Button>
+          <Button type="submit" className="ml-auto" disabled={!app.handle || app.activeUser.handle === app.handle}>Register user</Button>
         </div>
 
       </Form>

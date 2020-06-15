@@ -4,20 +4,20 @@ import PropTypes from 'prop-types';
 
 import { useAppContext } from '../context/AppDataProvider';
 
-const AlertMessage = ({ message, style, noIcon }) => {
+const AlertMessage = ({ message, style, noIcon, noHide }) => {
   const [show, setShow] = useState(true);
   const { updateApp } = useAppContext();
   const icon = style === 'success' ? 'success' : style === 'danger' ? 'danger' : style === 'wait' ? 'wait' : 'info';
 
   useEffect(() => {
     let showTimer, hideTimer;
-    if (show) {
+    if (!noHide && show) {
       showTimer = setTimeout(() => setShow(false), 10000);
     } else {
       hideTimer = setTimeout(() => updateApp({ alert: {} }), 300);
     }
     return () => clearTimeout(showTimer, hideTimer);
-  }, [show, updateApp]);
+  }, [show, updateApp, noHide]);
 
   return (
     <Fade in={show}>

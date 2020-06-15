@@ -25,26 +25,16 @@
       float: left;
     }
 
+    &:first-child::before {
+      color: $primary;
+    }
+
     &:not(:first-child) {
       opacity: 0.5;
     }
 
     &:hover {
       opacity: 1;
-      .endpoint .action {
-        display: inline;
-      }
-    }
-
-    &.open::before {
-      color: $primary;
-    }
-
-    .endpoint {
-      cursor: pointer;
-      .action {
-        display: none;
-      }
     }
 
     pre {

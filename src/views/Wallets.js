@@ -96,7 +96,7 @@ const Wallets = ({ page }) => {
       }
       delete wallet.isNew;
       setAppData({
-        wallets: app.wallets.map(w => w.blockchain_address === wallet.blockchain_address ? wallet : w),
+        wallets: [...app.wallets, { ...wallet }],
         responses: [...app.responses, {
           endpoint: '/register_wallet',
           result: JSON.stringify(res, null, '\t')
@@ -173,6 +173,10 @@ const Wallets = ({ page }) => {
   }
 
   useEffect(() => {
+    if (wallets.length && !app.success.includes(page)) updateApp({ success: [...app.success, page] });
+  }, [wallets]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
     getWallets();
   }, [app.activeUser]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -181,7 +185,7 @@ const Wallets = ({ page }) => {
 
       <h1 className="mb-4">Digital Wallets</h1>
 
-      {loaded && app.wallets.length && app.wallets[0].nickname && !app.wallets[0].nickname.length && <p className="text-lg text-meta">An Ethereum Wallet has been automatically created for this user.  Give this wallet a name and add additional wallets here.</p>}
+      {loaded && app.wallets.length !== 0 && app.wallets[0].nickname && !app.wallets[0].nickname.length && <p className="text-lg text-meta">An Ethereum Wallet has been automatically created for this user.  Give this wallet a name and add additional wallets here.</p>}
 
       <p className="text-meta">This page represents <a href="https://docs.silamoney.com/#register_wallet" target="_blank" rel="noopener noreferrer">/register_wallet</a>, <a href="https://docs.silamoney.com/#delete_wallet" target="_blank" rel="noopener noreferrer">/delete_wallet</a>, <a href="https://docs.silamoney.com/#update_wallet" target="_blank" rel="noopener noreferrer">/update_wallet</a> functionality.</p>
 
@@ -195,7 +199,7 @@ const Wallets = ({ page }) => {
                   aria-label='Wallet Name'
                   name="nickname"
                   onChange={(e) => handleChange(e, index)}
-                  placeholder={`${wallet.nickname ? wallet.nickname : wallet.private_key === app.activeUser.private_key ? 'My Wallet' : `Wallet Name`}${wallet.default ? ' (Default)' : ''}`}
+                  placeholder={`${wallet.nickname ? wallet.nickname : wallet.private_key === app.activeUser.private_key ? 'My Wallet' : `Wallet Name`}${wallet.default || (!wallet.default && wallet.private_key === app.activeUser.private_key) ? ' (Default)' : ''}`}
                   readOnly={(!wallet.editing && !wallet.isNew)}
                 />
                 <InputGroup.Append>
@@ -218,7 +222,7 @@ const Wallets = ({ page }) => {
       <Pagination
         className="mt-auto pt-4"
         previous="/request_kyc"
-        next="/accounts"
+        next={app.success.includes(page) ? '/accounts' : undefined}
         currentPage={page} />
 
     </Container>

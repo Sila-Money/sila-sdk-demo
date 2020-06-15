@@ -8,11 +8,9 @@ import AlertMessage from '../components/common/AlertMessage';
 import Loader from '../components/common/Loader';
 import Pagination from '../components/common/Pagination';
 import LinkAccountModal from '../components/accounts/LinkAccountModal';
-import PlaidFaqModal from '../components/accounts/PlaidFaqModal';
 
 const Accounts = ({ page }) => {
   const [loaded, setLoaded] = useState(false);
-  const [showPlaidFaq, setShowPlaidFaq] = useState(false);
   const [plaidToken, setPlaidToken] = useState(false);
   const { app, api, setAppData, updateApp, handleError } = useAppContext();
   const { open, ready, error } = usePlaidLink({
@@ -123,7 +121,7 @@ const Accounts = ({ page }) => {
 
   useEffect(() => {
     if (userAccounts.length && !app.success.includes(page)) updateApp({ success: [...app.success, page] });
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [userAccounts]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Container fluid className="main-content-container d-flex flex-column flex-grow-1 loaded">
@@ -181,7 +179,7 @@ const Accounts = ({ page }) => {
         </div>
       </div>
 
-      <p className="text-right"><Button variant="link" className="text-reset font-italic p-0 text-decoration-none" onClick={() => setShowPlaidFaq(true)}><span className="lnk">How do I login to Plaid?</span> <i className="sila-icon sila-icon-info text-primary ml-2"></i></Button></p>
+      <p className="text-right"><Button variant="link" className="text-reset font-italic p-0 text-decoration-none" href="http://plaid.com/docs/#testing-auth" target="_blank" rel="noopener noreferrer"><span className="lnk">How do I login to Plaid?</span> <i className="sila-icon sila-icon-info text-primary ml-2"></i></Button></p>
 
       <Pagination
         className="mt-auto pt-4"
@@ -190,7 +188,6 @@ const Accounts = ({ page }) => {
         currentPage={page} />
 
       <LinkAccountModal onSuccess={getAccounts} />
-      <PlaidFaqModal show={showPlaidFaq} onHide={() => setShowPlaidFaq(false)} />
 
     </Container>
   );

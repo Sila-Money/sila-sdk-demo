@@ -9,21 +9,23 @@ import { useAppContext } from '../context/AppDataProvider';
 const StepperItem = ({ item, number }) => {
   const { app } = useAppContext();
   const location = useLocation();
+  const isDisabled = app.activeUser && (item.page === 'handle' || item.page === 'register');
   const classes = classNames(
     'step', 
     'text-center',
+    isDisabled && 'disabled',
     item.path === location.pathname && 'active'
   );
   const StepperContent = () => (
     <>
-      <div className="step-title">{item.title}</div>
+      <div className={`step-title${isDisabled ? ' text-meta' : ''}`}>{item.title}</div>
       {item.description && <div className="step-optional text-meta text-sm">{item.description}</div>}
       <div className="step-circle"><span>{number}</span></div>
       <div className="step-bar-left"></div>
       <div className="step-bar-right"></div>
     </>
   )
-  return app.activeUser ? <NavLink className={classes} to={{ pathname: item.path, state: { from: item.page } }}><StepperContent /></NavLink>
+  return !isDisabled && app.success.includes(item.page) ? <NavLink className={classes} to={{ pathname: item.path, state: { from: item.page } }}><StepperContent /></NavLink>
     : <div className={classes}><StepperContent /></div>
 }
 

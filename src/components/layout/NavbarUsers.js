@@ -1,5 +1,6 @@
 import React from 'react';
-import { useLocation, useHistory } from 'react-router-dom';
+import { Button } from 'react-bootstrap';
+import { useLocation, useHistory, NavLink } from 'react-router-dom';
 
 import { useAppContext } from '../context/AppDataProvider';
 
@@ -11,7 +12,7 @@ const NavbarUsers = () => {
   const history = useHistory();
 
   const setActiveUser = (user) => {
-    setAppData({ 
+    setAppData({
       users: app.users.map(({ active, ...u }) => u.handle === user.handle ? { ...u, active: true } : u)
     }, () => {
       updateApp({ activeUser: user, kyc: null });
@@ -19,13 +20,15 @@ const NavbarUsers = () => {
     });
   }
 
-  return <SelectMenu
-    title={app.activeUser ? app.activeUser.handle : 'Switch User'}
-    size="sm" 
-    onChange={setActiveUser} 
-    className="ml-4 text-uppercase"
-    options={app.users.map(user => ({ label: user.handle, value: user }))}
-    action={location.pathname !== '/check_handle' ? { to: '/check_handle', label: 'Add User +' } : undefined} />;
+  return <>
+    <SelectMenu
+      title={location.pathname === '/check_handle' ? 'Creating New User' : app.activeUser ? app.activeUser.handle : undefined}
+      size="sm"
+      onChange={setActiveUser}
+      className="ml-4 text-uppercase"
+      options={app.users.map(user => ({ label: user.handle, value: user }))} />
+    <Button as={NavLink} to="/check_handle" onClick={() => updateApp({ activeUser: false })} disabled={location.pathname === '/check_handle'} className="ml-2" size="sm"><i className="fas fa-user-plus text-lg text-white"></i></Button>
+  </>;
 }
 
 export default NavbarUsers;

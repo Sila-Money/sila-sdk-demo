@@ -9,7 +9,8 @@ const appData = {
   users: [],
   wallets: [],
   accounts: [],
-  responses: []
+  responses: [],
+  success: []
 };
 
 // Initialize Local Storage for persistent app data
@@ -24,8 +25,9 @@ const appState = {
   accounts: initAppData.accounts,
   users: initAppData.users,
   activeUser: initAppData.users.length ? initAppData.users.find(user => user.active) : false,
+  redirect: initAppData.redirect,
+  success: initAppData.success,
   handle: '',
-  success: [],
   transactions: false,
   kycType: 'default',
   kyc: {},
@@ -33,8 +35,7 @@ const appState = {
   loaded: false,
   manageLinkAccount: false,
   manageSettings: false,
-  manageReset: false,
-  sandbox: true
+  manageReset: false
 };
 
 // Set the API Auth credentials in the SDK and update the environment in the SDK

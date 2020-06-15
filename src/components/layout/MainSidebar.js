@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import classNames from 'classnames';
-import { Col, Button, Collapse } from 'react-bootstrap';
+import { Col, Button } from 'react-bootstrap';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import SimpleBar from 'simplebar-react';
 
@@ -44,22 +44,19 @@ const syntaxTheme = {
 };
 
 const Response = ({ response, index }) => {
-  const [open, setOpen] = useState(index === 0 ? true : false);
-  const classes = classNames(open ? 'open' : 'closed', response.alert ? 'response-alert' : 'response');
+  const classes = classNames(response.alert ? 'response-alert' : 'response');
   return (
     <li className={classes}>
-      {response.endpoint && <p className="mb-1 endpoint font-weight-bold loaded" onClick={() => setOpen(!open)} aria-expanded={open}>From endpoint{response.endpoint}:</p>}
-      <Collapse in={open}>
-        {response.alert ? <AlertMessage message={response.message} style={response.style} /> : response.result ?
-          <SyntaxHighlighter
-            className="result loaded"
-            language="json"
-            style={syntaxTheme}
-            customStyle={{ background: 'transparent', padding: 0, whiteSpace: 'pre-wrap' }}
-            wrapLines={true}>
-            {response.result}
-          </SyntaxHighlighter> : <span>{response}</span>}
-      </Collapse>
+      {response.endpoint && <p className="mb-1 endpoint font-weight-bold loaded">From endpoint {response.endpoint}:</p>}
+      {response.alert ? <AlertMessage noHide message={response.message} style={response.style} /> : response.result ?
+        <SyntaxHighlighter
+          className="result loaded"
+          language="json"
+          style={syntaxTheme}
+          customStyle={{ background: 'transparent', padding: 0, whiteSpace: 'pre-wrap' }}
+          wrapLines={true}>
+          {response.result}
+        </SyntaxHighlighter> : <span>{response}</span>}
     </li>
   );
 };
@@ -92,7 +89,7 @@ const MainSidebar = () => {
         {app.responses.length ?
           <ul className="responses">
             {app.responses.map((el, i) => app.responses[app.responses.length - i - 1]).map((response, index) => <Response response={response} index={index} key={index} />)}
-          </ul> : app.auth.handle ? <p>Submit a request to see the response.</p> : <AlertMessage message="App Credentials are required before using this app." />}
+          </ul> : app.auth.handle ? <p>Submit a request to see the response.</p> : <AlertMessage noHide message="App Credentials are required before using this app." />}
       </SimpleBar>
     </Col>
   );

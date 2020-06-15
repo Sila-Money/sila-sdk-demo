@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Switch, Route, useHistory } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
 import classNames from 'classnames';
@@ -14,25 +14,19 @@ import ResetModal from './components/common/ResetModal';
 import routes from './routes';
 
 const App = () => {
-  const [redirect, setRedirect] = useState(false);
-  const { app, updateApp } = useAppContext();
+  const { app, updateApp, setAppData } = useAppContext();
   const history = useHistory();
   const classes = classNames(
     'main',
     'p-0'
   );
 
-  const handleRedirect = (location) => {
-    if ((!app.activeUser) || (location.state && location.state.from && !app.success.includes(location.state.from))) setRedirect(true);
-  };
-
   useEffect(() => {
-    if (redirect) history.push('/check_handle');
-  }, [redirect]); // eslint-disable-line react-hooks/exhaustive-deps
+    setAppData({ success: app.success });
+  }, [app.success]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const unlisten = history.listen((location) => {
-      handleRedirect(location);
       updateApp({ alert: {} });
     });
     return unlisten;
@@ -40,7 +34,6 @@ const App = () => {
 
   useEffect(() => {
     updateApp({ loaded: true });
-    handleRedirect(history.location);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (

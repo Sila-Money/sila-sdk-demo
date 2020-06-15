@@ -5,7 +5,7 @@ import { NavLink } from 'react-router-dom';
 import classNames from 'classnames';
 
 const SelectMenu = ({ fullWidth, className, show, id, variant, options, onChange, value, size, action, title }) => {
-  const [menuTitle, setMenuTitle] = useState(value ? options.find(option => option.value === value).label : options[0].label);
+  const [menuTitle, setMenuTitle] = useState(value ? options.find(option => option.value === value).label : options.length ? options[0].label : '');
   const menuItems = options.filter(option => option.label !== menuTitle);
   const classes = classNames(
     'select-menu',
