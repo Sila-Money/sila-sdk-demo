@@ -14,8 +14,8 @@ const appData = {
 };
 
 // Initialize Local Storage for persistent app data
-let initAppData = JSON.parse(localStorage.getItem('auth'));
-if (!initAppData) {
+let initAppData = JSON.parse(localStorage.getItem('appData'));
+if (!initAppData || initAppData == null) {
   initAppData = appData;
   localStorage.setItem('auth', JSON.stringify(initAppData));
 }
