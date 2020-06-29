@@ -23,8 +23,8 @@ const RequestKYC = ({ page }) => {
       } else {
         result.kyc = { message: res.data.message, style: 'danger' };
       }
-      result.success = app.success.filter(p => p !== page);
       setAppData({
+        success: app.success.filter(p => p !== page),
         responses: [...app.responses, {
           endpoint: '/request_kyc',
           result: JSON.stringify(res, null, '\t')
@@ -55,8 +55,8 @@ const RequestKYC = ({ page }) => {
           alert: res.data.message.includes('requested') ? { message: res.data.message, style: 'danger' } : { message: `${app.activeUser.handle} is still pending ID verification.`, style: 'wait' }
         };
       }
-      result.success = res.data.status === 'SUCCESS' && !app.success.includes(page) ? [...app.success, page] : app.success.filter(p => p !== page);
       setAppData({
+        success: res.data.status === 'SUCCESS' && !app.success.includes(page) ? [...app.success, page] : app.success.filter(p => p !== page),
         responses: [...app.responses, {
           endpoint: '/check_kyc',
           result: JSON.stringify(res, null, '\t')
@@ -77,17 +77,17 @@ const RequestKYC = ({ page }) => {
         Request Non-documentary {/* {app.kycType[0].toUpperCase() + app.kycType.slice(1)} */} KYC
       </h1>
 
-      <p className="text-lg text-meta">We must verify that all users of the Sila platform are who they say they are, present a low fraud risk, and are not on any watchlists. We do this by submitting end-user information for KYC review by our identity verification partner, Alloy. The user will not be able to transact until the user is verified.  With great power comes great responsibility.</p>
+      <p className="text-lg text-meta mb-4">We must verify that all users of the Sila platform are who they say they are, present a low fraud risk, and are not on any watchlists. We do this by submitting end-user information for KYC review by our identity verification partner, Alloy. The user will not be able to transact until the user is verified.  With great power comes great responsibility.</p>
 
-      <p className="text-lg text-meta">Verification may take a few minutes, so make sure to refresh and check your status.</p>
+      <p className="text-lg text-meta mb-4">Verification may take a few minutes, so make sure to refresh and check your status.</p>
 
-      <p className="text-meta">This page represents <a href="https://docs.silamoney.com/#request_kyc" target="_blank" rel="noopener noreferrer">/request_kyc</a> and <a href="https://docs.silamoney.com/#check_kyc" target="_blank" rel="noopener noreferrer">/check_kyc</a> functionality.</p>
+      <p className="text-meta mb-4">This page represents <a href="https://docs.silamoney.com/#request_kyc" target="_blank" rel="noopener noreferrer">/request_kyc</a> and <a href="https://docs.silamoney.com/#check_kyc" target="_blank" rel="noopener noreferrer">/check_kyc</a> functionality.</p>
 
       <p><Button className="float-right" onClick={requestKyc} disabled={app.success.includes(page)}>Request KYC</Button></p>
 
-      <div className="d-flex mt-5 mb-2">
+      <div className="d-flex my-4">
         <h2>KYC Review Status</h2>
-        <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none" onClick={checkKyc}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk">Refresh</span></Button>
+        <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none" onClick={checkKyc}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
       </div>
 
       <div className="status form-control d-flex">

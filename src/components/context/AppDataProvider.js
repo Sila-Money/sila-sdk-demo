@@ -14,8 +14,11 @@ const appData = {
 };
 
 // Initialize Local Storage for persistent app data
-let initAppData = JSON.parse(localStorage.getItem('appData'));
-if (initAppData !== null) localStorage.setItem('appData', JSON.stringify(appData));
+let initAppData = JSON.parse(localStorage.getItem('auth'));
+if (!initAppData) {
+  initAppData = appData;
+  localStorage.setItem('auth', JSON.stringify(initAppData));
+}
 
 // Initialize app state
 const appState = {
@@ -25,7 +28,6 @@ const appState = {
   accounts: initAppData.accounts,
   users: initAppData.users,
   activeUser: initAppData.users.length ? initAppData.users.find(user => user.active) : false,
-  redirect: initAppData.redirect,
   success: initAppData.success,
   handle: '',
   transactions: false,
@@ -87,20 +89,19 @@ const AppDataProvider = props => {
   const resetApp = () => {
     localStorage.setItem('appData', JSON.stringify(appData));
     refreshApp();
-    updateApp({ private_key: null, kyc: null, transactions: false, activeUser: false, users: [], wallets: [], accounts: [], responses: [{ alert: true, message: 'Applciation data cleared', style: 'success' }] });
+    updateApp({ private_key: null, kyc: null, transactions: false, activeUser: false, users: [], wallets: [], accounts: [], responses: [{ alert: true, message: 'Applciation data cleared', style: 'success', loaded: true }] });
   }
 
-  const setAuth = (handle, key, callback) => {
+  const setAuth = (handle, key) => {
     Sila.configure({handle, key});
     initAppData = JSON.parse(localStorage.getItem('appData'));
     initAppData.auth = { handle, key };
     localStorage.setItem('appData', JSON.stringify(initAppData));
     updateApp({ 
-      activeUser: { ...app.activeUser, private_key : key },
+      activeUser: { ...app.activeUser, private_key: key },
       responses: [ ...initAppData.responses, { alert: true, message: 'Applciation authentication updateed', style: 'success' }]
     });
     refreshApp();
-    if (callback) callback();
   }
 
   const setAppData = (options, callback) => {

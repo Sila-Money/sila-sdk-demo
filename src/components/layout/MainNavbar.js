@@ -32,7 +32,7 @@ const MainNavbar = ({ stickyTop }) => {
           <Navbar.Collapse className="justify-content-end">
             <Navbar.Text>
               <Button variant="link" size="sm" className="text-uppercase d-block p-0" onClick={() => { updateApp({ manageReset: true }); }}>Reset App</Button>
-              <Button variant="link" size="sm" className="text-uppercase d-block p-0 ml-4" onClick={() => { updateApp({ manageSettings: true }); }}>App Settings</Button>
+              <Button variant="link" size="sm" className="text-uppercase d-block p-0 ml-3 ml-md-4" onClick={() => { updateApp({ manageSettings: true }); }}>App Settings</Button>
               {app.users.length > 0 && <NavbarUsers />}
             </Navbar.Text>
           </Navbar.Collapse>

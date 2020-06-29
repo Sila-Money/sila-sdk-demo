@@ -45,7 +45,7 @@ const LinkAccountModal = ({ onSuccess }) => {
   }
 
   return (
-    <Modal
+    <Modal centered
       show={app.manageLinkAccount}
       size="lg"
       aria-labelledby="link-account-modal-title"

@@ -11,11 +11,11 @@ const ResetModal = () => {
   const handleReset = () => {
     updateApp({ manageReset: false, loaded: false });
     resetApp(); 
-    history.go('/check_handle');
+    history.push('/check_handle');
   }
 
   return (
-    <Modal
+    <Modal centered
       show={app.manageReset}
       onHide={() => { updateApp({ manageReset: false }) }}>
       <Modal.Header className="text-center" closeButton>&nbsp;</Modal.Header>

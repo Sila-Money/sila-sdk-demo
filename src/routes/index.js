@@ -54,7 +54,7 @@ export default [
     stepper: true,
     restricted: true,
     page: 'transact',
-    title: 'Transact',
+    title: 'Transactions',
     path: '/transact',
     component: Transact
   },

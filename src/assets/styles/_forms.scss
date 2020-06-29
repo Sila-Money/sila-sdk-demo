@@ -1,8 +1,22 @@
 // Form adjustments
 
+// Rows
+.form-row {
+  margin-right: -10px;
+  margin-left: -10px;
+}
+
+.form-row>.col,
+.form-row>[class*="col-"] {
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
 // group
 .form-group {
   position: relative;
+  margin-bottom: 1.5rem;
+
   input[type="text"].form-control,
   input[type="search"].form-control,
   input[type="url"].form-control,
@@ -11,6 +25,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
   &.required::before {
     content: '*';
     position: absolute;
@@ -48,9 +63,11 @@
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
+
     &:focus:not(.readonly) {
       background-image: url("data:image/svg+xml,%3Csvg width='11' height='7' viewBox='0 0 11 7' xmlns='http://www.w3.org/2000/svg'%3E %3Cpath d='M5.48 6a.618.618 0 01-.412-.171L1.19 2.077a.63.63 0 01-.016-.885.62.62 0 01.879-.018L5.5 4.51l3.447-3.336a.62.62 0 01.88.018.63.63 0 01-.017.885L5.932 5.83a.618.618 0 01-.451.17z' fill='%233F63F7' fill-rule='nonzero' stroke='%233F63F7' stroke-width='.3'/%3E %3C/svg%3E");
     }
+
     &.empty {
       color: $gray-light;
       padding-top: $input-padding-y;
@@ -66,6 +83,7 @@
     &[readonly] {
       border-color: $input-border-color-disabled;
     }
+
     z-index: 4;
   }
 
@@ -76,10 +94,11 @@
 }
 
 // Checkbox
-.custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
+.custom-checkbox .custom-control-input:checked~.custom-control-label::before {
   background: $white;
 }
-.custom-checkbox .custom-control-input:checked ~ .custom-control-label::after {
+
+.custom-checkbox .custom-control-input:checked~.custom-control-label::after {
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%233F63F7' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3e%3c/svg%3e");
 }
 
@@ -89,10 +108,12 @@
   color: $gray-light;
   margin-right: 0.5em;
 }
+
 .form-control[type="date"]:focus:before,
 .form-control[type="date"]:valid:before {
   display: none;
 }
+
 .form-control[type="date"]:invalid::-webkit-datetime-edit {
   color: $gray-light;
 }
@@ -117,21 +138,23 @@ select.form-control option[value=""] {
 }
 
 // Errors
-.was-validated .form-control:invalid, 
+.was-validated .form-control:invalid,
 .form-control.is-invalid,
-.was-validated .form-control:valid, 
+.was-validated .form-control:valid,
 .form-control.is-valid {
   background-image: none;
   padding-right: $input-btn-padding-x;
 }
-.was-validated .form-control:valid:not(.is-invalid), 
+
+.was-validated .form-control:valid:not(.is-invalid),
 .form-control.is-valid,
-.was-validated .form-control:valid:not(.is-invalid):focus, 
+.was-validated .form-control:valid:not(.is-invalid):focus,
 .form-control.is-valid:focus {
   border-color: $border-color;
 }
-.was-validated .form-control:invalid, 
-.was-validated .form-control.is-invalid, 
+
+.was-validated .form-control:invalid,
+.was-validated .form-control.is-invalid,
 .form-control.is-invalid,
 .form-control.is-invalid:focus,
 .was-validated .form-control:valid.is-invalid {

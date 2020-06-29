@@ -10,7 +10,7 @@
 
 .step {
     position: relative;
-    padding: 1.375rem;
+    padding: 2rem 1.375rem 0 1.375rem;
     flex-grow: 1;
     flex-shrink: 0;
 
@@ -64,13 +64,13 @@
     overflow: hidden;
     text-indent: -999em;
     position: absolute;
-    top: 70px;
+    top: 80px;
     left: 50%;
     margin-left: -3px;
     z-index: 2;
 
     .has-description & {
-        top: 80px;
+        top: 90px;
     }
 
     .step.active & {
@@ -80,11 +80,11 @@
         height: 24px;
         opacity: 1;
         margin-left: -12px;
-        top: 60px;
+        top: 70px;
     }
 
     .has-description .step.active & {
-        top: 70px;
+        top: 80px;
     }
 
     .step:last-child:not(.active) & {
@@ -95,8 +95,9 @@
 }
 
 .step-title {
-    font-weight: 600;
+    font-size: 1.125rem;
     color: $body-color;
+    letter-spacing: 0.03em;
 
     a.step:hover & {
         color: $primary;
@@ -107,10 +108,10 @@
 .step-bar-right {
     position: absolute;
     height: 6px;
-    top: 70px;
+    top: 80px;
 
     .has-description & {
-        top: 80px;
+        top: 90px;
     }
 }
 
@@ -130,15 +131,9 @@
     }
 }
 
-@include media-breakpoint-up(md) {
-    .step-title {
-        font-size: 1rem;
-    }
-}
-
 @include media-breakpoint-down(lg) {
     .step {
-        padding: 1.375rem 0.75rem;
+        padding: 2rem 0.75rem;
     }
 
     .step-title {

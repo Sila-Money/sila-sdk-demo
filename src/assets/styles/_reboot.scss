@@ -17,7 +17,7 @@ html {
 // Body
 body {
   background: $body-background;
-  font-size: 14px;
+  font-size: 0.9375rem;
   font-weight: 400;
 }
 
@@ -44,16 +44,15 @@ strong, b {
 
 // headers
 h1, h2, h3 {
-  font-weight: 400;
+  font-weight: 700;
+  letter-spacing: 0.03em;
 }
 h1 {
-  font-size: 1.875rem;
-  font-weight: 500;
+  font-size: 2.375rem;
 }
 h2 {
-  font-size: 1.4375rem;
+  font-size: 1.375rem;
 }
 h3 {
-  font-size: 1.1875rem;
-  font-weight: 300;
+  font-size: 1.25rem;
 }

@@ -9,6 +9,7 @@ import Pagination from '../components/common/Pagination';
 const CheckHandle = ({ page }) => {
   const [validated, setValidated] = useState(false);
   const [error, setError] = useState(false);
+  const [success, setSuccess] = useState(false);
   const { app, api, handleError, updateApp, setAppData } = useAppContext();
 
   const checkHandle = async (e) => {
@@ -21,14 +22,16 @@ const CheckHandle = ({ page }) => {
       console.log('  ... completed!');
       if (res.data.status === 'SUCCESS') {
         result.alert = { message: 'Success! Handle available.', style: 'success' };
+        setSuccess(true);
         resetForm();
       } else {
         const errorMessage = res.data.validation_details ? res.data.validation_details.header.user_handle : 'Error! Handle is taken.';
         result.alert = { message: errorMessage, style: 'danger' };
         setError(errorMessage);
+        setSuccess(false);
       }
-      result.success = res.data.status && !app.success.includes(page) ? [...app.success, page] : app.success.filter(p => p !== page);
       setAppData({
+        success: res.data.status === 'SUCCESS' && !app.success.includes(page) ? [...app.success, page] : app.success.filter(p => p !== page),
         responses: [...app.responses, {
           endpoint: '/check_handle',
           result: JSON.stringify(res, null, '\t')
@@ -61,7 +64,7 @@ const CheckHandle = ({ page }) => {
 
       <p className="mb-4 text-lg text-meta">Create a unique handle to identify the end-user and check to ensure it is available.</p>
 
-      <p className="text-meta">This page represents <a href="https://docs.silamoney.com/#check_handle" target="_blank" rel="noopener noreferrer">/check_handle</a> functionality.</p>
+      <p className="text-meta mb-4">This page represents <a href="https://docs.silamoney.com/#check_handle" target="_blank" rel="noopener noreferrer">/check_handle</a> functionality.</p>
 
       <Form noValidate validated={validated} autoComplete="off" onSubmit={checkHandle}>
         <Form.Group controlId="formGroupHandle">
@@ -83,7 +86,7 @@ const CheckHandle = ({ page }) => {
 
       <Pagination hidePrevious
         className="mt-auto pt-4"
-        next={app.success.includes(page) ? '/register' : undefined}
+        next={app.handle && success ? '/register' : undefined}
         currentPage={page} />
 
     </Container>

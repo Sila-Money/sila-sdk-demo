@@ -12,9 +12,10 @@ const SettingsModal = () => {
     const pattern = '^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$';
     const regex = new RegExp(pattern);
     e.preventDefault();
-    setErrors({ ...errors,
+    setErrors({
+      ...errors,
       auth_handle: !e.target.auth_handle.value.length ? 'This field may not be blank.' : false,
-      auth_key: !e.target.auth_key.value.length ? 'This field may not be blank.' : 
+      auth_key: !e.target.auth_key.value.length ? 'This field may not be blank.' :
         e.target.auth_key.value && !regex.test(e.target.auth_key.value) ? `This value does not match the required private key pattern: ${pattern}` : false
     });
     if (e.target.auth_key.value && e.target.auth_handle.value && !errors.auth_handle && !errors.auth_key && regex.test(e.target.auth_key.value)) {
@@ -36,7 +37,7 @@ const SettingsModal = () => {
   }
 
   return (
-    <Modal
+    <Modal centered
       show={app.manageSettings}
       size="lg"
       aria-labelledby="manage-settings-modal-title"
@@ -47,7 +48,8 @@ const SettingsModal = () => {
       <Form noValidate validated={validated} autoComplete="off" onSubmit={handleAuth}>
         <Modal.Body>
 
-          <h4 className="mb-4">Enter App Credentials</h4>
+          <h4 className="mb-2">Enter App Credentials</h4>
+          <p className="text-meta mb-4">Get your App crednetials from the <a href="https://console.silamoney.com/" target="_blank" rel="noopener noreferrer">Sila Console</a>.</p>
 
           <Form.Group className="mb-3">
             <Form.Label htmlFor="auth_handle">App Handle</Form.Label>
@@ -70,6 +72,11 @@ const SettingsModal = () => {
             />
             {errors.auth_key && <Form.Control.Feedback type="invalid">{errors.auth_key}</Form.Control.Feedback>}
           </Form.Group>
+
+          <div className="d-flex flex-row">
+            <i className="fas fa-info-circle mr-2" style={{ fontSize: '2rem', opacity: '0.1' }}></i>
+            <p className="text-sm text-meta"><strong className="text-uppercase">MAKE SURE YOU SAVE YOUR PRIVATE KEY!</strong><br />Keep your private keys secure; leave them out of your source code and never store them in an unsafe place. If they are ever compromised, please immediately replace your keys using the <a href="https://console.silamoney.com/" target="_blank" rel="noopener noreferrer">Sila Console</a>.</p>
+          </div>
 
         </Modal.Body>
         <Modal.Footer>

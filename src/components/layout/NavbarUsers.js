@@ -25,9 +25,9 @@ const NavbarUsers = () => {
       title={location.pathname === '/check_handle' ? 'Creating New User' : app.activeUser ? app.activeUser.handle : undefined}
       size="sm"
       onChange={setActiveUser}
-      className="ml-4 text-uppercase"
+      className="ml-3 ml-md-4 text-uppercase"
       options={app.users.map(user => ({ label: user.handle, value: user }))} />
-    <Button as={NavLink} to="/check_handle" onClick={() => updateApp({ activeUser: false })} disabled={location.pathname === '/check_handle'} className="ml-2" size="sm"><i className="fas fa-user-plus text-lg text-white"></i></Button>
+    <Button as={NavLink} to="/check_handle" onClick={() => updateApp({ activeUser: false })} disabled={location.pathname === '/check_handle' || !app.activeUser} className="ml-2" size="sm"><i className="fas fa-user-plus text-lg text-white"></i></Button>
   </>;
 }
 

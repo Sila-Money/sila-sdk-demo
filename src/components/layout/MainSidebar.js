@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames';
-import { Col, Button } from 'react-bootstrap';
+import { Col, Button, Collapse } from 'react-bootstrap';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import SimpleBar from 'simplebar-react';
 
@@ -44,10 +44,16 @@ const syntaxTheme = {
 };
 
 const Response = ({ response, index }) => {
-  const classes = classNames(response.alert ? 'response-alert' : 'response');
+  const [open, setOpen] = useState(index === 0 ? true : false);
+  const classes = classNames(
+    response.alert ? 'response-alert' : 'response',
+    open && 'open',
+    index !== 0 && 'mt-2'
+  );
   return (
     <li className={classes}>
-      {response.endpoint && <p className="mb-1 endpoint font-weight-bold loaded">From endpoint {response.endpoint}:</p>}
+      {response.endpoint && <p onClick={() => setOpen(!open)} className="mb-1 endpoint font-weight-bold loaded">From endpoint {response.endpoint}:</p>}
+      <Collapse in={open}>
       {response.alert ? <AlertMessage noHide message={response.message} style={response.style} /> : response.result ?
         <SyntaxHighlighter
           className="result loaded"
@@ -57,6 +63,7 @@ const Response = ({ response, index }) => {
           wrapLines={true}>
           {response.result}
         </SyntaxHighlighter> : <span>{response}</span>}
+      </Collapse>
     </li>
   );
 };

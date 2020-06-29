@@ -14,16 +14,12 @@ import ResetModal from './components/common/ResetModal';
 import routes from './routes';
 
 const App = () => {
-  const { app, updateApp, setAppData } = useAppContext();
+  const { app, updateApp } = useAppContext();
   const history = useHistory();
   const classes = classNames(
     'main',
     'p-0'
   );
-
-  useEffect(() => {
-    setAppData({ success: app.success });
-  }, [app.success]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const unlisten = history.listen((location) => {
@@ -48,7 +44,7 @@ const App = () => {
           sm={12}
           as="main"
         >
-          <Stepper className="mx-n2" items={routes.filter(route => route.stepper)} />
+          <Stepper items={routes.filter(route => route.stepper)} />
           <div className="main-content d-flex flex-column">
             <Switch>
               {routes.map((route, i) => (

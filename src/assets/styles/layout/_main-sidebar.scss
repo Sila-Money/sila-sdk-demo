@@ -15,18 +15,27 @@
     -webkit-transition: opacity .2s;
     transition: opacity .2s;
 
+    .endpoint {
+      cursor: pointer;
+    }
+
     &::before {
-      content: "\2022";
+      content: "\f13a";
+      @include fas-icon;
       color: $gray-medium;
       font-weight: bold;
       display: block;
       width: 1em;
       margin-left: -1.5rem;
       float: left;
+      margin-top: 4px;
     }
 
-    &:first-child::before {
-      color: $primary;
+    &.open {
+      &::before {
+        content: "\f139";
+        color: $primary;
+      }
     }
 
     &:not(:first-child) {

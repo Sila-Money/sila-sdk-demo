@@ -29,8 +29,3 @@ a:hover .lnk,
 .btn-link:hover .lnk {
   text-decoration: underline;
 }
-
-// Loaded
-.loaded {
-  @include animation(fadein, 0.5s, forwards);
-}

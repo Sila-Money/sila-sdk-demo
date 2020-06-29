@@ -9,6 +9,7 @@ import Pagination from '../common/Pagination';
 const RegisterForm = ({ page, onPrevious }) => {
   const [validated, setValidated] = useState(false);
   const [errors, setErrors] = useState({});
+  const [success, setSuccess] = useState(false);
   const { app, api, refreshApp, handleError, updateApp, setAppData } = useAppContext();
 
   const handleChange = (e) => {
@@ -59,13 +60,14 @@ const RegisterForm = ({ page, onPrevious }) => {
           }]
         };
         if (Object.keys(errors).length) setErrors({});
+        setSuccess(true);
       } else if (res.data.validation_details) {
         setErrors(res.data.validation_details);
+        setSuccess(false);
       }
-      result.success = res.data.status === 'SUCCESS' && !app.success.includes(page) ? [...app.success, page] : app.success.filter(p => p !== page);
       setAppData({
         ...appData,
-        success: result.success,
+        success: res.data.status === 'SUCCESS' && !app.success.includes(page) ? [...app.success, page] : app.success.filter(p => p !== page),
         responses: [...app.responses, {
           endpoint: '/register',
           result: JSON.stringify(res, null, '\t')
@@ -88,9 +90,11 @@ const RegisterForm = ({ page, onPrevious }) => {
         {/* {app.kycType[0].toUpperCase() + app.kycType.slice(1)} KYC */}
       </h1>
 
-      <div className="d-flex">
-        <p className="mb-4 text-meta">This page represents <a href="https://docs.silamoney.com/#register" target="_blank" rel="noopener noreferrer">/register</a> functionality.</p>
-        <p className="text-right text-sm text-primary ml-auto"><span className="text-lg">*</span> {app.kycType === 'default' ? 'All fields required.' : `Required field.`}</p>
+      <p className="mb-4 text-meta text-lg">We need to gather some information to see if you meet KYC guidelines.</p>
+
+      <div className="d-flex mb-4">
+        <p className="text-meta mb-0">This page represents <a href="https://docs.silamoney.com/#register" target="_blank" rel="noopener noreferrer">/register</a> functionality.</p>
+        <p className="text-right text-sm text-primary ml-auto position-relative" style={{ top: '3rem' }}><span className="text-lg">*</span> {app.kycType === 'default' ? 'All fields required.' : `Required field.`}</p>
       </div>
 
       <Form noValidate validated={validated} autoComplete="off" onSubmit={register}>
@@ -112,6 +116,7 @@ const RegisterForm = ({ page, onPrevious }) => {
             name="handle"
             value={app.handle}
           />
+          <Form.Text className="text-meta">Handle must be unique.  This was autopopulated from the handle you checked prevously.</Form.Text>
         </Form.Group>
         <Form.Group controlId="registerAddress">
           <Form.Control required={app.kycType === 'default'} placeholder="Street Address" name="address" />
@@ -217,7 +222,7 @@ const RegisterForm = ({ page, onPrevious }) => {
         className="mt-auto pt-4"
         previous="/check_handle"
         // previousOnClick={onPrevious}
-        next={app.success.includes(page) ? '/request_kyc' : undefined}
+        next={success ? '/request_kyc' : undefined}
         currentPage={page} />
 
     </div>

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 const ConfirmModal = ({ show, onHide, onSuccess, message }) => {
   return (
-    <Modal
+    <Modal centered
       show={show ? true : false}
       onHide={onHide}>
       <Modal.Header className="text-center" closeButton>&nbsp;</Modal.Header>
