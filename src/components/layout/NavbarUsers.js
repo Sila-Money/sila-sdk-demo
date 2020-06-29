@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
-import { useLocation, useHistory, NavLink } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 import { useAppContext } from '../context/AppDataProvider';
 
@@ -8,26 +8,36 @@ import SelectMenu from '../common/SelectMenu';
 
 const NavbarUsers = () => {
   const { app, updateApp, setAppData } = useAppContext();
-  const location = useLocation();
   const history = useHistory();
 
-  const setActiveUser = (user) => {
+  const setActiveUser = (handle) => {
     setAppData({
-      users: app.users.map(({ active, ...u }) => u.handle === user.handle ? { ...u, active: true } : u)
+      users: app.users.map(({ active, ...u }) => u.handle === handle ? { ...u, active: true } : u)
     }, () => {
-      updateApp({ activeUser: user, kyc: null });
+      updateApp({ activeUser: app.users.find(u => u.handle === handle), kyc: null });
       history.go();
+    });
+  }
+
+  const handleNewUser = () => {
+    setAppData({ 
+      success: [],
+      users: app.users.map(({ active, ...u }) => u)
+    }, () => {
+      updateApp({ activeUser: false });
+      history.push('/check_handle');
     });
   }
 
   return <>
     <SelectMenu
-      title={location.pathname === '/check_handle' ? 'Creating New User' : app.activeUser ? app.activeUser.handle : undefined}
+      title={!app.activeUser ? 'Creating New User' : undefined}
       size="sm"
       onChange={setActiveUser}
       className="ml-3 ml-md-4 text-uppercase"
-      options={app.users.map(user => ({ label: user.handle, value: user }))} />
-    <Button as={NavLink} to="/check_handle" onClick={() => updateApp({ activeUser: false })} disabled={location.pathname === '/check_handle' || !app.activeUser} className="ml-2" size="sm"><i className="fas fa-user-plus text-lg text-white"></i></Button>
+      value={app.activeUser ? app.activeUser.handle : undefined}
+      options={app.users.map(user => ({ label: user.handle, value: user.handle }))} />
+    <Button onClick={handleNewUser} disabled={!app.activeUser} className="ml-2" size="sm"><i className="fas fa-user-plus text-lg text-white"></i></Button>
   </>;
 }
 

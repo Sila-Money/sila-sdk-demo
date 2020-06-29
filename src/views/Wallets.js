@@ -10,7 +10,7 @@ import Wallet from '../components/wallets/Wallet';
 
 const Wallets = ({ page }) => {
   const { app, api, updateApp, handleError, setAppData } = useAppContext();
-  const [wallets, setWallets] = useState(app.wallets.filter(wallet => wallet.handle === app.activeUser.handle).sort((x, y) => x.default ? -1 : y.default ? 1 : 0));
+  const [wallets, setWallets] = useState(app.wallets.filter(wallet => wallet.handle === app.activeUser.handle).sort((x, y) => x.default ? -1 : y.default ? 1 : x.private_key === app.activeUser.private_key ? -1 : y.private_key === app.activeUser.private_key ? 1 : 0));
   const [loaded, setLoaded] = useState(false);
 
   const getWallets = async () => {
@@ -50,31 +50,32 @@ const Wallets = ({ page }) => {
         default: wallet.default
       });
       let newWallet = wallet;
-      let newWallets = app.wallets;
       let result = {};
       console.log('  ... completed!');
       if (res.data.success) {
         newWallet = { ...wallet, ...res.data.wallet };
         result.alert = { message: 'Wallet saved!', style: 'success' };
-        if (wallet.default) result.activeUser = { ...app.activeUser, private_key: newWallet.private_key, cryptoAddress: newWallet.blockchain_address }
+        if (newWallet.default || wallets.length === 1) result.activeUser = { ...app.activeUser, private_key: newWallet.private_key, cryptoAddress: newWallet.blockchain_address }
       } else {
         result.alert = { message: res.data.message, style: 'danger' };
       }
       delete newWallet.editing;
-      newWallets = app.wallets.map(w => {
-        if (w.default) delete w.default;
-        return w.blockchain_address === newWallet.blockchain_address ? newWallet : w
-      });
       setAppData({
-        wallets: newWallets,
-        users: app.users.map(u => wallet.default && u.handle === app.activeUser.handle ? result.activeUser : u),
+        wallets: app.wallets.map(w => {
+          if (w.default) delete w.default;
+          return w.blockchain_address === newWallet.blockchain_address ? newWallet : w
+        }),
+        users: app.users.map(u => result.activeUser && u.handle === app.activeUser.handle ? result.activeUser : u),
         responses: [...app.responses, {
           endpoint: '/update_wallet',
           result: JSON.stringify(res, null, '\t')
         }]
       }, () => {
         updateApp({ ...result });
-        setWallets(newWallets);
+        setWallets(wallets.map(w => {
+          if (w.default) delete w.default;
+          return w.blockchain_address === newWallet.blockchain_address ? newWallet : w
+        }));
       });
     } catch (err) {
       console.log('  ... looks like we ran into an issue!');
@@ -90,7 +91,6 @@ const Wallets = ({ page }) => {
         privateKey: wallet.private_key
       }, wallet.nickname);
       let result = {};
-      let newWallets = app.wallets;
       console.log('  ... completed!');
       if (res.data.success) {
         result.alert = { message: 'Wallet saved!', style: 'success' };
@@ -98,16 +98,14 @@ const Wallets = ({ page }) => {
         result.alert = { message: res.data.message, style: 'danger' };
       }
       delete wallet.isNew;
-      newWallets = [...app.wallets, { ...wallet, added: true }];
       setAppData({
-        wallets: newWallets,
+        wallets: [...app.wallets, { ...wallet }],
         responses: [...app.responses, {
           endpoint: '/register_wallet',
           result: JSON.stringify(res, null, '\t')
         }]
       }, () => {
         updateApp({ ...result });
-        setWallets(newWallets);
       });
     } catch (err) {
       console.log('  ... looks like we ran into an issue!');
@@ -136,7 +134,7 @@ const Wallets = ({ page }) => {
         }]
       }, () => {
         updateApp({ ...result });
-        setWallets(newWallets);
+        setWallets(wallets.filter(w => w.blockchain_address !== wallet.blockchain_address));
       });
     } catch (err) {
       console.log('  ... looks like we ran into an issue!');
@@ -163,11 +161,11 @@ const Wallets = ({ page }) => {
 
   const removeWallet = (wallet, index) => {
     let newArr = [...wallets];
-    newArr.splice(index, 1);
-    if (wallet.blockchain_network || wallet.added) {
-      deleteWallet(wallet);
-    } else {
+    if (wallet.isNew) {
+      newArr.splice(index, 1);
       setWallets(newArr);
+    } else {
+      deleteWallet(wallet);
     }
   }
 
@@ -178,12 +176,12 @@ const Wallets = ({ page }) => {
   }
 
   useEffect(() => {
-    if (wallets.length && !app.success.includes(page)) setAppData({ success: [...app.success, page] });
-  }, [wallets]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
     getWallets();
   }, [app.activeUser]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (wallets.length && !app.success.includes(page)) setAppData({ success: [...app.success, page] });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Container fluid className="main-content-container d-flex flex-column flex-grow-1 loaded">

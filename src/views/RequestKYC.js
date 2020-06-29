@@ -56,7 +56,7 @@ const RequestKYC = ({ page }) => {
         };
       }
       setAppData({
-        success: res.data.status === 'SUCCESS' && !app.success.includes(page) ? [...app.success, page] : app.success.filter(p => p !== page),
+        success: res.data.status === 'SUCCESS' && !app.success.includes(page) ? [...app.success, page] : app.success,
         responses: [...app.responses, {
           endpoint: '/check_kyc',
           result: JSON.stringify(res, null, '\t')

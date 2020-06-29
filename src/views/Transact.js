@@ -23,9 +23,9 @@ const formatNumber = (num) => {
 
 const Transact = ({ page }) => {
   const { app, api, setAppData, updateApp, handleError } = useAppContext();
-  const userWallets = app.wallets.filter(wallet => wallet.handle === app.activeUser.handle).sort((x, y) => x.default ? -1 : y.default ? 1 : 0);
-  const userAccounts = app.accounts.filter(account => account.handle === app.activeUser.handle);
-  const [wallet, setWallet] = useState(userWallets.find(wallet => wallet.default) || userWallets[0]);
+  const userWallets = app.wallets.filter(wallet => wallet.handle === app.activeUser.handle).sort((x, y) => x.default ? -1 : y.default ? 1 : x.private_key === app.activeUser.private_key ? -1 : y.private_key === app.activeUser.private_key ? 1 : 0);
+  const userAccounts = app.accounts.filter(account => account.handle === app.activeUser.handle && account.account_number);
+  const [wallet, setWallet] = useState(userWallets.find(wallet => wallet.default || wallet.private_key === app.activeUser.private_key));
   const [account, setAccount] = useState(userAccounts[0]);
   const [balance, setBalance] = useState('Checking Balance ...');
   const [forms, setForms] = useState(defaultForms);
@@ -181,6 +181,7 @@ const Transact = ({ page }) => {
 
   useEffect(() => {
     refreshTransactions(true);
+    refreshBalance();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
@@ -210,7 +211,7 @@ const Transact = ({ page }) => {
               <Form.Label className="m-0" htmlFor="wallet"><h3 className="m-0 text-white">Wallet</h3></Form.Label>
             </Card.Header>
             <Card.Body className="p-0">
-              <SelectMenu fullWidth id="wallet" className="border-top-0 rounded-top-0 rounded-br-0 border-light py-3" onChange={handleWallet} options={userWallets.map((wallet, index) => ({ label: `${wallet.nickname ? wallet.nickname : wallet.private_key === app.activeUser.private_key ? 'My Wallet' : `Wallet Name`}${wallet.default || (!wallet.default && wallet.private_key === app.activeUser.private_key) ? ' (Default)' : ''}`, value: index }))} />
+              <SelectMenu fullWidth id="wallet" className="border-top-0 rounded-top-0 rounded-br-0 border-light py-3" onChange={handleWallet} options={userWallets.map((wallet, index) => ({ label: `${wallet.nickname ? wallet.nickname : wallet.private_key === app.activeUser.private_key ? 'My Wallet' : (wallet.editing || wallet.isNew) ? 'Wallet Name' : 'My First Wallet'}${wallet.default ? ' (Default)' : ''}`, value: index }))} />
             </Card.Body>
           </Form.Group>
         </Card>

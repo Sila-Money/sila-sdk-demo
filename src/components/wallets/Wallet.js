@@ -35,7 +35,7 @@ const Wallet = ({ wallets, data, onHandleChange, onCreate, onUpdate, onEdit, onD
             aria-label="Wallet Name"
             name="nickname"
             onChange={(e) => handleChange(e, index)}
-            placeholder={`${data.nickname ? data.nickname : data.private_key === app.activeUser.private_key ? 'My Wallet' : `Wallet Name`}${data.default || (!data.default && data.private_key === app.activeUser.private_key) ? ' (Default)' : ''}`}
+            placeholder={`${data.nickname ? data.nickname : data.private_key === app.activeUser.private_key ? 'My Wallet' : (data.editing || data.isNew) ? 'Wallet Name' : 'My First Wallet'}${data.default || (!data.default && data.private_key === app.activeUser.private_key) ? ' (Default)' : ''}`}
             readOnly={(!data.editing && !data.isNew)}
           />
           <InputGroup.Append>

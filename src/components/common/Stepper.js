@@ -25,7 +25,7 @@ const StepperItem = ({ item, number }) => {
       <div className="step-bar-right"></div>
     </>
   )
-  return app.activeUser && app.success.includes(item.page) ? <NavLink className={classes} to={{ pathname: item.path, state: { from: item.page } }}><StepperContent /></NavLink>
+  return app.activeUser && !isDisabled ? <NavLink className={classes} to={{ pathname: item.path, state: { from: item.page } }}><StepperContent /></NavLink>
     : <div className={classes}><StepperContent /></div>
 };
 
