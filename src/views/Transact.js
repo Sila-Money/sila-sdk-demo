@@ -228,12 +228,12 @@ const Transact = ({ page }) => {
 
       <div className="d-flex mb-4">
         <h2>Transactions</h2>
-        {app.accounts.length !== 0 && <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none" onClick={() => refreshTransactions(true)}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>}
+        {userAccounts.length !== 0 && <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none" onClick={() => refreshTransactions(true)}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>}
       </div>
 
       {userAccounts.length === 0 && <Alert variant="warning" className="mb-4">An active account is required to initiate a transaction.  <NavLink to="/accounts" className="text-reset text-underline">Link an account</NavLink></Alert>}
 
-      {app.accounts.length !== 0 && <div className="transactions position-relative mb-4">
+      {userAccounts.length !== 0 && <div className="transactions position-relative mb-4">
         {!app.transactions && <Loader overlay />}
         <Table bordered responsive>
           <thead>
@@ -259,7 +259,7 @@ const Transact = ({ page }) => {
         </Table>
       </div>}
 
-      {app.accounts.length !== 0 && <Tab.Container defaultActiveKey="issue">
+      {userAccounts.length !== 0 && <Tab.Container defaultActiveKey="issue">
         <Card>
           <Card.Header className="bg-secondary">
             <Nav variant="pills" defaultActiveKey="issue">

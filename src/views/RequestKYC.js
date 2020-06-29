@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Container, Button } from 'react-bootstrap';
 
 import { useAppContext } from '../components/context/AppDataProvider';
@@ -69,6 +69,10 @@ const RequestKYC = ({ page }) => {
       handleError(err);
     }
   }
+
+  useEffect(() => {
+    if (app.success.includes(page)) updateApp({ kyc: { message: 'Passed ID verification', style: 'success' } });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Container fluid className="main-content-container d-flex flex-column flex-grow-1 loaded">
