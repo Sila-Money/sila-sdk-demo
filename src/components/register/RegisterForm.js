@@ -94,7 +94,7 @@ const RegisterForm = ({ page, onPrevious }) => {
 
       <div className="d-flex mb-4">
         <p className="text-meta mb-0">This page represents <a href="https://docs.silamoney.com/#register" target="_blank" rel="noopener noreferrer">/register</a> functionality.</p>
-        <p className="text-right text-sm text-primary ml-auto position-relative" style={{ top: '3rem' }}><span className="text-lg">*</span> {app.kycType === 'default' ? 'All fields required.' : `Required field.`}</p>
+        <p className="text-right text-sm text-primary ml-auto position-relative" style={{ top: '2rem' }}><span className="text-lg">*</span> {app.kycType === 'default' ? 'All fields required.' : `Required field.`}</p>
       </div>
 
       <Form noValidate validated={validated} autoComplete="off" onSubmit={register}>
