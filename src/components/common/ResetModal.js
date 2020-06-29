@@ -9,7 +9,7 @@ const ResetModal = () => {
   const history = useHistory();
 
   const handleReset = () => {
-    updateApp({ manageReset: false, loaded: false });
+    updateApp({ manageReset: false });
     resetApp(); 
     history.push('/check_handle');
   }
