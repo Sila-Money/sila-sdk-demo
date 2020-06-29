@@ -92,7 +92,7 @@ const RegisterForm = ({ page, onPrevious }) => {
 
       <p className="mb-4 text-meta text-lg">We need to gather some information to see if you meet KYC guidelines.</p>
 
-      <div className="d-flex mb-4">
+      <div className="d-flex mb-40">
         <p className="text-meta mb-0">This page represents <a href="https://docs.silamoney.com/#register" target="_blank" rel="noopener noreferrer">/register</a> functionality.</p>
         <p className="text-right text-sm text-primary ml-auto position-relative" style={{ top: '2rem' }}><span className="text-lg">*</span> {app.kycType === 'default' ? 'All fields required.' : `Required field.`}</p>
       </div>
@@ -211,7 +211,7 @@ const RegisterForm = ({ page, onPrevious }) => {
           </Form.Group>
         </Form.Row>
 
-        <div className="d-flex mt-4">
+        <div className="d-flex mt-40">
           {app.alert.message && <AlertMessage message={app.alert.message} style={app.alert.style} />}
           <Button type="submit" className="ml-auto" disabled={!app.handle || app.activeUser.handle === app.handle}>Register user</Button>
         </div>

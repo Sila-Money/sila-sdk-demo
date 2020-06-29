@@ -190,14 +190,14 @@ const Wallets = ({ page }) => {
 
       <p className="text-lg text-meta mb-4">An Ethereum Wallet has been automatically created for this user.  Private Keys are stored locally on this device and never sent over the network.</p>
 
-      <p className="text-meta mb-4">This page represents <a href="https://docs.silamoney.com/#register_wallet" target="_blank" rel="noopener noreferrer">/register_wallet</a>, <a href="https://docs.silamoney.com/#delete_wallet" target="_blank" rel="noopener noreferrer">/delete_wallet</a>, <a href="https://docs.silamoney.com/#update_wallet" target="_blank" rel="noopener noreferrer">/update_wallet</a> functionality.</p>
+      <p className="text-meta mb-40">This page represents <a href="https://docs.silamoney.com/#register_wallet" target="_blank" rel="noopener noreferrer">/register_wallet</a>, <a href="https://docs.silamoney.com/#delete_wallet" target="_blank" rel="noopener noreferrer">/delete_wallet</a>, <a href="https://docs.silamoney.com/#update_wallet" target="_blank" rel="noopener noreferrer">/update_wallet</a> functionality.</p>
 
       <Form noValidate autoComplete="off" className="position-relative mt-4">
         {!loaded && <Loader overlay />}
         {loaded && wallets.map((wallet, index) => <Wallet key={index} wallets={wallets} data={wallet} onHandleChange={handleChange} onCreate={registerWallet} onUpdate={updateWallet} onEdit={editWallet} onDelete={removeWallet} index={index} />)}
       </Form>
 
-      <div className="d-flex mt-4">
+      <div className="d-flex mt-40">
         {app.alert.message && <AlertMessage message={app.alert.message} style={app.alert.style} />}
         <Button variant="link" className="ml-auto p-0" onClick={addWallet}>Add Wallet +</Button>
       </div>

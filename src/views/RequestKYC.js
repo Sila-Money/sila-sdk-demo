@@ -81,11 +81,11 @@ const RequestKYC = ({ page }) => {
 
       <p className="text-lg text-meta mb-4">Verification may take a few minutes, so make sure to refresh and check your status.</p>
 
-      <p className="text-meta mb-4">This page represents <a href="https://docs.silamoney.com/#request_kyc" target="_blank" rel="noopener noreferrer">/request_kyc</a> and <a href="https://docs.silamoney.com/#check_kyc" target="_blank" rel="noopener noreferrer">/check_kyc</a> functionality.</p>
+      <p className="text-meta">This page represents <a href="https://docs.silamoney.com/#request_kyc" target="_blank" rel="noopener noreferrer">/request_kyc</a> and <a href="https://docs.silamoney.com/#check_kyc" target="_blank" rel="noopener noreferrer">/check_kyc</a> functionality.</p>
 
-      <p><Button className="float-right" onClick={requestKyc} disabled={app.success.includes(page)}>Request KYC</Button></p>
+      <p className="mt-40 mb-40"><Button className="float-right" onClick={requestKyc} disabled={app.success.includes(page)}>Request KYC</Button></p>
 
-      <div className="d-flex my-4">
+      <div className="d-flex mb-3">
         <h2>KYC Review Status</h2>
         <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none" onClick={checkKyc}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
       </div>

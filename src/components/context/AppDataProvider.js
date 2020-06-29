@@ -15,7 +15,7 @@ const appData = {
 
 // Initialize Local Storage for persistent app data
 let initAppData = JSON.parse(localStorage.getItem('appData'));
-if (!initAppData || initAppData == null) {
+if (!initAppData) {
   initAppData = appData;
   localStorage.setItem('auth', JSON.stringify(initAppData));
 }
@@ -75,7 +75,14 @@ const AppDataProvider = props => {
   const refreshApp = () => {
     initAppData = JSON.parse(localStorage.getItem('appData'));
     auth = initAppData.auth;
-    updateApp({ users: initAppData.users, responses: initAppData.responses, wallets: initAppData.wallets, accounts: initAppData.accounts, auth: auth });
+    updateApp({ 
+      users: initAppData.users, 
+      responses: initAppData.responses, 
+      wallets: initAppData.wallets, 
+      accounts: initAppData.accounts, 
+      success: initAppData.success,
+      auth: auth 
+    });
     if (auth === undefined) {
       // If there is no Auth setting, remove authentication in the SDK and demo app
       auth = { handle: false, key: false };
@@ -107,9 +114,7 @@ const AppDataProvider = props => {
   const setAppData = (options, callback) => {
     initAppData = JSON.parse(localStorage.getItem('appData'));
     for (let key in options) {
-      if (initAppData.hasOwnProperty(key)) {
-        initAppData[key] = options[key];
-      }
+      if (initAppData.hasOwnProperty(key)) initAppData[key] = options[key];
     }
     localStorage.setItem('appData', JSON.stringify(initAppData));
     refreshApp();

@@ -187,7 +187,7 @@ const Transact = ({ page }) => {
   return (
     <Container fluid className="main-content-container d-flex flex-column flex-grow-1 loaded">
 
-      <div className="d-flex mb-2">
+      <div className="d-flex mb-4">
         <h1 className="mb-4">Transactions</h1>
         {userAccounts.length !== 0 && <Form.Group className="d-flex select align-items-center ml-auto w-50">
           <Form.Label className="mr-4 mb-0 font-weight-bold" htmlFor="account">Account:</Form.Label>
@@ -197,9 +197,7 @@ const Transact = ({ page }) => {
 
       <p className="text-meta mb-4">This page represents <a href="https://docs.silamoney.com/#get_sila_balance" target="_blank" rel="noopener noreferrer">/get_sila_balance</a>, <a href="https://docs.silamoney.com/#issue_sila" target="_blank" rel="noopener noreferrer">/issue_sila</a>, <a href="https://docs.silamoney.com/#redeem_sila" target="_blank" rel="noopener noreferrer">/redeem_sila</a>, <a href="https://docs.silamoney.com/#transfer_sila" target="_blank" rel="noopener noreferrer">/transfer_sila</a>, and <a href="https://docs.silamoney.com/#get_transactions" target="_blank" rel="noopener noreferrer">/get_transactions</a>  functionality.</p>
 
-      {userAccounts.length === 0 && <Alert variant="warning" className="mb-4">An an active account is required to initiate a transaction.  <NavLink to="/accounts" className="text-reset text-underline">Link an account</NavLink></Alert>}
-
-      <div className="d-flex mb-2">
+      <div className="d-flex mb-4">
         <h2>Wallet Balance</h2>
         <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none" onClick={refreshBalance}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
       </div>
@@ -228,12 +226,14 @@ const Transact = ({ page }) => {
         </Card>
       </CardGroup>
 
-      <div className="d-flex mb-2">
+      <div className="d-flex mb-4">
         <h2>Transactions</h2>
-        <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none" onClick={() => refreshTransactions(true)}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
+        {app.accounts.length !== 0 && <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none" onClick={() => refreshTransactions(true)}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>}
       </div>
 
-      <div className="transactions position-relative mb-4">
+      {userAccounts.length === 0 && <Alert variant="warning" className="mb-4">An active account is required to initiate a transaction.  <NavLink to="/accounts" className="text-reset text-underline">Link an account</NavLink></Alert>}
+
+      {app.accounts.length !== 0 && <div className="transactions position-relative mb-4">
         {!app.transactions && <Loader overlay />}
         <Table bordered responsive>
           <thead>
@@ -257,8 +257,7 @@ const Transact = ({ page }) => {
               : <tr><td colSpan="4"><em>No transactions found</em></td></tr>}
           </tbody>
         </Table>
-      </div>
-
+      </div>}
 
       {app.accounts.length !== 0 && <Tab.Container defaultActiveKey="issue">
         <Card>
