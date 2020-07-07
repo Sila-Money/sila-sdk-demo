@@ -94,7 +94,7 @@
 }
 
 .step-title {
-    font-size: 1.125rem;
+    font-size: 0.9375rem;
     color: $body-color;
     letter-spacing: 0.03em;
     margin-top: 2rem;
@@ -128,6 +128,12 @@
 @include media-breakpoint-up(sm) {
     .stepper {
         height: $stepper-height;
+    }
+}
+
+@include media-breakpoint-up(lg) {
+    .step-title {
+        font-size: 1.125rem;
     }
 }
 

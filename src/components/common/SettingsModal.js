@@ -24,17 +24,17 @@ const SettingsModal = () => {
       handleHide();
     }
     setValidated(true);
-  }
+  };
 
   const handleHide = () => {
     updateApp({ manageSettings: false });
     resetForm();
-  }
+  };
 
   const resetForm = () => {
     setErrors({});
     setValidated(false);
-  }
+  };
 
   return (
     <Modal centered

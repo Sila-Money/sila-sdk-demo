@@ -17,7 +17,7 @@ const AlertMessage = ({ message, style, noIcon, noHide }) => {
       hideTimer = setTimeout(() => updateApp({ alert: {} }), 300);
     }
     return () => clearTimeout(showTimer, hideTimer);
-  }, [show, updateApp, noHide]);
+  }, [show]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Fade in={show}>

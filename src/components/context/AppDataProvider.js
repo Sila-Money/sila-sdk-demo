@@ -103,11 +103,12 @@ const AppDataProvider = props => {
     initAppData = JSON.parse(localStorage.getItem('appData'));
     initAppData.auth = { handle, key };
     localStorage.setItem('appData', JSON.stringify(initAppData));
-    updateApp({ 
-      activeUser: { ...app.activeUser, private_key: key },
-      responses: [ ...initAppData.responses, { alert: true, message: 'Applciation authentication updateed', style: 'success' }]
+    setAppData({
+      responses: [ ...initAppData.responses, { alert: true, message: 'Application authentication updateed', style: 'success' }]
+    }, () => {
+      updateApp({  activeUser: app.activeUser ? { ...app.activeUser, private_key: key } : false });
+      refreshApp();
     });
-    refreshApp();
   }
 
   const setAppData = (options, callback) => {
