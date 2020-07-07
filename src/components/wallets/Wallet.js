@@ -1,26 +1,24 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Form, InputGroup, Button } from 'react-bootstrap';
 
-import useDebounce from '../../utils/hooks/useDebounce';
-
 import { useAppContext } from '../context/AppDataProvider';
 
-const Wallet = ({ wallets, data, onHandleChange, onCreate, onUpdate, onEdit, onDelete, index }) => {
+const Wallet = ({ data, onHandleChange, onCreate, onUpdate, onEdit, onDelete, index }) => {
   const { app } = useAppContext();
-  const [nickname, setNickname] = useState('');
-  const debouncedNickname = useDebounce(nickname, 500);
   const nicknameRef = useRef(null);
 
-  const handleChange = (e, index) => {
-    onHandleChange(e, index);
-    setNickname(e.target.value);
+  const handleKeypress = (e) => {
+    if (nicknameRef.current.value && e.key === 'Enter') nicknameRef.current.blur();
   };
 
-  useEffect(() => {
-    const wallet = wallets.find(w => w.nickname === debouncedNickname);
-    if (wallet && debouncedNickname) wallet.isNew ? onCreate(wallet) : onUpdate(wallet);
-  }, [debouncedNickname]); // eslint-disable-line react-hooks/exhaustive-deps
+  const handleBlur = () => {
+    if (nicknameRef.current.value && data.isNew) {
+      onCreate(data);
+    } else if (nicknameRef.current.value && !data.isNew) {
+      onUpdate(data);
+    }
+  };
 
   useEffect(() => {
     if (data.isNew) nicknameRef.current.focus();
@@ -34,7 +32,9 @@ const Wallet = ({ wallets, data, onHandleChange, onCreate, onUpdate, onEdit, onD
             ref={nicknameRef}
             aria-label="Wallet Name"
             name="nickname"
-            onChange={(e) => handleChange(e, index)}
+            onChange={(e) => onHandleChange(e, index)}
+            onBlur={(e) => handleBlur(e)}
+            onKeyPress={handleKeypress}
             placeholder={`${data.nickname ? data.nickname : data.private_key === app.activeUser.private_key ? 'My Wallet' : (data.editing || data.isNew) ? 'Wallet Name' : 'My First Wallet'}${data.default || (!data.default && data.private_key === app.activeUser.private_key) ? ' (Default)' : ''}`}
             readOnly={(!data.editing && !data.isNew)}
           />
@@ -50,10 +50,6 @@ const Wallet = ({ wallets, data, onHandleChange, onCreate, onUpdate, onEdit, onD
 };
 
 Wallet.propTypes = {
-  /**
-   * Wallets array
-   */
-  wallets: PropTypes.array.isRequired,
   /**
    * Wallet data
    */

@@ -24,7 +24,7 @@ const NavbarUsers = () => {
       success: [],
       users: app.users.map(({ active, ...u }) => u)
     }, () => {
-      updateApp({ activeUser: false, success: [] });
+      updateApp({ activeUser: false, kyc: null, success: [] });
       history.push('/check_handle');
     });
   }

@@ -5,7 +5,7 @@ export const appContext = createContext(null);
 
 // Initialize app data
 const appData = { 
-  auth: {},
+  auth: false,
   users: [],
   wallets: [],
   accounts: [],
@@ -42,8 +42,7 @@ const appState = {
 
 // Set the API Auth credentials in the SDK and update the environment in the SDK
 let auth = initAppData.auth;
-if (auth === undefined || auth === {})
-  auth = { handle: false, key: false };
+if (!auth) auth = { handle: false, key: false };
 Sila.configure(auth);
 Sila.setEnvironment('prod');
 Sila.enableSandbox();

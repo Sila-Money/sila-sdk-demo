@@ -9,9 +9,9 @@ const ResetModal = () => {
   const history = useHistory();
 
   const handleReset = () => {
-    updateApp({ manageReset: false });
     resetApp(); 
     history.push('/check_handle');
+    updateApp({ manageReset: false, manageSettings: true });
   }
 
   return (

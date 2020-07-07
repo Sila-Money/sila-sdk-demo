@@ -184,7 +184,7 @@ const Wallets = ({ page }) => {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <Container fluid className="main-content-container d-flex flex-column flex-grow-1 loaded">
+    <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page}`}>
 
       <h1 className="mb-4">Digital Wallets</h1>
 
@@ -194,7 +194,7 @@ const Wallets = ({ page }) => {
 
       <Form noValidate autoComplete="off" className="position-relative mt-4">
         {!loaded && <Loader overlay />}
-        {loaded && wallets.map((wallet, index) => <Wallet key={index} wallets={wallets} data={wallet} onHandleChange={handleChange} onCreate={registerWallet} onUpdate={updateWallet} onEdit={editWallet} onDelete={removeWallet} index={index} />)}
+        {wallets.map((wallet, index) => <Wallet key={index} data={wallet} onHandleChange={handleChange} onCreate={registerWallet} onUpdate={updateWallet} onEdit={editWallet} onDelete={removeWallet} index={index} />)}
       </Form>
 
       <div className="d-flex mt-40">

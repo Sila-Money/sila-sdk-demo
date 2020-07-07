@@ -61,13 +61,15 @@ const Accounts = ({ page }) => {
       let result = {};
       console.log('  ... completed!');
       if (res.statusCode === 200) {
-        console.log(res);
         result.alert = { message: 'Bank account successfully linked!', style: 'success' };
         getAccounts();
         if (plaidToken) setPlaidToken(false);
       } else if (res.statusCode === 202 && res.data.message.includes('microdeposit_pending_automatic_verification')) {
         setPlaidToken({ token });
         setTimeout(() => open, 500);
+      } else if (res.statusCode === 202 && res.data.message.includes('microdeposit_pending_manual_verification')) {
+        result.alert = { message: 'Bank account requires manual verificaiton!', style: 'danger' };
+        getAccounts();
       } else {
         result.alert = { message: res.data.message, style: 'danger' };
       }
@@ -124,7 +126,7 @@ const Accounts = ({ page }) => {
   }, [userAccounts]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <Container fluid className="main-content-container d-flex flex-column flex-grow-1 loaded">
+    <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page}`}>
 
       <h1 className="mb-4">Link a Bank Account</h1>
 

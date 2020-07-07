@@ -29,7 +29,7 @@
 .main-content {
   position: relative;
   @include animation(fadein, 0.5s, forwards);
-  @include media-breakpoint-up(md) {
+  @include media-breakpoint-up(sm) {
     min-height: calc(100vh - #{$main-navbar-height} - #{$stepper-height});
     margin-top: $stepper-height;
   }

@@ -75,7 +75,7 @@ const RequestKYC = ({ page }) => {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <Container fluid className="main-content-container d-flex flex-column flex-grow-1 loaded">
+    <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page}`}>
 
       <h1 className="mb-4">
         Request Non-documentary {/* {app.kycType[0].toUpperCase() + app.kycType.slice(1)} */} KYC
@@ -87,7 +87,7 @@ const RequestKYC = ({ page }) => {
 
       <p className="text-meta">This page represents <a href="https://docs.silamoney.com/#request_kyc" target="_blank" rel="noopener noreferrer">/request_kyc</a> and <a href="https://docs.silamoney.com/#check_kyc" target="_blank" rel="noopener noreferrer">/check_kyc</a> functionality.</p>
 
-      <p className="mt-40 mb-40"><Button className="float-right" onClick={requestKyc} disabled={app.success.includes(page)}>Request KYC</Button></p>
+      <p className="mt-40 mb-40"><Button className="float-right" onClick={requestKyc} disabled={app.success.includes(page) || app.kyc}>Request KYC</Button></p>
 
       <div className="d-flex mb-3">
         <h2>KYC Review Status</h2>

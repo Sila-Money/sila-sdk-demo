@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import { Col, Button, Collapse } from 'react-bootstrap';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import SimpleBar from 'simplebar-react';
+import stickybits from 'stickybits';
 
 import { useAppContext } from '../context/AppDataProvider';
 
@@ -72,14 +72,18 @@ const MainSidebar = () => {
   const { app, setAppData } = useAppContext();
   const classes = classNames(
     'main-sidebar',
-    'p-4',
     'col-12',
     'd-none',
     'd-md-flex',
-    'flex-column'
+    'flex-column',
+    'overflow-auto'
   );
 
   const clearResponses = () => setAppData({ responses: [] });
+
+  useEffect(() => {
+    stickybits('.main-sidebar .response-header', { useStickyClasses: true });
+  }, []);
 
   return (
     <Col
@@ -88,16 +92,16 @@ const MainSidebar = () => {
       lg={{ span: 4 }}
       md={{ span: 4 }}
     >
-      <div className="d-flex justify-content-between align-items-top mb-4">
+      <div className="response-header d-flex justify-content-between align-items-top p-4">
         <h1 className="m-0">Response</h1>
         {app.responses.length !== 0 && <Button variant="link" className="p-0" onClick={clearResponses}>Clear</Button>}
       </div>
-      <SimpleBar className="response-container" style={{ height: 0 }}>
+      <div className="response-results pb-4 px-4">
         {app.responses.length ?
-          <ul className="responses">
+          <ul>
             {app.responses.map((el, i) => app.responses[app.responses.length - i - 1]).map((response, index) => <Response response={response} index={index} key={index} />)}
           </ul> : app.auth.handle ? <p>Submit a request to see the response.</p> : <AlertMessage noHide message="App Credentials are required before using this app." />}
-      </SimpleBar>
+      </div>
     </Col>
   );
 }

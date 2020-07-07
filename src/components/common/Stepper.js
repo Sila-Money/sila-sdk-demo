@@ -36,7 +36,7 @@ const Stepper = ({ className, items }) => {
   const activeItem = items.find(item => item.path === location.pathname);
   return (
     <Col
-      className="stepper p-0"
+      className="stepper border-bottom border-light p-0"
       lg={{ span: 8 }}
       md={{ span: 8 }}
       sm={12}>

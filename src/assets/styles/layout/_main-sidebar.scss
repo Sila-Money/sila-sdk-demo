@@ -3,10 +3,22 @@
 .main-sidebar {
   background: $main-sidebar-background;
 
-  .responses {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  .response-header {
+    background: $main-sidebar-background;
+    position: sticky;
+    top: 0;
+    left: 0;
+    z-index: 2;
+  }
+
+  .response-results {
+    position: relative;
+    z-index: 1;
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
   }
 
   .response {
@@ -17,22 +29,21 @@
 
     .endpoint {
       cursor: pointer;
-    }
-
-    &::before {
-      content: "\f13a";
-      @include fas-icon;
-      color: $gray-medium;
-      font-weight: bold;
-      display: block;
-      width: 1em;
-      margin-left: -1.5rem;
-      float: left;
-      margin-top: 4px;
+      &::before {
+        content: "\f13a";
+        @include fas-icon;
+        color: $gray-medium;
+        font-weight: bold;
+        display: block;
+        width: 1em;
+        margin-left: -1.5rem;
+        float: left;
+        margin-top: 4px;
+      }
     }
 
     &.open {
-      &::before {
+      .endpoint::before {
         content: "\f139";
         color: $primary;
       }
@@ -58,10 +69,6 @@
     right: 0;
     position: fixed;
     z-index: 2;
-    min-height: calc(100vh - #{$main-navbar-height} - 1px);
-
-    .response-container {
-      min-height: calc(100vh - #{$main-navbar-height} - 6rem);
-    }
+    height: calc(100vh - #{$main-navbar-height} - 1px);
   }
 }

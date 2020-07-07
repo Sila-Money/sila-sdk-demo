@@ -8,7 +8,7 @@ const Register = ({ page }) => {
   // const [show, setShow] = useState(false);
 
   return (
-    <Container fluid className="main-content-container d-flex flex-column flex-grow-1 loaded">
+    <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page}`}>
 
       {/* {!show && <SelectKYC page={page} onNext={() => setShow(true)} />}
       {show && <RegisterForm page={page} onPrevious={() => setShow(false)} />} */}

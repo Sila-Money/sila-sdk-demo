@@ -1,0 +1,21 @@
+// Transaction view
+
+.transact {
+  @include media-breakpoint-up(sm) {
+    .balance {
+      margin-left: -1px;
+    }
+  }
+
+  @include media-breakpoint-up(md) {
+    input[name="transfer"] {
+      border-top-right-radius: 0 !important;
+      border-bottom-right-radius: 0 !important;
+    }
+
+    input[name="destination"] {
+      border-top-left-radius: 0 !important;
+      border-bottom-left-radius: 0 !important;
+    }
+  }
+}

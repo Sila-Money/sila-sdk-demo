@@ -29,7 +29,9 @@ const App = () => {
   }, [history]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    updateApp({ loaded: true });
+    const appData = { loaded: true };
+    if (!app.auth) appData.manageSettings = true;
+    updateApp({ ...appData });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (

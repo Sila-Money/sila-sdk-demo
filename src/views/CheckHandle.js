@@ -58,7 +58,7 @@ const CheckHandle = ({ page }) => {
   }
 
   return (
-    <Container fluid className="main-content-container d-flex flex-column flex-grow-1 loaded">
+    <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page}`}>
 
       <h1 className="mb-4">Check user handle</h1>
 

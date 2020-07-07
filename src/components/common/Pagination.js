@@ -18,8 +18,8 @@ const Pagination = ({ className, previous, next, hidePrevious, hideNext, previou
   const nextDisabled = !next && !nextOnClick;
   return (
     <div className={classes}>
-      {hidePrevious ? <span></span> : <Button as={previous ? NavLink : undefined} variant="link" className={`p-0 text-lg ${previousDisabled ? 'disabled' : ''}`} onClick={previousOnClick || undefined} to={previous ? { pathname: previous, state: { from: currentPage } } : undefined}><FontAwesomeIcon icon={faArrowLeft} /> Back</Button>}
-      {hideNext ? <span></span> : <Button as={next ? NavLink : undefined} variant="link" className={`p-0 text-lg ${nextDisabled ? 'disabled' : ''}`} onClick={nextOnClick || undefined} to={next ? { pathname: next, state: { from: currentPage } } : undefined}>Continue <FontAwesomeIcon icon={faArrowRight} /></Button>}
+      {hidePrevious ? <span></span> : <Button as={previous ? NavLink : undefined} variant="link" className={`p-0 text-lg ${previousDisabled ? 'disabled' : ''}`} onClick={previousOnClick || undefined} to={previous ? { pathname: previous, state: { from: currentPage } } : undefined}><FontAwesomeIcon icon={faArrowLeft} className="mr-2" /> Back</Button>}
+      {hideNext ? <span></span> : <Button as={next ? NavLink : undefined} variant="link" className={`p-0 text-lg ${nextDisabled ? 'disabled' : ''}`} onClick={nextOnClick || undefined} to={next ? { pathname: next, state: { from: currentPage } } : undefined}>Continue <FontAwesomeIcon icon={faArrowRight} className="ml-2" /></Button>}
     </div>
   );
 };

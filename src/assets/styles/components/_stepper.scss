@@ -10,7 +10,6 @@
 
 .step {
     position: relative;
-    padding: 2rem 1.375rem 0 1.375rem;
     flex-grow: 1;
     flex-shrink: 0;
 
@@ -98,6 +97,7 @@
     font-size: 1.125rem;
     color: $body-color;
     letter-spacing: 0.03em;
+    margin-top: 2rem;
 
     a.step:hover & {
         color: $primary;
@@ -125,23 +125,13 @@
     right: 50%;
 }
 
-@include media-breakpoint-up(md) {
+@include media-breakpoint-up(sm) {
     .stepper {
         height: $stepper-height;
     }
 }
 
-@include media-breakpoint-down(lg) {
-    .step {
-        padding: 2rem 0.75rem;
-    }
-
-    .step-title {
-        font-size: 0.75rem;
-    }
-}
-
-@include media-breakpoint-down(lg) {
+@include media-breakpoint-down(md) {
     .stepper-menu {
 
         .dropdown-toggle,
