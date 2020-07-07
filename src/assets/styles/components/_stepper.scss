@@ -94,7 +94,7 @@
 }
 
 .step-title {
-    font-size: 0.9375rem;
+    font-size: 1.125rem;
     color: $body-color;
     letter-spacing: 0.03em;
     margin-top: 2rem;
@@ -131,9 +131,9 @@
     }
 }
 
-@include media-breakpoint-up(lg) {
+@include media-breakpoint-down(lg) {
     .step-title {
-        font-size: 1.125rem;
+        font-size: 0.9375rem;
     }
 }
 
