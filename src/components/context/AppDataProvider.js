@@ -95,7 +95,7 @@ const AppDataProvider = props => {
   const resetApp = () => {
     localStorage.setItem('appData', JSON.stringify(appData));
     refreshApp();
-    updateApp({ private_key: null, kyc: null, transactions: false, activeUser: false, users: [], wallets: [], accounts: [], responses: [{ alert: true, message: 'Applciation data cleared', style: 'success', loaded: true }] });
+    updateApp({ private_key: null, kyc: null, transactions: false, activeUser: false, users: [], wallets: [], accounts: [], responses: [{ alert: true, message: 'Application data cleared', style: 'success', loaded: true }] });
   }
 
   const setAuth = (handle, key) => {
@@ -104,7 +104,7 @@ const AppDataProvider = props => {
     initAppData.auth = { handle, key };
     localStorage.setItem('appData', JSON.stringify(initAppData));
     setAppData({
-      responses: [ ...initAppData.responses, { alert: true, message: 'Application authentication updateed', style: 'success' }]
+      responses: [ ...initAppData.responses, { alert: true, message: 'Application authentication updated', style: 'success' }]
     }, () => {
       updateApp({  activeUser: app.activeUser ? { ...app.activeUser, private_key: key } : false });
       refreshApp();

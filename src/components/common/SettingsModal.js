@@ -49,7 +49,7 @@ const SettingsModal = () => {
         <Modal.Body>
 
           <h4 className="mb-2">Enter App Credentials</h4>
-          <p className="text-meta mb-4">Get your App crednetials from the <a href="https://console.silamoney.com/" target="_blank" rel="noopener noreferrer">Sila Console</a>.</p>
+          <p className="text-meta mb-4">Get your App credentials from the <a href="https://console.silamoney.com/" target="_blank" rel="noopener noreferrer">Sila Console</a>.</p>
 
           <Form.Group className="mb-3">
             <Form.Label htmlFor="auth_handle">App Handle</Form.Label>
