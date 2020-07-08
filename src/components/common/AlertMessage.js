@@ -11,13 +11,15 @@ const AlertMessage = ({ message, style, noIcon, noHide }) => {
 
   useEffect(() => {
     let showTimer, hideTimer;
-    if (!noHide && show) {
-      showTimer = setTimeout(() => setShow(false), 10000);
+    if (show) {
+      if (!noHide) {
+        showTimer = setTimeout(() => setShow(false), 10000);
+      }
     } else {
       hideTimer = setTimeout(() => updateApp({ alert: {} }), 300);
     }
     return () => clearTimeout(showTimer, hideTimer);
-  }, [show]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [show]);
 
   return (
     <Fade in={show}>

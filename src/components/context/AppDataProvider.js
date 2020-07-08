@@ -32,7 +32,7 @@ const appState = {
   handle: '',
   transactions: false,
   kycType: 'default',
-  kyc: {},
+  kyc: null,
   alert: {},
   loaded: false,
   manageLinkAccount: false,
