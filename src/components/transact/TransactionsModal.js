@@ -19,7 +19,7 @@ const TransactionsModal = ({ show, onHide, transactions, onRefresh, formatNumber
       <Modal.Body className="transactions position-relative">
         <p className="text-right mb-2"><Button variant="link" className="p-0 ml-auto text-reset text-decoration-none" onClick={onRefresh}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button></p>
         {!transactions && <Loader overlay />}
-        <Table bordered responsive>
+        <Table style={{ marginRight: '1px' }} bordered responsive>
           <thead>
             <tr>
               <th className="text-lg">Type</th>
@@ -29,7 +29,7 @@ const TransactionsModal = ({ show, onHide, transactions, onRefresh, formatNumber
             </tr>
           </thead>
           <tbody>
-            {transactions.length && transactions.map((transaction, index) => <tr key={index}>
+            {transactions && transactions.length > 0 && transactions.map((transaction, index) => <tr key={index}>
               <td>{transaction.transaction_type}</td>
               <td><i className="sila-icon sila-icon-sila"></i> {formatNumber(transaction.sila_amount)}</td>
               <td className={transaction.status === 'success' ? 'text-success' : transaction.status === 'pending' ? 'text-warning' : transaction.status === 'failed' ? 'text-danger' : 'text-primary'}>{transaction.status}</td>

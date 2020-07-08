@@ -17,8 +17,8 @@ const RequestKYC = ({ page }) => {
       console.log('  ... completed!');
       if (res.data.status === 'SUCCESS') {
         result = { 
-          kyc: { message: 'Submitted for review', style: 'primary' }, 
-          alert: { message: 'Submitted for KYC Review', style: 'primary' },
+          kyc: { message: 'Submitted for review', style: 'wait' }, 
+          alert: { message: 'Submitted for KYC Review', style: 'wait' }
         };
       } else {
         result.kyc = { message: res.data.message, style: 'danger' };

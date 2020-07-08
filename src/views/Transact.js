@@ -188,14 +188,14 @@ const Transact = ({ page }) => {
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page}`}>
 
       <div className="d-flex mb-4">
-        <h1 className="mb-4">Transactions</h1>
+        <h1 className="mb-0">Transactions</h1>
         {userAccounts.length !== 0 && <Form.Group className="d-flex select align-items-center ml-auto w-50">
           <Form.Label className="mr-4 mb-0 font-weight-bold" htmlFor="account">Account:</Form.Label>
           <SelectMenu fullWidth id="account" size="sm" onChange={handleAccount} options={userAccounts.map((account, index) => ({ label: account.account_name, value: index }))} />
         </Form.Group>}
       </div>
 
-      <p className="text-meta mb-4">This page represents <a href="https://docs.silamoney.com/#get_sila_balance" target="_blank" rel="noopener noreferrer">/get_sila_balance</a>, <a href="https://docs.silamoney.com/#issue_sila" target="_blank" rel="noopener noreferrer">/issue_sila</a>, <a href="https://docs.silamoney.com/#redeem_sila" target="_blank" rel="noopener noreferrer">/redeem_sila</a>, <a href="https://docs.silamoney.com/#transfer_sila" target="_blank" rel="noopener noreferrer">/transfer_sila</a>, and <a href="https://docs.silamoney.com/#get_transactions" target="_blank" rel="noopener noreferrer">/get_transactions</a>  functionality.</p>
+      <p className="text-meta mb-40">This page represents <a href="https://docs.silamoney.com/#get_sila_balance" target="_blank" rel="noopener noreferrer">/get_sila_balance</a>, <a href="https://docs.silamoney.com/#issue_sila" target="_blank" rel="noopener noreferrer">/issue_sila</a>, <a href="https://docs.silamoney.com/#redeem_sila" target="_blank" rel="noopener noreferrer">/redeem_sila</a>, <a href="https://docs.silamoney.com/#transfer_sila" target="_blank" rel="noopener noreferrer">/transfer_sila</a>, and <a href="https://docs.silamoney.com/#get_transactions" target="_blank" rel="noopener noreferrer">/get_transactions</a>  functionality.</p>
 
       <div className="d-flex mb-4">
         <h2 className="mb-0">Wallet Balance</h2>
@@ -209,7 +209,7 @@ const Transact = ({ page }) => {
               <Form.Label className="m-0" htmlFor="wallet"><h3 className="m-0 text-white">Wallet</h3></Form.Label>
             </Card.Header>
             <Card.Body className="p-0">
-              <SelectMenu fullWidth id="wallet" className="border-top-0 rounded-top-0 rounded-br-0 border-light py-3" onChange={handleWallet} options={userWallets.map((wallet, index) => ({ label: `${wallet.nickname ? wallet.nickname : wallet.private_key === app.activeUser.private_key ? 'My Wallet' : (wallet.editing || wallet.isNew) ? 'Wallet Name' : 'My First Wallet'}${wallet.default ? ' (Default)' : ''}`, value: index }))} />
+              <SelectMenu fullWidth id="wallet" className="border-top-0 rounded-top-0 rounded-br-0 border-light py-3" onChange={handleWallet} options={userWallets.map((wallet, index) => ({ label: `${wallet.nickname ? wallet.nickname : userWallets.length === 1 && wallet.private_key === app.activeUser.private_key ? 'My Wallet' : (wallet.editing || wallet.isNew) ? 'Wallet Name' : 'Generated Wallet'}${wallet.default ? ' (Default)' : ''}`, value: index }))} />
             </Card.Body>
           </Form.Group>
         </Card>

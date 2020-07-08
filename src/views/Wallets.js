@@ -194,7 +194,7 @@ const Wallets = ({ page }) => {
 
       <Form noValidate autoComplete="off" className="position-relative mt-4">
         {!loaded && <Loader overlay />}
-        {wallets.map((wallet, index) => <Wallet key={index} data={wallet} onHandleChange={handleChange} onCreate={registerWallet} onUpdate={updateWallet} onEdit={editWallet} onDelete={removeWallet} index={index} />)}
+        {wallets.map((wallet, index) => <Wallet key={index} wallets={wallets} data={wallet} onHandleChange={handleChange} onCreate={registerWallet} onUpdate={updateWallet} onEdit={editWallet} onDelete={removeWallet} index={index} />)}
       </Form>
 
       <div className="d-flex mt-40">

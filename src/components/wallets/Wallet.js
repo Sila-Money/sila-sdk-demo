@@ -4,7 +4,7 @@ import { Form, InputGroup, Button } from 'react-bootstrap';
 
 import { useAppContext } from '../context/AppDataProvider';
 
-const Wallet = ({ data, onHandleChange, onCreate, onUpdate, onEdit, onDelete, index }) => {
+const Wallet = ({ wallets, data, onHandleChange, onCreate, onUpdate, onEdit, onDelete, index }) => {
   const { app } = useAppContext();
   const nicknameRef = useRef(null);
 
@@ -35,7 +35,7 @@ const Wallet = ({ data, onHandleChange, onCreate, onUpdate, onEdit, onDelete, in
             onChange={(e) => onHandleChange(e, index)}
             onBlur={(e) => handleBlur(e)}
             onKeyPress={handleKeypress}
-            placeholder={`${data.nickname ? data.nickname : data.private_key === app.activeUser.private_key ? 'My Wallet' : (data.editing || data.isNew) ? 'Wallet Name' : 'My First Wallet'}${data.default || (!data.default && data.private_key === app.activeUser.private_key) ? ' (Default)' : ''}`}
+            placeholder={`${data.nickname ? data.nickname : wallets.length === 1 && data.private_key === app.activeUser.private_key ? 'My Wallet' : (data.editing || data.isNew) ? 'Wallet Name' : 'Generated Wallet'}${data.default ? ' (Default)' : ''}`}
             readOnly={(!data.editing && !data.isNew)}
           />
           <InputGroup.Append>
@@ -50,6 +50,10 @@ const Wallet = ({ data, onHandleChange, onCreate, onUpdate, onEdit, onDelete, in
 };
 
 Wallet.propTypes = {
+  /**
+   * Wallets array
+   */
+  wallets: PropTypes.array.isRequired,
   /**
    * Wallet data
    */
