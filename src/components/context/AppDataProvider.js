@@ -17,7 +17,7 @@ const appData = {
 let initAppData = JSON.parse(localStorage.getItem('appData'));
 if (!initAppData) {
   initAppData = appData;
-  localStorage.setItem('auth', JSON.stringify(initAppData));
+  localStorage.setItem('appData', JSON.stringify(initAppData));
 }
 
 // Initialize app state
