@@ -356,7 +356,7 @@ const Transact = ({ page }) => {
 
       {app.alert.message && <div className="mt-4"><AlertMessage message={app.alert.message} type={app.alert.type} /></div>}
 
-      <Pagination
+      <Pagination hideNext
         previous="/accounts"
         currentPage={page} />
 
