@@ -118,6 +118,17 @@
   color: $gray-light;
 }
 
+// Numbers
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
 // Select
 select.form-control option[value=""] {
   color: $gray-light;

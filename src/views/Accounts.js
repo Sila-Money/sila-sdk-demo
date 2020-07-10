@@ -36,7 +36,7 @@ const Accounts = ({ page }) => {
       if (res.statusCode === 200) {
         newAccounts = res.data.map(acc => ({ ...acc, handle: app.activeUser.handle }));
       } else {
-        result.alert = { message: res.data.message, style: 'danger' };
+        result.alert = { message: res.data.message, type: 'danger' };
       }
       setAppData({
         accounts: [...app.accounts.filter(acc => acc.handle !== app.activeUser.handle), ...newAccounts],
@@ -61,17 +61,17 @@ const Accounts = ({ page }) => {
       let result = {};
       console.log('  ... completed!');
       if (res.statusCode === 200) {
-        result.alert = { message: 'Bank account successfully linked!', style: 'success' };
+        result.alert = { message: 'Bank account successfully linked!', type: 'success' };
         getAccounts();
         if (plaidToken) setPlaidToken(false);
       } else if (res.statusCode === 202 && res.data.message.includes('microdeposit_pending_automatic_verification')) {
         setPlaidToken({ token });
         setTimeout(() => open, 500);
       } else if (res.statusCode === 202 && res.data.message.includes('microdeposit_pending_manual_verification')) {
-        result.alert = { message: 'Bank account requires manual verificaiton!', style: 'danger' };
+        result.alert = { message: 'Bank account requires manual verificaiton!', type: 'danger' };
         getAccounts();
       } else {
-        result.alert = { message: res.data.message, style: 'danger' };
+        result.alert = { message: res.data.message, type: 'danger' };
       }
       setAppData({
         responses: [...app.responses, {
@@ -94,10 +94,10 @@ const Accounts = ({ page }) => {
       let result = {};
       console.log('  ... completed!');
       if (res.statusCode === 200) {
-        result.alert = { message: 'Token retrieved!', style: 'success' };
+        result.alert = { message: 'Token retrieved!', type: 'success' };
         setPlaidToken({ token: res.data.public_token, account_name: account_name });
       } else {
-        result.alert = { message: res.data.message, style: 'danger' };
+        result.alert = { message: res.data.message, type: 'danger' };
       }
       setAppData({
         responses: [...app.responses, {
@@ -114,7 +114,7 @@ const Accounts = ({ page }) => {
   }
 
   useEffect(() => {
-    if (error) updateApp({ alert: { message: error, style: 'danger' }});
+    if (error) updateApp({ alert: { message: error, type: 'danger' }});
   }, [error]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -175,7 +175,7 @@ const Accounts = ({ page }) => {
       </div>
 
       <div className="d-flex mb-4">
-        {app.alert.message && <AlertMessage message={app.alert.message} style={app.alert.style} />}
+        {app.alert.message && <AlertMessage message={app.alert.message} type={app.alert.type} />}
         <div className="ml-auto">
           {!plaidToken && <Button className=" mr-4" onClick={() => updateApp({ manageLinkAccount: true })}>Enter Account/Routing</Button>}
           <Button onClick={() => open()} disabled={!ready}>{plaidToken && plaidToken.account_name ? 'Launch microdeposit verification in Plaid' : 'Connect via Plaid'}</Button>
@@ -185,7 +185,6 @@ const Accounts = ({ page }) => {
       <p className="text-right"><Button variant="link" className="text-reset font-italic p-0 text-decoration-none" href="http://plaid.com/docs/#testing-auth" target="_blank" rel="noopener noreferrer"><span className="lnk">How do I login to Plaid?</span> <i className="sila-icon sila-icon-info text-primary ml-2"></i></Button></p>
 
       <Pagination
-        className="mt-auto pt-4"
         previous="/wallets"
         next={app.success.includes(page) ? '/transact' : undefined}
         currentPage={page} />

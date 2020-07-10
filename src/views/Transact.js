@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, CardGroup, Card, Form, Button, Row, Col, InputGroup, Tab, Nav, Alert } from 'react-bootstrap';
+import { Container, CardGroup, Card, Form, Button, Row, Col, InputGroup, Tab, Nav, Alert, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 
 import { useAppContext } from '../components/context/AppDataProvider';
@@ -7,6 +7,7 @@ import { useAppContext } from '../components/context/AppDataProvider';
 import ConfirmModal from '../components/common/ConfirmModal';
 import SelectMenu from '../components/common/SelectMenu';
 import AlertMessage from '../components/common/AlertMessage';
+import Pagination from '../components/common/Pagination';
 import TransactionsModal from '../components/transact/TransactionsModal';
 
 const defaultForms = {
@@ -49,9 +50,9 @@ const Transact = ({ page }) => {
       console.log('  ... completed!');
       if (res.statusCode === 200) {
         setBalance(res.data.silaBalance);
-        result.alert = { message: res.data.message, style: 'success' }
+        result.alert = { message: res.data.message, type: 'success' }
       } else {
-        result.alert = { message: res.data.message, style: 'danger' }
+        result.alert = { message: res.data.message, type: 'danger' }
       }
       setAppData({
         success: res.statusCode === 200 && !app.success.includes(page) ? [...app.success, page] : app.success.filter(p => p !== page),
@@ -75,10 +76,10 @@ const Transact = ({ page }) => {
       let result = {};
       console.log('  ... completed!');
       if (res.data.status === 'SUCCESS') {
-        result.alert = { message: 'Sila successfully issued!', style: 'success' };
+        result.alert = { message: res.data.message, type: 'wait' };
         refreshTransactions();
       } else {
-        result.alert = { message: res.data.message, style: 'success' };
+        result.alert = { message: res.data.message, type: 'danger' };
       }
       setAppData({
         responses: [...app.responses, {
@@ -101,10 +102,10 @@ const Transact = ({ page }) => {
       let result = {};
       console.log('  ... completed!');
       if (res.data.status === 'SUCCESS') {
-        result.alert = { message: 'Sila successfully redeemed!', style: 'success' };
+        result.alert = { message: res.data.message, type: 'wait' };
         refreshTransactions();
       } else {
-        result.alert = { message: res.data.message, style: 'success' };
+        result.alert = { message: res.data.message, type: 'danger' };
       }
       setAppData({
         responses: [...app.responses, {
@@ -127,10 +128,10 @@ const Transact = ({ page }) => {
       let result = {};
       console.log('  ... completed!');
       if (res.data.status === 'SUCCESS') {
-        result.alert = { message: 'Sila successfully transferred!', style: 'success' };
+        result.alert = { message: res.data.message, type: 'wait' };
         refreshTransactions();
       } else {
-        result.alert = { message: res.data.message, style: 'danger' };
+        result.alert = { message: res.data.message, type: 'danger' };
       }
       setAppData({
         responses: [...app.responses, {
@@ -156,7 +157,7 @@ const Transact = ({ page }) => {
       if (res.data.success) {
         result.transactions = res.data.transactions;
       } else {
-        result.alert = { message: res.data.message, style: 'danger' };
+        result.alert = { message: res.data.message, type: 'danger' };
       }
       if (showResponse) {
         setAppData({
@@ -188,38 +189,46 @@ const Transact = ({ page }) => {
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page}`}>
 
       <div className="d-flex mb-4">
-        <h1 className="mb-0">Transactions</h1>
+        <h1 className="mb-0">Transact</h1>
         {userAccounts.length !== 0 && <Form.Group className="d-flex select align-items-center ml-auto w-50">
           <Form.Label className="mr-4 mb-0 font-weight-bold" htmlFor="account">Account:</Form.Label>
           <SelectMenu fullWidth id="account" size="sm" onChange={handleAccount} options={userAccounts.map((account, index) => ({ label: account.account_name, value: index }))} />
         </Form.Group>}
       </div>
 
+      {userAccounts.length === 0 && <Alert variant="warning" className="mb-4">An active account is required to initiate a transaction.  <NavLink to="/accounts" className="text-reset text-underline">Link an account</NavLink></Alert>}
+
       <p className="text-meta mb-40">This page represents <a href="https://docs.silamoney.com/#get_sila_balance" target="_blank" rel="noopener noreferrer">/get_sila_balance</a>, <a href="https://docs.silamoney.com/#issue_sila" target="_blank" rel="noopener noreferrer">/issue_sila</a>, <a href="https://docs.silamoney.com/#redeem_sila" target="_blank" rel="noopener noreferrer">/redeem_sila</a>, <a href="https://docs.silamoney.com/#transfer_sila" target="_blank" rel="noopener noreferrer">/transfer_sila</a>, and <a href="https://docs.silamoney.com/#get_transactions" target="_blank" rel="noopener noreferrer">/get_transactions</a>  functionality.</p>
 
       <div className="d-flex mb-4">
         <h2 className="mb-0">Wallet Balance</h2>
-        <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none" onClick={refreshBalance}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
+        <OverlayTrigger
+          placement="right"
+          delay={{ show: 250, hide: 400 }}
+          overlay={(props) => <Tooltip id="balance-tooltip" className="ml-2" {...props}>Gets Sila balance</Tooltip>}
+        >
+          <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none" onClick={refreshBalance}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
+        </OverlayTrigger>
       </div>
 
       <CardGroup className="mb-4">
-        <Card className="border-0">
-          <Form.Group className="select">
-            <Card.Header className="bg-primary p-3">
-              <Form.Label className="m-0" htmlFor="wallet"><h3 className="m-0 text-white">Wallet</h3></Form.Label>
+        <Card>
+          <Form.Group className="select mb-0">
+            <Card.Header className="bg-secondary p-3">
+              <Form.Label className="m-0" htmlFor="wallet"><h3 className="m-0">Wallet</h3></Form.Label>
             </Card.Header>
             <Card.Body className="p-0">
-              <SelectMenu fullWidth id="wallet" className="border-top-0 rounded-top-0 rounded-br-0 border-light py-3" onChange={handleWallet} options={userWallets.map((wallet, index) => ({ label: `${wallet.nickname ? wallet.nickname : userWallets.length === 1 && wallet.private_key === app.activeUser.private_key ? 'My Wallet' : (wallet.editing || wallet.isNew) ? 'Wallet Name' : 'Generated Wallet'}${wallet.default ? ' (Default)' : ''}`, value: index }))} />
+              <SelectMenu fullWidth id="wallet" className="border-0 py-3" onChange={handleWallet} options={userWallets.map((wallet, index) => ({ label: `${wallet.nickname ? wallet.nickname : (wallet.editing || wallet.isNew) ? 'Wallet Name' : 'Generated Wallet'}${wallet.default ? ' (Default)' : ''}`, value: index }))} />
             </Card.Body>
           </Form.Group>
         </Card>
 
-        <Card className="border-0">
-          <Form.Group>
-            <Card.Header className="bg-primary p-3">
-              <Form.Label className="m-0" htmlFor="balance"><h3 className="m-0 text-white">Amount of Sila</h3></Form.Label>
+        <Card>
+          <Form.Group className="mb-0">
+            <Card.Header className="bg-secondary p-3">
+              <Form.Label className="m-0" htmlFor="balance"><h3 className="m-0">Amount of Sila</h3></Form.Label>
             </Card.Header>
-            <Card.Body className="form-control balance p-3 border-top-0 rounded-top-0 rounded-bl-0 border-bottom border-right border-light">
+            <Card.Body className="form-control balance p-3 border-0">
               {balance}
             </Card.Body>
           </Form.Group>
@@ -227,8 +236,6 @@ const Transact = ({ page }) => {
       </CardGroup>
 
       {userAccounts.length !== 0 && <h2 className="mb-4">Transactions</h2>}
-
-      {userAccounts.length === 0 && <Alert variant="warning" className="mb-4">An active account is required to initiate a transaction.  <NavLink to="/accounts" className="text-reset text-underline">Link an account</NavLink></Alert>}
 
       {userAccounts.length !== 0 && <Tab.Container defaultActiveKey="issue">
         <Card>
@@ -258,13 +265,13 @@ const Transact = ({ page }) => {
                   } else {
                     setConfirm({
                       show: true,
-                      message: `Please confirm that you would like to convert $${formatNumber(amount / 100)} USD fom your primary linked account to ${formatNumber(amount)} Sila in your linked wallet.`,
+                      message: `Please confirm that you would like to convert $${formatNumber(amount / 100)} USD from ${account.account_name} ending in ${account.account_number} to ${formatNumber(amount)} Sila in ${wallet.nickname}.`,
                       onSuccess: () => {
                         issueSila(amount);
                         setConfirm({ show: false });
+                        setForms(defaultForms);
                       }
                     });
-                    setForms(defaultForms);
                   }
                 }}>
                   <InputGroup>
@@ -288,13 +295,13 @@ const Transact = ({ page }) => {
                   } else {
                     setConfirm({
                       show: true,
-                      message: `Please confirm that you would like to transfer ${formatNumber(amount)} Sila from your linked wallet to ${destination}.`,
+                      message: `Please confirm that you would like to transfer ${formatNumber(amount)} Sila from ${wallet.nickname} to ${destination}.`,
                       onSuccess: () => {
                         transferSila(amount, destination);
                         setConfirm({ show: false });
+                        setForms(defaultForms);
                       }
                     });
-                    setForms(defaultForms);
                   }
                 }}>
                   <Row className="w-100" noGutters>
@@ -323,13 +330,13 @@ const Transact = ({ page }) => {
                   } else {
                     setConfirm({
                       show: true,
-                      message: `Please confirm that you would like to convert ${formatNumber(amount)} Sila from your linked wallet to $${formatNumber(amount / 100)} USD in your primary linked account.`,
+                      message: `Please confirm that you would like to convert ${formatNumber(amount)} Sila from ${wallet.nickname} to $${formatNumber(amount / 100)} USD in ${account.account_name} ending in ${account.account_number}.`,
                       onSuccess: () => {
                         redeemSila(amount);
                         setConfirm({ show: false });
+                        setForms(defaultForms);
                       }
                     });
-                    setForms(defaultForms);
                   }
                 }}>
                   <InputGroup>
@@ -347,7 +354,11 @@ const Transact = ({ page }) => {
         </Card>
       </Tab.Container>}
 
-      {app.alert.message && <div className="mt-4"><AlertMessage message={app.alert.message} style={app.alert.style} /></div>}
+      {app.alert.message && <div className="mt-4"><AlertMessage message={app.alert.message} type={app.alert.type} /></div>}
+
+      <Pagination
+        previous="/accounts"
+        currentPage={page} />
 
       <ConfirmModal show={confirm.show} message={confirm.message} onHide={() => setConfirm(defaultConfirm)} onSuccess={confirm.onSuccess} />
       <TransactionsModal show={showTransactions} onHide={() => setShowTransactions(false)} transactions={app.transactions} onRefresh={() => refreshTransactions(true)} formatNumber={formatNumber} />

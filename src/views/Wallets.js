@@ -18,13 +18,15 @@ const Wallets = ({ page }) => {
     setLoaded(false);
     try {
       const res = await api.getWallets(app.activeUser.handle, app.activeUser.private_key);
-      let newWallets = [];
+      let newWallets = wallets;
       let result = {};
       console.log('  ... completed!');
       if (res.data.success) {
-        newWallets = res.data.wallets.filter(wallet => app.wallets.find(savedWallet => savedWallet.blockchain_address === wallet.blockchain_address)).map(wallet => ({ ...app.wallets.find(savedWallet => savedWallet.blockchain_address === wallet.blockchain_address), ...wallet }));
+        newWallets = res.data.wallets
+          .filter(wallet => app.wallets.find(savedWallet => savedWallet.blockchain_address === wallet.blockchain_address))
+          .map(wallet => ({ ...wallet, ...app.wallets.find(savedWallet => savedWallet.blockchain_address === wallet.blockchain_address) }));
       } else {
-        result.alert = { message: res.data.message, style: 'danger' };
+        result.alert = { message: res.data.message, type: 'danger' };
       }
       setAppData({
         wallets: [...app.wallets.filter(wallet => wallet.handle !== app.activeUser.handle), ...newWallets],
@@ -54,10 +56,10 @@ const Wallets = ({ page }) => {
       console.log('  ... completed!');
       if (res.data.success) {
         newWallet = { ...wallet, ...res.data.wallet };
-        result.alert = { message: 'Wallet saved!', style: 'success' };
+        result.alert = { message: 'Wallet saved!', type: 'success' };
         if (newWallet.default || wallets.length === 1) result.activeUser = { ...app.activeUser, private_key: newWallet.private_key, cryptoAddress: newWallet.blockchain_address }
       } else {
-        result.alert = { message: res.data.message, style: 'danger' };
+        result.alert = { message: res.data.message, type: 'danger' };
       }
       delete newWallet.editing;
       setAppData({
@@ -93,9 +95,9 @@ const Wallets = ({ page }) => {
       let result = {};
       console.log('  ... completed!');
       if (res.data.success) {
-        result.alert = { message: 'Wallet saved!', style: 'success' };
+        result.alert = { message: 'Wallet saved!', type: 'success' };
       } else {
-        result.alert = { message: res.data.message, style: 'danger' };
+        result.alert = { message: res.data.message, type: 'danger' };
       }
       delete wallet.isNew;
       setAppData({
@@ -122,9 +124,9 @@ const Wallets = ({ page }) => {
       console.log('  ... completed!');
       if (res.data.success) {
         newWallets = app.wallets.filter(w => w.blockchain_address !== wallet.blockchain_address);
-        result.alert = { message: 'Wallet deleted!', style: 'success' };
+        result.alert = { message: 'Wallet deleted!', type: 'success' };
       } else {
-        result.alert = { message: res.data.message, style: 'danger' };
+        result.alert = { message: res.data.message, type: 'danger' };
       }
       setAppData({
         wallets: newWallets,
@@ -198,12 +200,11 @@ const Wallets = ({ page }) => {
       </Form>
 
       <div className="d-flex mt-40">
-        {app.alert.message && <AlertMessage message={app.alert.message} style={app.alert.style} />}
-        <Button variant="link" className="ml-auto p-0" onClick={addWallet}>Add Wallet +</Button>
+        {app.alert.message && <AlertMessage message={app.alert.message} type={app.alert.type} />}
+        <Button variant="secondary" size="sm" onClick={addWallet} className="ml-auto">Add Wallet <i className="fas fa-plus-circle ml-2"></i></Button>
       </div>
 
       <Pagination
-        className="mt-auto pt-4"
         previous="/request_kyc"
         next={app.success.includes(page) ? '/accounts' : undefined}
         currentPage={page} />

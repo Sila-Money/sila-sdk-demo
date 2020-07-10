@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Col, Button } from 'react-bootstrap';
+import { Form, Col, Button, Alert } from 'react-bootstrap';
 
 import { useAppContext } from '../context/AppDataProvider';
 
@@ -18,7 +18,6 @@ const RegisterForm = ({ page, onPrevious }) => {
 
   const register = async (e) => {
     console.log('\n*** BEGIN REGISTER USER ***');
-    updateApp({ response: 'Getting response from the Sila API ...', loaded: false });
     e.preventDefault();
     const wallet = api.generateWallet();
     console.log('Waking up the API service ...');
@@ -48,7 +47,7 @@ const RegisterForm = ({ page, onPrevious }) => {
         user.active = true;
         result = {
           activeUser: user,
-          alert: { message: `Success! ${app.handle} is now registered.`, style: 'success' }
+          alert: { message: `Success! ${app.handle} is now registered.`, type: 'success' }
         };
         appData = {
           users: [...app.users.map(({ active, ...u }) => u), user],
@@ -56,7 +55,8 @@ const RegisterForm = ({ page, onPrevious }) => {
             handle: user.handle,
             blockchain_address: wallet.address,
             private_key: wallet.privateKey,
-            nickname: 'Default Wallet'
+            nickname: 'My Wallet',
+            default: true
           }]
         };
         if (Object.keys(errors).length) setErrors({});
@@ -73,7 +73,7 @@ const RegisterForm = ({ page, onPrevious }) => {
           result: JSON.stringify(res, null, '\t')
         }]
       }, () => {
-        updateApp({ ...result, loaded: true });
+        updateApp({ ...result });
       });
     } catch (err) {
       console.log('  ... looks like we ran into an issue!');
@@ -91,6 +91,8 @@ const RegisterForm = ({ page, onPrevious }) => {
       </h1>
 
       <p className="mb-4 text-meta text-lg">We need to gather some information to see if you meet KYC guidelines.</p>
+
+      <Alert variant="info" className="mb-4">A wallet is automatically generated for you upon registration.</Alert>
 
       <div className="d-flex mb-40">
         <p className="text-meta mb-0">This page represents <a href="https://docs.silamoney.com/#register" target="_blank" rel="noopener noreferrer">/register</a> functionality.</p>
@@ -212,14 +214,13 @@ const RegisterForm = ({ page, onPrevious }) => {
         </Form.Row>
 
         <div className="d-flex mt-40">
-          {app.alert.message && <AlertMessage message={app.alert.message} style={app.alert.style} />}
+          {app.alert.message && <AlertMessage message={app.alert.message} type={app.alert.type} />}
           <Button type="submit" className="ml-auto" disabled={!app.handle || app.activeUser.handle === app.handle}>Register user</Button>
         </div>
 
       </Form>
 
       <Pagination
-        className="mt-auto pt-4"
         previous="/check_handle"
         // previousOnClick={onPrevious}
         next={success ? '/request_kyc' : undefined}

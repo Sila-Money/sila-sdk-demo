@@ -21,13 +21,15 @@ const CheckHandle = ({ page }) => {
       let result = {};
       console.log('  ... completed!');
       if (res.data.status === 'SUCCESS') {
-        result.alert = { message: 'Success! Handle available.', style: 'success' };
+        result.alert = { message: `Success! ${res.data.message}`, type: 'success' };
         setSuccess(true);
         resetForm();
       } else {
-        const errorMessage = res.data.validation_details ? res.data.validation_details.header.user_handle : 'Error! Handle is taken.';
-        result.alert = { message: errorMessage, style: 'danger' };
-        setError(errorMessage);
+        if (res.data.validation_details) {
+          setError(res.data.validation_details.header.user_handle);
+        } else {
+          result.alert = { message: `Error! ${res.data.message}`, type: 'danger' };
+        }
         setSuccess(false);
       }
       setAppData({
@@ -69,23 +71,23 @@ const CheckHandle = ({ page }) => {
       <Form noValidate validated={validated} autoComplete="off" onSubmit={checkHandle}>
         <Form.Group controlId="formGroupHandle">
           <Form.Control
-            placeholder="handle"
+            placeholder="Handle"
             aria-label="handle"
             defaultValue={app.handle}
             onChange={handleChange}
             name="handle"
             isInvalid={error}
           />
+          {error && <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>}
         </Form.Group>
 
         <div className="d-flex mt-40">
-          {app.alert.message && <AlertMessage message={app.alert.message} style={app.alert.style} />}
+          {app.alert.message && <AlertMessage message={app.alert.message} type={app.alert.type} />}
           <Button type="submit" className="ml-auto" disabled={!app.handle || !app.auth.handle}>Check handle</Button>
         </div>
       </Form>
 
       <Pagination hidePrevious
-        className="mt-auto pt-4"
         next={app.handle && success ? '/register' : undefined}
         currentPage={page} />
 

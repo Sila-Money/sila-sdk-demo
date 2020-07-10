@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import { Container, Button } from 'react-bootstrap';
+import { Container, Button, OverlayTrigger, Tooltip, Alert } from 'react-bootstrap';
+import { NavLink } from 'react-router-dom';
 
 import { useAppContext } from '../components/context/AppDataProvider';
 
@@ -16,12 +17,12 @@ const RequestKYC = ({ page }) => {
       let result = {};
       console.log('  ... completed!');
       if (res.data.status === 'SUCCESS') {
-        result = { 
-          kyc: { message: 'Submitted for review', style: 'wait' }, 
-          alert: { message: 'Submitted for KYC Review', style: 'wait' }
+        result = {
+          kyc: { message: 'Submitted for review', type: 'wait' },
+          alert: { message: 'Submitted for KYC Review', type: 'wait' }
         };
       } else {
-        result.kyc = { message: res.data.message, style: 'danger' };
+        result.kyc = { message: res.data.message, type: 'danger' };
       }
       setAppData({
         success: app.success.filter(p => p !== page),
@@ -45,14 +46,14 @@ const RequestKYC = ({ page }) => {
       let result = {};
       console.log('  ... completed!');
       if (res.data.status === 'SUCCESS') {
-        result = { 
-          kyc: { message: 'Passed ID verification', style: 'success' }, 
-          alert: { message: `Success! ${app.activeUser.handle} has passsed ID verifcation!`, style: 'success' }
+        result = {
+          kyc: { message: 'Passed ID verification', type: 'success' },
+          alert: { message: `Success! ${app.activeUser.handle} has passsed ID verifcation!`, type: 'success' }
         };
       } else {
-        result = { 
-          kyc: !res.data.message.includes('requested') ? { message: 'Pending ID verification', style: 'primary' } : {}, 
-          alert: res.data.message.includes('requested') ? { message: res.data.message, style: 'danger' } : { message: `${app.activeUser.handle} is still pending ID verification.`, style: 'wait' }
+        result = {
+          kyc: !res.data.message.includes('requested') ? { message: 'Pending ID verification', type: 'primary' } : null,
+          alert: res.data.message.includes('requested') ? { message: res.data.message, type: 'danger' } : { message: `${app.activeUser.handle} is still pending ID verification.`, type: 'wait' }
         };
       }
       setAppData({
@@ -71,7 +72,7 @@ const RequestKYC = ({ page }) => {
   }
 
   useEffect(() => {
-    if (app.success.includes(page)) updateApp({ kyc: { message: 'Passed ID verification', style: 'success' } });
+    if (app.success.includes(page)) updateApp({ kyc: { message: 'Passed ID verification', type: 'success' } });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
@@ -89,21 +90,28 @@ const RequestKYC = ({ page }) => {
 
       <p className="mt-40 mb-40"><Button className="float-right" onClick={requestKyc} disabled={app.success.includes(page) || app.kyc}>Request KYC</Button></p>
 
+      {app.kyc && (app.kyc.type === 'primary' || app.kyc.type === 'wait') && <Alert variant="info" className="mb-4 loaded">While you wait for the KYC review to process, go ahead and <NavLink to="/accounts" className="text-reset text-underline">Link an account</NavLink></Alert>}
+
       <div className="d-flex mb-3">
         <h2>KYC Review Status</h2>
-        <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none" onClick={checkKyc}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
+        {!app.success.includes(page) && <OverlayTrigger
+          placement="right"
+          delay={{ show: 250, hide: 400 }}
+          overlay={(props) => <Tooltip id="kyc-tooltip" className="ml-2" {...props}>Checks KYC</Tooltip>}
+        >
+          <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none loaded" onClick={checkKyc}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
+        </OverlayTrigger>}
       </div>
 
       <div className="status form-control d-flex">
         <span className={`user${!app.activeUser ? ' text-meta' : ''}`}>{app.activeUser ? app.activeUser.handle : 'User'}</span>
-        <em className={`message ml-auto${app.kyc && Object.keys(app.kyc).length ? ` text-${app.kyc.style}` : ''}`}>{app.kyc && Object.keys(app.kyc).length ? app.kyc.message : 'Status'}</em>
+        <em className={`message ml-auto${app.kyc && Object.keys(app.kyc).length ? ` text-${app.kyc.type}` : ''}`}>{app.kyc && Object.keys(app.kyc).length ? app.kyc.message : 'Status'}</em>
       </div>
 
-      {app.alert.message && <div className="mt-4"><AlertMessage message={app.alert.message} style={app.alert.style} /></div>}
+      {app.alert.message && <div className="mt-4"><AlertMessage message={app.alert.message} type={app.alert.type} /></div>}
 
       <Pagination
-        className="mt-auto pt-4"
-        previous="/register"
+        previous={!app.activeUser ? '/register' : undefined}
         next={app.success.includes(page) ? '/wallets' : undefined}
         currentPage={page} />
 

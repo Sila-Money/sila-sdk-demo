@@ -20,7 +20,7 @@
     "react-scripts": "^3.4.1",
     "react-syntax-highlighter": "^12.2.1",
     "request-promise": "^4.2.5",
-    "sila-sdk": "^0.2.7-rc.0",
+    "sila-sdk": "^0.2.8-rc.0",
     "stickybits": "^3.7.7"
   },
   "scripts": {

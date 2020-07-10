@@ -29,7 +29,6 @@ const SelectKYC = ({ page, onNext }) => {
       <p className="text-right"><em>What’s the difference between the KYC levels?</em> <i className="sila-icon sila-icon-info text-primary ml-2"></i></p>
 
       <Pagination
-        className="mt-auto pt-4"
         previous={'/check_handle'}
         nextOnClick={onNext}
         currentPage={page} />

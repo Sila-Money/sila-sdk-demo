@@ -35,13 +35,13 @@ const Wallet = ({ wallets, data, onHandleChange, onCreate, onUpdate, onEdit, onD
             onChange={(e) => onHandleChange(e, index)}
             onBlur={(e) => handleBlur(e)}
             onKeyPress={handleKeypress}
-            placeholder={`${data.nickname ? data.nickname : wallets.length === 1 && data.private_key === app.activeUser.private_key ? 'My Wallet' : (data.editing || data.isNew) ? 'Wallet Name' : 'Generated Wallet'}${data.default ? ' (Default)' : ''}`}
+            placeholder={`${data.nickname ? data.nickname : (data.editing || data.isNew) ? 'Wallet Name' : 'Generated Wallet'}${data.default ? ' (Default)' : ''}`}
             readOnly={(!data.editing && !data.isNew)}
           />
           <InputGroup.Append>
-            {!data.editing && !data.isNew && (!data.default && data.private_key !== app.activeUser.private_key) && <Button variant="link" onClick={() => onUpdate({ ...data, default: true })}>Make default</Button>}
+            {!data.editing && !data.isNew && !data.default && <Button variant="link" onClick={() => onUpdate({ ...data, default: true })}>Make default</Button>}
             {(!data.editing && !data.isNew) && <Button variant="link" className="p-0 mr-3 text-decoration-none loaded" title="Edit" disabled={data.isNew || data.editing} onClick={() => { onEdit(index); nicknameRef.current.focus(); }}><i className="sila-icon sila-icon-edit text-lg"></i></Button>}
-            {data.private_key !== app.activeUser.private_key && <Button variant="link" className="p-0 mr-3 text-decoration-none loaded" title="Delete" onClick={() => onDelete(data, index)} disabled={data.default || data.editing || data.private_key === app.activeUser.private_key}><i className="sila-icon sila-icon-delete text-lg"></i></Button>}
+            {!data.default && <Button variant="link" className="p-0 mr-3 text-decoration-none loaded" title="Delete" onClick={() => onDelete(data, index)} disabled={data.default || data.editing || data.private_key === app.activeUser.private_key}><i className="sila-icon sila-icon-delete text-lg"></i></Button>}
           </InputGroup.Append>
         </InputGroup>
       </Form.Group>

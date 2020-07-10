@@ -3,10 +3,22 @@ import { Modal, Button, Form } from 'react-bootstrap';
 
 import { useAppContext } from '../context/AppDataProvider';
 
+import AlertMessage from './AlertMessage';
+
 const SettingsModal = () => {
   const [validated, setValidated] = useState(false);
   const [errors, setErrors] = useState({});
-  const { app, updateApp, setAuth } = useAppContext();
+  const { api, app, updateApp, setAuth, resetApp } = useAppContext();
+
+  const checkAuth = async () => {
+    const res = await api.checkHandle(app.handle);
+    if (res.statusCode === 200) {
+      handleHide();
+    } else {
+      setErrors({ ...errors, auth: 'App credentials are invalid!' });
+      resetApp();
+    }
+  };
 
   const handleAuth = (e) => {
     const pattern = '^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$';
@@ -21,7 +33,7 @@ const SettingsModal = () => {
     if (e.target.auth_key.value && e.target.auth_handle.value && !errors.auth_handle && !errors.auth_key && regex.test(e.target.auth_key.value)) {
       e.preventDefault();
       setAuth(e.target.auth_handle.value, e.target.auth_key.value);
-      handleHide();
+      checkAuth();
     }
     setValidated(true);
   };
@@ -77,6 +89,8 @@ const SettingsModal = () => {
             <i className="fas fa-info-circle mr-2" style={{ fontSize: '2rem', opacity: '0.1' }}></i>
             <p className="text-sm text-meta"><strong className="text-uppercase">MAKE SURE YOU SAVE YOUR PRIVATE KEY!</strong><br />Keep your private keys secure; leave them out of your source code and never store them in an unsafe place. If they are ever compromised, please immediately replace your keys using the <a href="https://console.silamoney.com/" target="_blank" rel="noopener noreferrer">Sila Console</a>.</p>
           </div>
+
+          {errors.auth && <AlertMessage noHide message={errors.auth} type="danger" />}
 
         </Modal.Body>
         <Modal.Footer>

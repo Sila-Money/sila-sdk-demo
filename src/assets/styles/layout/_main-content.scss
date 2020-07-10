@@ -28,20 +28,21 @@
 
 .main-content {
   position: relative;
+  margin-bottom: $pagination-height;
   @include animation(fadein, 0.5s, forwards);
   @include media-breakpoint-up(sm) {
-    min-height: calc(100vh - #{$main-navbar-height} - #{$stepper-height});
+    min-height: calc(100vh - #{$main-navbar-height} - #{$stepper-height} - #{$pagination-height});
     margin-top: $stepper-height;
   }
   @include media-breakpoint-down(md) {
-    min-height: calc(100vh - #{$main-navbar-height} - #{$stepper-height-mobile});
+    min-height: calc(100vh - #{$main-navbar-height} - #{$stepper-height-mobile} - #{$pagination-height});
     margin-top: $stepper-height-mobile;
   }
 }
 
 .main-content-container {
-  padding: 2rem 4.5rem 4.5rem 4.5rem;
+  padding: 4rem;
   @include media-breakpoint-down(md) {
-    padding: 1rem 2rem 2rem 2rem;
+    padding: 2rem;
   }
 }

@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 
 import { useAppContext } from '../context/AppDataProvider';
 
-const AlertMessage = ({ message, style, noIcon, noHide }) => {
+const AlertMessage = ({ message, type, noIcon, noHide }) => {
   const [show, setShow] = useState(true);
   const { updateApp } = useAppContext();
-  const icon = style === 'success' ? 'success' : style === 'danger' ? 'danger' : style === 'wait' ? 'wait' : 'info';
+  const icon = type === 'success' ? 'success' : type === 'danger' ? 'danger' : type === 'wait' ? 'wait' : 'info';
 
   useEffect(() => {
     let showTimer, hideTimer;
@@ -24,7 +24,7 @@ const AlertMessage = ({ message, style, noIcon, noHide }) => {
   return (
     <Fade in={show}>
       <p>
-        {!noIcon && <i className={`mr-2 sila-icon sila-icon-${icon} text-${style && style !== 'wait' ? style : 'primary'}`}></i>}
+        {!noIcon && <i className={`mr-2 sila-icon sila-icon-${icon} text-${type && type !== 'wait' ? type : 'primary'}`}></i>}
         <span className="message">{message}</span>
       </p>
     </Fade>
@@ -39,7 +39,7 @@ AlertMessage.propTypes = {
   /**
    * The type of alert (success, danger, wait, etc.)
    */
-  style: PropTypes.string,
+  type: PropTypes.string,
   /**
    * The visibility toggle (visible by default)
    */

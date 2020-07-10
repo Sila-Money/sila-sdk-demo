@@ -10,6 +10,11 @@ const LinkAccountModal = ({ onSuccess }) => {
   const linkAccount = (e) => {
     console.log('Linking account ...');
     e.preventDefault();
+    console.log(      app.activeUser.handle,
+      app.activeUser.private_key,
+      e.target.routingNumber.value,
+      e.target.accountNumber.value,
+      e.target.accountName.value);
     api.linkAccountDirect(
       app.activeUser.handle,
       app.activeUser.private_key,
@@ -20,7 +25,7 @@ const LinkAccountModal = ({ onSuccess }) => {
         console.log('  ... completed!');
         if (res.data.success) {
           result = {
-            alert: { message: 'Bank account successfully linked!', style: 'success' },
+            alert: { message: 'Bank account successfully linked!', type: 'success' },
             manageLinkAccount: false
           }
           if (Object.keys(errors).length) setErrors({});
@@ -63,6 +68,7 @@ const LinkAccountModal = ({ onSuccess }) => {
               placeholder="123456789"
               aria-label="Routing Number"
               name="routingNumber"
+              maxLength="9"
             />
             {errors.routing_number && <Form.Control.Feedback type="invalid">{errors.routing_number}</Form.Control.Feedback>}
           </Form.Group>
@@ -74,6 +80,7 @@ const LinkAccountModal = ({ onSuccess }) => {
               placeholder="123456789012"
               aria-label="Account Number"
               name="accountNumber"
+              maxLength="12"
             />
             {errors.account_number && <Form.Control.Feedback type="invalid">{errors.account_number}</Form.Control.Feedback>}
           </Form.Group>
