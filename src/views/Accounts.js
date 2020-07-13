@@ -155,7 +155,7 @@ const Accounts = ({ page }) => {
                   <td>{acc.account_name}</td>
                   <td>{acc.account_type}</td>
                   <td className="text-center">
-                    {(acc.account_link_status === 'instantly_verified' || acc.account_link_status === 'microdeposit_manually_verified') && <span className="text-success">Active</span>}
+                    {(acc.account_link_status === 'instantly_verified' || acc.account_link_status === 'microdeposit_manually_verified' || acc.account_link_status === 'unverified_manual_input') && <span className="text-success">Active</span>}
                     {acc.account_link_status === 'microdeposit_pending_automatic_verification' && <span className="text-danger">Failed</span>}
                     {plaidToken && acc.account_name === plaidToken.account_name && <span className="text-primary font-italic">Currently verifying...</span>}
                     {!plaidToken && acc.account_link_status === 'microdeposit_pending_manual_verification' && <Button size="sm" variant="secondary" disabled={plaidToken} onClick={() => plaidSamedayAuth(acc.account_name)}>Manually Approve</Button>}
