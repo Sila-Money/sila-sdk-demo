@@ -189,7 +189,7 @@ const Accounts = ({ page }) => {
         next={app.success.includes(page) ? '/transact' : undefined}
         currentPage={page} />
 
-      <LinkAccountModal onSuccess={getAccounts} />
+      <LinkAccountModal show={app.manageLinkAccount} onSuccess={getAccounts} />
 
     </Container>
   );

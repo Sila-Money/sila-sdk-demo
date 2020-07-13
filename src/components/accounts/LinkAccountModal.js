@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { useAppContext } from '../context/AppDataProvider';
 
-const LinkAccountModal = ({ onSuccess }) => {
+const LinkAccountModal = ({ show, onSuccess }) => {
   const [validated, setValidated] = useState(false);
   const [errors, setErrors] = useState({});
   const { app, updateApp, setAppData, api, handleError } = useAppContext();
@@ -10,20 +10,16 @@ const LinkAccountModal = ({ onSuccess }) => {
   const linkAccount = (e) => {
     console.log('Linking account ...');
     e.preventDefault();
-    console.log(      app.activeUser.handle,
-      app.activeUser.private_key,
-      e.target.routingNumber.value,
-      e.target.accountNumber.value,
-      e.target.accountName.value);
     api.linkAccountDirect(
       app.activeUser.handle,
       app.activeUser.private_key,
-      e.target.routingNumber.value,
       e.target.accountNumber.value,
+      e.target.routingNumber.value,
       e.target.accountName.value).then(res => {
         let result = {};
         console.log('  ... completed!');
-        if (res.data.success) {
+        console.log(res);
+        if (res.statusCode === 200) {
           result = {
             alert: { message: 'Bank account successfully linked!', type: 'success' },
             manageLinkAccount: false
@@ -51,10 +47,10 @@ const LinkAccountModal = ({ onSuccess }) => {
 
   return (
     <Modal centered
-      show={app.manageLinkAccount}
+      show={show}
       size="lg"
       aria-labelledby="link-account-modal-title"
-      onHide={() => { updateApp({ manageLinkAccount: false }); setErrors({}); setValidated(false); }}>
+      onHide={() => { setErrors({}); setValidated(false); updateApp({ manageLinkAccount: false }); }}>
       <Modal.Header className="text-center" closeButton>
         <Modal.Title id="link-account-modal-title">Add your banking details</Modal.Title>
       </Modal.Header>
