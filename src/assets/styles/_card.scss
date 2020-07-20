@@ -1,0 +1,28 @@
+// Card adjustments
+
+// Header font size
+.card-header {
+  font-size: 1rem;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: $card-headings-font-weight;
+  }
+
+  h2 {
+    @include media-breakpoint-down(sm) {
+      font-size: $font-size-lg;
+    }
+  }
+}
+
+
+// Body padding adjustments
+.card-body {
+  padding-left: 1.875rem;
+  padding-right: 1.875rem;
+}

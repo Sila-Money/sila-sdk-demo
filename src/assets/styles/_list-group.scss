@@ -1,0 +1,4 @@
+// List Group Adjustments
+
+// List group accent color variation
+@include list-group-item-variant($primary, theme-color-level($primary, -9), theme-color-level($primary, 6));

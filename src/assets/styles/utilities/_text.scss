@@ -1,0 +1,49 @@
+// Text utilities adjustments
+
+// Light text adjustments
+.text-light {
+  color: $text-light-color !important;
+}
+
+// Semibold text
+.text-semibold {
+  font-weight: $text-semibold-font-weight !important;
+}
+
+// Tiny text
+.text-tiny {
+  font-size: $font-size-tiny !important;
+}
+
+// Small text
+.text-sm {
+  font-size: $font-size-sm !important;
+}
+
+// Large text
+.text-lg {
+  font-size: $font-size-lg !important;
+}
+
+// Larger text
+.text-lgr {
+  font-size: 1.25rem !important;
+}
+
+// Meta text
+.text-meta {
+  color: $gray-medium !important;
+}
+
+// Underline text
+.text-underline {
+  text-decoration: underline !important;
+}
+
+// Meta link
+.text-meta-link {
+  color: $text-light-color !important;
+  &:hover {
+    color: $text-light-color !important;
+  }
+}

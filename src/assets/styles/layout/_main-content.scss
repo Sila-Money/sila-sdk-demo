@@ -1,0 +1,48 @@
+// Stepper
+
+.main {
+  position: relative;
+  @include media-breakpoint-down(sm) {
+    z-index: 1;
+  }
+  .main-navbar {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    width: 100%;
+    background: $white;
+    margin-right: -1px;
+  }
+}
+
+
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+  .main .main-navbar.js-is-sticky, .main .main-navbar.js-is-stuck {
+    position: fixed !important;
+    height: 4rem;
+    .container-fluid & {
+      width: 75%;
+    }
+  }
+}
+
+.main-content {
+  position: relative;
+  margin-bottom: $pagination-height;
+  @include animation(fadein, 0.5s, forwards);
+  @include media-breakpoint-up(sm) {
+    min-height: calc(100vh - #{$main-navbar-height} - #{$stepper-height} - #{$pagination-height});
+    margin-top: $stepper-height;
+  }
+  @include media-breakpoint-down(md) {
+    min-height: calc(100vh - #{$main-navbar-height} - #{$stepper-height-mobile} - #{$pagination-height});
+    margin-top: $stepper-height-mobile;
+  }
+}
+
+.main-content-container {
+  padding: 4rem;
+  @include media-breakpoint-down(md) {
+    padding: 2rem;
+  }
+}

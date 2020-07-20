@@ -1,0 +1,86 @@
+// Mixins
+
+/**
+ * @param {object} $params
+ *
+ * @example
+ *     @include transition(translateY(20px));
+ */
+@mixin transition($params) {
+  -webkit-transition: $params;
+  transition: $params;
+}
+
+/**
+ * @param {object} $params
+ *
+ * @example
+ *     @include transform(translateY(20px));
+ */
+@mixin transform($params) {
+  -ms-transform: $params;
+  -webkit-transform: $params;
+  transform: $params;
+}
+
+/**
+ * @param {method} $anim
+ * @param {number} $duation
+ * @param {method} $fill
+ * @param {number} $delay
+ *
+ * @example
+ *     @include animation(fadeout, 1s, forwards, 2.5s);
+ */
+@mixin animation($anim, $duration: null, $fill: null, $delay: null) {
+  @if ($anim and $duration) {
+    -webkit-animation: $anim $duration;
+    animation: $anim $duration;
+  }
+
+  @else {
+    -webkit-animation: $anim;
+    animation: $anim;
+  }
+
+  @if ($fill !=null) {
+    -webkit-animation-fill-mode: $fill;
+    animation-fill-mode: $fill;
+  }
+
+  @if ($delay !=null) {
+    -webkit-animation-delay: 2s;
+    /* Chrome, Safari, Opera */
+    animation-delay: 2s;
+  }
+}
+
+/**
+ * @param {number} $deg (0)
+ *
+ * @example
+ *     @include rotate(180);
+ *
+ */
+@mixin rotate($deg: 0) {
+  -ms-transform: rotate($deg + deg);
+  -webkit-transform: rotate($deg + deg);
+  transform: rotate($deg + deg);
+}
+
+/**
+ * @example
+ *     @include fas-icon;
+ *
+ */
+ @mixin fas-icon() {
+  font-family: Font Awesome\ 5 Free;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-weight: 900;
+}

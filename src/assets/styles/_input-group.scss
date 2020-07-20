@@ -1,0 +1,142 @@
+// Input groups adjustments
+
+.input-group {
+
+  >.form-control,
+  >.custom-select,
+  >.custom-file {
+
+    +.form-control,
+    +.custom-select,
+    +.custom-file {
+      margin-left: -$input-border-width;
+    }
+  }
+
+  // Custom file inputs have more complex markup, thus requiring different
+  // border-radius overrides.
+  >.custom-file {
+
+    &:not(:last-child) .custom-file-label,
+    &:not(:last-child) .custom-file-label::after {
+      @include border-right-radius(0);
+    }
+
+    &:not(:first-child) .custom-file-label,
+    &:not(:first-child) .custom-file-label::after {
+      @include border-left-radius(0);
+    }
+  }
+}
+
+
+// Prepend and append
+.input-group-prepend,
+.input-group-append {
+
+  .btn+.btn,
+  .btn+.input-group-text,
+  .input-group-text+.input-group-text,
+  .input-group-text+.btn {
+    margin-left: -$input-border-width;
+  }
+}
+
+.input-group-prepend {
+  margin-right: -$input-border-width;
+  border-width: $input-border-width 0 $input-border-width $input-border-width;
+  @include border-left-radius($input-border-radius);
+}
+
+.input-group-append {
+  margin-left: -$input-border-width;
+  border-width: $input-border-width $input-border-width $input-border-width 0;
+  @include border-right-radius($input-border-radius);
+}
+
+.input-group-append,
+.input-group-prepend {
+  padding: 0;
+  white-space: nowrap;
+  background: $white;
+  border-style: solid;
+  border-color: $border-color;
+  position: relative;
+  z-index: 3;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:disabled ~ .input-group-append,
+.form-control[readonly] ~ .input-group-append,
+.form-control:disabled:focus ~ .input-group-append,
+.form-control[readonly]:focus ~ .input-group-append {
+  border-color: $input-border-color-disabled;
+}
+
+.form-control:focus ~ .input-group-append,
+.form-control:focus ~ .input-group-prepend {
+  border-color: $primary;
+}
+
+.form-control:invalid ~ .input-group-append,
+.form-control:invalid ~ .input-group-prepend,
+.form-control:invalid input:focus ~ .input-group-append,
+.form-control:invalid input:focus ~ .input-group-prepend {
+  border-color: $danger;
+}
+
+// Textual addons
+.input-group-text {
+  font-size: $font-size-base;
+  font-weight: $font-weight-normal;
+  line-height: $input-line-height;
+  color: $input-group-addon-color;
+  background-color: $input-group-addon-bg;
+  border: 0;
+  @include border-radius($input-border-radius);
+}
+
+// Sizing
+.input-group>.input-group-prepend>.btn-lrg,
+.input-group>.input-group-append>.btn-lrg {
+  @extend .form-control-lg;
+}
+
+.input-group>.input-group-prepend>.btn-sm,
+.input-group>.input-group-append>.btn-sm {
+  @extend .form-control-sm;
+}
+
+
+// Prepend and append rounded corners
+//
+// These rulesets must come after the sizing ones to properly override sm and lg
+// border-radius values when extending. They're more specific than we'd like
+// with the `.input-group >` part, but compact it, we cannot override the sizing.
+.input-group>.input-group-prepend>.btn:not(.btn-circle),
+.input-group>.input-group-append:not(:last-child)>.btn:not(.btn-circle),
+.input-group>.input-group-append:last-child>.btn:not(:last-child):not(.dropdown-toggle):not(.btn-circle) {
+  @include border-right-radius($input-border-radius);
+}
+
+.input-group>.input-group-append>.btn:not(.btn-circle),
+.input-group>.input-group-prepend:not(:first-child)>.btn:not(.btn-circle),
+.input-group>.input-group-prepend:first-child>.btn:not(:first-child):not(.btn-circle) {
+  @include border-left-radius($input-border-radius);
+}
+
+.input-group>.input-group-middle>.btn:not(.btn-circle) {
+  border-left: 0;
+  border-right: 0;
+  @include border-radius(0);
+}
+
+.input-group-middle {
+  display: flex;
+}
+
+// Adjust the input group font size.
+.input-group-text {
+  color: $text-light-color;
+  font-size: $input-font-size;
+}
