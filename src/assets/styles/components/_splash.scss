@@ -1,0 +1,30 @@
+// Splash component
+// Used in: Splash and error templates.
+
+.splash {
+    &-content {
+        padding: $splash-tpl-content-padding;
+        display: flex;
+        flex-flow: column;
+        margin: auto;
+        align-items: center;
+        text-align: center;
+
+        h2 {
+            color: $splash-tpl-content-heading-color;
+            font-weight: $splash-tpl-content-heading-font-weight;
+            font-size: $splash-tpl-content-heading-font-size;
+            margin-bottom: $splash-tpl-content-heading-margin-bottom;
+        }
+
+        h3 {
+            font-weight: $splash-tpl-content-subheading-font-weight;
+            font-size: $splash-tpl-content-subheading-font-size;
+            margin-bottom: $splash-tpl-content-subheading-margin-bottom;
+        }
+
+        p {
+            color: $splash-tpl-content-paragraph-color;
+        }
+    }
+}

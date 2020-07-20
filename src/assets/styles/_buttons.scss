@@ -1,0 +1,122 @@
+// Button adjustments
+
+.btn {
+
+  // disabled
+  &.disabled,
+  &:disabled {
+    cursor: default !important;
+    background: $white !important;
+    color: $text-light-color !important;
+    i {
+      color: $gray-almost-white !important;
+    }
+    &:not(.btn-link) {
+      border-color: $gray-almost-white !important;
+    }
+  }
+
+  &:not(.disabled),
+  &:not(:disabled) {
+
+    // Primary
+    &[class*="btn-primary"] {
+      &:hover {
+        background: $primary-hover;
+        border-color: $primary-hover;
+      }
+      &:active {
+        background: $primary-active;
+        border-color: $primary-active;
+      }
+    }
+
+    // Secondary
+    &[class*="btn-secondary"] {
+      background: $border-color-light;
+      border-color: darken($border-color-light, 10%);
+      color: $gray-medium;
+      &:hover {
+        background: $gray-medium;
+        border-color: $gray-medium;
+        color: $white;
+      }
+    }
+
+    // Light outline
+    &[class*="btn-outline-light"],
+    &[class*="btn-outline-light"].active {
+      background: $white;
+      border-color: $gray-almost-white;
+      color: $text-light-color;
+      &:hover {
+        color: $text-light-color;
+        border-color: $white;
+        box-shadow: 0 1px 12px rgba($black, .12);
+      }
+      &:active {
+        border: 1px solid $gray-almost-white;
+        color: $primary;
+        box-shadow: none;
+      }
+      &.important {
+        color: $body-color;
+      }
+    }
+
+    // Secondary outline
+    &[class*="btn-outline-secondary"] {
+      color: $gray-medium;
+      &:hover {
+        color: $gray-medium;
+      }
+      &.important {
+        color: $body-color;
+      }
+    }
+
+    // Primary outline - pill
+    &[class*="btn-outline-primary"] {
+      background: $white;
+      &:hover,
+      &:active {
+        background: #FBFCFD;
+        color: $primary;
+      }
+      &.pill {
+        border-radius: 20px;
+      }
+    }
+
+    // Link
+    &[class*="btn-link"] {
+      .sila-icon {
+        color: $gray-medium;
+      }
+      &:hover,
+      &.active {
+        .sila-icon {
+          color: $primary;
+        }
+      }
+    }
+
+    // Dropdown toggle
+    &.dropdown-toggle::after {
+      margin-left: 0.5rem;
+    }
+
+    // Checkbox and radio buttons
+    &.custom-checkbox,
+    &.custom-radio {
+      .custom-control-label {
+        width: 1rem;
+        margin-left: 0.5rem;
+        &::before,
+        &::after {
+          left: 0;
+        }
+      }
+    }
+  }
+}

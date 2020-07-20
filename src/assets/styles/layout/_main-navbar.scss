@@ -1,0 +1,71 @@
+// Main navbar adjustments
+
+.main-navbar .navbar {
+  height: $main-navbar-height;
+  background: $white;
+
+  #main-logo {
+    height: 30px;
+
+    @include media-breakpoint-up(md) {
+      height: 46px;
+    }
+  }
+
+  .nav-link,
+  .btn-link {
+    display: flex;
+    font-weight: 700;
+    letter-spacing: 0.065em;
+  }
+
+  .nav-link {
+    min-width: $main-navbar-nav-link-min-width;
+    height: 100%;
+    align-items: center;
+  }
+
+  // Container
+  .container {
+    max-width: inherit;
+  }
+
+  // Navbar
+  .navbar-nav {
+    height: 100%;
+    justify-content: flex-end;
+    width: 100%;
+
+    @include media-breakpoint-down(sm) {
+      justify-content: flex-start;
+      width: auto;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      left: auto;
+      right: 0;
+      width: 100%;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+      border-top: none;
+    }
+  }
+
+  .nav-link-icon i {
+    line-height: $main-navbar-nav-link-icon-line-height;
+    font-size: 1rem;
+
+    &.fas {
+      font-size: 1.5625rem;
+    }
+  }
+
+  @include media-breakpoint-down(xs) {
+    .users {
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}

@@ -1,0 +1,57 @@
+// Modal Adjustments
+
+.modal {
+  .close {
+    font-size: 2rem;
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+  }
+
+  &-header {
+    display: block;
+    text-align: center;
+    position: relative;
+  }
+
+  &-header,
+  &-footer {
+    border: 0;
+  }
+
+  &-content {
+    border-radius: 10px;
+  }
+}
+
+.modal-content {
+  border: 0;
+  box-shadow: 0px 0px 20px rgba(51, 51, 51, 0.15);
+}
+
+.modal-backdrop {
+  background: #777;
+
+  &.show {
+    opacity: 0.2;
+  }
+}
+
+@include media-breakpoint-up(sm) {
+  .modal .close {
+    padding: 1.5rem;
+  }
+
+  .modal-header {
+    padding: 2.5rem 2.5rem 0 2.5rem;
+  }
+
+  .modal-body {
+    padding: 2.5rem;
+  }
+
+  .modal-footer {
+    padding: 0 2.5rem 2.5rem 2.5rem;
+  }
+}

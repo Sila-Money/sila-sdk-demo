@@ -10,22 +10,17 @@
     "data-store": "^3.1.0",
     "express": "^4.17.1",
     "fs": "0.0.1-security",
-    "history": "^4.10.1",
     "json-stringify-pretty-compact": "^2.0.0",
     "lodash": "^4.17.11",
-    "node-uuid": "^1.4.8",
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.0",
     "react-dom": "^16.13.1",
-    "react-plaid-link": "^2.3.0-alpha.0",
     "react-plaid-link-button": "0.0.4",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.1",
     "react-syntax-highlighter": "^12.2.1",
-    "react-transition-group": "^4.4.1",
     "request-promise": "^4.2.5",
-    "sila-sdk": "^0.2.7-rc.0",
-    "simplebar-react": "^2.2.0",
+    "sila-sdk": "^0.2.8-rc.0",
     "stickybits": "^3.7.7"
   },
   "scripts": {
@@ -44,7 +39,6 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "node-sass": "^4.14.1",
     "react-test-renderer": "^16.13.1"
   }
 }
