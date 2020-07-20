@@ -7,8 +7,7 @@ import stickybits from 'stickybits';
 import { useAppContext } from '../context/AppDataProvider';
 
 import AlertMessage from '../common/AlertMessage';
-
-import 'simplebar/dist/simplebar.min.css';
+import Loader from '../common/Loader';
 
 const syntaxTheme = {
   "code[class*=\"language-\"]": {
@@ -43,13 +42,23 @@ const syntaxTheme = {
   }
 };
 
-const Response = ({ response, index }) => {
+const Response = ({ response, index, onLoad, onLoaded }) => {
   const [open, setOpen] = useState(index === 0 ? true : false);
   const classes = classNames(
     response.alert ? 'response-alert' : 'response',
     open && 'open',
     index !== 0 && 'mt-2'
   );
+
+  useEffect(() => {
+    let timer;
+    onLoad();
+    timer = setTimeout(() => {
+      onLoaded();
+    }, 500);
+    return () => clearTimeout(timer);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <li className={classes}>
       {response.endpoint && <p onClick={() => setOpen(!open)} className="mb-1 endpoint font-weight-bold loaded">From endpoint {response.endpoint}:</p>}
@@ -69,15 +78,8 @@ const Response = ({ response, index }) => {
 };
 
 const MainSidebar = () => {
+  const [loading, setLoading] = useState(false);
   const { app, setAppData } = useAppContext();
-  const classes = classNames(
-    'main-sidebar',
-    'col-12',
-    'd-none',
-    'd-md-flex',
-    'flex-column',
-    'overflow-auto'
-  );
 
   const clearResponses = () => setAppData({ responses: [] });
 
@@ -88,10 +90,11 @@ const MainSidebar = () => {
   return (
     <Col
       as="aside"
-      className={classes}
+      className="main-sidebar col-12 d-none d-md-flex flex-column overflow-auto"
       lg={{ span: 4 }}
       md={{ span: 4 }}
     >
+      {loading && <Loader />}
       <div className="response-header d-flex justify-content-between align-items-top p-4">
         <h1 className="m-0">Response</h1>
         {app.responses.length !== 0 && <Button variant="link" className="p-0" onClick={clearResponses}>Clear</Button>}
@@ -99,7 +102,7 @@ const MainSidebar = () => {
       <div className="response-results pb-4 px-4">
         {app.responses.length ?
           <ul>
-            {app.responses.map((el, i) => app.responses[app.responses.length - i - 1]).map((response, index) => <Response response={response} index={index} key={index} />)}
+            {app.responses.map((response, index) => <Response response={response} index={index} onLoad={() => setLoading(true)} onLoaded={() => setLoading(false)} key={index} />)}
           </ul> : app.auth.handle ? <p>Submit a request to see the response.</p> : <AlertMessage noHide message="App Credentials are required before using this app." />}
       </div>
     </Col>

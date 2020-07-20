@@ -9,7 +9,6 @@ import Pagination from '../common/Pagination';
 const RegisterForm = ({ page, onPrevious }) => {
   const [validated, setValidated] = useState(false);
   const [errors, setErrors] = useState({});
-  const [success, setSuccess] = useState(false);
   const { app, api, refreshApp, handleError, updateApp, setAppData } = useAppContext();
 
   const handleChange = (e) => {
@@ -60,18 +59,16 @@ const RegisterForm = ({ page, onPrevious }) => {
           }]
         };
         if (Object.keys(errors).length) setErrors({});
-        setSuccess(true);
       } else if (res.data.validation_details) {
         setErrors(res.data.validation_details);
-        setSuccess(false);
       }
       setAppData({
         ...appData,
         success: res.data.status === 'SUCCESS' && !app.success.includes(page) ? [...app.success, page] : app.success.filter(p => p !== page),
-        responses: [...app.responses, {
+        responses: [{
           endpoint: '/register',
           result: JSON.stringify(res, null, '\t')
-        }]
+        }, ...app.responses]
       }, () => {
         updateApp({ ...result });
       });
@@ -223,7 +220,7 @@ const RegisterForm = ({ page, onPrevious }) => {
       <Pagination
         previous="/check_handle"
         // previousOnClick={onPrevious}
-        next={success ? '/request_kyc' : undefined}
+        next={(validated && !Object.keys(errors).length) ? '/request_kyc' : undefined}
         currentPage={page} />
 
     </div>

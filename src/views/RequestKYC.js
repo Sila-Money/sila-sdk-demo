@@ -26,10 +26,10 @@ const RequestKYC = ({ page }) => {
       }
       setAppData({
         success: app.success.filter(p => p !== page),
-        responses: [...app.responses, {
+        responses: [{
           endpoint: '/request_kyc',
           result: JSON.stringify(res, null, '\t')
-        }]
+        }, ...app.responses]
       }, () => {
         updateApp({ ...result });
       });
@@ -58,10 +58,10 @@ const RequestKYC = ({ page }) => {
       }
       setAppData({
         success: res.data.status === 'SUCCESS' && !app.success.includes(page) ? [...app.success, page] : app.success,
-        responses: [...app.responses, {
+        responses: [{
           endpoint: '/check_kyc',
           result: JSON.stringify(res, null, '\t')
-        }]
+        }, ...app.responses]
       }, () => {
         updateApp({ ...result });
       });
@@ -105,7 +105,7 @@ const RequestKYC = ({ page }) => {
 
       <div className="status form-control d-flex">
         <span className={`user${!app.activeUser ? ' text-meta' : ''}`}>{app.activeUser ? app.activeUser.handle : 'User'}</span>
-        <em className={`message ml-auto${app.kyc && Object.keys(app.kyc).length ? ` text-${app.kyc.type}` : ''}`}>{app.kyc && Object.keys(app.kyc).length ? app.kyc.message : 'Status'}</em>
+        <em className={`message ml-auto${app.kyc && Object.keys(app.kyc).length ? ` text-${app.kyc.type}` : ''}`}>{app.kyc && Object.keys(app.kyc).length ? app.kyc.message : ''}</em>
       </div>
 
       {app.alert.message && <div className="mt-4"><AlertMessage message={app.alert.message} type={app.alert.type} /></div>}

@@ -30,10 +30,10 @@ const Wallets = ({ page }) => {
       }
       setAppData({
         wallets: [...app.wallets.filter(wallet => wallet.handle !== app.activeUser.handle), ...newWallets],
-        responses: [...app.responses, {
+        responses: [{
           endpoint: '/get_wallets',
           result: JSON.stringify(res, null, '\t')
-        }]
+        }, ...app.responses]
       }, () => {
         updateApp({ ...result });
       });
@@ -68,10 +68,10 @@ const Wallets = ({ page }) => {
           return w.blockchain_address === newWallet.blockchain_address ? newWallet : w
         }),
         users: app.users.map(u => result.activeUser && u.handle === app.activeUser.handle ? result.activeUser : u),
-        responses: [...app.responses, {
+        responses: [{
           endpoint: '/update_wallet',
           result: JSON.stringify(res, null, '\t')
-        }]
+        }, ...app.responses]
       }, () => {
         updateApp({ ...result });
         setWallets(wallets.map(w => {
@@ -102,10 +102,10 @@ const Wallets = ({ page }) => {
       delete wallet.isNew;
       setAppData({
         wallets: [...app.wallets, { ...wallet }],
-        responses: [...app.responses, {
+        responses: [{
           endpoint: '/register_wallet',
           result: JSON.stringify(res, null, '\t')
-        }]
+        }, ...app.responses]
       }, () => {
         updateApp({ ...result });
       });
@@ -130,10 +130,10 @@ const Wallets = ({ page }) => {
       }
       setAppData({
         wallets: newWallets,
-        responses: [...app.responses, {
+        responses: [{
           endpoint: '/delete_wallet',
           result: JSON.stringify(res, null, '\t')
-        }]
+        }, ...app.responses]
       }, () => {
         updateApp({ ...result });
         setWallets(wallets.filter(w => w.blockchain_address !== wallet.blockchain_address));

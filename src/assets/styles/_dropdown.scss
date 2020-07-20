@@ -20,6 +20,10 @@
   border: 1px solid $border-color-light;
   border-radius: .375rem;
   box-shadow: $box-shadow-heavy;
+  white-space: nowrap;
+  .select-menu & {
+    min-width: 100%;
+  }
 }
 
 .dropdown-menu-small {

@@ -56,10 +56,10 @@ const Transact = ({ page }) => {
       }
       setAppData({
         success: res.statusCode === 200 && !app.success.includes(page) ? [...app.success, page] : app.success.filter(p => p !== page),
-        responses: [...app.responses, {
+        responses: [{
           endpoint: '/get_sila_balance',
           result: JSON.stringify(res, null, '\t')
-        }]
+        }, ...app.responses]
       }, () => {
         updateApp({ ...result });
       });
@@ -82,10 +82,10 @@ const Transact = ({ page }) => {
         result.alert = { message: res.data.message, type: 'danger' };
       }
       setAppData({
-        responses: [...app.responses, {
+        responses: [{
           endpoint: '/issue_sila',
           result: JSON.stringify(res, null, '\t')
-        }]
+        }, ...app.responses]
       }, () => {
         updateApp({ ...result });
       });
@@ -108,10 +108,10 @@ const Transact = ({ page }) => {
         result.alert = { message: res.data.message, type: 'danger' };
       }
       setAppData({
-        responses: [...app.responses, {
+        responses: [{
           endpoint: '/redeem_sila',
           result: JSON.stringify(res, null, '\t')
-        }]
+        }, ...app.responses]
       }, () => {
         updateApp({ ...result });
       });
@@ -134,10 +134,10 @@ const Transact = ({ page }) => {
         result.alert = { message: res.data.message, type: 'danger' };
       }
       setAppData({
-        responses: [...app.responses, {
+        responses: [{
           endpoint: '/transfer_sila',
           result: JSON.stringify(res, null, '\t')
-        }]
+        }, ...app.responses]
       }, () => {
         updateApp({ ...result });
       });
@@ -161,10 +161,10 @@ const Transact = ({ page }) => {
       }
       if (showResponse) {
         setAppData({
-          responses: [...app.responses, {
+          responses: [{
             endpoint: '/get_transactions',
             result: JSON.stringify(res, null, '\t')
-          }]
+          }, ...app.responses]
         }, () => {
           updateApp({ ...result });
         });
@@ -190,7 +190,7 @@ const Transact = ({ page }) => {
 
       <div className="d-flex mb-4">
         <h1 className="mb-0">Transact</h1>
-        {userAccounts.length !== 0 && <Form.Group className="d-flex select align-items-center ml-auto w-50">
+        {userAccounts.length !== 0 && <Form.Group className="d-flex align-items-center ml-auto w-50">
           <Form.Label className="mr-4 mb-0 font-weight-bold" htmlFor="account">Account:</Form.Label>
           <SelectMenu fullWidth id="account" size="sm" onChange={handleAccount} options={userAccounts.map((account, index) => ({ label: account.account_name, value: index }))} />
         </Form.Group>}

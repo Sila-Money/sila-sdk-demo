@@ -9,7 +9,6 @@ import Pagination from '../components/common/Pagination';
 const CheckHandle = ({ page }) => {
   const [validated, setValidated] = useState(false);
   const [error, setError] = useState(false);
-  const [success, setSuccess] = useState(false);
   const { app, api, handleError, updateApp, setAppData } = useAppContext();
 
   const checkHandle = async (e) => {
@@ -22,7 +21,6 @@ const CheckHandle = ({ page }) => {
       console.log('  ... completed!');
       if (res.data.status === 'SUCCESS') {
         result.alert = { message: `Success! ${res.data.message}`, type: 'success' };
-        setSuccess(true);
         resetForm();
       } else {
         if (res.data.validation_details) {
@@ -30,14 +28,13 @@ const CheckHandle = ({ page }) => {
         } else {
           result.alert = { message: `Error! ${res.data.message}`, type: 'danger' };
         }
-        setSuccess(false);
       }
       setAppData({
         success: res.data.status === 'SUCCESS' && !app.success.includes(page) ? [...app.success, page] : app.success.filter(p => p !== page),
-        responses: [...app.responses, {
+        responses: [{
           endpoint: '/check_handle',
           result: JSON.stringify(res, null, '\t')
-        }]
+        }, ...app.responses]
       }, () => {
         updateApp({ ...result });
       });
@@ -50,7 +47,7 @@ const CheckHandle = ({ page }) => {
 
   const handleChange = (e) => {
     updateApp({ handle: e.target.value });
-    resetForm();
+    if (error || validated) resetForm();
   }
 
   const resetForm = () => {
@@ -83,12 +80,12 @@ const CheckHandle = ({ page }) => {
 
         <div className="d-flex mt-40">
           {app.alert.message && <AlertMessage message={app.alert.message} type={app.alert.type} />}
-          <Button type="submit" className="ml-auto" disabled={!app.handle || !app.auth.handle}>Check handle</Button>
+          <Button type="submit" className="ml-auto" disabled={!app.handle || !app.auth.handle || (validated && !error)}>Check handle</Button>
         </div>
       </Form>
 
       <Pagination hidePrevious
-        next={app.handle && success ? '/register' : undefined}
+        next={app.handle && (validated && !error) ? '/register' : undefined}
         currentPage={page} />
 
     </Container>

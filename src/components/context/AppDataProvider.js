@@ -64,11 +64,11 @@ const AppDataProvider = props => {
     } catch (e) {
       console.log(`Unexpected Response is not a JSON object: \n${err}`);
     }
-    updateApp({ responses: [...app.responses, {
+    updateApp({ responses: [{
       alert: true,
       message: error,
       type: 'danger'
-    }] });
+    }, ...app.responses] });
   }
 
   const refreshApp = () => {
@@ -104,7 +104,7 @@ const AppDataProvider = props => {
     initAppData.auth = { handle, key };
     localStorage.setItem('appData', JSON.stringify(initAppData));
     setAppData({
-      responses: [ ...initAppData.responses, { alert: true, message: 'Application authentication updated', type: 'success' }]
+      responses: [{ alert: true, message: 'Application authentication updated', type: 'success' }, ...initAppData.responses]
     }, () => {
       updateApp({  activeUser: app.activeUser ? { ...app.activeUser, private_key: key } : false });
       refreshApp();

@@ -18,7 +18,6 @@ const LinkAccountModal = ({ show, onSuccess }) => {
       e.target.accountName.value).then(res => {
         let result = {};
         console.log('  ... completed!');
-        console.log(res);
         if (res.statusCode === 200) {
           result = {
             alert: { message: 'Bank account successfully linked!', type: 'success' },
@@ -30,10 +29,10 @@ const LinkAccountModal = ({ show, onSuccess }) => {
           setErrors(res.data.validation_details)
         }
         setAppData({
-          responses: [...app.responses, {
+          responses: [{
             endpoint: '/link_account',
             result: JSON.stringify(res, null, '\t')
-          }]
+          }, ...app.responses]
         }, () => {
           updateApp({ ...result });
         });

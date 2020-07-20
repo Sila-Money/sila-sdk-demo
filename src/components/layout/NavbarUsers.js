@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, Form } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 
 import { useAppContext } from '../context/AppDataProvider';
@@ -29,16 +29,17 @@ const NavbarUsers = () => {
     });
   }
 
-  return <>
+  return <div className="ml-md-4 d-flex align-items-center">
+    <Form.Label className="mr-2 mb-0" htmlFor="account">User:</Form.Label>
     <SelectMenu
-      title={!app.activeUser ? 'Creating New User' : undefined}
+      title={app.activeUser ? app.activeUser.handle : app.handle}
       size="sm"
       onChange={setActiveUser}
-      className="ml-3 ml-md-4 text-uppercase"
+      className="text-uppercase text-nowrap users"
       value={app.activeUser ? app.activeUser.handle : undefined}
       options={app.users.map(user => ({ label: user.handle, value: user.handle }))} />
-    <Button onClick={handleNewUser} disabled={!app.activeUser} className="ml-2" size="sm"><i className="fas fa-user-plus text-lg text-white"></i></Button>
-  </>;
+    <Button onClick={handleNewUser} disabled={!app.activeUser} className="ml-2 text-nowrap" size="sm"><i className="fas fa-user-plus text-lg text-white"></i><span className="ml-2 d-none d-sm-inline">New User</span></Button>
+  </div>;
 }
 
 export default NavbarUsers;

@@ -40,10 +40,10 @@ const Accounts = ({ page }) => {
       }
       setAppData({
         accounts: [...app.accounts.filter(acc => acc.handle !== app.activeUser.handle), ...newAccounts],
-        responses: [...app.responses, {
+        responses: [{
           endpoint: '/get_accounts',
           result: JSON.stringify(res, null, '\t')
-        }]
+        }, ...app.responses]
       }, () => {
         updateApp({ ...result });
       });
@@ -52,7 +52,7 @@ const Accounts = ({ page }) => {
       handleError(err);
     }
     setLoaded(true);
-  }
+  };
 
   const linkAccount = async (token, metadata) => {
     console.log('Linking account ...');
@@ -66,7 +66,7 @@ const Accounts = ({ page }) => {
         if (plaidToken) setPlaidToken(false);
       } else if (res.statusCode === 202 && res.data.message.includes('microdeposit_pending_automatic_verification')) {
         setPlaidToken({ token });
-        setTimeout(() => open, 500);
+        setTimeout(open, 500);
       } else if (res.statusCode === 202 && res.data.message.includes('microdeposit_pending_manual_verification')) {
         result.alert = { message: 'Bank account requires manual verificaiton!', type: 'danger' };
         getAccounts();
@@ -74,10 +74,10 @@ const Accounts = ({ page }) => {
         result.alert = { message: res.data.message, type: 'danger' };
       }
       setAppData({
-        responses: [...app.responses, {
+        responses: [{
           endpoint: '/link_account',
           result: JSON.stringify(res, null, '\t')
-        }]
+        }, ...app.responses]
       }, () => {
         updateApp({ ...result });
       });
@@ -85,7 +85,7 @@ const Accounts = ({ page }) => {
       console.log('  ... looks like we ran into an issue!');
       handleError(err);
     }
-  }
+  };
 
   const plaidSamedayAuth = async (account_name) => {
     console.log('Retrieving public token ...');
@@ -100,10 +100,10 @@ const Accounts = ({ page }) => {
         result.alert = { message: res.data.message, type: 'danger' };
       }
       setAppData({
-        responses: [...app.responses, {
+        responses: [{
           endpoint: '/plaid_sameday_auth',
           result: JSON.stringify(res, null, '\t')
-        }]
+        }, ...app.responses]
       }, () => {
         updateApp({ ...result });
       });
@@ -111,7 +111,7 @@ const Accounts = ({ page }) => {
       console.log('  ... looks like we ran into an issue!');
       handleError(err);
     }
-  }
+  };
 
   useEffect(() => {
     if (error) updateApp({ alert: { message: error, type: 'danger' }});
