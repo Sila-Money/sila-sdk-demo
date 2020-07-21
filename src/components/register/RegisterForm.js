@@ -92,7 +92,7 @@ const RegisterForm = ({ page, onPrevious }) => {
       <Alert variant="info" className="mb-4">A wallet is automatically generated for you using the generateWallet() function upon registration.</Alert>
 
       <div className="d-flex mb-40">
-        <p className="text-meta mb-0">This page represents <a href="https://docs.silamoney.com/#register" target="_blank" rel="noopener noreferrer">/register</a> functionality.</p>
+        <p className="text-meta mb-0">This page represents <a href="https://docs.silamoney.com/docs/register" target="_blank" rel="noopener noreferrer">/register</a> functionality.</p>
         <p className="text-right text-sm text-primary ml-auto position-relative" style={{ top: '2rem' }}><span className="text-lg">*</span> {app.kycType === 'default' ? 'All fields required.' : `Required field.`}</p>
       </div>
 

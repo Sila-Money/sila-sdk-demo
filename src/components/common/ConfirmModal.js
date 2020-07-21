@@ -31,7 +31,7 @@ ConfirmModal.propTypes = {
   /**
    * The function to be called when the callback is successful
    */
-  onSuccess: PropTypes.func.isRequired,
+  onSuccess: PropTypes.func,
   /**
    * The confirm message
    */

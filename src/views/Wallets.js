@@ -192,7 +192,7 @@ const Wallets = ({ page }) => {
 
       <p className="text-lg text-meta mb-4">An Ethereum Wallet has been automatically created for this user.  Private Keys are stored locally on this device and never sent over the network.</p>
 
-      <p className="text-meta mb-40">This page represents <a href="https://docs.silamoney.com/#register_wallet" target="_blank" rel="noopener noreferrer">/register_wallet</a>, <a href="https://docs.silamoney.com/#delete_wallet" target="_blank" rel="noopener noreferrer">/delete_wallet</a>, <a href="https://docs.silamoney.com/#update_wallet" target="_blank" rel="noopener noreferrer">/update_wallet</a> functionality.</p>
+      <p className="text-meta mb-40">This page represents <a href="https://docs.silamoney.com/docs/register_wallet" target="_blank" rel="noopener noreferrer">/register_wallet</a>, <a href="https://docs.silamoney.com/docs/delete_wallet" target="_blank" rel="noopener noreferrer">/delete_wallet</a>, <a href="https://docs.silamoney.com/docs/update_wallet" target="_blank" rel="noopener noreferrer">/update_wallet</a>, and <a href="https://docs.silamoney.com/docs/get_wallets" target="_blank" rel="noopener noreferrer">/get_wallets</a> functionality.</p>
 
       <Form noValidate autoComplete="off" className="position-relative mt-4">
         {!loaded && <Loader overlay />}
