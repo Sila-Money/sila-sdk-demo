@@ -64,7 +64,7 @@ const RegisterForm = ({ page, onPrevious }) => {
       }
       setAppData({
         ...appData,
-        success: res.data.status === 'SUCCESS' && !app.success.includes(page) ? [...app.success, page] : app.success.filter(p => p !== page),
+        success: res.data.status === 'SUCCESS' && !app.success.find(success => app.activeUser && success.handle === user.handle && success.page === page) ? [...app.success, { handle: user.handle, page }] : app.success,
         responses: [{
           endpoint: '/register',
           result: JSON.stringify(res, null, '\t')
@@ -206,7 +206,7 @@ const RegisterForm = ({ page, onPrevious }) => {
           </Form.Group>
           <Form.Group as={Col} controlId="registerPhone">
             <Form.Control required={app.kycType === 'default'} type="phone" placeholder="Phone" name="phone" />
-            {errors.phone && errors.contact.phone && <Form.Control.Feedback type="invalid">{errors.contact.phone}</Form.Control.Feedback>}
+            {errors.contact && errors.contact.phone && <Form.Control.Feedback type="invalid">{errors.contact.phone}</Form.Control.Feedback>}
           </Form.Group>
         </Form.Row>
 
@@ -220,7 +220,7 @@ const RegisterForm = ({ page, onPrevious }) => {
       <Pagination
         previous="/check_handle"
         // previousOnClick={onPrevious}
-        next={(validated && !Object.keys(errors).length) ? '/request_kyc' : undefined}
+        next={app.success.find(success => app.activeUser && success.handle === app.activeUser.handle && success.page === page) ? '/request_kyc' : undefined}
         currentPage={page} />
 
     </div>

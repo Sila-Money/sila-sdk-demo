@@ -122,7 +122,7 @@ const Accounts = ({ page }) => {
   }, [app.activeUser]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (userAccounts.length && !app.success.includes(page)) setAppData({ success: [...app.success, page] });
+    if (userAccounts.length && !app.success.find(success => app.activeUser && success.handle === app.activeUser.handle && success.page === page)) setAppData({ success: [...app.success, { handle: app.activeUser.handle, page }] });
   }, [userAccounts]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
@@ -186,7 +186,7 @@ const Accounts = ({ page }) => {
 
       <Pagination
         previous="/wallets"
-        next={app.success.includes(page) ? '/transact' : undefined}
+        next={app.success.find(success => app.activeUser && success.handle === app.activeUser.handle && success.page === page) ? '/transact' : undefined}
         currentPage={page} />
 
       <LinkAccountModal show={app.manageLinkAccount} onSuccess={getAccounts} />

@@ -55,7 +55,7 @@ const Transact = ({ page }) => {
         result.alert = { message: res.data.message, type: 'danger' }
       }
       setAppData({
-        success: res.statusCode === 200 && !app.success.includes(page) ? [...app.success, page] : app.success.filter(p => p !== page),
+        success: res.statusCode === 200 && !app.success.find(success => app.activeUser && success.handle === app.activeUser.handle && success.page === page) ? [...app.success, { handle: app.activeUser.handle, page }] : app.success,
         responses: [{
           endpoint: '/get_sila_balance',
           result: JSON.stringify(res, null, '\t')
