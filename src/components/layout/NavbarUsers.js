@@ -21,10 +21,9 @@ const NavbarUsers = () => {
 
   const handleNewUser = () => {
     setAppData({ 
-      success: [],
       users: app.users.map(({ active, ...u }) => u)
     }, () => {
-      updateApp({ activeUser: false, kyc: null, success: [] });
+      updateApp({ activeUser: false, kyc: null });
       history.push('/check_handle');
     });
   }

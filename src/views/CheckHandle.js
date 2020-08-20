@@ -30,7 +30,6 @@ const CheckHandle = ({ page }) => {
         }
       }
       setAppData({
-        success: res.data.status === 'SUCCESS' && !app.success.includes(page) ? [...app.success, page] : app.success.filter(p => p !== page),
         responses: [{
           endpoint: '/check_handle',
           result: JSON.stringify(res, null, '\t')

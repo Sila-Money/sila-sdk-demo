@@ -182,7 +182,7 @@ const Wallets = ({ page }) => {
   }, [app.activeUser]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (wallets.length && !app.success.includes(page)) setAppData({ success: [...app.success, page] });
+    if (wallets.length && !app.success.find(success => app.activeUser && success.handle === app.activeUser.handle && success.page === page)) setAppData({ success: [...app.success, { handle: app.activeUser.handle, page }] });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
@@ -206,7 +206,7 @@ const Wallets = ({ page }) => {
 
       <Pagination
         previous="/request_kyc"
-        next={app.success.includes(page) ? '/accounts' : undefined}
+        next={app.success.find(success => app.activeUser && success.handle === app.activeUser.handle && success.page === page) ? '/accounts' : undefined}
         currentPage={page} />
 
     </Container>

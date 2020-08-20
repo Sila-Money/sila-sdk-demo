@@ -25,7 +25,7 @@ const RequestKYC = ({ page }) => {
         result.kyc = { message: res.data.message, type: 'danger' };
       }
       setAppData({
-        success: app.success.filter(p => p !== page),
+        success: app.success.filter(success => app.activeUser && success.handle === app.activeUser.handle && success.page !== page),
         responses: [{
           endpoint: '/request_kyc',
           result: JSON.stringify(res, null, '\t')
@@ -57,7 +57,7 @@ const RequestKYC = ({ page }) => {
         };
       }
       setAppData({
-        success: res.data.status === 'SUCCESS' && !app.success.includes(page) ? [...app.success, page] : app.success,
+        success: res.data.status === 'SUCCESS' && !app.success.find(success => app.activeUser && success.handle === app.activeUser.handle && success.page === page) ? [...app.success, { handle: app.activeUser.handle, page }] : app.success,
         responses: [{
           endpoint: '/check_kyc',
           result: JSON.stringify(res, null, '\t')
@@ -72,7 +72,7 @@ const RequestKYC = ({ page }) => {
   }
 
   useEffect(() => {
-    if (app.success.includes(page)) updateApp({ kyc: { message: 'Passed ID verification', type: 'success' } });
+    if (app.success.find(success => app.activeUser && success.handle === app.activeUser.handle && success.page === page)) updateApp({ kyc: { message: 'Passed ID verification', type: 'success' } });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
@@ -112,7 +112,7 @@ const RequestKYC = ({ page }) => {
 
       <Pagination
         previous={!app.activeUser ? '/register' : undefined}
-        next={app.success.includes(page) ? '/wallets' : undefined}
+        next={app.success.find(success => app.activeUser && success.handle === app.activeUser.handle && success.page === page) ? '/wallets' : undefined}
         currentPage={page} />
 
     </Container>
