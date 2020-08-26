@@ -29,10 +29,11 @@
 @import "layout/main-navbar";
 @import "layout/main-sidebar";
 @import "layout/main-content";
+@import "layout/vertical-navbar";
+@import "layout/mobile-menu";
 
 // Components
 @import "components/loader";
-@import "components/stepper";
 @import "components/splash";
 @import "components/pagination";
 

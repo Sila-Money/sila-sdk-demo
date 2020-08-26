@@ -4,7 +4,9 @@ import { Redirect } from 'react-router-dom';
 
 // Route Views
 import CheckHandle from '../views/CheckHandle';
-import Register from '../views/Register';
+import Register from '../views/Register/Register';
+import CompanyInfo from '../views/Register/CompanyInfo';
+import BusinessMembers from '../views/Register/BusinessMembers';
 import RequestKYC from '../views/RequestKYC';
 import Wallets from '../views/Wallets';
 import Accounts from '../views/Accounts';
@@ -13,21 +15,34 @@ import Errors from '../views/Errors';
 
 export default [
   {
-    stepper: true,
+    active: true,
     page: 'handle',
     title: 'Check Handle',
     path: '/check_handle',
     component: CheckHandle
   },
   {
-    stepper: true,
+    active: true,
     page: 'register',
     title: 'Register User',
     path: '/register',
-    component: Register
+    component: Register,
+    routes: [{
+      active: true,
+      page: 'registerCompany',
+      title: 'Company Info',
+      path: '/register/company',
+      component: CompanyInfo
+    }, {
+      active: true,
+      page: 'registerMembers',
+      title: 'Business Members',
+      path: '/register/members',
+      component: BusinessMembers
+    }]
   },
   {
-    stepper: true,
+    active: true,
     restricted: true,
     page: 'request_kyc',
     title: 'Request KYC',
@@ -35,7 +50,7 @@ export default [
     component: RequestKYC
   },
   {
-    stepper: true,
+    active: true,
     restricted: true,
     page: 'wallets',
     title: 'Wallets',
@@ -43,7 +58,7 @@ export default [
     component: Wallets
   },
   {
-    stepper: true,
+    active: true,
     restricted: true,
     page: 'accounts',
     title: 'Link Account',
@@ -51,7 +66,7 @@ export default [
     component: Accounts
   },
   {
-    stepper: true,
+    active: true,
     restricted: true,
     page: 'transact',
     title: 'Transact',
