@@ -115,7 +115,7 @@ const RegisterForm = ({ page, onPrevious }) => {
             name="handle"
             value={app.handle}
           />
-          <Form.Text className="text-meta">Handle must be unique.  This was autopopulated from the handle you checked prevously.</Form.Text>
+          {app.handle && <Form.Text className="text-meta">Handle must be unique.  This was autopopulated from the handle you checked prevously.</Form.Text>}
         </Form.Group>
         <Form.Group controlId="registerAddress">
           <Form.Control required={app.kycType === 'default'} placeholder="Street Address" name="address" />

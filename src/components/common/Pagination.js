@@ -9,7 +9,7 @@ import classNames from 'classnames';
 const Pagination = ({ className, previous, next, hidePrevious, hideNext, previousOnClick, nextOnClick, currentPage }) => {
   const classes = classNames(
     className,
-    'pagination border-top border-light d-flex justify-content-between align-items-center pr-4'
+    'pagination border-top border-light d-flex justify-content-between align-items-center px-4'
   );
   const previousDisabled = !previous && !previousOnClick;
   const nextDisabled = !next && !nextOnClick;

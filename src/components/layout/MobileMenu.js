@@ -22,13 +22,15 @@ const MobileMenu = ({ className, items }) => {
           <>
             <Dropdown.Item key={index} as={NavLink} to={{ pathname: item.path, state: { from: item.page } }}>{item.title}</Dropdown.Item>
             {item.routes && item.routes.length &&
-              <div className="py-2 px-3 text-sm">
+              <>
+                <Dropdown.Divider />
                 {item.routes.map((item, index) => ((item.restricted && app.activeUser) || (!item.restricted)) &&
-                  <Dropdown.Item key={index} as={NavLink} to={{ pathname: item.path, state: { from: item.page } }}>
+                  <Dropdown.Item key={index} className="text-sm pl-4" as={NavLink} to={{ pathname: item.path, state: { from: item.page } }}>
                     {item.title}
                   </Dropdown.Item>
                 )}
-              </div>
+                <Dropdown.Divider />
+              </>
             }
           </>
         )}
