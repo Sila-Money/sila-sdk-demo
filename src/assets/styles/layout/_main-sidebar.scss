@@ -24,9 +24,8 @@
   .response {
     color: $gray-medium;
     padding-left: 1.5rem;
-    -webkit-transition: opacity .2s;
-    transition: opacity .2s;
     position: relative;
+    @include transition(opacity .2s);
 
     .endpoint {
       cursor: pointer;

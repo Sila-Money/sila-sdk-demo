@@ -1,15 +1,17 @@
 import React, { useEffect } from 'react';
-import { Switch, Route, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
 import classNames from 'classnames';
 
 import { useAppContext } from './components/context/AppDataProvider';
 import MainNavbar from './components/layout/MainNavbar';
 import MainSidebar from './components/layout/MainSidebar';
+import VerticalNavbar from './components/layout/VerticalNavbar';
+import MobileMenu from './components/layout/MobileMenu';
 import Loader from './components/common/Loader';
-import Stepper from './components/common/Stepper';
 import SettingsModal from './components/common/SettingsModal';
 import ResetModal from './components/common/ResetModal';
+import RouteConfig from './components/common/RouteConfig';
 
 import routes from './routes';
 
@@ -22,7 +24,7 @@ const App = () => {
   );
 
   useEffect(() => {
-    const unlisten = history.listen((location) => {
+    const unlisten = history.listen(() => {
       updateApp({ alert: {} });
     });
     return unlisten;
@@ -46,19 +48,10 @@ const App = () => {
           sm={12}
           as="main"
         >
-          <Stepper items={routes.filter(route => route.stepper)} />
+          <VerticalNavbar items={routes.filter(route => route.active)} />
+          <MobileMenu items={routes.filter(route => route.active)} />
           <div className="main-content d-flex flex-column">
-            <Switch>
-              {routes.map((route, i) => (
-                <Route
-                  key={i}
-                  path={route.path}
-                  exact={route.exact}
-                  strict={route.strict}
-                  render={(props) => <route.component page={route.page || undefined} {...props} />}
-                />
-              ))}
-            </Switch>
+            <RouteConfig routes={routes} />
           </div>
         </Col>
         <MainSidebar />

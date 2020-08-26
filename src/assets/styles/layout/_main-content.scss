@@ -30,13 +30,14 @@
   position: relative;
   margin-bottom: $pagination-height;
   @include animation(fadein, 0.5s, forwards);
+  margin-left: $vertical-navbar-width;
   @include media-breakpoint-up(sm) {
-    min-height: calc(100vh - #{$main-navbar-height} - #{$stepper-height} - #{$pagination-height});
-    margin-top: $stepper-height;
+    min-height: calc(100vh - #{$main-navbar-height} - #{$pagination-height});
   }
   @include media-breakpoint-down(md) {
-    min-height: calc(100vh - #{$main-navbar-height} - #{$stepper-height-mobile} - #{$pagination-height});
-    margin-top: $stepper-height-mobile;
+    margin-left: 0;
+    min-height: calc(100vh - #{$main-navbar-height} - #{$mobile-menu-height} - #{$pagination-height});
+    margin-top: $mobile-menu-height;
   }
 }
 
