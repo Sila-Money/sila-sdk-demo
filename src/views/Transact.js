@@ -22,7 +22,7 @@ const formatNumber = (num) => {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
-const Transact = ({ page }) => {
+const Transact = ({ page, previous, next, isActive }) => {
   const { app, api, setAppData, updateApp, handleError } = useAppContext();
   const userWallets = app.wallets.filter(wallet => wallet.handle === app.activeUser.handle).sort((x, y) => x.default ? -1 : y.default ? 1 : x.private_key === app.activeUser.private_key ? -1 : y.private_key === app.activeUser.private_key ? 1 : 0);
   const userAccounts = app.accounts.filter(account => account.handle === app.activeUser.handle && account.account_number);
@@ -55,7 +55,7 @@ const Transact = ({ page }) => {
         result.alert = { message: res.data.message, type: 'danger' }
       }
       setAppData({
-        success: res.statusCode === 200 && !app.success.find(success => app.activeUser && success.handle === app.activeUser.handle && success.page === page) ? [...app.success, { handle: app.activeUser.handle, page }] : app.success,
+        success: res.statusCode === 200 && !isActive ? [...app.success, { handle: app.activeUser.handle, page }] : app.success,
         responses: [{
           endpoint: '/get_sila_balance',
           result: JSON.stringify(res, null, '\t')
@@ -186,7 +186,7 @@ const Transact = ({ page }) => {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page}`}>
+    <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 
       <div className="d-flex mb-4">
         <h1 className="mb-0">Transact</h1>
@@ -198,7 +198,7 @@ const Transact = ({ page }) => {
 
       {userAccounts.length === 0 && <Alert variant="warning" className="mb-4">An active account is required to initiate a transaction.  <NavLink to="/accounts" className="text-reset text-underline">Link an account</NavLink></Alert>}
 
-      <p className="text-meta mb-40">This page represents <a href="https://docs.silamoney.com/docs/get_sila_balance" target="_blank" rel="noopener noreferrer">/get_sila_balance</a>, <a href="https://docs.silamoney.com/docs/issue_sila" target="_blank" rel="noopener noreferrer">/issue_sila</a>, <a href="https://docs.silamoney.com/docs/redeem_sila" target="_blank" rel="noopener noreferrer">/redeem_sila</a>, <a href="https://docs.silamoney.com/docs/transfer_sila" target="_blank" rel="noopener noreferrer">/transfer_sila</a>, and <a href="https://docs.silamoney.com/docs/get_transactions" target="_blank" rel="noopener noreferrer">/get_transactions</a>  functionality.</p>
+      <p className="text-meta mb-5">This page represents <a href="https://docs.silamoney.com/docs/get_sila_balance" target="_blank" rel="noopener noreferrer">/get_sila_balance</a>, <a href="https://docs.silamoney.com/docs/issue_sila" target="_blank" rel="noopener noreferrer">/issue_sila</a>, <a href="https://docs.silamoney.com/docs/redeem_sila" target="_blank" rel="noopener noreferrer">/redeem_sila</a>, <a href="https://docs.silamoney.com/docs/transfer_sila" target="_blank" rel="noopener noreferrer">/transfer_sila</a>, and <a href="https://docs.silamoney.com/docs/get_transactions" target="_blank" rel="noopener noreferrer">/get_transactions</a>  functionality.</p>
 
       <div className="d-flex mb-4">
         <h2 className="mb-0">Wallet Balance</h2>
@@ -357,7 +357,8 @@ const Transact = ({ page }) => {
       {app.alert.message && <div className="mt-4"><AlertMessage message={app.alert.message} type={app.alert.type} /></div>}
 
       <Pagination hideNext
-        previous="/accounts"
+        previous={previous}
+        next={next}
         currentPage={page} />
 
       <ConfirmModal show={confirm.show} message={confirm.message} onHide={() => setConfirm(defaultConfirm)} onSuccess={confirm.onSuccess} />

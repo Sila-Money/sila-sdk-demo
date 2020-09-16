@@ -8,7 +8,7 @@ import AlertMessage from '../components/common/AlertMessage';
 import Loader from '../components/common/Loader';
 import Wallet from '../components/wallets/Wallet';
 
-const Wallets = ({ page }) => {
+const Wallets = ({ page, previous, next, isActive }) => {
   const { app, api, updateApp, handleError, setAppData } = useAppContext();
   const [wallets, setWallets] = useState(app.wallets.filter(wallet => wallet.handle === app.activeUser.handle).sort((x, y) => x.default ? -1 : y.default ? 1 : x.private_key === app.activeUser.private_key ? -1 : y.private_key === app.activeUser.private_key ? 1 : 0));
   const [loaded, setLoaded] = useState(false);
@@ -182,31 +182,31 @@ const Wallets = ({ page }) => {
   }, [app.activeUser]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (wallets.length && !app.success.find(success => app.activeUser && success.handle === app.activeUser.handle && success.page === page)) setAppData({ success: [...app.success, { handle: app.activeUser.handle, page }] });
+    if (wallets.length && !isActive) setAppData({ success: [...app.success, { handle: app.activeUser.handle, page }] });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page}`}>
+    <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 
       <h1 className="mb-4">Digital Wallets</h1>
 
       <p className="text-lg text-meta mb-4">An Ethereum Wallet has been automatically created for this user.  Private Keys are stored locally on this device and never sent over the network.</p>
 
-      <p className="text-meta mb-40">This page represents <a href="https://docs.silamoney.com/docs/register_wallet" target="_blank" rel="noopener noreferrer">/register_wallet</a>, <a href="https://docs.silamoney.com/docs/delete_wallet" target="_blank" rel="noopener noreferrer">/delete_wallet</a>, <a href="https://docs.silamoney.com/docs/update_wallet" target="_blank" rel="noopener noreferrer">/update_wallet</a>, and <a href="https://docs.silamoney.com/docs/get_wallets" target="_blank" rel="noopener noreferrer">/get_wallets</a> functionality.</p>
+      <p className="text-meta mb-5">This page represents <a href="https://docs.silamoney.com/docs/register_wallet" target="_blank" rel="noopener noreferrer">/register_wallet</a>, <a href="https://docs.silamoney.com/docs/delete_wallet" target="_blank" rel="noopener noreferrer">/delete_wallet</a>, <a href="https://docs.silamoney.com/docs/update_wallet" target="_blank" rel="noopener noreferrer">/update_wallet</a>, and <a href="https://docs.silamoney.com/docs/get_wallets" target="_blank" rel="noopener noreferrer">/get_wallets</a> functionality.</p>
 
       <Form noValidate autoComplete="off" className="position-relative mt-4">
         {!loaded && <Loader overlay />}
         {wallets.map((wallet, index) => <Wallet key={index} wallets={wallets} data={wallet} onHandleChange={handleChange} onCreate={registerWallet} onUpdate={updateWallet} onEdit={editWallet} onDelete={removeWallet} index={index} />)}
       </Form>
 
-      <div className="d-flex mt-40">
+      <div className="d-flex mt-5">
         {app.alert.message && <AlertMessage message={app.alert.message} type={app.alert.type} />}
         <Button variant="secondary" size="sm" onClick={addWallet} className="ml-auto">Add Wallet <i className="fas fa-plus-circle ml-2"></i></Button>
       </div>
 
       <Pagination
-        previous="/request_kyc"
-        next={app.success.find(success => app.activeUser && success.handle === app.activeUser.handle && success.page === page) ? '/accounts' : undefined}
+        previous={previous}
+        next={isActive ? next : undefined}
         currentPage={page} />
 
     </Container>

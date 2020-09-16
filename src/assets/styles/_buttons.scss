@@ -25,9 +25,9 @@
         background: $primary-hover;
         border-color: $primary-hover;
       }
-      &:active {
-        background: $primary-active;
-        border-color: $primary-active;
+      &:nav {
+        background: $primary-nav;
+        border-color: $primary-nav;
       }
     }
 
@@ -45,7 +45,7 @@
 
     // Light outline
     &[class*="btn-outline-light"],
-    &[class*="btn-outline-light"].active {
+    &[class*="btn-outline-light"].nav {
       background: $white;
       border-color: $gray-almost-white;
       color: $text-light-color;
@@ -54,7 +54,7 @@
         border-color: $white;
         box-shadow: 0 1px 12px rgba($black, .12);
       }
-      &:active {
+      &:nav {
         border: 1px solid $gray-almost-white;
         color: $primary;
         box-shadow: none;
@@ -79,7 +79,7 @@
     &[class*="btn-outline-primary"] {
       background: $white;
       &:hover,
-      &:active {
+      &:nav {
         background: #FBFCFD;
         color: $primary;
       }
@@ -94,7 +94,7 @@
         color: $gray-medium;
       }
       &:hover,
-      &.active {
+      &.nav {
         .sila-icon {
           color: $primary;
         }

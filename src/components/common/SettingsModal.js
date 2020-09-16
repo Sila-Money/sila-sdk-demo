@@ -11,7 +11,7 @@ const SettingsModal = () => {
   const { api, app, updateApp, setAuth, resetApp } = useAppContext();
 
   const checkAuth = async () => {
-    const res = await api.checkHandle(app.handle);
+    const res = await api.checkHandle('');
     if (res.statusCode === 200) {
       handleHide();
     } else {

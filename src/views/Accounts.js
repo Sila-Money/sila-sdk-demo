@@ -9,7 +9,7 @@ import Loader from '../components/common/Loader';
 import Pagination from '../components/common/Pagination';
 import LinkAccountModal from '../components/accounts/LinkAccountModal';
 
-const Accounts = ({ page }) => {
+const Accounts = ({ page, previous, next, isActive }) => {
   const [loaded, setLoaded] = useState(false);
   const [plaidToken, setPlaidToken] = useState(false);
   const { app, api, setAppData, updateApp, handleError } = useAppContext();
@@ -122,11 +122,11 @@ const Accounts = ({ page }) => {
   }, [app.activeUser]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (userAccounts.length && !app.success.find(success => app.activeUser && success.handle === app.activeUser.handle && success.page === page)) setAppData({ success: [...app.success, { handle: app.activeUser.handle, page }] });
-  }, [userAccounts]); // eslint-disable-line react-hooks/exhaustive-deps
+    if (userAccounts.length && !isActive) setAppData({ success: [...app.success, { handle: app.activeUser.handle, page }] });
+  }, [loaded]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page}`}>
+    <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 
       <h1 className="mb-4">Link a Bank Account</h1>
 
@@ -134,9 +134,9 @@ const Accounts = ({ page }) => {
 
       <p className="text-meta text-lg">We also have the ability to connect bank accounts with just an account and routing number, if your product is dependent on receiving account information over the phone, on a form, or similar. This feature needs to be approved by Sila for use.</p>
 
-      <p className="text-meta mb-0">This page represents <a href="https://docs.silamoney.com/docs/get_accounts" target="_blank" rel="noopener noreferrer">/get_accounts</a>, <a href="https://docs.silamoney.com/docs/link_account" target="_blank" rel="noopener noreferrer">/link_account</a>, and <a href="https://docs.silamoney.com/docs/plaid_sameday_auth" target="_blank" rel="noopener noreferrer">/plaid_sameday_auth</a> functionality.</p>
+      <p className="text-meta mb-0 mb-5">This page represents <a href="https://docs.silamoney.com/docs/get_accounts" target="_blank" rel="noopener noreferrer">/get_accounts</a>, <a href="https://docs.silamoney.com/docs/link_account" target="_blank" rel="noopener noreferrer">/link_account</a>, and <a href="https://docs.silamoney.com/docs/plaid_sameday_auth" target="_blank" rel="noopener noreferrer">/plaid_sameday_auth</a> functionality.</p>
 
-      <div className="accounts position-relative mt-40 mb-40">
+      <div className="accounts position-relative mb-5">
         {!loaded && <Loader overlay />}
         <Table bordered responsive>
           <thead>
@@ -185,8 +185,8 @@ const Accounts = ({ page }) => {
       <p className="text-right"><Button variant="link" className="text-reset font-italic p-0 text-decoration-none" href="http://plaid.com/docs/#testing-auth" target="_blank" rel="noopener noreferrer"><span className="lnk">How do I login to Plaid?</span> <i className="sila-icon sila-icon-info text-primary ml-2"></i></Button></p>
 
       <Pagination
-        previous="/wallets"
-        next={app.success.find(success => app.activeUser && success.handle === app.activeUser.handle && success.page === page) ? '/transact' : undefined}
+        previous={previous}
+        next={isActive ? next : undefined}
         currentPage={page} />
 
       <LinkAccountModal show={app.manageLinkAccount} onSuccess={getAccounts} />

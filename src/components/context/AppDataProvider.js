@@ -6,6 +6,7 @@ export const appContext = createContext(null);
 // Set default app data
 const appData = {
   auth: {},
+  settings: {},
   users: [],
   wallets: [],
   accounts: [],
@@ -14,31 +15,35 @@ const appData = {
 };
 
 // Get app data
-const getAppStorage = () => ({
-  auth: JSON.parse(localStorage.getItem('auth')) || appData.auth,
-  users: JSON.parse(localStorage.getItem('users')) || appData.users,
-  wallets: JSON.parse(localStorage.getItem('wallets')) || appData.wallets,
-  accounts: JSON.parse(localStorage.getItem('accounts')) || appData.accounts,
-  responses: JSON.parse(localStorage.getItem('responses')) || appData.responses,
-  success: JSON.parse(localStorage.getItem('success')) || appData.success
-});
+const getAppStorage = () => {
+  const storage = {
+    auth: JSON.parse(localStorage.getItem('auth')) || appData.auth,
+    settings: JSON.parse(localStorage.getItem('settings')) || appData.settings,
+    users: JSON.parse(localStorage.getItem('users')) || appData.users,
+    wallets: JSON.parse(localStorage.getItem('wallets')) || appData.wallets,
+    accounts: JSON.parse(localStorage.getItem('accounts')) || appData.accounts,
+    responses: JSON.parse(localStorage.getItem('responses')) || appData.responses,
+    success: JSON.parse(localStorage.getItem('success')) || appData.success
+  };
+  console.log(storage);
+  return storage;
+};
 
 // Set app data
 const setAppStorage = (data) => ( // eslint-disable-next-line
   data.auth && localStorage.setItem('auth', JSON.stringify(data.auth)),
+  data.settings && localStorage.setItem('settings', JSON.stringify(data.settings)),
   data.users && localStorage.setItem('users', JSON.stringify(data.users)),
   data.wallets && localStorage.setItem('wallets', JSON.stringify(data.wallets)),
   data.accounts && localStorage.setItem('accounts', JSON.stringify(data.accounts)),
   data.responses && localStorage.setItem('responses', JSON.stringify(data.responses)),
-  data.success && localStorage.setItem('success', JSON.stringify(data.success))
+  data.success && localStorage.setItem('success', JSON.stringify(data.success.filter(success => typeof(success) !== 'string')))
 );
-
-console.log(localStorage.getItem('success'));
 
 // Initialize app data
 if (JSON.parse(localStorage.getItem('appData'))) {
   setAppStorage(JSON.parse(localStorage.getItem('appData')));
-  localStorage.removeItem('appData')
+  localStorage.removeItem('appData');
 }
 let initAppData = getAppStorage();
 
@@ -56,17 +61,17 @@ const AppDataProvider = props => {
   // Initialize app state
   const [app, setApp] = useState({
     auth: initAppData.auth,
+    settings: initAppData.settings,
     responses: initAppData.responses,
     wallets: initAppData.wallets,
     accounts: initAppData.accounts,
     users: initAppData.users,
-    activeUser: initAppData.users.length ? initAppData.users.find(user => user.active) : false,
     success: initAppData.success,
-    handle: '',
-    transactions: false,
-    kycType: 'default',
-    kyc: null,
+    activeUser: initAppData.users.length ? initAppData.users.find(user => user.active) : false,
+    kyc: {},
+    kyb: {},
     alert: {},
+    transactions: false,
     loaded: false,
     manageLinkAccount: false,
     manageSettings: false,
@@ -97,6 +102,7 @@ const AppDataProvider = props => {
     auth = initAppData.auth;
     updateApp({
       auth: auth,
+      settings: initAppData.settings,
       users: initAppData.users,
       responses: initAppData.responses,
       wallets: initAppData.wallets,
@@ -117,20 +123,20 @@ const AppDataProvider = props => {
     setAppStorage(appData);
     refreshApp();
     updateApp({
-      private_key: null,
-      kyc: null,
-      transactions: false,
-      activeUser: false,
       users: [],
       wallets: [],
       accounts: [],
+      success: [],
       responses: [{
         alert: true,
         message: 'Application data cleared',
         type: 'success',
         loaded: true
       }],
-      success: []
+      kyc: {},
+      kyb: {},
+      transactions: false,
+      activeUser: false
     });
   }
 
@@ -168,14 +174,13 @@ const AppDataProvider = props => {
 
   return <appContext.Provider value={{
     app,
-    auth,
+    api: Sila,
     handleError,
     updateApp,
     refreshApp,
     resetApp,
     setAuth,
-    setAppData,
-    api: Sila
+    setAppData
   }} {...props} />;
 };
 

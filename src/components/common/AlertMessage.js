@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import { useAppContext } from '../context/AppDataProvider';
 
-const AlertMessage = ({ message, type, noIcon, noHide }) => {
+const AlertMessage = ({ message, type, noIcon, onHide, noHide }) => {
   const [show, setShow] = useState(true);
   const { updateApp } = useAppContext();
   const icon = type === 'success' ? 'success' : type === 'danger' ? 'danger' : type === 'wait' ? 'wait' : 'info';
@@ -15,6 +15,8 @@ const AlertMessage = ({ message, type, noIcon, noHide }) => {
       if (!noHide) {
         showTimer = setTimeout(() => setShow(false), 10000);
       }
+    } else if (onHide) {
+      hideTimer = setTimeout(() => onHide, 300);
     } else {
       hideTimer = setTimeout(() => updateApp({ alert: {} }), 300);
     }

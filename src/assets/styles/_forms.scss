@@ -29,11 +29,16 @@
   &.required::before {
     content: '*';
     position: absolute;
-    top: $input-btn-padding-y;
-    right: $input-btn-padding-x;
+    top: $input-padding-y;
+    right: $input-padding-x;
     color: $primary;
     font-size: $font-size-lg;
-    line-height: 1;
+    line-height: 0;
+    z-index: 5;
+  }
+
+  &.required:not(.col)::before {
+    margin-right: -10px;
   }
 }
 

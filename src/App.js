@@ -1,27 +1,23 @@
 import React, { useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
-import classNames from 'classnames';
 
 import { useAppContext } from './components/context/AppDataProvider';
+
 import MainNavbar from './components/layout/MainNavbar';
 import MainSidebar from './components/layout/MainSidebar';
 import VerticalNavbar from './components/layout/VerticalNavbar';
-import MobileMenu from './components/layout/MobileMenu';
 import Loader from './components/common/Loader';
+import RouteConfig from './components/common/RouteConfig';
 import SettingsModal from './components/common/SettingsModal';
 import ResetModal from './components/common/ResetModal';
-import RouteConfig from './components/common/RouteConfig';
 
-import routes from './routes';
+import routes, { flows } from './routes';
 
 const App = () => {
   const { app, updateApp } = useAppContext();
   const history = useHistory();
-  const classes = classNames(
-    'main',
-    'p-0'
-  );
+  const location = useLocation();
 
   useEffect(() => {
     const unlisten = history.listen(() => {
@@ -42,14 +38,13 @@ const App = () => {
       <MainNavbar />
       <Row noGutters>
         <Col
-          className={classes}
+          className="main p-0"
           lg={{ span: 8 }}
           md={{ span: 8 }}
           sm={12}
           as="main"
         >
-          <VerticalNavbar items={routes.filter(route => route.active)} />
-          <MobileMenu items={routes.filter(route => route.active)} />
+          {location.pathname !== '/' && app.settings.flow && <VerticalNavbar routes={routes.filter(route => route[app.settings.flow] || (!route.disabled && flows[app.settings.flow].includes(route.path))).sort((a, b) => flows[app.settings.flow].indexOf(a.path) - flows[app.settings.flow].indexOf(b.path))} />}
           <div className="main-content d-flex flex-column">
             <RouteConfig routes={routes} />
           </div>
