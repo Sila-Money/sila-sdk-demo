@@ -9,6 +9,7 @@ import { useAppContext } from '../components/context/AppDataProvider';
 const CheckHandle = ({ page, previous, next }) => {
   const [success, setSuccess] = useState(false);
   const { app, setAppData } = useAppContext();
+  const handle = app.settings.flow === 'kyc' && app.settings.kycHandle ? app.settings.kycHandle : app.settings.flow === 'kyb' && app.settings.kybHandle ? app.settings.kybHandle : undefined;
 
   const handleSuccess = (handle) => {
     setSuccess(true);
@@ -26,7 +27,7 @@ const CheckHandle = ({ page, previous, next }) => {
 
       <p className="text-meta mb-5">This page represents <a href="https://docs.silamoney.com/docs/check_handle" target="_blank" rel="noopener noreferrer">/check_handle</a> functionality.</p>
 
-      <CheckHandleForm defaultValue={app.settings.kycHandle || app.settings.kybHandle || undefined} onSuccess={handleSuccess} />
+      <CheckHandleForm defaultValue={handle} onSuccess={handleSuccess} />
 
       <Pagination
         previous={previous}

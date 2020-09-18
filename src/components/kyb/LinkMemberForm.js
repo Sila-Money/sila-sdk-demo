@@ -15,8 +15,6 @@ const LinkMemberForm = ({ roles, rolesFilter, handle, isBo, onRolesDisabled, onS
   const activeUser = app.users.find(user => handle === user.handle);
   const businessUser = app.users.find(user => app.settings.kybHandle === user.handle);
 
-  console.log(activeUser);
-
   const linkMember = async (role) => {
     console.log('Linking Business Member ...');
     const ownership_stake = role.name === 'beneficial_owner' && ownershipStake ? (ownershipStake / 100).toFixed(2) : undefined;
@@ -75,7 +73,7 @@ const LinkMemberForm = ({ roles, rolesFilter, handle, isBo, onRolesDisabled, onS
 
       <div className="mt-4 text-right">
         {filteredRoles.map((role, index) => {
-          const hasRole = activeUser.memberships && activeUser.memberships.some(membership => membership.role === role);
+          const hasRole = activeUser && activeUser.memberships && activeUser.memberships.length && activeUser.memberships.some(membership => membership.role === role);
           return <Button key={index} className="ml-3" disabled={(onRolesDisabled ? onRolesDisabled(role) : null) || (role.name === 'beneficial_owner' && !ownershipStake)} onClick={() => hasRole ? unlinkMember(role) : linkMember(role)}>{hasRole ? 'Unlink' : 'Link'} as a {role.label}</Button>
         })}
       </div>

@@ -28,14 +28,14 @@ const RegisterMember = ({ page, isActive, location, history }) => {
 
       {registered && handle && <p className="text-meta mb-0 mb-5 loaded">This page represents <a href="https://docs.silamoney.com/docs/link_business_member" target="_blank" rel="noopener noreferrer">/link_business_member</a> functionality.</p>}
 
-      <Form.Check custom id="register-user" className="mb-4 ml-n2" type="radio">
+      {!handle && app.users.filter(user => !user.business).length !== 0 && <><Form.Check custom id="register-user" className="mb-4 ml-n2" type="radio">
         <Form.Check.Input name="existing" onChange={() => { setRegistered(false); setExisting(false); }} defaultChecked type="radio" />
         <Form.Check.Label className="ml-2 text-lg">Register and link a new user</Form.Check.Label>
       </Form.Check>
       <Form.Check custom id="existing-user" className="mb-5 ml-n2" type="radio">
         <Form.Check.Input name="existing" onChange={() => { setRegistered(true); setExisting(true); }} type="radio" />
         <Form.Check.Label className="ml-2 text-lg">Link an existing user</Form.Check.Label>
-      </Form.Check>
+      </Form.Check></>}
 
       {!registered ? <>
         <p className="mb-4 text-meta text-lg">As {currentRole ? `the ${currentRole.label}` : 'a business member'}, your personal information is required before we can move forward with the KYB process.</p>

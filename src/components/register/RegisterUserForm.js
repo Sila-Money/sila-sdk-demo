@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Form, Col } from 'react-bootstrap';
+import NumberFormat from 'react-number-format';
 
 import { useAppContext } from '../../components/context/AppDataProvider';
 
@@ -28,6 +29,7 @@ const RegisterUserForm = ({ className, handle, page, isActive, children, onError
     user.dateOfBirth = e.target.dateOfBirth.value;
     user.ssn = e.target.ssn.value;
     user.cryptoAddress = wallet.address;
+    console.log(user.phone);
     try {
       const res = await api.register(user);
       let result = {};
@@ -130,7 +132,7 @@ const RegisterUserForm = ({ className, handle, page, isActive, children, onError
           {errors.contact && errors.contact.email && <Form.Control.Feedback type="invalid">{errors.contact.email}</Form.Control.Feedback>}
         </Form.Group>
         <Form.Group as={Col} controlId="registerPhone" className="required">
-          <Form.Control required type="phone" placeholder="Phone" name="phone" />
+          <Form.Control required placeholder="Phone" name="phone" type="tel" as={NumberFormat} format="(###) ###-####" mask="_" />
           {errors.contact && errors.contact.phone && <Form.Control.Feedback type="invalid">{errors.contact.phone}</Form.Control.Feedback>}
         </Form.Group>
       </Form.Row>
