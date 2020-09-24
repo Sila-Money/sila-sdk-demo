@@ -8,7 +8,7 @@ import MainNavbar from './components/layout/MainNavbar';
 import MainSidebar from './components/layout/MainSidebar';
 import VerticalNavbar from './components/layout/VerticalNavbar';
 import Loader from './components/common/Loader';
-import RouteConfig from './components/common/RouteConfig';
+import RouteConfig from './components/routes/RouteConfig';
 import SettingsModal from './components/common/SettingsModal';
 import ResetModal from './components/common/ResetModal';
 

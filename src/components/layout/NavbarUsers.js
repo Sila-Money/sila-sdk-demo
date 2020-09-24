@@ -14,8 +14,9 @@ const NavbarUsers = () => {
   const history = useHistory();
 
   const setActiveUser = (handle) => {
+    const businessUser = app.users.find(user => user.handle === handle && user.business_handle);
     setAppData({
-      settings: { ...app.settings, kybHandle: app.users.find(user => user.handle === handle && user.business) ? handle : app.settings.kybHandle },
+      settings: { ...app.settings, kybHandle: businessUser ? businessUser.business_handle : false },
       users: app.users.map(({ active, ...u }) => u.handle === handle ? { ...u, active: true } : u)
     }, () => {
       updateApp({ activeUser: app.users.find(u => u.handle === handle), kyc: {}, kyb: {} });

@@ -16,7 +16,7 @@ const RegisterMember = ({ page, isActive, location, history }) => {
   const [activeUser, setActiveUser] = useState(false);
   const [existing, setExisting] = useState(false);
   const [selectedRoles, setSelectedRoles] = useState(location.state.role ? [location.state.role] : []);
-  const { app, api, handleError } = useAppContext();
+  const { app, api, handleError, setAppData } = useAppContext();
   const currentRole = app.settings.kybRoles.find(role => role.name === location.state.role);
 
   const getEntity = async () => {
@@ -34,9 +34,18 @@ const RegisterMember = ({ page, isActive, location, history }) => {
     }
   };
 
+  const handleActiveUser = (user) => {
+    setActiveUser(user);
+    setAppData({
+      users: app.users.map(u => u.handle === user.handle ? { ...u, business_handle: app.settings.kybHandle } : u)
+    });
+  };
+
   useEffect(() => {
     if (activeUser) getEntity();
   }, [activeUser]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  console.log(app.users);
 
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
@@ -67,7 +76,7 @@ const RegisterMember = ({ page, isActive, location, history }) => {
           page={page}
           handle={handle}
           isActive={isActive}
-          onSuccess={(user) => setActiveUser(user)}>
+          onSuccess={handleActiveUser}>
 
           <div className="d-flex mt-4">
             {app.alert.message && <AlertMessage message={app.alert.message} type={app.alert.type} />}
@@ -80,7 +89,7 @@ const RegisterMember = ({ page, isActive, location, history }) => {
 
           {existing && <div className="mb-5 loaded position-relative" style={{ zIndex: 4 }}>
             <p className="text-lg text-meta mb-4 loaded">Select the user you wish to link to the business.</p>
-            <SelectMenu fullWidth title="Choose a user..." options={app.users.filter(user => !user.business).map(user => ({ label: `${user.firstName} ${user.lastName} (${user.handle})`, value: user.handle }))} onChange={(handle) => setActiveUser(app.users.find(user => user.handle === handle))} />
+            <SelectMenu fullWidth title="Choose a user..." options={app.users.filter(user => !user.business).map(user => ({ label: `${user.firstName} ${user.lastName} (${user.handle})`, value: user.handle }))} onChange={(handle) => handleActiveUser(app.users.find(user => user.handle === handle))} />
           </div>}
 
           {member && <div className="loaded">

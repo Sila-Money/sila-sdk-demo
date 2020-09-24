@@ -5,7 +5,6 @@ import { NavLink } from 'react-router-dom';
 import Pagination from '../../components/common/Pagination';
 import Loader from '../../components/common/Loader';
 import AlertMessage from '../../components/common/AlertMessage';
-import RouteConfig from '../../components/common/RouteConfig';
 
 import { useAppContext } from '../../components/context/AppDataProvider';
 
@@ -87,7 +86,7 @@ const BusinessMembers = ({ page, previous, next, history, routes, location }) =>
     if (location.pathname === page) getRolesAndMembersAndCheckKyc();
   }, [location.pathname]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return location.pathname !== page ? <RouteConfig routes={routes} /> : (
+  return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 
       <h1 className="mb-4">Register Business Members</h1>

@@ -1,7 +1,5 @@
 import React from 'react';
 
-import RouteConfig from '../components/common/RouteConfig';
-
 // Route Views
 import Home from '../views/Home';
 import CheckHandle from '../views/CheckHandle';
@@ -90,7 +88,6 @@ export default [
     restricted: false,
     title: 'Register Business',
     path: '/business',
-    component: (props) => <RouteConfig routes={props.routes} />,
     routes: [{
       restricted: false,
       title: 'Business Type',
