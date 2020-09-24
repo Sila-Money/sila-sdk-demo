@@ -12,9 +12,8 @@ const MemberDetails = ({ page, match, history, location }) => {
   const [member, setMember] = useState(false);
   const [alert, setAlert] = useState(false);
   const { app, api, handleError, setAppData } = useAppContext();
-  const canLinkMembership = member && app.settings.kybRoles.filter(role => member.memberships.every(membership => membership.role !== role.name)).length !== 0;
   const beneficialOwner = member && member.memberships.find(membership => membership.role === 'beneficial_owner');
-  const canCertify = member && member.memberships.some(membership => membership.certification_token !== null);
+  const canCertify = member && member.memberships.some(membership => location.state.role && location.state.role === membership.role && membership.certification_token !== null);
   
   const getEntity = async () => {
     console.log('Getting Entity ...');
@@ -23,6 +22,7 @@ const MemberDetails = ({ page, match, history, location }) => {
       const res = await api.getEntity(activeUser.handle, activeUser.private_key);
       console.log('  ... completed!');
       if (res.data.success) {
+        console.log(res);
         delete res.data.success;
         setMember(res.data);
       }
@@ -45,6 +45,7 @@ const MemberDetails = ({ page, match, history, location }) => {
       const res = await api.certifyBeneficialOwner(app.activeUser.handle, app.activeUser.private_key, businessUser.handle, businessUser.private_key, match.params.handle, beneficialOwner.certification_token);
       if (res.data.status === 'SUCCESS') {
         setAlert({ message: res.data.message, type: 'success' });
+        history.goBack();
       } else {
         setAlert({ message: res.data.message, type: 'danger' });
       }
@@ -69,7 +70,7 @@ const MemberDetails = ({ page, match, history, location }) => {
 
       <div className="mb-4 d-flex">
         <h1 className="mb-0">Team Member</h1>
-        {(!canLinkMembership || !canCertify) && <Button variant="outline-light" className="text-meta text-uppercase ml-auto" onClick={() => history.goBack()}>Back</Button>}
+        {location.pathname.includes('certify') && <Button variant="outline-light" className="text-meta text-uppercase ml-auto" onClick={() => history.goBack()}>Back</Button>}
       </div>      
 
       <p className="text-lg text-meta mb-4">Please review the following information and certify that it is correct.</p>
@@ -111,7 +112,7 @@ const MemberDetails = ({ page, match, history, location }) => {
           </Col>}
         </Row>
 
-        {!location.pathname.includes('certify') && member.memberships.length !== 0 && <Card className="mt-5">
+        {!location.pathname.includes('certify') && member.memberships.length !== 0 && <Card>
           <Card.Header className="bg-secondary">Memberships</Card.Header>
           <ListGroup variant="flush">
             {member.memberships.map((membership, index) => <ListGroup.Item variant="flush" key={index}>
@@ -121,10 +122,10 @@ const MemberDetails = ({ page, match, history, location }) => {
           </ListGroup>
         </Card>}
 
-        {!location.pathname.includes('certify') && canLinkMembership && <div className="mt-5">
+        {!location.pathname.includes('certify') && <div className="mt-5">
           <h2 className="mb-4">Link your account</h2>
           <p className="text-meta text-lg mb-4">Now that you have registered, you must link your account to the business.{member.memberships.find(membership => membership.role === 'beneficial_owner') && '  If you are also a Beneficial Owner, please provide your Ownership Percentage.'}</p>
-          <LinkMemberForm handle={match.params.handle} roles={app.settings.kybRoles} rolesFilter={(role) => member.memberships.every(membership => membership.role !== role.name)} isBo={member.memberships.length === 0 || member.memberships.find(membership => membership.role === 'beneficial_owner')} />
+          <LinkMemberForm member={member} onMemberLinked={() => { setMember(false); getEntity() ;} } onMemberUnlinked={() => { setMember(false); getEntity(); }} isBo={!member.memberships.some(membership => membership.role === 'beneficial_owner')} />
           <p className="mt-5 mb-0 text-center"><Button variant="outline-light" className="text-meta text-uppercase" onClick={() => history.goBack()}>Back to Business Members</Button></p>
         </div>}
                 

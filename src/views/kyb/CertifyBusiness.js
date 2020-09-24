@@ -42,8 +42,9 @@ const BusinessMembers = ({ page, previous, next, routes, location, history, isAc
         api.checkKYC(businessUser.handle, businessUser.private_key)
       ]);
       if (entityResponse.statusCode === 200 && kycResponse.statusCode === 200) {
+        console.log(kycResponse);
         setMembers(entityResponse.data.members.map(member => ({ ...member, ...kycResponse.data.members.find(kyc => member.user_handle === kyc.user_handle && member.role === kyc.role) })));
-        setShowCongrats(kycResponse.data.certification_history.some(history => history.expires_after_epoch > Date.now()));
+        setShowCongrats(kycResponse.data.certification_history.some(history => !history.expires_after_epoch || history.expires_after_epoch > Date.now()) && kycResponse.data.certification_status.includes('certified'));
         setLoaded(true);
       }
     } catch (err) {
@@ -122,7 +123,7 @@ const BusinessMembers = ({ page, previous, next, routes, location, history, isAc
           <p className="text-meta mb-0 mb-5">This page represents <a href="https://docs.silamoney.com/docs/certify_business" target="_blank" rel="noopener noreferrer">/certify_business</a> functionality.</p>
 
           {!isAdmin && <DisabledOverlay>
-            <p className="mb-0"><i className="fas fa-lock mr-2"></i> You must be an administrator to cerify the bussines and it's members. {adminUser && <Button variant="link" className="p-0 text-white important ml-2" onClick={(e) => setActiveUser(e)}>Switch to the Administator</Button>}</p>
+            <p className="mb-0"><i className="fas fa-lock mr-2"></i> You must be an administrator to cerify the business and it's members. {adminUser && <Button variant="link" className="p-0 text-white important ml-2" onClick={(e) => setActiveUser(e)}>Switch to the Administator</Button>}</p>
           </DisabledOverlay>}
 
           <div className="members position-relative">
@@ -157,7 +158,7 @@ const BusinessMembers = ({ page, previous, next, routes, location, history, isAc
                         const statusVariant = member.beneficial_owner_certification_status.includes('not_required') ? 'info' : member.beneficial_owner_certification_status.includes('pending') ? 'primary' : 'success';
                         const statusLabel = member.beneficial_owner_certification_status.includes('not_required') ? 'Not required' : member.beneficial_owner_certification_status.includes('pending') ? 'Certification Pending' : 'Certfied';
                         return (
-                          <tr key={index} className="loaded" onClick={() => history.push({ pathname: `/certify/${member.user_handle}`, state: { from: page } })}>
+                          <tr key={index} className="loaded" onClick={() => history.push({ pathname: `/certify/${member.user_handle}`, state: { role: member.role, from: page } })}>
                             <td className="px-3 text-nowrap align-middle">{app.settings.kybRoles.find(role => role.name === member.role).label}</td>
                             <td className="px-3 text-nowrap">{`${member.first_name} ${member.last_name}`}</td>
                             <td className="px-3 text-nowrap">{member.user_handle}</td>
@@ -198,7 +199,7 @@ const BusinessMembers = ({ page, previous, next, routes, location, history, isAc
 
       <Pagination
         previous={previous}
-        next={isActive ? next : undefined}
+        next={showCongrats ? next : undefined}
         currentPage={page} />
 
     </Container>

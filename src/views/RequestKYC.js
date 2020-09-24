@@ -117,7 +117,7 @@ const RequestKYC = ({ page, previous, next }) => {
             <span className="user"><span className="text-primary">{`${member.first_name} ${member.last_name} (${member.user_handle})`}</span> <span className="mx-2">&ndash;</span> <em>{app.settings.kybRoles.find(role => role.name === member.role).label}</em></span>
             {member.verification_status.includes('passed') ? 
             <em className="message ml-auto text-success">Passed ID verification</em> : 
-            member.verification_status.includes('pending') ?
+            member.verification_status.includes('pending') || member.verification_status.includes('unverified') ?
             <em className="message ml-auto text-primary">Pending ID verification</em> :
             member.verification_status.includes('failed') ?
             <em className="message ml-auto text-danger">Failed ID verification</em> : null}

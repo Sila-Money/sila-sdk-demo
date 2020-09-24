@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
+import { useHistory } from 'react-router-dom';
 
 import { useAppContext } from '../context/AppDataProvider';
 
@@ -9,11 +10,13 @@ const SettingsModal = () => {
   const [validated, setValidated] = useState(false);
   const [errors, setErrors] = useState({});
   const { api, app, updateApp, setAuth, resetApp } = useAppContext();
+  const history = useHistory();
 
   const checkAuth = async () => {
     const res = await api.checkHandle('');
     if (res.statusCode === 200) {
       handleHide();
+      history.go();
     } else {
       setErrors({ ...errors, auth: 'App credentials are invalid!' });
       resetApp();

@@ -4,7 +4,7 @@ import Sila from 'sila-sdk';
 export const appContext = createContext(null);
 
 // Set default app data
-const appData = {
+let appData = {
   auth: {},
   settings: {},
   users: [],

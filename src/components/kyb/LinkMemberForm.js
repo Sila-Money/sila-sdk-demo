@@ -6,14 +6,14 @@ import { useAppContext } from '../context/AppDataProvider';
 
 import AlertMessage from '../common/AlertMessage';
 
-const LinkMemberForm = ({ roles, rolesFilter, handle, isBo, onRolesDisabled, onSuccess }) => {
+const LinkMemberForm = ({ member, isBo, onRolesDisabled, onMemberLinked, onMemberUnlinked }) => {
   const { app, api, setAppData, handleError } = useAppContext();
   const [ownershipStake, setOwnershipStake] = useState(0);
   const [details, setDetails] = useState('');
   const [alert, setAlert] = useState(false);
-  const filteredRoles = rolesFilter ? roles.filter(role => rolesFilter(role)) : roles;
-  const activeUser = app.users.find(user => handle === user.handle);
+  const activeUser = app.users.find(user => member.user_handle === user.handle);
   const businessUser = app.users.find(user => app.settings.kybHandle === user.handle);
+  const isBoOrMembership = isBo && !member.memberships.some(membership => membership.role === 'beneficial_owner');
 
   const linkMember = async (role) => {
     console.log('Linking Business Member ...');
@@ -22,7 +22,8 @@ const LinkMemberForm = ({ roles, rolesFilter, handle, isBo, onRolesDisabled, onS
       const res = await api.linkBusinessMember(activeUser.handle, activeUser.private_key, businessUser.handle, businessUser.private_key, role.name, undefined, details, ownership_stake);
       if (res.data.status === 'SUCCESS') {
         setAlert({ message: `Successfully linked as a ${role.label}!`, type: 'success' });
-        if (onSuccess) onSuccess(res.data);
+        if (onMemberUnlinked) onMemberLinked({ handle: activeUser.handle, role: role.name });
+        if (ownershipStake) setOwnershipStake(0);
       } else {
         setAlert({ message: res.data.message, type: 'danger' });
       }
@@ -44,6 +45,8 @@ const LinkMemberForm = ({ roles, rolesFilter, handle, isBo, onRolesDisabled, onS
       const res = await api.unlinkBusinessMember(activeUser.handle, activeUser.private_key, businessUser.handle, businessUser.private_key, role.name);
       if (res.data.status === 'SUCCESS') {
         setAlert({ message: `Successfully unlinked ${activeUser.firstName} ${activeUser.lastName} as a ${role.label}!`, type: 'success' });
+        if (onMemberUnlinked) onMemberUnlinked({ handle: activeUser.handle, role: role.name });
+        if (ownershipStake) setOwnershipStake(0);
       } else {
         setAlert({ message: res.data.message, type: 'danger' });
       }
@@ -61,20 +64,20 @@ const LinkMemberForm = ({ roles, rolesFilter, handle, isBo, onRolesDisabled, onS
 
   return (
     <>
-      <Form.Row className={!isBo ? 'mx-0' : undefined}>
-        <Form.Group as={isBo ? Col : undefined} className={!isBo ? 'w-100' : undefined} controlId="linkDetails">
+      {member.memberships.length !== app.settings.kybRoles.length && <Form.Row className={!isBoOrMembership ? 'mx-0' : undefined}>
+        <Form.Group as={isBoOrMembership ? Col : undefined} className={!isBoOrMembership ? 'w-100' : undefined} controlId="linkDetails">
           <Form.Control onChange={(e) => setDetails(e.target.value)} placeholder="Title" name="detail" />
         </Form.Group>
-        {isBo && <Form.Group as={Col} controlId="linkOwnership" className="ml-auto w-50">
+        {isBoOrMembership && <Form.Group as={Col} controlId="linkOwnership" className="ml-auto w-50">
           <Form.Label className="d-block text-meta">Ownership Percentage ({ownershipStake}%)</Form.Label>
           <RangeSlider value={ownershipStake} onChange={e => setOwnershipStake(parseInt(e.target.value))} tooltipLabel={(label) => `${label}%`} name="ownership_stake" />
         </Form.Group>}
-      </Form.Row>
+      </Form.Row>}
 
       <div className="mt-4 text-right">
-        {filteredRoles.map((role, index) => {
-          const hasRole = activeUser && activeUser.memberships && activeUser.memberships.length && activeUser.memberships.some(membership => membership.role === role);
-          return <Button key={index} className="ml-3" disabled={(onRolesDisabled ? onRolesDisabled(role) : null) || (role.name === 'beneficial_owner' && !ownershipStake)} onClick={() => hasRole ? unlinkMember(role) : linkMember(role)}>{hasRole ? 'Unlink' : 'Link'} as a {role.label}</Button>
+        {app.settings.kybRoles.map((role, index) => {
+          const hasRole = member.memberships.some(membership => membership.role === role.name);
+          return <Button key={index} className="ml-3" disabled={(onRolesDisabled ? onRolesDisabled(role) : undefined) || (role.name === 'beneficial_owner' && isBoOrMembership && !ownershipStake)} onClick={() => hasRole ? unlinkMember(role) : linkMember(role)}>{hasRole ? 'Unlink' : 'Link'} as a {role.label}</Button>
         })}
       </div>
 

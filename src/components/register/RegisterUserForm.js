@@ -29,7 +29,6 @@ const RegisterUserForm = ({ className, handle, page, isActive, children, onError
     user.dateOfBirth = e.target.dateOfBirth.value;
     user.ssn = e.target.ssn.value;
     user.cryptoAddress = wallet.address;
-    console.log(user.phone);
     try {
       const res = await api.register(user);
       let result = {};
