@@ -9,7 +9,7 @@ import { useAppContext } from '../components/context/AppDataProvider';
 const CheckHandle = ({ page, previous, next }) => {
   const [success, setSuccess] = useState(false);
   const { app, setAppData } = useAppContext();
-  const handle = app.settings.flow === 'kyc' && app.settings.kycHandle ? app.settings.kycHandle : app.settings.flow === 'kyb' && app.settings.kybHandle ? app.settings.kybHandle : undefined;
+  const handle = app.settings.flow === 'kyc' && app.settings.kycHandle ? app.settings.kycHandle : app.settings.flow === 'kyb' && app.settings.kybHandle && app.settings.kybHandle;
 
   const handleSuccess = (handle) => {
     setSuccess(true);
@@ -31,7 +31,7 @@ const CheckHandle = ({ page, previous, next }) => {
 
       <Pagination
         previous={previous}
-        next={success ? next : undefined}
+        next={success && next}
         currentPage={page} />
 
     </Container>

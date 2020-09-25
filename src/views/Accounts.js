@@ -186,7 +186,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
 
       <Pagination
         previous={previous}
-        next={isActive ? next : undefined}
+        next={isActive && next}
         currentPage={page} />
 
       <LinkAccountModal show={app.manageLinkAccount} onSuccess={getAccounts} />

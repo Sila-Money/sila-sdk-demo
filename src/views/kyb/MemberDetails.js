@@ -102,7 +102,7 @@ const MemberDetails = ({ page, match, history, location }) => {
         </Row>
 
         <Row className="mb-0">
-          <Col md={beneficialOwner ? 12 : undefined} lg={beneficialOwner ? 6 : undefined} className="mb-4">
+          <Col md={beneficialOwner && 12} lg={beneficialOwner && 6} className="mb-4">
             <p className="pb-2 mb-1 border-bottom border-light text-lg">{member.addresses.length ? `${member.addresses[0].street_address_1} ${member.addresses[0].city}, ${member.addresses[0].state} ${member.addresses[0].postal_code}` : 'N/A'}</p>
             <p className="mb-4 text-meta">Home Address</p>
           </Col>
@@ -112,19 +112,17 @@ const MemberDetails = ({ page, match, history, location }) => {
           </Col>}
         </Row>
 
-        {!location.pathname.includes('certify') && member.memberships.length !== 0 && <Card>
+        {member.memberships.length !== 0 && <Card>
           <Card.Header className="bg-secondary">Memberships</Card.Header>
           <ListGroup variant="flush">
             {member.memberships.map((membership, index) => <ListGroup.Item variant="flush" key={index}>
-              <p className="m-0">{`${app.settings.kybRoles.find(role => role.name === membership.role).label} at ${membership.entity_name}${membership.ownership_stake ? ` with an ownership stake of ${membership.ownership_stake * 100}%` : ''}.`}</p>
+              <p className="m-0">{`${app.settings.kybRoles.find(role => role.name === membership.role).label} at ${membership.entity_name}${membership.ownership_stake ? ` with an ownership stake of ${Math.round(beneficialOwner.ownership_stake * 100)}%` : ''}.`}</p>
               {membership.details && <p className="m-0 text-meta text-sm">{membership.details}</p>}
             </ListGroup.Item>)}
           </ListGroup>
         </Card>}
 
         {!location.pathname.includes('certify') && <div className="mt-5">
-          <h2 className="mb-4">Link your account</h2>
-          <p className="text-meta text-lg mb-4">Now that you have registered, you must link your account to the business.{member.memberships.find(membership => membership.role === 'beneficial_owner') && '  If you are also a Beneficial Owner, please provide your Ownership Percentage.'}</p>
           <LinkMemberForm member={member} onMemberLinked={() => { setMember(false); getEntity() ;} } onMemberUnlinked={() => { setMember(false); getEntity(); }} isBo={!member.memberships.some(membership => membership.role === 'beneficial_owner')} />
           <p className="mt-5 mb-0 text-center"><Button variant="outline-light" className="text-meta text-uppercase" onClick={() => history.goBack()}>Back to Business Members</Button></p>
         </div>}

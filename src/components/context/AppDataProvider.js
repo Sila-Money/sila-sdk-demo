@@ -109,7 +109,7 @@ const AppDataProvider = props => {
       accounts: initAppData.accounts,
       success: initAppData.success
     });
-    if (auth === undefined) {
+    if (!auth) {
       // If there is no Auth setting, remove authentication in the SDK and demo app
       auth = { handle: false, key: false };
       updateApp({ auth: {} });

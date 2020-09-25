@@ -17,7 +17,7 @@ const CustomRoute = ({ route, ...props }) => {
       page={route.path}
       routes={route.routes}
       previous={pages && pages[pages.findIndex(p => p === route.path) - 1] ? pages[pages.findIndex(p => p === route.path) - 1] : '/'}
-      next={pages ? pages[pages.findIndex(p => p === route.path) + 1] : undefined}
+      next={pages && pages[pages.findIndex(p => p === route.path) + 1]}
       isActive={app.success.find(success => app.activeUser && success.handle === app.activeUser.handle && success.page === route.path) ? true : false}
       {...props}
     />

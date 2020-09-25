@@ -94,8 +94,6 @@ const RegisterMember = ({ page, isActive, location, history }) => {
 
           {member && <div className="loaded">
 
-            {!existing && <p className="text-lg text-meta mb-4 loaded">Now that you have registered, you must link your account to the business.  If you are also a Beneficial Owner, please provide your Ownership Percentage.</p>}
-
             {app.settings.kybRoles.map((role, index) => {
               const hasRole = member && member.memberships.some(membership => membership.role === role.name);
               return (<Form.Check custom key={index} id={role.name} className="mb-3 ml-n2" type="checkbox">

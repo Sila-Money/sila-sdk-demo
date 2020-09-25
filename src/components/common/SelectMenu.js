@@ -34,13 +34,13 @@ const SelectMenu = ({ fullWidth, className, show, id, variant, options, onChange
   }, [title]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <Dropdown id={id || undefined} className={classes} as={Nav.Item}>
-      <Dropdown.Toggle size={size || undefined} variant={variant || 'outline-light'} className={buttonClasses} as={Button}>{menuTitle}</Dropdown.Toggle>
+    <Dropdown id={id} className={classes} as={Nav.Item}>
+      <Dropdown.Toggle size={size} variant={variant || 'outline-light'} className={buttonClasses} as={Button}>{menuTitle}</Dropdown.Toggle>
       {((menuItems.length) || (!menuItems.length && action)) && <Dropdown.Menu show={show} className={menuClasses}>
         {menuItems.filter(option => option.label !== menuTitle).map((option, index) => <Dropdown.Item key={index} eventKey={index + 1} onClick={() => handleChange(option)} className={itemClasses}>{option.htmlBefore}{option.label}{option.htmlAfter}</Dropdown.Item>)}
         {action && <>
           {menuItems.length !== 0 && <Dropdown.Divider />}
-          <Dropdown.Item as={action.to ? NavLink : undefined} to={action.to || undefined} href={action.href || undefined} className={itemClasses}>{action.htmlBefore}{action.label}{action.htmlAfter}</Dropdown.Item>
+          <Dropdown.Item as={action.to && NavLink} to={action.to} href={action.href} className={itemClasses}>{action.htmlBefore}{action.label}{action.htmlAfter}</Dropdown.Item>
         </>}
       </Dropdown.Menu>}
     </Dropdown>

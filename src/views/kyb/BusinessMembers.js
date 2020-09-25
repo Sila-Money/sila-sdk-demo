@@ -8,7 +8,7 @@ import AlertMessage from '../../components/common/AlertMessage';
 
 import { useAppContext } from '../../components/context/AppDataProvider';
 
-const BusinessMembers = ({ page, previous, next, history, routes, location }) => {
+const BusinessMembers = ({ page, previous, next, history, location }) => {
   const [loaded, setLoaded] = useState(false);
   const [members, setMembers] = useState([]);
   const { api, app, setAppData, handleError, updateApp } = useAppContext();
@@ -164,7 +164,7 @@ const BusinessMembers = ({ page, previous, next, history, routes, location }) =>
 
       <Pagination
         previous={previous}
-        next={members.length && app.settings.kybRoles.filter(role => members.every(member => member.role !== role.name)).length === 0 ? next : undefined}
+        next={members.length && app.settings.kybRoles.filter(role => members.every(member => member.role !== role.name)).length <= 1 && next}
         currentPage={page} />
 
     </Container>

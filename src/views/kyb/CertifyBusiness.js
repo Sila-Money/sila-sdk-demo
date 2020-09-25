@@ -198,7 +198,7 @@ const BusinessMembers = ({ page, previous, next, routes, location, history, isAc
 
       <Pagination
         previous={previous}
-        next={showCongrats ? next : undefined}
+        next={showCongrats && next}
         currentPage={page} />
 
     </Container>

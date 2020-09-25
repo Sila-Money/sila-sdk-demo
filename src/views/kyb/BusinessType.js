@@ -64,7 +64,7 @@ const BusinessType = ({ page, previous, next }) => {
         title={app.settings.kybBusinessType ? types.find(type => type.value === app.settings.kybBusinessType).label : 'Please choose a business type...'}
         onChange={(value) => setAppData({ settings: { ...app.settings, kybBusinessType: value } })}
         className="types mb-4"
-        value={app.settings.kybBusinessType || undefined}
+        value={app.settings.kybBusinessType}
         options={types.map(type => ({ label: type.label, value: type.value }))} /></>}
 
       {categories && <>
@@ -73,7 +73,7 @@ const BusinessType = ({ page, previous, next }) => {
         title={app.settings.kybNaicsCategory ? Object.keys(categories)[app.settings.kybNaicsCategory] : 'Please choose a NAICS category...'}
         onChange={(value) => setAppData({ settings: { ...app.settings, kybNaicsCategory: value } })}
         className="categories mb-4"
-        value={app.settings.kybNaicsCategory || undefined}
+        value={app.settings.kybNaicsCategory}
         options={Object.keys(categories).map((category, index) => ({ label: category, value: index }))} /></>}
 
       {app.settings.kybNaicsCategory && categories && <>
@@ -82,12 +82,12 @@ const BusinessType = ({ page, previous, next }) => {
         title={app.settings.kybNaicsCode && Object.values(categories)[app.settings.kybNaicsCategory].find(category => app.settings.kybNaicsCode === category.code) ? Object.values(categories)[app.settings.kybNaicsCategory].find(category => app.settings.kybNaicsCode === category.code).subcategory : 'Please choose a NAICS subcategory...'}
         onChange={(value) => setAppData({ settings: { ...app.settings, kybNaicsCode: value } })}
         className="categories mb-4"
-        value={app.settings.kybNaicsCode || undefined}
+        value={app.settings.kybNaicsCode}
         options={Object.values(categories)[app.settings.kybNaicsCategory].map(category => ({ label: category.subcategory, value: category.code }))} /></>}
 
       <Pagination
         previous={previous}
-        next={app.settings.kybBusinessType && app.settings.kybNaicsCode ? next : undefined}
+        next={app.settings.kybBusinessType && app.settings.kybNaicsCode && next}
         currentPage={page} />
 
     </Container>
