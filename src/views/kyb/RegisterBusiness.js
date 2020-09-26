@@ -96,11 +96,11 @@ const RegisterBusiness = ({ page, previous, next, isActive }) => {
 
       <Form noValidate validated={validated} autoComplete="off" onSubmit={register}>
         <Form.Row>
-          <Form.Group as={Col} controlId="businessName" className="required">
+          <Form.Group as={Col} md="6" controlId="businessName" className="required">
             <Form.Control required placeholder="Legal Company Name" name="entity_name" />
             {errors.entity && errors.entity.entity_name && <Form.Control.Feedback type="invalid">{errors.entity.entity_name}</Form.Control.Feedback>}
           </Form.Group>
-          <Form.Group as={Col} controlId="businessDBA">
+          <Form.Group as={Col} md="6" controlId="businessDBA">
             <Form.Control placeholder="DBA (If Applicable)" name="doing_business_as" />
             {errors.entity && errors.entity.doing_business_as && <Form.Control.Feedback type="invalid">{errors.entity.doing_business_as}</Form.Control.Feedback>}
             <Form.Text className="text-meta">Optional business name if it differs from the legally registered name.</Form.Text>
@@ -111,38 +111,38 @@ const RegisterBusiness = ({ page, previous, next, isActive }) => {
           {errors.address && errors.address.street_address_1 && <Form.Control.Feedback type="invalid">{errors.address.street_address_1}</Form.Control.Feedback>}
         </Form.Group>
         <Form.Row>
-          <Form.Group as={Col} controlId="businessCity" className="required">
+          <Form.Group as={Col} md="4" controlId="businessCity" className="required">
             <Form.Control required  placeholder="City" name="city" />
             {errors.address && errors.address.city && <Form.Control.Feedback type="invalid">{errors.address.city}</Form.Control.Feedback>}
           </Form.Group>
-          <Form.Group as={Col} controlId="businessState" className="select required">
+          <Form.Group as={Col} md="4" controlId="businessState" className="select required">
             <Form.Control required as="select" name="state">
               <option value="">State</option>
               {STATES_ARRAY.map((option, index) => <option key={index} value={option.value}>{option.label}</option>)}
             </Form.Control>
             {errors.address && errors.address.state && <Form.Control.Feedback type="invalid">{errors.address.state}</Form.Control.Feedback>}
           </Form.Group>
-          <Form.Group as={Col} controlId="businessZip" className="required">
+          <Form.Group as={Col} md="4" controlId="businessZip" className="required">
             <Form.Control required placeholder="Zip" name="zip" />
             {errors.address && errors.address.postal_code && <Form.Control.Feedback type="invalid">{errors.address.postal_code}</Form.Control.Feedback>}
           </Form.Group>
         </Form.Row>
         <Form.Row>
-          <Form.Group as={Col} controlId="businessPhone" className="required">
+          <Form.Group as={Col} md="6" controlId="businessPhone" className="required">
             <Form.Control required placeholder="Business Phone" name="phone" type="tel" as={NumberFormat} format="(###) ###-####" mask="_" />
             {errors.contact && errors.contact.phone && <Form.Control.Feedback type="invalid">{errors.contact.phone}</Form.Control.Feedback>}
           </Form.Group>
-          <Form.Group as={Col} controlId="businessEIN" className="required">
+          <Form.Group as={Col} md="6" controlId="businessEIN" className="required">
             <Form.Control required placeholder="EIN" name="ein" isInvalid={errors.identity} />
             {errors.identity && <Form.Control.Feedback type="invalid">{errors.identity.identity_value || errors.identity}</Form.Control.Feedback>}
           </Form.Group>
         </Form.Row>
         <Form.Row>
-          <Form.Group as={Col} controlId="businessEmail" className="required">
+          <Form.Group as={Col} md="6" controlId="businessEmail" className="required">
             <Form.Control required type="email" placeholder="Business Email" name="email" />
             {errors.contact && errors.contact.email && <Form.Control.Feedback type="invalid">{errors.contact.email}</Form.Control.Feedback>}
           </Form.Group>
-          <Form.Group as={Col} controlId="businessWebsite">
+          <Form.Group as={Col} md="6" controlId="businessWebsite">
             <Form.Control type="url" placeholder="Business Website" name="business_website" />
             {errors.entity && errors.entity.business_website && <Form.Control.Feedback type="invalid">{errors.entity.business_website}</Form.Control.Feedback>}
           </Form.Group>

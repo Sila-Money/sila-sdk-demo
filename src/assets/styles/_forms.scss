@@ -37,7 +37,7 @@
     z-index: 5;
   }
 
-  &.required:not(.col)::before {
+  &.required:not([class*="col"])::before {
     margin-right: -10px;
   }
 }
