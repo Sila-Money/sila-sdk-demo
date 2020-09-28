@@ -211,7 +211,7 @@ const Transact = ({ page, previous, next, isActive }) => {
         </OverlayTrigger>
       </div>
 
-      <CardGroup className="mb-4">
+      <CardGroup className="mb-5">
         <Card>
           <Form.Group className="select mb-0">
             <Card.Header className="bg-secondary p-3">

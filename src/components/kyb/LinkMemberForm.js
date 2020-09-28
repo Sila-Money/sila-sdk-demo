@@ -70,7 +70,7 @@ const LinkMemberForm = ({ member, isBo, onRolesDisabled, onMemberLinked, onMembe
   return (
     <>
       <h2 className="mb-4">Link your account</h2>
-      <p className="text-meta text-lg mb-4">Link or unlink your account to the business and provide an optional title when linking your account.{member.memberships.find(membership => membership.role !== 'beneficial_owner') && '  If you are also a Beneficial Owner, please provide your Ownership Percentage.'}</p>
+      <p className="text-meta text-lg mb-4">Link or unlink your account to the business and provide an optional title. {member.memberships.find(membership => membership.role !== 'beneficial_owner') && '  If you are also a Beneficial Owner, please provide your Ownership Percentage.'}</p>
 
       {member.memberships && member.memberships.length !== app.settings.kybRoles.length && <Form.Row className={!isBoOrMembership && 'mx-0'}>
         <Form.Group as={isBoOrMembership ? Col : undefined} className={!isBoOrMembership && 'w-100'} controlId="linkDetails">
