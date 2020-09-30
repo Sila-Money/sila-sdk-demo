@@ -18,6 +18,10 @@ const App = () => {
   const { app, updateApp } = useAppContext();
   const history = useHistory();
   const location = useLocation();
+  const inFlow = app.settings.flow && flows[app.settings.flow].routes.some(route => route.includes(location.pathname.split('/')[1]));
+
+  console.log(flows[app.settings.flow].routes);
+  console.log(location.pathname.split('/')[1]);
 
   useEffect(() => {
     const unlisten = history.listen(() => {
@@ -42,9 +46,9 @@ const App = () => {
           sm={12}
           as="main"
         >
-          {location.pathname !== '/' && app.settings.flow && <VerticalNavbar routes={routes.filter(route => route[app.settings.flow] || (!route.disabled && flows[app.settings.flow].includes(route.path))).sort((a, b) => flows[app.settings.flow].indexOf(a.path) - flows[app.settings.flow].indexOf(b.path))} />}
+          {location.pathname !== '/' && inFlow && <VerticalNavbar routes={routes.filter(route => route[app.settings.flow] || (!route.disabled && flows[app.settings.flow].routes.includes(route.path))).sort((a, b) => flows[app.settings.flow].routes.indexOf(a.path) - flows[app.settings.flow].routes.indexOf(b.path))} />}
           <div className="main-content d-flex flex-column">
-            <RouteConfig routes={routes} />
+            <RouteConfig routes={routes} inFlow={inFlow} />
           </div>
         </Col>
         <MainSidebar />

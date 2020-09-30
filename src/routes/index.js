@@ -17,30 +17,46 @@ import Accounts from '../views/Accounts';
 import Transact from '../views/Transact';
 import Errors from '../views/Errors';
 
+import indvidualIcon from '../assets/images/indvidual.svg';
+import businessIcon from '../assets/images/business.svg';
+
 export const flows = {
-  kyc: [
-    '/check_handle', 
-    '/register_user', 
-    '/request_kyc', 
-    '/wallets', 
-    '/accounts', 
-    '/transact'
-  ],
-  kyb: [
-    '/business/type',
-    '/business/handle', 
-    '/business/register', 
-    '/members',
-    '/request_kyc',
-    '/certify', 
-    '/wallets', 
-    '/accounts', 
-    '/transact'
-  ]
+  kyc: {
+    name: 'Individual Onboarding',
+    icon: indvidualIcon,
+    home: '/request_kyc',
+    permissions: (app) => !app.activeUser || !app.activeUser.business,
+    routes: [
+      '/check_handle', 
+      '/register_user', 
+      '/request_kyc', 
+      '/wallets', 
+      '/accounts', 
+      '/transact'
+    ]
+  },
+  kyb: {
+    name: 'Business Onboarding',
+    icon: businessIcon,
+    home: '/members',
+    permissions: (app) => !app.activeUser || app.activeUser.business || app.activeUser.business_handle,
+    routes: [
+      '/business/type',
+      '/business/handle', 
+      '/business/register', 
+      '/members',
+      '/request_kyc',
+      '/certify', 
+      '/wallets', 
+      '/accounts', 
+      '/transact'
+    ]
+  }
 };
 
 export default [
   {
+    all: true,
     title: 'Home',
     path: '/',
     exact: true,
@@ -53,6 +69,7 @@ export default [
     component: CheckHandle
   },
   {
+    all: true,
     restricted: false,
     title: 'Register User',
     path: '/register_user',
@@ -83,24 +100,24 @@ export default [
     component: Transact
   },
   {
+    all: true,
     kyb: true,
     placeholder: true,
-    restricted: false,
     title: 'Register Business',
     path: '/business',
     routes: [{
-      restricted: false,
+      all: true,
       title: 'Business Type',
       path: '/business/type',
       component: BusinessType
     },
     {
-      restricted: false,
+      all: true,
       title: 'Check Handle',
       path: '/business/handle',
       component: CheckHandle
     }, {
-      restricted: false,
+      all: true,
       title: 'Company Info',
       path: '/business/register',
       component: RegisterBusiness
@@ -140,6 +157,7 @@ export default [
     }]
   },
   {
+    all: true,
     path: '*',
     component: () => <Errors status={404} />
   }

@@ -62,7 +62,11 @@ const MemberDetails = ({ page, match, history, location }) => {
   };
 
   useEffect(() => {
-    getEntity();
+    if (app.users.some(user => match.params.handle === user.handle)) {
+      getEntity();
+    } else {
+      history.push('/members');
+    }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (

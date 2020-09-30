@@ -87,7 +87,7 @@ const BusinessType = ({ page, previous, next }) => {
 
       <Pagination
         previous={previous}
-        next={app.settings.kybBusinessType && app.settings.kybNaicsCode && next}
+        next={app.settings.kybBusinessType && app.settings.kybNaicsCode ? next : undefined}
         currentPage={page} />
 
     </Container>

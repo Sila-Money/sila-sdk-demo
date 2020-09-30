@@ -60,7 +60,7 @@ const CheckHandleForm = ({ className, defaultValue, onSuccess, disabled }) => {
         <Form.Control
           placeholder="Handle"
           aria-label="handle"
-          value={defaultValue || handle}
+          defaultValue={defaultValue || handle}
           onChange={handleChange}
           name="handle"
           isInvalid={error}

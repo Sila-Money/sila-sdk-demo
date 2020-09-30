@@ -1,22 +1,27 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
-import { NavLink } from 'react-router-dom';
 
 import { useAppContext } from '../components/context/AppDataProvider';
 
 import KybKycModal from '../components/home/KybKycModal';
 
-import indvidualIcon from '../assets/images/indvidual.svg';
-import businessIcon from '../assets/images/business.svg';
-
 import { flows } from '../routes';
 
-const Home = ({ page }) => {
+const Home = ({ page, history }) => {
   const [show, setShow] = useState(false);
   const { app, setAppData } = useAppContext();
 
-  const handleClick = (e, flow) => Object.keys(app.auth).length ? setAppData({ settings: { ...app.settings, flow } }) : e.preventDefault();
-  
+  const handleClick = (e, flow) => {
+    if (Object.keys(app.auth).length) {
+      setAppData({ settings: { ...app.settings, flow } }, () => {
+        console.log({ ...app.settings, flow });
+        history.push({ pathname: app.activeUser ? flows[flow].home : flows[flow].routes[0], state: { from: page } });
+      });
+    } else {
+      e.preventDefault();
+    }
+  };
+
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 
@@ -26,12 +31,9 @@ const Home = ({ page }) => {
 
       <Container className="mt-5">
         <Row className="justify-content-center">
-          {(!app.activeUser || !app.activeUser.business || app.settings.flow === 'kyc') && <Col lg="12" xl="6" className="text-center px-5">
-            <Button onClick={(e) => handleClick(e, 'kyc')} className="jumbotron border-light w-100" size="lg" variant="outline-light" as={NavLink} to={{ pathname: app.activeUser ? '/request_kyc' : flows['kyc'][0], state: { from: page } }}><span className="badge-light rounded-circle d-inline-block p-3 mb-3"><img src={indvidualIcon} width={32} height={32} alt="Individual Onboarding" /></span><br />Individual Onboarding</Button>
-          </Col>}
-          {(!app.activeUser || app.activeUser.business || app.settings.flow === 'kyb') && <Col lg="12" xl="6" className="text-center px-5">
-            <Button onClick={(e) => handleClick(e, 'kyb')} className="jumbotron border-light w-100" size="lg" variant="outline-light" as={NavLink} to={{ pathname: app.activeUser ? '/members' : flows['kyb'][0], state: { from: page } }}><span className="badge-light rounded-circle d-inline-block p-3 mb-3"><img src={businessIcon} width={32} height={32} alt="Business Onboarding" /></span><br />Business Onboarding</Button>
-          </Col>}
+          {Object.keys(flows).map(key => <Col key={key} lg="12" xl="6" className="text-center px-5">
+            <Button onClick={(e) => handleClick(e, key)} disabled={!flows[key].permissions(app)} className="jumbotron border-light w-100" size="lg" variant="outline-light"><span className="badge-light rounded-circle d-inline-block p-3 mb-3"><img src={flows[key].icon} width={32} height={32} alt={flows[key].name} /></span><br />{flows[key].name}</Button>
+          </Col>)}
         </Row>
       </Container>
 

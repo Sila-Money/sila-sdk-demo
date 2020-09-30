@@ -45,8 +45,6 @@ const RegisterMember = ({ page, isActive, location, history }) => {
     if (activeUser) getEntity();
   }, [activeUser]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  console.log(app.users);
-
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 

@@ -41,7 +41,6 @@ const BusinessMembers = ({ page, previous, next, routes, location, history, isAc
         api.checkKYC(businessUser.handle, businessUser.private_key)
       ]);
       if (entityResponse.statusCode === 200 && kycResponse.statusCode === 200) {
-        console.log(kycResponse);
         setMembers(entityResponse.data.members.map(member => ({ ...member, ...kycResponse.data.members.find(kyc => member.user_handle === kyc.user_handle && member.role === kyc.role) })));
         setShowCongrats(kycResponse.data.certification_history.some(history => !history.expires_after_epoch || history.expires_after_epoch > Date.now()) && kycResponse.data.certification_status.includes('certified'));
         setLoaded(true);
@@ -102,9 +101,11 @@ const BusinessMembers = ({ page, previous, next, routes, location, history, isAc
         handleError(err);
       }
     }
-    if (location.pathname === page) {
+    if (location.pathname === page && app.settings.kybHandle) {
       checkAdmin();
       getMembersAndCheckKyc();
+    } else {
+      history.push('/');
     }
   }, [location.pathname]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -198,7 +199,7 @@ const BusinessMembers = ({ page, previous, next, routes, location, history, isAc
 
       <Pagination
         previous={previous}
-        next={showCongrats && next}
+        next={showCongrats ? next : undefined}
         currentPage={page} />
 
     </Container>

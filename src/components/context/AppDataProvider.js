@@ -6,7 +6,16 @@ export const appContext = createContext(null);
 // Set default app data
 let appData = {
   auth: {},
-  settings: {},
+  settings: {
+    flow: false, 
+    referrer: false,
+    kybBusinessType: false, 
+    kybNaicsCode: false, 
+    kybNaicsCategory: false, 
+    kybHandle: false, 
+    kycHandle: false, 
+    kybMembersStatus: false
+  },
   users: [],
   wallets: [],
   accounts: [],
@@ -93,7 +102,7 @@ const AppDataProvider = props => {
         alert: true,
         message: error,
         type: 'danger'
-      }, ...app.responses]
+      }, ...initAppData.responses]
     });
   }
 
@@ -144,22 +153,21 @@ const AppDataProvider = props => {
     Sila.configure({ handle, key });
     initAppData = getAppStorage();
     initAppData.auth = { handle, key };
-    setAppStorage(initAppData);
-    setAppData({
+    setAppStorage({ 
+      ...initAppData, 
       responses: [{
         alert: true,
         message: 'Application authentication updated',
         type: 'success'
-      }, ...initAppData.responses]
-    }, () => {
-      updateApp({
-        activeUser: app.activeUser ? {
-          ...app.activeUser,
-          private_key: key
-        } : false
-      });
-      refreshApp();
+      }, ...initAppData.responses] 
     });
+    updateApp({
+      activeUser: initAppData.activeUser ? {
+        ...initAppData.activeUser,
+        private_key: key
+      } : false
+    });
+    refreshApp();
   }
 
   const setAppData = (options, callback) => {
@@ -172,6 +180,17 @@ const AppDataProvider = props => {
     if (callback) callback();
   }
 
+  const setNewUser = (callback) => {
+    initAppData = getAppStorage();
+    setAppStorage({
+      users: initAppData.users.map(({ active, ...u }) => u),
+      settings: appData.settings,
+    });
+    updateApp({ activeUser: false, kyc: {}, kyb: {} });
+    refreshApp();
+    if (callback) callback();
+  };
+
   return <appContext.Provider value={{
     app,
     api: Sila,
@@ -180,7 +199,8 @@ const AppDataProvider = props => {
     refreshApp,
     resetApp,
     setAuth,
-    setAppData
+    setAppData,
+    setNewUser
   }} {...props} />;
 };
 

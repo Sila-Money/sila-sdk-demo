@@ -206,7 +206,7 @@ const Wallets = ({ page, previous, next, isActive }) => {
 
       <Pagination
         previous={previous}
-        next={isActive && next}
+        next={isActive ? next : undefined}
         currentPage={page} />
 
     </Container>

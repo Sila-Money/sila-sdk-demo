@@ -3,7 +3,6 @@
 .btn {
 
   // disabled
-  &.disabled,
   &:disabled {
     cursor: default !important;
     background: $white !important;
@@ -16,7 +15,6 @@
     }
   }
 
-  &:not(.disabled),
   &:not(:disabled) {
 
     // Primary
@@ -24,10 +22,6 @@
       &:hover {
         background: $primary-hover;
         border-color: $primary-hover;
-      }
-      &:nav {
-        background: $primary-nav;
-        border-color: $primary-nav;
       }
     }
 
@@ -44,8 +38,7 @@
     }
 
     // Light outline
-    &[class*="btn-outline-light"],
-    &[class*="btn-outline-light"].nav {
+    &[class*="btn-outline-light"] {
       background: $white;
       border-color: $gray-almost-white;
       color: $text-light-color;
@@ -53,11 +46,6 @@
         color: $text-light-color;
         border-color: $white;
         box-shadow: 0 1px 12px rgba($black, .12);
-      }
-      &:nav {
-        border: 1px solid $gray-almost-white;
-        color: $primary;
-        box-shadow: none;
       }
       &.important {
         color: $body-color;
@@ -78,8 +66,7 @@
     // Primary outline - pill
     &[class*="btn-outline-primary"] {
       background: $white;
-      &:hover,
-      &:nav {
+      &:hover {
         background: #FBFCFD;
         color: $primary;
       }
@@ -93,8 +80,7 @@
       .sila-icon {
         color: $gray-medium;
       }
-      &:hover,
-      &.nav {
+      &:hover {
         .sila-icon {
           color: $primary;
         }

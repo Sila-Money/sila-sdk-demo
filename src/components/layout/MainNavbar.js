@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
+import { Container, Navbar, Button } from 'react-bootstrap';
+import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { Container, Navbar, Button } from 'react-bootstrap';
 import stickybits from 'stickybits';
 
 import { useAppContext } from '../context/AppDataProvider';
@@ -34,7 +35,7 @@ const MainNavbar = ({ stickyTop }) => {
     <header className={classes}>
       <Navbar type="light" className="p-0">
         <Container className="my-auto justify-content-between">
-          <Navbar.Brand href="/">
+          <Navbar.Brand as={NavLink} to="/">
             <SilaLogo id="main-logo" className="d-inline-block align-middle mr-1 logo" />
           </Navbar.Brand>
           <Navbar.Collapse className="d-block d-md-flex justify-content-end">

@@ -83,7 +83,11 @@ const BusinessMembers = ({ page, previous, next, history, location }) => {
   };
 
   useEffect(() => {
-    if (location.pathname === page) getRolesAndMembersAndCheckKyc();
+    if (location.pathname === page && app.settings.kybHandle) {
+      getRolesAndMembersAndCheckKyc();
+    } else {
+      history.push('/');
+    }
   }, [location.pathname]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
@@ -164,7 +168,7 @@ const BusinessMembers = ({ page, previous, next, history, location }) => {
 
       <Pagination
         previous={previous}
-        next={members.length && app.settings.kybRoles.filter(role => members.every(member => member.role !== role.name)).length <= 1 && next}
+        next={members.length && app.settings.kybRoles.filter(role => members.every(member => member.role !== role.name)).length <= 1 ? next : undefined}
         currentPage={page} />
 
     </Container>

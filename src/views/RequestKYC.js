@@ -133,7 +133,7 @@ const RequestKYC = ({ page, previous, next }) => {
 
       <Pagination
         previous={previous}
-        next={isActive && next}
+        next={isActive ? next : undefined}
         currentPage={page} />
 
     </Container>

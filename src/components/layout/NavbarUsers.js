@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Form } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
+import { useHistory, NavLink } from 'react-router-dom';
 
 import { useAppContext } from '../context/AppDataProvider';
 
@@ -10,7 +10,7 @@ import indvidualIcon from '../../assets/images/indvidual.svg';
 import businessIcon from '../../assets/images/business.svg';
 
 const NavbarUsers = () => {
-  const { app, updateApp, setAppData } = useAppContext();
+  const { app, updateApp, setAppData, setNewUser } = useAppContext();
   const history = useHistory();
 
   const setActiveUser = (handle) => {
@@ -25,16 +25,6 @@ const NavbarUsers = () => {
     });
   }
 
-  const handleNewUser = () => {
-    setAppData({ 
-      users: app.users.map(({ active, ...u }) => u),
-      settings: { ...app.settings, kybBusinessType: false, kybNaicsCode: false, kybNaicsCategory: false, kybHandle: false, kycHandle: false, flow: false, kybMembersStatus: false },
-    }, () => {
-      updateApp({ activeUser: false, kyc: {}, kyb: {} });
-      history.push('/');
-    });
-  }
-
   return <div className="ml-md-4 d-flex align-items-center">
     <Form.Label className="mr-2 mb-0" htmlFor="account">User:</Form.Label>
     <SelectMenu
@@ -45,7 +35,7 @@ const NavbarUsers = () => {
       value={app.activeUser ? app.activeUser.handle : undefined}
       options={app.users.map(user => ({ label: user.handle, value: user.handle, htmlBefore: user.business ? <img src={businessIcon} width={16} height={16} alt="Business" className="mt-n1 mr-2" /> : 
       <img src={indvidualIcon} width={16} height={16} alt="Individual" className="mt-n1 mr-2" /> }))} />
-    <Button onClick={handleNewUser} className="ml-2 text-nowrap" size="sm"><i className="fas fa-user-plus text-lg text-white"></i><span className="ml-2 d-none d-sm-inline">New Entity</span></Button>
+    <Button as={NavLink} to="/" onClick={() => setNewUser(() => history.push('/'))} className="ml-2 text-nowrap" size="sm"><i className="fas fa-user-plus text-lg text-white"></i><span className="ml-2 d-none d-sm-inline">New Entity</span></Button>
   </div>;
 }
 
