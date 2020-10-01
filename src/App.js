@@ -15,13 +15,10 @@ import ResetModal from './components/common/ResetModal';
 import routes, { flows } from './routes';
 
 const App = () => {
-  const { app, updateApp } = useAppContext();
+  const { app, updateApp, checkAuth } = useAppContext();
   const history = useHistory();
   const location = useLocation();
   const inFlow = app.settings.flow && flows[app.settings.flow].routes.some(route => route.includes(location.pathname.split('/')[1]));
-
-  console.log(flows[app.settings.flow].routes);
-  console.log(location.pathname.split('/')[1]);
 
   useEffect(() => {
     const unlisten = history.listen(() => {
@@ -31,7 +28,13 @@ const App = () => {
   }, [history]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    updateApp({ loaded: true, manageSettings: !app.auth });
+    if (app.auth.handle) {
+      checkAuth();
+      updateApp({ loaded: true });
+    } else {
+      history.push('/')
+      updateApp({ loaded: true, manageSettings: true });
+    }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (

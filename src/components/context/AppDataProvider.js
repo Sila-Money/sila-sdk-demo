@@ -102,9 +102,9 @@ const AppDataProvider = props => {
         alert: true,
         message: error,
         type: 'danger'
-      }, ...initAppData.responses]
+      }, ...app.responses]
     });
-  }
+  };
 
   const refreshApp = () => {
     initAppData = getAppStorage();
@@ -126,49 +126,69 @@ const AppDataProvider = props => {
     Sila.configure(auth); // Set the API Auth credentials in the SDK
     Sila.enableSandbox(); // Update the Sandbox setting in the SDK
     // Sila.disableSandbox();
-  }
+  };
 
   const resetApp = () => {
-    setAppStorage(appData);
-    refreshApp();
-    updateApp({
-      users: [],
-      wallets: [],
-      accounts: [],
-      success: [],
-      responses: [{
-        alert: true,
-        message: 'Application data cleared',
-        type: 'success',
-        loaded: true
-      }],
-      kyc: {},
-      kyb: {},
-      transactions: false,
-      activeUser: false
+    setAppData({ ...appData }, () => {
+      updateApp({
+        users: [],
+        wallets: [],
+        accounts: [],
+        success: [],
+        responses: [{
+          alert: true,
+          message: 'Application data cleared',
+          type: 'success',
+          loaded: true
+        }],
+        kyc: {},
+        kyb: {},
+        transactions: false,
+        activeUser: false
+      });
     });
-  }
+  };
 
-  const setAuth = (handle, key) => {
+  const setAuth = (handle, key, callback) => {
     Sila.configure({ handle, key });
-    initAppData = getAppStorage();
-    initAppData.auth = { handle, key };
-    setAppStorage({ 
-      ...initAppData, 
+    setAppData({
+      auth: { handle, key }, 
       responses: [{
         alert: true,
         message: 'Application authentication updated',
         type: 'success'
-      }, ...initAppData.responses] 
+      }, ...app.responses] 
+    }, () => {
+      updateApp({
+        activeUser: app.activeUser ? {
+          ...app.activeUser,
+          private_key: key
+        } : false
+      });
+      if (callback) callback();
     });
-    updateApp({
-      activeUser: initAppData.activeUser ? {
-        ...initAppData.activeUser,
-        private_key: key
-      } : false
-    });
-    refreshApp();
-  }
+  };
+
+  const checkAuth = async (handle, key) => {
+    const newAuth = handle && key ? { handle, key } : app.auth;
+    try {
+      const res = await Sila.checkHandle('');
+      if (res.statusCode === 200) {
+        delete newAuth.failed;
+        setAppData({ auth: newAuth }, () => {
+          updateApp({ manageSettings: false });
+        });
+      } else {
+        setAppData({ auth: { ...newAuth, failed: true } }, () => {
+          updateApp({ manageSettings: true });
+        });
+      }
+    } catch (err) {
+      setAppData({ auth: {...newAuth, failed: true } }, () => {
+        updateApp({ manageSettings: true });
+      });
+    }
+  };
 
   const setAppData = (options, callback) => {
     initAppData = getAppStorage();
@@ -178,17 +198,16 @@ const AppDataProvider = props => {
     setAppStorage(initAppData);
     refreshApp();
     if (callback) callback();
-  }
+  };
 
   const setNewUser = (callback) => {
-    initAppData = getAppStorage();
-    setAppStorage({
-      users: initAppData.users.map(({ active, ...u }) => u),
+    setAppData({
+      users: app.users.map(({ active, ...u }) => u),
       settings: appData.settings,
+    }, () => {
+      updateApp({ activeUser: false, kyc: {}, kyb: {} });
+      if (callback) callback();
     });
-    updateApp({ activeUser: false, kyc: {}, kyb: {} });
-    refreshApp();
-    if (callback) callback();
   };
 
   return <appContext.Provider value={{
@@ -199,6 +218,7 @@ const AppDataProvider = props => {
     refreshApp,
     resetApp,
     setAuth,
+    checkAuth,
     setAppData,
     setNewUser
   }} {...props} />;

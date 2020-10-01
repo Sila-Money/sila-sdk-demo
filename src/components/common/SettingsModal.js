@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 
@@ -9,19 +9,9 @@ import AlertMessage from './AlertMessage';
 const SettingsModal = () => {
   const [validated, setValidated] = useState(false);
   const [errors, setErrors] = useState({});
-  const { api, app, updateApp, setAuth, resetApp } = useAppContext();
+  const { app, updateApp, setAuth, checkAuth, resetApp } = useAppContext();
   const history = useHistory();
-
-  const checkAuth = async () => {
-    const res = await api.checkHandle('');
-    if (res.statusCode === 200) {
-      handleHide();
-      history.go();
-    } else {
-      setErrors({ ...errors, auth: 'App credentials are invalid!' });
-      resetApp();
-    }
-  };
+  const invalidError = { ...errors, auth: 'App credentials are invalid!' };
 
   const handleAuth = (e) => {
     const pattern = '^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$';
@@ -35,8 +25,16 @@ const SettingsModal = () => {
     });
     if (e.target.auth_key.value && e.target.auth_handle.value && !errors.auth_handle && !errors.auth_key && regex.test(e.target.auth_key.value)) {
       e.preventDefault();
-      setAuth(e.target.auth_handle.value, e.target.auth_key.value);
-      checkAuth();
+      setAuth(e.target.auth_handle.value, e.target.auth_key.value, () => {
+        checkAuth(e.target.auth_handle.value, e.target.auth_key.value);
+        if (!app.auth.failed) {
+          handleHide();
+          history.go();
+        } else {
+          setErrors(invalidError);
+          resetApp();
+        }
+      });
     }
     setValidated(true);
   };
@@ -50,6 +48,13 @@ const SettingsModal = () => {
     setErrors({});
     setValidated(false);
   };
+
+  useEffect(() => {
+    if (app.manageSettings && app.auth.failed) {
+      checkAuth();
+      setErrors(invalidError);
+    }
+  }, [app.manageSettings]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Modal centered

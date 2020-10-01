@@ -53,7 +53,7 @@ const RequestKYC = ({ page, previous, next }) => {
         result[app.settings.flow].alert = { message: 'Failed ID verification', type: 'danger' };
       } else {
         result.alert = res.data.message.includes('requested') ? { message: res.data.message, type: 'danger' } : { message: `${activeUser.handle} is still pending ID verification.`, type: 'wait' };
-        if (!res.data.message.includes('requested')) result[app.settings.flow].alert = { message: 'Pending ID verification', type: 'primary' };
+        if (!res.data.message.includes('requested')) result[app.settings.flow].alert = { message: 'Pending ID verification', type: 'warning' };
       }
       if (res.data.members) {
         result[app.settings.flow].members = res.data.members;

@@ -12,9 +12,8 @@ const Home = ({ page, history }) => {
   const { app, setAppData } = useAppContext();
 
   const handleClick = (e, flow) => {
-    if (Object.keys(app.auth).length) {
+    if (Object.keys(app.auth).length && !app.auth.failed) {
       setAppData({ settings: { ...app.settings, flow } }, () => {
-        console.log({ ...app.settings, flow });
         history.push({ pathname: app.activeUser ? flows[flow].home : flows[flow].routes[0], state: { from: page } });
       });
     } else {
