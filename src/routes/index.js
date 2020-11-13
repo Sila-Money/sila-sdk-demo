@@ -118,7 +118,7 @@ export default [
       component: CheckHandle
     }, {
       all: true,
-      title: 'Company Info',
+      title: 'Business Info',
       path: '/business/register',
       component: RegisterBusiness
     }]

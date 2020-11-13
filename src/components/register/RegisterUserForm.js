@@ -79,7 +79,7 @@ const RegisterUserForm = ({ className, handle, page, isActive, children, onError
   return (
     <Form noValidate className={className} validated={validated} autoComplete="off" onSubmit={register}>
 
-      <p className="text-meta mb-4">{description || 'Please fill out the fields below.'}</p>
+      <p className="text-muted mb-4">{description || 'Please fill out the fields below.'}</p>
 
       <p className="text-right text-sm text-primary ml-auto"><span className="text-lg">*</span> Required field</p>
 
@@ -116,11 +116,11 @@ const RegisterUserForm = ({ className, handle, page, isActive, children, onError
       </Form.Row>
       <Form.Row>
         <Form.Group as={Col} md="6" controlId="registerSSN" className="required">
-          <Form.Control required placeholder="SSN" name="ssn" isInvalid={errors.identity} />
+          <Form.Control required placeholder="Social Security Number 123456789" name="ssn" isInvalid={errors.identity} />
           {errors.identity && <Form.Control.Feedback type="invalid">{errors.identity.identity_value || errors.identity}</Form.Control.Feedback>}
         </Form.Group>
         <Form.Group as={Col} md="6" controlId="registerDateOfBirth" className="required">
-          <Form.Control required type="date" placeholder="DOB" name="dateOfBirth" />
+          <Form.Control required type="date" placeholder="Date of Birth" name="dateOfBirth" />
           {errors.entity && errors.entity.birthdate && <Form.Control.Feedback type="invalid">{errors.entity.birthdate}</Form.Control.Feedback>}
         </Form.Group>
       </Form.Row>
@@ -130,7 +130,7 @@ const RegisterUserForm = ({ className, handle, page, isActive, children, onError
           {errors.contact && errors.contact.email && <Form.Control.Feedback type="invalid">{errors.contact.email}</Form.Control.Feedback>}
         </Form.Group>
         <Form.Group as={Col} md="6" controlId="registerPhone" className="required">
-          <Form.Control required placeholder="Phone" name="phone" type="tel" as={NumberFormat} format="(###) ###-####" mask="_" />
+          <Form.Control required name="phone" type="tel" as={NumberFormat} placeholder="(___) ___-____" format="(###) ###-####" mask="_" />
           {errors.contact && errors.contact.phone && <Form.Control.Feedback type="invalid">{errors.contact.phone}</Form.Control.Feedback>}
         </Form.Group>
       </Form.Row>

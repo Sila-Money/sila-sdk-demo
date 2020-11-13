@@ -1,28 +1,29 @@
 import React, { useState } from 'react';
-import { Col, Form, Button } from 'react-bootstrap';
+import { Form, Button, Table, Alert } from 'react-bootstrap';
+import { useLocation } from 'react-router-dom';
 import RangeSlider from 'react-bootstrap-range-slider';
 
 import { useAppContext } from '../context/AppDataProvider';
 
 import AlertMessage from '../common/AlertMessage';
 
-const LinkMemberForm = ({ member, isBo, onRolesDisabled, onMemberLinked, onMemberUnlinked }) => {
+const LinkMemberForm = ({ member, onLinked, onUnlinked }) => {
   const { app, api, setAppData, updateApp, handleError } = useAppContext();
   const [ownershipStake, setOwnershipStake] = useState(0);
   const [details, setDetails] = useState('');
-  const activeUser = app.users.find(user => member.user_handle === user.handle);
-  const businessUser = app.users.find(user => app.settings.kybHandle === user.handle);
-  const isBoOrMembership = isBo && !member.memberships.some(membership => membership.role === 'beneficial_owner');
+  const location = useLocation();
 
   const linkMember = async (role) => {
     console.log('Linking Business Member ...');
+    const activeUser = app.users.find(user => member.user_handle === user.handle);
+    const businessUser = app.users.find(user => app.settings.kybHandle === user.handle);
     const ownership_stake = role.name === 'beneficial_owner' && ownershipStake ? (ownershipStake / 100).toFixed(2) : undefined;
     let result = {};
     try {
       const res = await api.linkBusinessMember(activeUser.handle, activeUser.private_key, businessUser.handle, businessUser.private_key, role.name, undefined, details, ownership_stake);
       if (res.data.status === 'SUCCESS') {
         result.alert = { message: `Successfully linked as a ${role.label}!`, type: 'success' };
-        if (onMemberUnlinked) onMemberLinked({ handle: activeUser.handle, role: role.name });
+        if (onUnlinked) onLinked({ handle: activeUser.handle, role: role.name });
         if (ownershipStake) setOwnershipStake(0);
       } else {
         result.alert = { message: res.data.message, type: 'danger' };
@@ -43,12 +44,14 @@ const LinkMemberForm = ({ member, isBo, onRolesDisabled, onMemberLinked, onMembe
 
   const unlinkMember = async (role) => {
     console.log('Unlinking Business Member ...');
+    const activeUser = app.users.find(user => member.user_handle === user.handle);
+    const businessUser = app.users.find(user => app.settings.kybHandle === user.handle);
     let result = {};
     try {
       const res = await api.unlinkBusinessMember(activeUser.handle, activeUser.private_key, businessUser.handle, businessUser.private_key, role.name);
       if (res.data.status === 'SUCCESS') {
         result.alert = { message: `Successfully unlinked ${activeUser.firstName} ${activeUser.lastName} as a ${role.label}!`, type: 'success' };
-        if (onMemberUnlinked) onMemberUnlinked({ handle: activeUser.handle, role: role.name });
+        if (onUnlinked) onUnlinked({ handle: activeUser.handle, role: role.name });
         if (ownershipStake) setOwnershipStake(0);
       } else {
         result.alert = { message: res.data.message, type: 'danger' };
@@ -67,31 +70,64 @@ const LinkMemberForm = ({ member, isBo, onRolesDisabled, onMemberLinked, onMembe
     };
   };
 
+  console.log(location.state.role);
+
   return (
     <>
-      <h2 className="mb-4">Link your account</h2>
-      <p className="text-meta text-lg mb-4">Link or unlink your account to the business and provide an optional title. {member.memberships.find(membership => membership.role !== 'beneficial_owner') && '  If you are also a Beneficial Owner, please provide your Ownership Percentage.'}</p>
+      <h1 className="mb-4">Link {member.entity.entity_name} to this Business</h1>
 
-      {member.memberships && member.memberships.length !== app.settings.kybRoles.length && <Form.Row className={!isBoOrMembership && 'mx-0'}>
-        <Form.Group as={isBoOrMembership ? Col : undefined} className={!isBoOrMembership && 'w-100'} controlId="linkDetails">
-          <Form.Control onChange={(e) => setDetails(e.target.value)} placeholder="Title" name="detail" />
-        </Form.Group>
-        {isBoOrMembership && <Form.Group as={Col} controlId="linkOwnership" className="ml-auto w-50">
-          <Form.Label className="d-block text-meta">Ownership Percentage ({ownershipStake}%)</Form.Label>
-          <RangeSlider value={ownershipStake} onChange={e => setOwnershipStake(parseInt(e.target.value))} tooltipLabel={(label) => `${label}%`} name="ownership_stake" />
-        </Form.Group>}
-      </Form.Row>}
+      <Alert variant="info" className="mb-4">Once a business member has been registered, you can only link and unlink their account to a role in the business. You can not go back and edit personal details.</Alert>
 
-      <div className="mt-4 text-right">
-        {app.settings.kybRoles.map((role, index) => {
+      <p className="text-muted text-lg mb-4">Link or unlink your individual business member account to your role in this business. It is possible for one individual account to be linked as more than one role. You may provide an optional title to your account (such as CEO, CTO, etc,) as well as provide us with your ownership stake, if applicable. </p>
+
+      <Form.Group controlId="linkDetails">
+        <Form.Control onChange={(e) => setDetails(e.target.value)} placeholder="Optional Position Title" name="detail" />
+      </Form.Group>
+
+      <div className="d-none d-lg-block mt-5">
+        <Table>
+          <tbody>
+            {app.settings.kybRoles.sort((a, b) => a.name !== 'beneficial_owner' ? -1 : 0).map((role, index) => {
+              const hasRole = member.memberships && member.memberships.some(membership => membership.role === role.name);
+              return (<tr key={index}>
+                <td className="w-100 border-0 pl-0 align-middle">
+                  <p className={`text-lg mb-0 ${location.state.role && location.state.role === role.name ? 'text-primary' : 'text-muted'}`}>As a {role.label} of this Business</p>
+                  {role.name === 'beneficial_owner' && !hasRole && <Form.Group className="mt-3 w-50">
+                    <Form.Label className="d-block text-muted">Ownership Percentage ({ownershipStake}%)</Form.Label>
+                    <RangeSlider value={ownershipStake} onChange={e => setOwnershipStake(parseInt(e.target.value))} tooltipLabel={(label) => `${label}%`} name="ownership_stake" />
+                    {!ownershipStake && <Form.Text className="text-warning mt-2 text-nowrap loaded">Ownership Percentage is required before you can link to this business.</Form.Text>}
+                  </Form.Group>}
+                </td>
+                <td className="border-0 pr-0"><Button key={index} className="w-100 text-center text-nowrap" disabled={role.name === 'beneficial_owner' && !ownershipStake && !hasRole} onClick={() => hasRole ? unlinkMember(role) : linkMember(role)}>{hasRole ? 'Unlink' : 'Link'} as a {role.label}</Button></td>
+              </tr>
+              );
+            })}
+          </tbody>
+        </Table>
+      </div>
+
+      <div className="d-block d-lg-none">
+        {app.settings.kybRoles.sort((a, b) => a.name !== 'beneficial_owner' ? -1 : 0).map((role, index) => {
           const hasRole = member.memberships && member.memberships.some(membership => membership.role === role.name);
-          return <Button key={index} className="ml-3" disabled={(onRolesDisabled && onRolesDisabled(role)) || (role.name === 'beneficial_owner' && isBoOrMembership && !ownershipStake)} onClick={() => hasRole ? unlinkMember(role) : linkMember(role)}>{hasRole ? 'Unlink' : 'Link'} as a {role.label}</Button>
+          return (<div key={index} className="mt-5">
+            <p className={`text-lg mb-3 ${location.state.role && location.state.role === role.name ? 'text-primary' : 'text-muted'}`}>As a {role.label} of this Business</p>
+            {role.name === 'beneficial_owner' && !hasRole && <Form.Group className="mt-3">
+              <Form.Label className="d-block text-muted">Ownership Percentage ({ownershipStake}%)</Form.Label>
+              <RangeSlider value={ownershipStake} onChange={e => setOwnershipStake(parseInt(e.target.value))} tooltipLabel={(label) => `${label}%`} name="ownership_stake" />
+              {!ownershipStake && <Form.Text className="text-warning mt-2 loaded">Ownership Percentage is required before you can link to this business.</Form.Text>}
+            </Form.Group>}
+            <Button key={index} className="w-100 text-center text-nowrap" disabled={role.name === 'beneficial_owner' && !ownershipStake && !hasRole} onClick={() => hasRole ? unlinkMember(role) : linkMember(role)}>{hasRole ? 'Unlink' : 'Link'} as a {role.label}</Button>
+          </div>
+          );
         })}
       </div>
 
-      {app.alert.message && <div className="mt-4"><AlertMessage message={app.alert.message} type={app.alert.type} /></div>}
+      {app.alert.message && <div className="mt-5"><AlertMessage message={app.alert.message} type={app.alert.type} /></div>}
     </>
   );
 };
 
+
 export default LinkMemberForm;
+
+

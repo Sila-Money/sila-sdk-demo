@@ -49,11 +49,11 @@ const RegisterMember = ({ page, isActive, location, history }) => {
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 
       <div className="mb-4 d-flex">
-        <h1 className="mb-0">{location.state.role === 'administrator' ? 'Business Administration' : location.state.role ? app.settings.kybRoles.find(role => role.name === location.state.role).label : 'Add a Business Member'}</h1>
-        <Button variant="outline-light" className="text-meta text-uppercase ml-auto" onClick={() => history.goBack()}>Back</Button>
+        <h1 className="mb-0">{location.state.role === 'administrator' ? 'Business Administration' : location.state.role ? app.settings.kybRoles.find(role => role.name === location.state.role).label : app.activeUser.entity_name ? `Add ${app.activeUser.entity_name} as a Business Member` : 'Add a Business Member'}</h1>
+        <Button variant="outline-light" className="text-muted text-uppercase ml-auto" onClick={() => history.goBack()}>Back</Button>
       </div>
 
-      {activeUser && handle && <p className="text-meta mb-0 mb-5 loaded">This page represents <a href="https://docs.silamoney.com/docs/link_business_member" target="_blank" rel="noopener noreferrer">/link_business_member</a> functionality.</p>}
+      {activeUser && handle && <p className="text-muted mb-0 mb-5 loaded">This page represents <a href="https://docs.silamoney.com/docs/link_business_member" target="_blank" rel="noopener noreferrer">/link_business_member</a> functionality.</p>}
 
       {!handle && app.users.filter(user => !user.business).length !== 0 && <><Form.Check custom id="register-user" className="mb-4 ml-n2" type="radio">
         <Form.Check.Input name="existing" onChange={() => { setActiveUser(false); setExisting(false); }} defaultChecked type="radio" />
@@ -65,15 +65,16 @@ const RegisterMember = ({ page, isActive, location, history }) => {
         </Form.Check></>}
 
       {!activeUser && !existing ? <>
-        <p className="mb-4 text-meta text-lg">As {currentRole ? `the ${currentRole.label}` : 'a business member'}, your personal information is required before we can move forward with the KYB process.</p>
+        <p className="mb-4 text-muted text-lg">As {currentRole ? `the ${currentRole.label}` : 'a business member'}, personal information is required before we can move on with the business registration (KYB) process.</p>
 
-        <CheckHandleForm disabled={activeUser} onSuccess={(handle) => setHandle(handle)} />
+        <CheckHandleForm page={page} disabled={activeUser} onSuccess={(handle) => setHandle(handle)} />
 
         <RegisterUserForm
           className="mt-4"
           page={page}
           handle={handle}
           isActive={isActive}
+          description="Please fill out the below fields for this business member."
           onSuccess={handleActiveUser}>
 
           <div className="d-flex mt-4">
@@ -86,22 +87,14 @@ const RegisterMember = ({ page, isActive, location, history }) => {
       </> : <>
 
           {existing && <div className="mb-5 loaded position-relative" style={{ zIndex: 4 }}>
-            <p className="text-lg text-meta mb-4 loaded">Select the user you wish to link to the business.</p>
+            <p className="text-lg text-muted mb-4 loaded">Select the user you wish to link to the business.</p>
             <SelectMenu fullWidth title="Choose a user..." options={app.users.filter(user => !user.business).map(user => ({ label: `${user.firstName} ${user.lastName} (${user.handle})`, value: user.handle }))} onChange={(handle) => handleActiveUser(app.users.find(user => user.handle === handle))} />
           </div>}
 
           {member && <div className="loaded">
 
-            {app.settings.kybRoles.map((role, index) => {
-              const hasRole = member && member.memberships.some(membership => membership.role === role.name);
-              return (<Form.Check custom key={index} id={role.name} className="mb-3 ml-n2" type="checkbox">
-                <Form.Check.Input name={role.name} defaultChecked={(location.state.role && location.state.role === role.name) || hasRole} onChange={(e) => e.target.checked ? setSelectedRoles([...selectedRoles, role.name]) : setSelectedRoles(selectedRoles.filter(selectedRole => role.name !== selectedRole))} disabled={hasRole} type="checkbox" />
-                <Form.Check.Label className="ml-2 text-lg">I am {location.state.role ? 'also' : ''} a {role.label} of this business.</Form.Check.Label>
-              </Form.Check>);
-            })}
-
-            <div className="mt-5"><LinkMemberForm member={member} onRolesDisabled={(role) => !selectedRoles.includes(role.name) && location.state.role !== role.name} onMemberLinked={() => getEntity()} onMemberUnlinked={() => getEntity()} isBo={selectedRoles.includes('beneficial_owner')} /></div>
-            <p className="mt-5 mb-0 text-center"><Button variant="outline-light" className="text-meta text-uppercase" onClick={() => history.goBack()}>Back to Business Members</Button></p>
+            <div className="mt-5"><LinkMemberForm member={member} onLinked={() => getEntity()} onUnlinked={() => getEntity()} /></div>
+            <p className="mt-5 mb-0 text-center"><Button variant="outline-light" className="text-muted text-uppercase" onClick={() => history.goBack()}>I'm Done</Button></p>
 
           </div>}
 

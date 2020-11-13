@@ -23,7 +23,7 @@ const NavbarUsers = () => {
       updateApp({ activeUser: app.users.find(u => u.handle === handle), kyc: {}, kyb: {} });
       history.go();
     });
-  }
+  };
 
   return <div className="ml-md-4 d-flex align-items-center">
     <Form.Label className="mr-2 mb-0" htmlFor="account">User:</Form.Label>

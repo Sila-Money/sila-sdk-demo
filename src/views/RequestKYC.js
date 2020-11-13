@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Container, Button, OverlayTrigger, Tooltip, Alert } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 
@@ -46,8 +46,8 @@ const RequestKYC = ({ page, previous, next }) => {
       let result = { kyc: {}, kyb: {} };
       console.log('  ... completed!');
       if (res.data.verification_status.includes('passed')) {
-        result.alert = { message: res.data.message, type: 'success' };
-        result[app.settings.flow].alert = { message: 'Passed ID verification', type: 'success' };
+        result.alert = { message: app.settings.flow === 'kyb' ? 'Business has passed verification but needs to be certifed before it can transact. Click continue to certify.' : res.data.message, type: 'warning' };
+        result[app.settings.flow].alert = { message: 'Passed ID verification', type: app.settings.flow === 'kyb' ? 'warning' : 'success' };
       } else if (res.data.verification_status.includes('failed')) {
         result.alert = { message: res.data.message, type: 'danger' };
         result[app.settings.flow].alert = { message: 'Failed ID verification', type: 'danger' };
@@ -73,22 +73,18 @@ const RequestKYC = ({ page, previous, next }) => {
     }
   }
 
-  useEffect(() => {
-    if (isActive) updateApp({ [app.settings.flow]: { message: 'Passed ID verification', type: 'success' } });
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 
       <h1 className="mb-4">Request {app.settings.flow.toUpperCase()}</h1>
 
-      <p className="text-lg text-meta mb-4">{app.settings.flow === 'kyc' ? 'We must verify that all users of the Sila platform are who they say they are, present a low fraud risk, and are not on any watchlists. We do this by submitting end-user information for KYC review by our identity verification partner, Alloy. The user will not be able to transact until the user is verified.  With great power comes great responsibility.' : 'We must verify that all users of the Sila platform are who they say they are, present a low fraud risk, and are not on any watchlists. The members of this business will be submitted for KYC review and their end-user information will be reviewed by our identity verification partner, Alloy. The business will not be able to transact until all users are verified. Additionally, the business will be submited for KYB review, to ensure that all information is correct.'}</p>
+      <p className="text-lg text-muted mb-4">{app.settings.flow === 'kyc' ? 'We must verify that all users of the Sila platform are who they say they are, present a low fraud risk, and are not on any watchlists. We do this by submitting end-user information for KYC review by our identity verification partner, Alloy. The user will not be able to transact until the user is verified.  With great power comes great responsibility.' : 'We must verify that all users of the Sila platform are who they say they are, present a low fraud risk, and are not on any watchlists. The members of this business will be submitted for KYC review and their end-user information will be reviewed by our identity verification partner, Alloy. The business will not be able to transact until all users are verified. Additionally, the business will be submited for KYB review, to ensure that all information is correct.'}</p>
 
-      <p className="text-lg text-meta mb-4">Verification may take a few minutes, so make sure to refresh and check your status.</p>
+      <p className="text-lg text-muted mb-4">Verification may take a few minutes, so make sure to refresh and check your status.</p>
 
-      <p className="text-meta">This page represents <a href="https://docs.silamoney.com/docs/request_kyc" target="_blank" rel="noopener noreferrer">/request_kyc</a> and <a href="https://docs.silamoney.com/docs/check_kyc" target="_blank" rel="noopener noreferrer">/check_kyc</a> functionality.</p>
+      <p className="text-muted mb-4">This page represents <a href="https://docs.silamoney.com/docs/request_kyc" target="_blank" rel="noopener noreferrer">/request_kyc</a> and <a href="https://docs.silamoney.com/docs/check_kyc" target="_blank" rel="noopener noreferrer">/check_kyc</a> functionality.</p>
 
-      <p className="mt-5 mb-5"><Button className="float-right" onClick={requestKyc} disabled={isActive}>Request {app.settings.flow.toUpperCase()}</Button></p>
+      <p className="mb-5"><Button className="float-right" onClick={requestKyc}>Request {app.settings.flow.toUpperCase()}</Button></p>
 
       {app.settings.flow === 'kyc' && app[app.settings.flow].alert && (app[app.settings.flow].alert.type === 'primary' || app[app.settings.flow].alert.type === 'wait') && <Alert variant="info" className="mb-4 loaded">While you wait for the {app.settings.flow.toUpperCase()} review to process, go ahead and <NavLink to="/accounts" className="text-reset text-underline">Link an account</NavLink></Alert>}
 
@@ -99,12 +95,12 @@ const RequestKYC = ({ page, previous, next }) => {
           delay={{ show: 250, hide: 400 }}
           overlay={(props) => <Tooltip id={`${app.settings.flow}-tooltip`} className="ml-2" {...props}>Checks {app.settings.flow.toUpperCase()}</Tooltip>}
         >
-          <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none loaded" onClick={checkKyc}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
+          <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none loaded" onClick={checkKyc}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh Status</span></Button>
         </OverlayTrigger>}
       </div>
 
       <div className="status form-control d-flex mb-4">
-        <span className={`user ${!activeUser ? 'text-meta' : 'text-primary'}`}>{activeUser ? (activeUser.entity_name || `${activeUser.firstName} ${activeUser.lastName} (${activeUser.handle})`) : app.settings.flow === 'kyb' ? 'Business Members' : 'User'}</span>
+        <span className={`user ${!activeUser ? 'text-muted' : 'text-primary'}`}>{activeUser ? (activeUser.entity_name || `${activeUser.firstName} ${activeUser.lastName} (${activeUser.handle})`) : app.settings.flow === 'kyb' ? 'Business Members' : 'User'}</span>
         <em className={`message ml-auto${app[app.settings.flow].alert ? ` text-${app[app.settings.flow].alert.type === 'wait' ? 'primary' : app[app.settings.flow].alert.type}` : ''}`}>{app[app.settings.flow].alert ? app[app.settings.flow].alert.message : 'Status'}</em>
       </div>
 
@@ -126,7 +122,7 @@ const RequestKYC = ({ page, previous, next }) => {
           </div>
         ) :
           <div className="status form-control d-flex mb-4">
-            <span className="user text-meta">Business Members</span>
+            <span className="user text-muted">Business Members</span>
             <em className="message ml-auto">Status</em>
           </div>}
       </>}

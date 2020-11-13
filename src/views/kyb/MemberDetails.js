@@ -14,7 +14,7 @@ const MemberDetails = ({ page, match, history, location }) => {
   const { app, api, handleError, setAppData } = useAppContext();
   const beneficialOwner = member && member.memberships.find(membership => membership.role === 'beneficial_owner');
   const canCertify = member && member.memberships.some(membership => location.state.role && location.state.role === membership.role && membership.certification_token !== null);
-  
+
   const getEntity = async () => {
     console.log('Getting Entity ...');
     const activeUser = app.users.find(user => match.params.handle === user.handle);
@@ -72,47 +72,48 @@ const MemberDetails = ({ page, match, history, location }) => {
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 
-      <div className="mb-4 d-flex">
-        <h1 className="mb-0">Team Member</h1>
-        {location.pathname.includes('certify') && <Button variant="outline-light" className="text-meta text-uppercase ml-auto" onClick={() => history.goBack()}>Back</Button>}
-      </div>      
+      {!member ? <Loader /> : <div className="loaded">
 
-      <p className="text-lg text-meta mb-4">Please review the following information and certify that it is correct.</p>
+      {location.pathname.includes('certify') && <>
+        <div className="mb-4 d-flex align-items-center">
+          <h1 className="mb-0">Team Member</h1>
+          {location.pathname.includes('certify') && <p className="text-warning text-lg ml-auto mb-0">In Review</p>}
+        </div>
 
-      <p className="text-meta mb-5">This page represents <a href="https://docs.silamoney.com/docs/get_entity" target="_blank" rel="noopener noreferrer">/get_entity</a> and {location.pathname.includes('certify') ? <a href="https://docs.silamoney.com/docs/certify_beneficial_owner" target="_blank" rel="noopener noreferrer">/certify_beneficial_owner</a> : <a href="https://docs.silamoney.com/docs/link_business_member" target="_blank" rel="noopener noreferrer">/link_business_member</a>} functionality.</p>
+        <p className="text-lg text-muted mb-4">Please review the following information and certify that it is correct.</p>
 
-      {!member ? <Loader /> : <>
+        <p className="text-muted mb-5">This page represents <a href="https://docs.silamoney.com/docs/get_entity" target="_blank" rel="noopener noreferrer">/get_entity</a> and {location.pathname.includes('certify') ? <a href="https://docs.silamoney.com/docs/certify_beneficial_owner" target="_blank" rel="noopener noreferrer">/certify_beneficial_owner</a> : <a href="https://docs.silamoney.com/docs/link_business_member" target="_blank" rel="noopener noreferrer">/link_business_member</a>} functionality.</p>
 
         <Row className="mb-0">
           <Col md="12" lg="6" className="mb-4">
             <p className="pb-2 mb-1 border-bottom border-light text-lg">{`${member.entity.first_name} ${member.entity.last_name}`}</p>
-            <p className="mb-0 text-meta">Full Name</p>
+            <p className="mb-0 text-muted">Full Name</p>
           </Col>
           <Col md="12" lg="6" className="mb-4">
             <p className="pb-2 mb-1 border-bottom border-light text-lg">{member.emails.length ? member.emails[0].email : 'N/A'}</p>
-            <p className="mb-0 text-meta">Email</p>
+            <p className="mb-0 text-muted">Email</p>
           </Col>
         </Row>
 
         <Row className="mb-0">
           <Col md="12" lg="6" className="mb-4">
             <p className="pb-2 mb-1 border-bottom border-light text-lg">{member.phones.length ? member.phones[0].phone : 'N/A'}</p>
-            <p className="mb-0 text-meta">Phone</p>
+            <p className="mb-0 text-muted">Phone</p>
           </Col>
           <Col md="12" lg="6" className="mb-4">
             <p className="pb-2 mb-1 border-bottom border-light text-lg">{member.identities.length ? member.identities[0].identity : 'N/A'}</p>
-            <p className="mb-0 text-meta">SSN (Last 4 digits)</p>
+            <p className="mb-0 text-muted">SSN (Last 4 digits)</p>
           </Col>
         </Row>
 
         <Row className="mb-0">
           <Col md={beneficialOwner && 12} lg={beneficialOwner && 6} className="mb-4">
             <p className="pb-2 mb-1 border-bottom border-light text-lg">{member.addresses.length ? `${member.addresses[0].street_address_1} ${member.addresses[0].city}, ${member.addresses[0].state} ${member.addresses[0].postal_code}` : 'N/A'}</p>
-            <p className="mb-4 text-meta">Home Address</p>
+            <p className="mb-4 text-muted">Home Address</p>
           </Col>
           {beneficialOwner && <Col md="12" lg="6" className="mb-4">
             <p className="pb-2 mb-1 border-bottom border-light text-lg">{`${Math.round(beneficialOwner.ownership_stake * 100)}%`}</p>
-            <p className="mb-0 text-meta">Ownership Percentage</p>
+            <p className="mb-0 text-muted">Ownership Percentage</p>
           </Col>}
         </Row>
 
@@ -121,21 +122,22 @@ const MemberDetails = ({ page, match, history, location }) => {
           <ListGroup variant="flush">
             {member.memberships.map((membership, index) => <ListGroup.Item variant="flush" key={index}>
               <p className="m-0">{`${app.settings.kybRoles.find(role => role.name === membership.role).label} at ${membership.entity_name}${membership.ownership_stake ? ` with an ownership stake of ${Math.round(beneficialOwner.ownership_stake * 100)}%` : ''}.`}</p>
-              {membership.details && <p className="m-0 text-meta text-sm">{membership.details}</p>}
+              {membership.details && <p className="m-0 text-muted text-sm">{membership.details}</p>}
             </ListGroup.Item>)}
           </ListGroup>
         </Card>}
-
-        {!location.pathname.includes('certify') && <div className="mt-5">
-          <LinkMemberForm member={member} onMemberLinked={() => { setMember(false); getEntity() ;} } onMemberUnlinked={() => { setMember(false); getEntity(); }} isBo={!member.memberships.some(membership => membership.role === 'beneficial_owner')} />
-          <p className="mt-5 mb-0 text-center"><Button variant="outline-light" className="text-meta text-uppercase" onClick={() => history.goBack()}>Back to Business Members</Button></p>
-        </div>}
-                
-        {location.pathname.includes('certify') && <p className="d-flex mt-4"><Button onClick={certifyMember} disabled={!canCertify} className="ml-auto">Certify</Button></p>}
-
-        {alert && <div className="mt-4"><AlertMessage message={alert.message} type={alert.type} onHide={() => setAlert(false)} /></div>}
-
       </>}
+
+      {!location.pathname.includes('certify') && <>
+        <LinkMemberForm member={member} onLinked={() => { setMember(false); getEntity(); }} onUnlinked={() => { setMember(false); getEntity(); }} />
+        <p className="mt-5 mb-0 text-center"><Button variant="outline-light" className="text-muted text-uppercase" onClick={() => history.goBack()} disabled={member.memberships.length === 0}>I'm Done</Button></p>
+      </>}
+
+      {location.pathname.includes('certify') && <p className="d-flex mt-4"><Button onClick={certifyMember} disabled={!canCertify} className="ml-auto">Certify</Button></p>}
+
+      {alert && <div className="mt-4"><AlertMessage message={alert.message} type={alert.type} onHide={() => setAlert(false)} /></div>}
+
+      </div>}
 
       <Pagination hideNext
         previousOnClick={() => history.goBack()}

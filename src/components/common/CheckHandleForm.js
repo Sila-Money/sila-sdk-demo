@@ -5,7 +5,7 @@ import { useAppContext } from '../context/AppDataProvider';
 
 import AlertMessage from './AlertMessage';
 
-const CheckHandleForm = ({ className, defaultValue, onSuccess, disabled }) => {
+const CheckHandleForm = ({ className, defaultValue, onSuccess, disabled, page }) => {
   const [validated, setValidated] = useState(false);
   const [handle, setHandle] = useState('');
   const [error, setError] = useState(false);
@@ -58,7 +58,7 @@ const CheckHandleForm = ({ className, defaultValue, onSuccess, disabled }) => {
     <Form noValidate className={className} validated={validated} autoComplete="off" onSubmit={checkHandle}>
       <Form.Group controlId="formGroupHandle">
         <Form.Control
-          placeholder="Handle"
+          placeholder={`${app.settings.flow === 'kyb' && page !== '/members/register' ? 'Business' : 'User'} Handle`}
           aria-label="handle"
           defaultValue={defaultValue || handle}
           onChange={handleChange}

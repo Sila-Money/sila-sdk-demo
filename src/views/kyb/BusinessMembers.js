@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Card, Table, Badge, Button } from 'react-bootstrap';
+import { Container, Card, Table, Badge, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 
 import Pagination from '../../components/common/Pagination';
@@ -8,12 +8,35 @@ import AlertMessage from '../../components/common/AlertMessage';
 
 import { useAppContext } from '../../components/context/AppDataProvider';
 
+const isRoleRequired = (member) => {
+  const role = member.name || member.role;
+  return (role === 'controlling_officer' || role === 'administrator');
+};
+
+const RoleDescription = ({ role }) => {
+  const description = role === 'controlling_officer' ?
+    'Required. A controlling_officer is an individual who is in a leadership position and has the ability to sign contracts for the business.' :
+    role === 'administrator' ?
+      'Required. An administrator is the user who is responsible for setting up the business and must be used to certify the validity of the information provided for the business and Beneficial Owners.' :
+      'Conditional. Some business types need to have all individuals with a greater than 25% ownership stake in the company linked and certified by the Administrator. See /get_business_roles for more information.';
+  return (
+    <OverlayTrigger
+      placement="right"
+      delay={{ show: 250, hide: 400 }}
+      overlay={(props) => <Tooltip id={`${role}-tooltip`} className="ml-2 w-100" {...props}>{description}</Tooltip>}
+    >
+      <i className="sila-icon sila-icon-info text-primary ml-2"></i>
+    </OverlayTrigger>
+  );
+};
+
 const BusinessMembers = ({ page, previous, next, history, location }) => {
   const [loaded, setLoaded] = useState(false);
   const [members, setMembers] = useState([]);
   const { api, app, setAppData, handleError, updateApp } = useAppContext();
+  const rolesAndMembers = [...members, ...app.settings.kybRoles.filter(role => !members.length || members.every(member => member.role !== role.name))];
 
-  const getRolesAndMembersAndCheckKyc = async () => {
+  const getRolesAndMembers = async () => {
     console.log('Getting Roles, Business Members, and checking KYB ...');
     const businessUser = app.users.find(user => app.settings.kybHandle === user.handle);
     try {
@@ -36,22 +59,11 @@ const BusinessMembers = ({ page, previous, next, history, location }) => {
           setMembers(entityResponse.data.members.map(member => ({ ...member, ...kycResponse.data.members.find(kyc => member.user_handle === kyc.user_handle && member.role === kyc.role) })));
           setLoaded(true);
         });
-
       }
     } catch (err) {
       console.log('  ... looks like we ran into an issue!');
       handleError(err);
     };
-  };
-
-  const handleClick = (e, handle) => {
-    const isAction = e.target.closest && !e.target.closest('.actions');
-    const isButton = !e.target.closest && !e.target.className.includes('btn');
-    if (isAction || isButton) {
-      history.push({ pathname: `/members/${handle}`, state: { from: page } });
-    } else {
-      e.preventDefault();
-    }
   };
 
   const unlinkMember = async (role, handle) => {
@@ -84,80 +96,85 @@ const BusinessMembers = ({ page, previous, next, history, location }) => {
 
   useEffect(() => {
     if (location.pathname === page && app.settings.kybHandle) {
-      getRolesAndMembersAndCheckKyc();
+      getRolesAndMembers();
     } else {
       history.push('/');
     }
   }, [location.pathname]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (rolesAndMembers.length && rolesAndMembers.filter(member => member.label && isRoleRequired(member)).length === 0) {
+      updateApp({ alert: { message: 'Success! All required business members have now been registerd, you may now continue to the KYB process, or add more business members if necessary.', type: 'success' } });
+    }
+    console.log();
+  }, [members]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 
       <h1 className="mb-4">Register Business Members</h1>
 
-      <p className="text-meta text-lg mb-4">As a Partnership, we need to collect information on the following individuals. Administrator and Controlling Officer are required (though they can be the same person). If any individual owns more than 25% of this business, they must be added as a Beneficial Owner.</p>
+      <p className="text-muted text-lg mb-4">We need to collect information on the following individuals. Each business type requires different roles to be registered, below you will see which ones are required for your business and which are optional. Add the required business members to get started with the process, and add any additional business members as necessary.</p>
 
-      <p className="text-meta mb-0 mb-5">This page represents <a href="https://docs.silamoney.com/docs/get_business_roles" target="_blank" rel="noopener noreferrer">/get_business_roles</a>, <a href="https://docs.silamoney.com/docs/unlink_business_member" target="_blank" rel="noopener noreferrer">/unlink_business_member</a>, and <a href="https://docs.silamoney.com/docs/get_entity" target="_blank" rel="noopener noreferrer">/get_entity</a> functionality.</p>
+      <p className="text-muted mb-0 mb-5">This page represents <a href="https://docs.silamoney.com/docs/get_business_roles" target="_blank" rel="noopener noreferrer">/get_business_roles</a>, <a href="https://docs.silamoney.com/docs/unlink_business_member" target="_blank" rel="noopener noreferrer">/unlink_business_member</a>, and <a href="https://docs.silamoney.com/docs/get_entity" target="_blank" rel="noopener noreferrer">/get_entity</a> functionality.</p>
 
       <div className="members position-relative">
         {!loaded ? <Loader overlay /> : <>
 
           <Card className="mb-4">
-            <Table hover responsive>
-              {loaded &&
-                <>
-                  <thead>
-                    <tr className="bg-secondary">
-                      <th className="text-lg px-3 py-2">Role</th>
-                      {members.length !== 0 && <th className="text-lg px-3 py-2">Name</th>}
-                      {members.length !== 0 && <th className="text-lg px-3 py-2">Handle</th>}
-                      <th className="text-lg px-3 py-2">Status</th>
-                      <th className="text-lg px-3 py-2">&nbsp;</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {[...members, ...app.settings.kybRoles.filter(role => !members.length || members.every(member => member.role !== role.name))].sort((a, b) => a.role && b.role ? a.role.localeCompare(b.role) : a.name.localeCompare(b.name)).map((member, index) => {
-                      let statusVariant, statusLabel;
-                      if (member.user_handle) {
-                        statusVariant = member.verification_status.includes('passed') ? 'success' : member.verification_status.includes('pending') ? 'primary' : member.verification_status.includes('failed') ? 'danger' : 'warning';
-                        statusLabel = `KYC ${member.verification_status.charAt(0).toUpperCase() + member.verification_status.slice(1)}`;
-                        return (
-                          <tr key={index} className="loaded" onClick={(e) => handleClick(e, member.user_handle)}>
-                            <td className="px-3 text-nowrap align-middle">{app.settings.kybRoles.find(role => role.name === member.role).label}</td>
-                            <td className="px-3 text-nowrap">{`${member.first_name} ${member.last_name}`}</td>
-                            <td className="px-3 text-nowrap">{member.user_handle}</td>
-                            <td className="px-3">
-                              <Badge pill className="badge-outline py-2 px-3" variant={statusVariant}>{statusLabel}</Badge>
-                            </td>
-                            <td className="actions text-right"><Button variant="link" className="p-1 mr-3 text-decoration-none" title="Unlink" onClick={() => unlinkMember(app.settings.kybRoles.find(role => role.name === member.role), member.user_handle)}><i className="sila-icon sila-icon-delete text-lg"></i></Button></td>
-                          </tr>
-                        );
-                      } else {
-                        statusVariant = member.name === 'beneficial_owner' ? 'primary' : 'warning';
-                        statusLabel = member.name === 'beneficial_owner' ? 'Optional - Not Linked' : 'Required - Not Linked';
-                        return (
-                          <tr key={index} className="loaded" onClick={() => history.push({
-                            pathname: '/members/register',
-                            state: { role: member.name, from: page }
-                          })}>
-                            <td className="px-3 align-middle">{member.label}{member.name !== 'beneficial_owner' && <span className="text-primary" style={{ top: '-1rem' }}>*</span>}</td>
-                            {members.length !== 0 && <td className="px-3"></td>}
-                            {members.length !== 0 && <td className="px-3"></td>}
-                            <td className="px-3">
-                              <Badge pill className="badge-outline py-2 px-3" variant={statusVariant}>{statusLabel}</Badge>
-                            </td>
-                            <td>&nbsp;</td>
-                          </tr>
-                        );
-                      }})}
-                  </tbody>
-                </>}
+            <Table responsive>
+              <thead>
+                <tr className="bg-secondary">
+                  <th className="text-lg pl-3 py-2">Role</th>
+                  <th>&nbsp;</th>
+                  {members.length !== 0 && <th className="text-lg px-3 py-2">Name</th>}
+                  {members.length !== 0 && <th className="text-lg px-3 py-2">Handle</th>}
+                  <th className="text-lg px-3 py-2">Status</th>
+                  <th className="text-lg px-3 py-2">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rolesAndMembers.sort((a, b) => isRoleRequired(a) ? -1 : isRoleRequired(b) ? 1 : 0).map((member, index) => {
+                  if (member.user_handle) {
+                    return (
+                      <tr key={index} className="loaded">
+                        <td className="pl-3 text-nowrap align-middle">{app.settings.kybRoles.find(role => role.name === member.role).label}</td>
+                        <td className="align-middle"><RoleDescription role={member.role} /></td>
+                        <td className="px-3 text-nowrap">{`${member.first_name} ${member.last_name}`}</td>
+                        <td className="px-3 text-nowrap">{member.user_handle}</td>
+                        <td className="px-3">
+                          <Badge pill className="badge-outline py-2 px-3" variant="success">Linked</Badge>
+                        </td>
+                        <td className="actions text-nowrap">
+                          <Button variant="link" className="p-1 mr-3 text-decoration-none" title="Edit" as={NavLink} to={{ pathname: `/members/${member.user_handle}`, state: { role: member.role, from: page } }}><i className="sila-icon sila-icon-edit text-lg"></i></Button>
+                          <Button variant="link" className="p-1 mr-3 text-decoration-none" title="Unlink" onClick={() => unlinkMember(app.settings.kybRoles.find(role => role.name === member.role), member.user_handle)}><i className="sila-icon sila-icon-delete text-lg"></i></Button>
+                        </td>
+                      </tr>
+                    );
+                  } else {
+                    return (
+                      <tr key={index} className="loaded">
+                        <td className="pl-3 align-middle">{member.label}{isRoleRequired(member) && <span className="text-primary" style={{ top: '-1rem' }}>*</span>}</td>
+                        <td className="align-middle"><RoleDescription role={member.name} /></td>
+                        {members.length !== 0 && <td className="px-3"></td>}
+                        {members.length !== 0 && <td className="px-3"></td>}
+                        <td className="px-3">
+                          <Badge pill className="badge-outline py-2 px-3" variant={isRoleRequired(member) ? 'warning' : 'primary'}>{isRoleRequired(member) ? 'Required' : 'Optional'}</Badge>
+                        </td>
+                        <td className="actions">
+                          <Button variant="link" className="p-0 important" as={NavLink} to={{ pathname: '/members/register', state: { role: member.name, from: page } }}>{members.some(member => member.user_handle) ? 'Add' : 'Add Business Member'} +</Button>
+                        </td>
+                      </tr>
+                    );
+                  }
+                })}
+              </tbody>
             </Table>
           </Card>
 
           <div className="d-flex">
             <span className="text-primary font-italic">* Indicates the role is required</span>
-            <Button as={NavLink} to={{ pathname: '/members/register', state: { from: page } }} variant="secondary" size="sm" className="ml-auto">Add Business Member <i className="fas fa-plus-circle ml-2"></i></Button>
+            <Button as={NavLink} to={{ pathname: '/members/register', state: { from: page } }} className="ml-auto">Add Additonal Business Members</Button>
           </div>
 
         </>
@@ -168,7 +185,7 @@ const BusinessMembers = ({ page, previous, next, history, location }) => {
 
       <Pagination
         previous={previous}
-        next={members.length && app.settings.kybRoles.filter(role => members.every(member => member.role !== role.name)).length <= 1 ? next : undefined}
+        next={members.length && rolesAndMembers.filter(member => member.label && isRoleRequired(member)).length === 0 ? next : undefined}
         currentPage={page} />
 
     </Container>

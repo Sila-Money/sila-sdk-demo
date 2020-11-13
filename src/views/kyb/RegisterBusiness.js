@@ -83,14 +83,14 @@ const RegisterBusiness = ({ page, previous, next, isActive }) => {
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 
-      <h1 className="mb-4">Company Information</h1>
+      <h1 className="mb-4">Business Information</h1>
 
-      <p className="mb-4 text-meta text-lg">We need to gather some information to see if this business meets KYB guidelines. </p>
+      <p className="mb-4 text-muted text-lg">We need to gather some information to see if this business meets KYB guidelines. </p>
 
       <Alert variant="info" className="mb-4">A wallet is automatically generated for you using the generateWallet() function upon registration.</Alert>
 
       <div className="d-flex mb-5">
-        <p className="text-meta mb-0">This page represents <a href="https://docs.silamoney.com/docs/register" target="_blank" rel="noopener noreferrer">/register</a> functionality.</p>
+        <p className="text-muted mb-0">This page represents <a href="https://docs.silamoney.com/docs/register" target="_blank" rel="noopener noreferrer">/register</a> functionality.</p>
         <p className="text-right text-sm text-primary ml-auto position-relative" style={{ top: '2rem' }}><span className="text-lg">*</span> Required field.</p>
       </div>
 
@@ -103,7 +103,7 @@ const RegisterBusiness = ({ page, previous, next, isActive }) => {
           <Form.Group as={Col} md="6" controlId="businessDBA">
             <Form.Control placeholder="DBA (If Applicable)" name="doing_business_as" />
             {errors.entity && errors.entity.doing_business_as && <Form.Control.Feedback type="invalid">{errors.entity.doing_business_as}</Form.Control.Feedback>}
-            <Form.Text className="text-meta">Optional business name if it differs from the legally registered name.</Form.Text>
+            <Form.Text className="text-muted">Optional business name if it differs from the legally registered name.</Form.Text>
           </Form.Group>
         </Form.Row>
         <Form.Group controlId="businessAddress" className="required">
@@ -129,11 +129,11 @@ const RegisterBusiness = ({ page, previous, next, isActive }) => {
         </Form.Row>
         <Form.Row>
           <Form.Group as={Col} md="6" controlId="businessPhone" className="required">
-            <Form.Control required placeholder="Business Phone" name="phone" type="tel" as={NumberFormat} format="(###) ###-####" mask="_" />
+            <Form.Control required name="phone" type="tel" as={NumberFormat} placeholder="(###) ###-####" format="(###) ###-####" mask="_" />
             {errors.contact && errors.contact.phone && <Form.Control.Feedback type="invalid">{errors.contact.phone}</Form.Control.Feedback>}
           </Form.Group>
           <Form.Group as={Col} md="6" controlId="businessEIN" className="required">
-            <Form.Control required placeholder="EIN" name="ein" isInvalid={errors.identity} />
+            <Form.Control required placeholder="Employer ID Number (EIN)" name="ein" isInvalid={errors.identity} />
             {errors.identity && <Form.Control.Feedback type="invalid">{errors.identity.identity_value || errors.identity}</Form.Control.Feedback>}
           </Form.Group>
         </Form.Row>

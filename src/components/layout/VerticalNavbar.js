@@ -20,7 +20,7 @@ const NavItem = ({ route, number, show }) => {
     onMouseLeave={() => setHover(false)}
     style={(hover || isActive) && show && isEnabled && subRoutes && subRoutes.length ? { marginTop: `-${(subRoutes.length * 2 + 1) / 2}rem`, paddingBottom: `${subRoutes.length * 2 + 1}rem` } : undefined}>
     <div className="nav-content">
-      {isEnabled && !route.placeholder ? <NavLink to={{ pathname: route.path, state: { from: route.page } }} className="nav-title">{route.title}</NavLink> : <div className={`nav-title${!isActive ? ' text-meta' : ''}`}>{route.title}</div>}
+      {isEnabled && !route.placeholder ? <NavLink to={{ pathname: route.path, state: { from: route.page } }} className="nav-title">{route.title}</NavLink> : <div className={`nav-title${!isActive ? ' text-muted' : ''}`}>{route.title}</div>}
       {subRoutes && <div className="nav-links">{subRoutes.map((route, index) =>
         <NavLink key={index} to={{ pathname: route.path, state: { from: route.page } }} className="d-block mt-2 text-sm">{route.title}</NavLink>
       )}</div>}
