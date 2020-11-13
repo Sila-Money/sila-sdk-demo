@@ -198,7 +198,7 @@ const Transact = ({ page, previous, next, isActive }) => {
 
       {userAccounts.length === 0 && <Alert variant="warning" className="mb-4">An active account is required to initiate a transaction.  <NavLink to="/accounts" className="text-reset text-underline">Link an account</NavLink></Alert>}
 
-      <p className="text-meta mb-5">This page represents <a href="https://docs.silamoney.com/docs/get_sila_balance" target="_blank" rel="noopener noreferrer">/get_sila_balance</a>, <a href="https://docs.silamoney.com/docs/issue_sila" target="_blank" rel="noopener noreferrer">/issue_sila</a>, <a href="https://docs.silamoney.com/docs/redeem_sila" target="_blank" rel="noopener noreferrer">/redeem_sila</a>, <a href="https://docs.silamoney.com/docs/transfer_sila" target="_blank" rel="noopener noreferrer">/transfer_sila</a>, and <a href="https://docs.silamoney.com/docs/get_transactions" target="_blank" rel="noopener noreferrer">/get_transactions</a>  functionality.</p>
+      <p className="text-muted mb-5">This page represents <a href="https://docs.silamoney.com/docs/get_sila_balance" target="_blank" rel="noopener noreferrer">/get_sila_balance</a>, <a href="https://docs.silamoney.com/docs/issue_sila" target="_blank" rel="noopener noreferrer">/issue_sila</a>, <a href="https://docs.silamoney.com/docs/redeem_sila" target="_blank" rel="noopener noreferrer">/redeem_sila</a>, <a href="https://docs.silamoney.com/docs/transfer_sila" target="_blank" rel="noopener noreferrer">/transfer_sila</a>, and <a href="https://docs.silamoney.com/docs/get_transactions" target="_blank" rel="noopener noreferrer">/get_transactions</a>  functionality.</p>
 
       <div className="d-flex mb-4">
         <h2 className="mb-0">Wallet Balance</h2>
@@ -226,7 +226,7 @@ const Transact = ({ page, previous, next, isActive }) => {
         <Card>
           <Form.Group className="mb-0">
             <Card.Header className="bg-secondary p-3">
-              <Form.Label className="m-0" htmlFor="balance"><h3 className="m-0">Amount of Sila</h3></Form.Label>
+              <Form.Label className="m-0" htmlFor="balance"><h3 className="m-0">Amount in Sila</h3></Form.Label>
             </Card.Header>
             <Card.Body className="form-control balance p-3 border-0">
               {balance}
@@ -256,7 +256,7 @@ const Transact = ({ page, previous, next, isActive }) => {
           <Card.Body>
             <Tab.Content>
               <Tab.Pane eventKey="issue">
-                <p className="text-meta">Add Sila to your wallet by debiting a linked account.</p>
+                <p className="text-muted">Add Sila to your wallet by debiting a linked account. One Sila = 1¢.</p>
                 <Form noValidate validated={forms.issue.validated} autoComplete="off" className="d-flex mt-auto" onSubmit={(e) => {
                   e.preventDefault();
                   const amount = parseFloat(e.target.issue.value);
@@ -285,7 +285,7 @@ const Transact = ({ page, previous, next, isActive }) => {
                 </Form>
               </Tab.Pane>
               <Tab.Pane eventKey="transfer">
-                <p className="text-meta">Transfer sila from your selected linked wallet to another user.</p>
+                <p className="text-muted">Transfer sila from your selected linked wallet to another user.</p>
                 <Form noValidate validated={forms.transfer.validated} autoComplete="off" className="d-flex" onSubmit={(e) => {
                   e.preventDefault();
                   const amount = parseFloat(e.target.transfer.value);
@@ -321,7 +321,7 @@ const Transact = ({ page, previous, next, isActive }) => {
                 </Form>
               </Tab.Pane>
               <Tab.Pane eventKey="redeem">
-                <p className="text-meta">Convert Sila from your selected linked wallet to dollars in your primary linked account.</p>
+                <p className="text-muted">Convert Sila from your selected linked wallet to dollars in your primary linked account.</p>
                 <Form noValidate validated={forms.redeem.validated} autoComplete="off" className="d-flex mt-auto" onSubmit={(e) => {
                   e.preventDefault();
                   const amount = parseFloat(e.target.redeem.value);

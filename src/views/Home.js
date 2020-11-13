@@ -26,8 +26,6 @@ const Home = ({ page, history }) => {
 
       <h1 className="mb-4">Choose Your Flow</h1>
 
-      <p className="text-meta text-lg">We need to gather some information to see if the end-user meets KYC (Know Your Customer) or KYB (Know Your Business) requirements.  Pick an option below to move forward.</p>
-
       <Container className="mt-5">
         <Row className="justify-content-center">
           {Object.keys(flows).map(key => <Col key={key} lg="12" xl="6" className="text-center px-5">

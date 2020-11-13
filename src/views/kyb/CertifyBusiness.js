@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Card, Table, Badge, Button, Row, Col, Form, Dropdown, DropdownButton } from 'react-bootstrap';
+import { Container, Card, Table, Badge, Button, Row, Col, Form, Dropdown, DropdownButton, Alert } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import Sketch from 'react-p5';
 
@@ -12,11 +12,11 @@ import { useAppContext } from '../../components/context/AppDataProvider';
 
 import * as confetti from '../../assets/vendor/confetti';
 
-const BusinessMembers = ({ page, previous, next, routes, location, history, isActive }) => {
+const BusinessMembers = ({ page, previous, next, location, history, isActive }) => {
   const [loaded, setLoaded] = useState(false);
   const [members, setMembers] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [showCongrats, setShowCongrats] = useState(members && members.filter(member => member.beneficial_owner_certification_status.includes('not_required')).length !== 0);
+  const [isAdmin, setIsAdmin] = useState(true);
+  const [showCongrats, setShowCongrats] = useState(members && members.some(member => member.beneficial_owner_certification_status.includes('not_required')));
   const [filters, setFilters] = useState({ role: false, search: '' });
   const { api, app, setAppData, handleError, updateApp } = useAppContext();
   const businessUser = app.users.find(user => app.settings.kybHandle === user.handle);
@@ -77,6 +77,21 @@ const BusinessMembers = ({ page, previous, next, routes, location, history, isAc
     };
   };
 
+  const checkAdmin = async () => {
+    try {
+      console.log('checked');
+      const res = await api.getEntity(app.activeUser.handle, app.activeUser.private_key);
+      if (res.data.success && res.data.memberships && res.data.memberships.find(membership => membership.role === 'administrator')) {
+        setIsAdmin(true);
+      } else {
+        setIsAdmin(false);
+      }
+    } catch (err) {
+      console.log('  ... looks like we ran into an issue!');
+      handleError(err);
+    }
+  };
+
   const setActiveUser = (e) => {
     e.preventDefault();
     setAppData({
@@ -88,19 +103,6 @@ const BusinessMembers = ({ page, previous, next, routes, location, history, isAc
   };
 
   useEffect(() => {
-    const checkAdmin = async () => {
-      try {
-        const res = await api.getEntity(app.activeUser.handle, app.activeUser.private_key);
-        if (res.data.success && res.data.memberships && res.data.memberships.find(membership => membership.role === 'administrator')) {
-          setIsAdmin(true);
-        } else {
-          setIsAdmin(false);
-        }
-      } catch (err) {
-        console.log('  ... looks like we ran into an issue!');
-        handleError(err);
-      }
-    }
     if (location.pathname === page && app.settings.kybHandle) {
       checkAdmin();
       getMembersAndCheckKyc();
@@ -118,7 +120,7 @@ const BusinessMembers = ({ page, previous, next, routes, location, history, isAc
 
           <h1 className="mb-4">Certify</h1>
 
-          <p className="text-meta text-lg mb-4">Your team has successfully gone through the KYB process and have been verified. Let’s certify that all the information you have on hand is correct and get you ready to transact. Once your team members are certified, then you can certify your business.</p>
+          <p className="text-meta text-lg mb-4">Your team has successfully gone through the KYB process and have been verified. Let’s certify that all the information you have on hand is correct and get you ready to transact. First step is to get your business members certified, then you can certify your business.</p>
 
           <p className="text-meta mb-0 mb-5">This page represents <a href="https://docs.silamoney.com/docs/certify_business" target="_blank" rel="noopener noreferrer">/certify_business</a> functionality.</p>
 
@@ -128,7 +130,7 @@ const BusinessMembers = ({ page, previous, next, routes, location, history, isAc
 
           <div className="members position-relative">
 
-            <Row className="mb-5 position-relative" style={{ zIndex: 4 }}>
+            <Row className="mb-4 position-relative" style={{ zIndex: 4 }}>
               <Col sm="8" className="d-block d-sm-flex align-items-center">
                 <Form.Control className="w-100 mr-3 mb-2 mb-md-0 loaded" placeholder="Search by name" aria-label="Search by name" onChange={(e) => setFilters({ ...filters, search: e.currentTarget.value })} />
                 <DropdownButton className="text-nowrap text-nowrap mt-2 mt-sm-0 loaded" variant="outline-light" title={app.settings.kybRoles.find(role => role.name === filters.role) ? app.settings.kybRoles.find(role => role.name === filters.role).label : 'All roles'}>
@@ -136,13 +138,12 @@ const BusinessMembers = ({ page, previous, next, routes, location, history, isAc
                   {app.settings.kybRoles.filter(role => role.name !== filters.role).map((role, key) => <Dropdown.Item key={key} onClick={() => setFilters({ ...filters, role: role.name })}>{role.label}</Dropdown.Item>)}
                 </DropdownButton>
               </Col>
-              <Col sm="4" className="text-right">
-                <Button as={NavLink} to={{ pathname: '/members/register', state: { from: page } }} className="text-uppercase">Add +</Button>
-              </Col>
             </Row>
 
+            {members.every(member => !member.beneficial_owner_certification_status.includes('pending')) && <Alert variant="info" className="mb-4">Under this business type, business members are not required to be certified.</Alert>}
+
             <Card className="mb-4">
-              <Table hover responsive>
+              <Table responsive>
                 {members &&
                   <>
                     <thead>
@@ -150,20 +151,24 @@ const BusinessMembers = ({ page, previous, next, routes, location, history, isAc
                         <th className="text-lg px-3 py-2">Role</th>
                         <th className="text-lg px-3 py-2">Name</th>
                         <th className="text-lg px-3 py-2">Handle</th>
-                        <th width="20%" className="text-lg px-3 py-2">Status</th>
+                        <th width="20%" className="text-lg px-3 py-2">Certification Status</th>
+                        <th className="text-lg px-3 py-2">Action</th>
                       </tr>
                     </thead>
                     <tbody>
                       {filteredMembers.length ? filteredMembers.sort((a, b) => a.role.localeCompare(b.role)).map((member, index) => {
-                        const statusVariant = member.beneficial_owner_certification_status.includes('not_required') ? 'info' : member.beneficial_owner_certification_status.includes('pending') ? 'primary' : 'success';
-                        const statusLabel = member.beneficial_owner_certification_status.includes('not_required') ? 'Not required' : member.beneficial_owner_certification_status.includes('pending') ? 'Certification Pending' : 'Certfied';
+                        const statusVariant = member.beneficial_owner_certification_status.includes('pending') ? 'primary' : 'success';
+                        const statusLabel = member.beneficial_owner_certification_status.includes('not_required') ? 'Certification Not Required' : member.beneficial_owner_certification_status.includes('pending') ? 'Certification Pending' : 'Certfied';
                         return (
-                          <tr key={index} className="loaded" onClick={() => history.push({ pathname: `/certify/${member.user_handle}`, state: { role: member.role, from: page } })}>
+                          <tr key={index} className="loaded">
                             <td className="px-3 text-nowrap align-middle">{app.settings.kybRoles.find(role => role.name === member.role).label}</td>
                             <td className="px-3 text-nowrap">{`${member.first_name} ${member.last_name}`}</td>
                             <td className="px-3 text-nowrap">{member.user_handle}</td>
                             <td width="20%" className="px-3">
                               <Badge pill className="w-100 badge-outline py-2 px-3" variant={statusVariant}>{statusLabel}</Badge>
+                            </td>
+                            <td className="actions">
+                              {(member.beneficial_owner_certification_status.includes('pending')) ? <Button variant="link" className="p-0 important" as={NavLink} to={{ pathname: `/certify/${member.user_handle}`, state: { role: member.role, from: page } }}>Certify</Button> : <span className="text-meta">N/A</span>}
                             </td>
                           </tr>
                         );
@@ -175,7 +180,7 @@ const BusinessMembers = ({ page, previous, next, routes, location, history, isAc
 
             <div className="d-flex">
               <span className="text-meta">Total Members: {filteredMembers.length}</span>
-              <Button onClick={certifyBusiness} disabled={members.filter(member => member.beneficial_owner_certification_status.includes('pending')).length !== 0} className="ml-auto">Certify Business</Button>
+              <Button onClick={certifyBusiness} disabled={members.some(member => member.beneficial_owner_certification_status.includes('pending'))} className="ml-auto">Certify Business</Button>
             </div>
           </div>
 

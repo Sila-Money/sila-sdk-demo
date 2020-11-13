@@ -1,32 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Fade } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 
-import { useAppContext } from '../context/AppDataProvider';
-
-const AlertMessage = ({ message, type, noIcon, onHide, noHide }) => {
-  const [show, setShow] = useState(true);
-  const { updateApp } = useAppContext();
+const AlertMessage = ({ message, type, noIcon }) => {
   const icon = type === 'success' ? 'success' : type === 'danger' ? 'danger' : type === 'wait' ? 'wait' : 'info';
-
-  useEffect(() => {
-    let showTimer, hideTimer;
-    if (show) {
-      if (!noHide) {
-        showTimer = setTimeout(() => setShow(false), 10000);
-      }
-    } else if (onHide) {
-      hideTimer = setTimeout(() => onHide, 300);
-    } else {
-      hideTimer = setTimeout(() => updateApp({ alert: {} }), 300);
-    }
-    return () => clearTimeout(showTimer, hideTimer);
-  }, [show]); // eslint-disable-line react-hooks/exhaustive-deps
-
   return (
-    <Fade in={show}>
-      <p>
-        {!noIcon && <i className={`mr-2 sila-icon sila-icon-${icon} text-${type && type !== 'wait' ? type : 'primary'}`}></i>}
+    <Fade in={true}>
+      <p className={!noIcon ? 'd-flex align-items-center' : undefined}>
+        {!noIcon && type !== 'warning' ? <i className={`mr-3 sila-icon sila-icon-${icon} text-${type && type !== 'wait' ? type : 'primary'}`}></i> : !noIcon ? <i class="fas fa-exclamation-triangle text-warning mr-3"></i> : null}
         <span className="message">{message}</span>
       </p>
     </Fade>

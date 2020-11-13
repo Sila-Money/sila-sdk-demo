@@ -14,11 +14,11 @@ const RegisterUser = ({ page, previous, next, isActive }) => {
 
       <h1 className="mb-4">Register User</h1>
 
-      <p className="mb-4 text-meta text-lg">We need to gather some information to see if you meet KYC guidelines.</p>
+      <p className="mb-4 text-muted text-lg">We need to gather some information to see if you meet KYC guidelines.</p>
 
       <Alert variant="info" className="mb-4">A wallet is automatically generated for you using the generateWallet() function upon registration.</Alert>
 
-      <p className="text-meta mb-5">This page represents <a href="https://docs.silamoney.com/docs/register" target="_blank" rel="noopener noreferrer">/register</a> functionality.</p>
+      <p className="text-muted mb-5">This page represents <a href="https://docs.silamoney.com/docs/register" target="_blank" rel="noopener noreferrer">/register</a> functionality.</p>
 
       <RegisterUserForm handle={app.settings.kycHandle} page={page} isActive={isActive}>
         <div className="d-flex mt-5">

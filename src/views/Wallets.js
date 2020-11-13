@@ -188,11 +188,11 @@ const Wallets = ({ page, previous, next, isActive }) => {
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 
-      <h1 className="mb-4">Digital Wallets</h1>
+      <h1 className="mb-4">Wallets</h1>
 
-      <p className="text-lg text-meta mb-4">An Ethereum Wallet has been automatically created for this user.  Private Keys are stored locally on this device and never sent over the network.</p>
+      <p className="text-lg text-muted mb-4">An Ethereum wallet has been automatically generated for this business by this demo. Per best practice, the private keys are stored locally on your computer and never sent over the network.</p>
 
-      <p className="text-meta mb-5">This page represents <a href="https://docs.silamoney.com/docs/register_wallet" target="_blank" rel="noopener noreferrer">/register_wallet</a>, <a href="https://docs.silamoney.com/docs/delete_wallet" target="_blank" rel="noopener noreferrer">/delete_wallet</a>, <a href="https://docs.silamoney.com/docs/update_wallet" target="_blank" rel="noopener noreferrer">/update_wallet</a>, and <a href="https://docs.silamoney.com/docs/get_wallets" target="_blank" rel="noopener noreferrer">/get_wallets</a> functionality.</p>
+      <p className="text-muted mb-5">This page represents <a href="https://docs.silamoney.com/docs/register_wallet" target="_blank" rel="noopener noreferrer">/register_wallet</a>, <a href="https://docs.silamoney.com/docs/delete_wallet" target="_blank" rel="noopener noreferrer">/delete_wallet</a>, <a href="https://docs.silamoney.com/docs/update_wallet" target="_blank" rel="noopener noreferrer">/update_wallet</a>, and <a href="https://docs.silamoney.com/docs/get_wallets" target="_blank" rel="noopener noreferrer">/get_wallets</a> functionality.</p>
 
       <Form noValidate autoComplete="off" className="position-relative mt-4">
         {!loaded && <Loader overlay />}
@@ -201,7 +201,7 @@ const Wallets = ({ page, previous, next, isActive }) => {
 
       <div className="d-flex mt-5">
         {app.alert.message && <AlertMessage message={app.alert.message} type={app.alert.type} />}
-        <Button variant="secondary" size="sm" onClick={addWallet} className="ml-auto">Add Wallet <i className="fas fa-plus-circle ml-2"></i></Button>
+        <Button onClick={addWallet} className="ml-auto">Add Wallet <i className="fas fa-plus-circle ml-2"></i></Button>
       </div>
 
       <Pagination
