@@ -18,7 +18,6 @@ const RequestKYC = ({ page, previous, next }) => {
       let result = { kyc: {}, kyb: {} };
       console.log('  ... completed!');
       if (res.data.status === 'SUCCESS') {
-        console.log(res);
         result.alert = { message: `Submitted for ${app.settings.flow.toUpperCase()} Review`, type: 'wait' };
         result[app.settings.flow].alert = { message: 'Submitted for review', type: 'wait' };
       } else {
