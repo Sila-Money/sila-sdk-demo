@@ -7,7 +7,7 @@ const AlertMessage = ({ message, type, noIcon }) => {
   return (
     <Fade in={true}>
       <p className={!noIcon ? 'd-flex align-items-center' : undefined}>
-        {!noIcon && type !== 'warning' ? <i className={`mr-3 sila-icon sila-icon-${icon} text-${type && type !== 'wait' ? type : 'primary'}`}></i> : !noIcon ? <i class="fas fa-exclamation-triangle text-warning mr-3"></i> : null}
+        {!noIcon && type !== 'warning' ? <i className={`mr-3 sila-icon sila-icon-${icon} text-${type && type !== 'wait' ? type : 'primary'}`}></i> : !noIcon ? <i class="fas fa-exclamation text-warning mr-3"></i> : null}
         <span className="message">{message}</span>
       </p>
     </Fade>

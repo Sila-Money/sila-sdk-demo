@@ -125,7 +125,7 @@ const BusinessMembers = ({ page, previous, next, location, history, isActive }) 
           <p className="text-meta mb-0 mb-5">This page represents <a href="https://docs.silamoney.com/docs/certify_business" target="_blank" rel="noopener noreferrer">/certify_business</a> functionality.</p>
 
           {!isAdmin && <DisabledOverlay>
-            <p className="mb-0"><i className="fas fa-lock mr-2"></i> You must be an administrator to cerify the business and it's members. {adminUser && <Button variant="link" className="p-0 text-white important ml-2" onClick={(e) => setActiveUser(e)}>Switch to the Administator</Button>}</p>
+            <p className="mb-0"><i className="fas fa-lock mr-2"></i> You must be an administrator to cerify the business and it's members. {adminUser ? <Button variant="link" className="p-0 text-white important ml-2" onClick={(e) => setActiveUser(e)}>Switch to the Administator</Button> : <Button variant="link" as={NavLink} className="p-0 text-white important ml-2" to={{ pathname: '/members/register', state: { role: 'administrator', from: page } }}>Add an Administator</Button>}</p>
           </DisabledOverlay>}
 
           <div className="members position-relative">
@@ -140,7 +140,7 @@ const BusinessMembers = ({ page, previous, next, location, history, isActive }) 
               </Col>
             </Row>
 
-            {members.every(member => !member.beneficial_owner_certification_status.includes('pending')) && <Alert variant="info" className="mb-4">Under this business type, business members are not required to be certified.</Alert>}
+            {members.every(member => member.beneficial_owner_certification_status.includes('not_required')) && <Alert variant="info" className="mb-4">Under this business type, business members are not required to be certified.</Alert>}
 
             <Card className="mb-4">
               <Table responsive>
@@ -148,7 +148,7 @@ const BusinessMembers = ({ page, previous, next, location, history, isActive }) 
                   <>
                     <thead>
                       <tr className="bg-secondary">
-                        <th className="text-lg px-3 py-2">Role</th>
+                        <th width="1%" className="text-lg px-3 py-2 text-nowrap">Role</th>
                         <th className="text-lg px-3 py-2">Name</th>
                         <th className="text-lg px-3 py-2">Handle</th>
                         <th width="20%" className="text-lg px-3 py-2">Certification Status</th>
@@ -161,7 +161,7 @@ const BusinessMembers = ({ page, previous, next, location, history, isActive }) 
                         const statusLabel = member.beneficial_owner_certification_status.includes('not_required') ? 'Certification Not Required' : member.beneficial_owner_certification_status.includes('pending') ? 'Certification Pending' : 'Certfied';
                         return (
                           <tr key={index} className="loaded">
-                            <td className="px-3 text-nowrap align-middle">{app.settings.kybRoles.find(role => role.name === member.role).label}</td>
+                            <td width="1%" className="px-3 text-nowrap align-middle">{app.settings.kybRoles.find(role => role.name === member.role).label}</td>
                             <td className="px-3 text-nowrap">{`${member.first_name} ${member.last_name}`}</td>
                             <td className="px-3 text-nowrap">{member.user_handle}</td>
                             <td width="20%" className="px-3">

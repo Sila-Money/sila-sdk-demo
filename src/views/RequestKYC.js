@@ -1,6 +1,5 @@
 import React from 'react';
 import { Container, Button, OverlayTrigger, Tooltip, Alert } from 'react-bootstrap';
-import { NavLink } from 'react-router-dom';
 
 import { useAppContext } from '../components/context/AppDataProvider';
 
@@ -19,6 +18,7 @@ const RequestKYC = ({ page, previous, next }) => {
       let result = { kyc: {}, kyb: {} };
       console.log('  ... completed!');
       if (res.data.status === 'SUCCESS') {
+        console.log(res);
         result.alert = { message: `Submitted for ${app.settings.flow.toUpperCase()} Review`, type: 'wait' };
         result[app.settings.flow].alert = { message: 'Submitted for review', type: 'wait' };
       } else {
@@ -43,11 +43,12 @@ const RequestKYC = ({ page, previous, next }) => {
     console.log(`Checking ${app.settings.flow.toUpperCase()} ...`);
     try {
       const res = await api.checkKYC(activeUser.handle, activeUser.private_key);
+      const certified = res.data.certification_history.some(history => !history.expires_after_epoch || history.expires_after_epoch > Date.now()) && res.data.certification_status.includes('certified');
       let result = { kyc: {}, kyb: {} };
       console.log('  ... completed!');
       if (res.data.verification_status.includes('passed')) {
-        result.alert = { message: app.settings.flow === 'kyb' ? 'Business has passed verification but needs to be certifed before it can transact. Click continue to certify.' : res.data.message, type: 'warning' };
-        result[app.settings.flow].alert = { message: 'Passed ID verification', type: app.settings.flow === 'kyb' ? 'warning' : 'success' };
+        result.alert = !certified ? { message: 'Business has passed verification but needs to be certifed before it can transact. Click continue to certify.', type: 'warning' } : { message: res.data.message, type: 'success' };
+        result[app.settings.flow].alert = { message: 'Passed ID verification', type: certified ? 'success' : 'warning' };
       } else if (res.data.verification_status.includes('failed')) {
         result.alert = { message: res.data.message, type: 'danger' };
         result[app.settings.flow].alert = { message: 'Failed ID verification', type: 'danger' };
@@ -80,13 +81,11 @@ const RequestKYC = ({ page, previous, next }) => {
 
       <p className="text-lg text-muted mb-4">{app.settings.flow === 'kyc' ? 'We must verify that all users of the Sila platform are who they say they are, present a low fraud risk, and are not on any watchlists. We do this by submitting end-user information for KYC review by our identity verification partner, Alloy. The user will not be able to transact until the user is verified.  With great power comes great responsibility.' : 'We must verify that all users of the Sila platform are who they say they are, present a low fraud risk, and are not on any watchlists. The members of this business will be submitted for KYC review and their end-user information will be reviewed by our identity verification partner, Alloy. The business will not be able to transact until all users are verified. Additionally, the business will be submited for KYB review, to ensure that all information is correct.'}</p>
 
-      <p className="text-lg text-muted mb-4">Verification may take a few minutes, so make sure to refresh and check your status.</p>
-
       <p className="text-muted mb-4">This page represents <a href="https://docs.silamoney.com/docs/request_kyc" target="_blank" rel="noopener noreferrer">/request_kyc</a> and <a href="https://docs.silamoney.com/docs/check_kyc" target="_blank" rel="noopener noreferrer">/check_kyc</a> functionality.</p>
 
       <p className="mb-5"><Button className="float-right" onClick={requestKyc}>Request {app.settings.flow.toUpperCase()}</Button></p>
 
-      {app.settings.flow === 'kyc' && app[app.settings.flow].alert && (app[app.settings.flow].alert.type === 'primary' || app[app.settings.flow].alert.type === 'wait') && <Alert variant="info" className="mb-4 loaded">While you wait for the {app.settings.flow.toUpperCase()} review to process, go ahead and <NavLink to="/accounts" className="text-reset text-underline">Link an account</NavLink></Alert>}
+      {app[app.settings.flow].alert && (app[app.settings.flow].alert.type === 'primary' || app[app.settings.flow].alert.type === 'wait') && <Alert variant="info" className="mb-4 loaded">Verification may take a few minutes, so make sure to refresh and check your status.</Alert>}
 
       <div className="d-flex mb-3">
         <h2>{app.settings.flow.toUpperCase()} Review Status</h2>

@@ -129,7 +129,7 @@ const RegisterBusiness = ({ page, previous, next, isActive }) => {
         </Form.Row>
         <Form.Row>
           <Form.Group as={Col} md="6" controlId="businessPhone" className="required">
-            <Form.Control required name="phone" type="tel" as={NumberFormat} placeholder="(###) ###-####" format="(###) ###-####" mask="_" />
+            <Form.Control required name="phone" type="tel" as={NumberFormat} placeholder="Phone Number (___) ___-____" format="(###) ###-####" mask="_" />
             {errors.contact && errors.contact.phone && <Form.Control.Feedback type="invalid">{errors.contact.phone}</Form.Control.Feedback>}
           </Form.Group>
           <Form.Group as={Col} md="6" controlId="businessEIN" className="required">

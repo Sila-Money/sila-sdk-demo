@@ -106,7 +106,6 @@ const BusinessMembers = ({ page, previous, next, history, location }) => {
     if (rolesAndMembers.length && rolesAndMembers.filter(member => member.label && isRoleRequired(member)).length === 0) {
       updateApp({ alert: { message: 'Success! All required business members have now been registerd, you may now continue to the KYB process, or add more business members if necessary.', type: 'success' } });
     }
-    console.log();
   }, [members]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
@@ -125,7 +124,7 @@ const BusinessMembers = ({ page, previous, next, history, location }) => {
             <Table responsive>
               <thead>
                 <tr className="bg-secondary">
-                  <th className="text-lg pl-3 py-2">Role</th>
+                  <th width="1%" className="text-lg pl-3 py-2 text-nowrap">Role</th>
                   <th>&nbsp;</th>
                   {members.length !== 0 && <th className="text-lg px-3 py-2">Name</th>}
                   {members.length !== 0 && <th className="text-lg px-3 py-2">Handle</th>}
@@ -138,7 +137,7 @@ const BusinessMembers = ({ page, previous, next, history, location }) => {
                   if (member.user_handle) {
                     return (
                       <tr key={index} className="loaded">
-                        <td className="pl-3 text-nowrap align-middle">{app.settings.kybRoles.find(role => role.name === member.role).label}</td>
+                        <td width="1%" className="pl-3 text-nowrap align-middle">{app.settings.kybRoles.find(role => role.name === member.role).label}</td>
                         <td className="align-middle"><RoleDescription role={member.role} /></td>
                         <td className="px-3 text-nowrap">{`${member.first_name} ${member.last_name}`}</td>
                         <td className="px-3 text-nowrap">{member.user_handle}</td>
