@@ -134,38 +134,34 @@ const BusinessMembers = ({ page, previous, next, history, location }) => {
               </thead>
               <tbody>
                 {rolesAndMembers.sort((a, b) => isRoleRequired(a) ? -1 : isRoleRequired(b) ? 1 : 0).map((member, index) => {
-                  if (member.user_handle) {
-                    return (
-                      <tr key={index} className="loaded">
-                        <td width="1%" className="pl-3 text-nowrap align-middle">{app.settings.kybRoles.find(role => role.name === member.role).label}</td>
-                        <td className="align-middle"><RoleDescription role={member.role} /></td>
-                        <td className="px-3 text-nowrap">{`${member.first_name} ${member.last_name}`}</td>
-                        <td className="px-3 text-nowrap">{member.user_handle}</td>
-                        <td className="px-3">
-                          <Badge pill className="badge-outline py-2 px-3" variant="success">Linked</Badge>
-                        </td>
-                        <td className="actions text-nowrap">
-                          <Button variant="link" className="p-1 mr-3 text-decoration-none" title="Edit" as={NavLink} to={{ pathname: `/members/${member.user_handle}`, state: { role: member.role, from: page } }}><i className="sila-icon sila-icon-edit text-lg"></i></Button>
-                          <Button variant="link" className="p-1 mr-3 text-decoration-none" title="Unlink" onClick={() => unlinkMember(app.settings.kybRoles.find(role => role.name === member.role), member.user_handle)}><i className="sila-icon sila-icon-delete text-lg"></i></Button>
-                        </td>
-                      </tr>
-                    );
-                  } else {
-                    return (
+                  return member.user_handle ? (
+                    <tr key={index} className="loaded">
+                      <td width="1%" className="pl-3 text-nowrap align-middle">{app.settings.kybRoles.find(role => role.name === member.role).label}</td>
+                      <td className="align-middle"><RoleDescription role={member.role} /></td>
+                      <td className="px-3 text-nowrap">{`${member.first_name} ${member.last_name}`}</td>
+                      <td className="px-3 text-nowrap">{member.user_handle}</td>
+                      <td className="px-3">
+                        <Badge pill className="badge-outline py-2 px-3 w-100" variant="success">Linked</Badge>
+                      </td>
+                      <td className="actions text-nowrap">
+                        <Button variant="link" className="p-1 mr-3 text-decoration-none" title="Edit" as={NavLink} to={{ pathname: `/members/${member.user_handle}`, state: { role: member.role, from: page } }}><i className="sila-icon sila-icon-edit text-lg"></i></Button>
+                        <Button variant="link" className="p-1 mr-3 text-decoration-none" title="Unlink" onClick={() => unlinkMember(app.settings.kybRoles.find(role => role.name === member.role), member.user_handle)}><i className="sila-icon sila-icon-delete text-lg"></i></Button>
+                      </td>
+                    </tr>
+                  ) : (
                       <tr key={index} className="loaded">
                         <td className="pl-3 align-middle">{member.label}{isRoleRequired(member) && <span className="text-primary" style={{ top: '-1rem' }}>*</span>}</td>
                         <td className="align-middle"><RoleDescription role={member.name} /></td>
                         {members.length !== 0 && <td className="px-3"></td>}
                         {members.length !== 0 && <td className="px-3"></td>}
                         <td className="px-3">
-                          <Badge pill className="badge-outline py-2 px-3" variant={isRoleRequired(member) ? 'warning' : 'primary'}>{isRoleRequired(member) ? 'Required' : 'Optional'}</Badge>
+                          <Badge pill className="badge-outline py-2 px-3 w-100" variant={isRoleRequired(member) ? 'warning' : 'primary'}>{isRoleRequired(member) ? 'Required' : 'Optional'}</Badge>
                         </td>
                         <td className="actions">
                           <Button variant="link" className="p-0 important" as={NavLink} to={{ pathname: '/members/register', state: { role: member.name, from: page } }}>{members.some(member => member.user_handle) ? 'Add' : 'Add Business Member'} +</Button>
                         </td>
                       </tr>
                     );
-                  }
                 })}
               </tbody>
             </Table>

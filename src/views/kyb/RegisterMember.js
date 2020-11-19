@@ -49,7 +49,7 @@ const RegisterMember = ({ page, isActive, location, history }) => {
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 
       <div className="mb-4 d-flex">
-        <h1 className="mb-0">{location.state.role === 'administrator' ? 'Business Administration' : location.state.role ? app.settings.kybRoles.find(role => role.name === location.state.role).label : app.activeUser.entity_name ? `Add ${app.activeUser.entity_name} as a Business Member` : 'Add a Business Member'}</h1>
+        <h1 className="mb-0">{location.state.role === 'administrator' ? 'Business Administration' : location.state.role ? app.settings.kybRoles.find(role => role.name === location.state.role).label : 'Add a Business Member'}</h1>
         <Button variant="outline-light" className="text-muted text-uppercase ml-auto" onClick={() => history.goBack()}>Back</Button>
       </div>
 
