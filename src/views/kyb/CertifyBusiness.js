@@ -142,17 +142,17 @@ const BusinessMembers = ({ page, previous, next, location, history, isActive }) 
 
             {members.every(member => member.beneficial_owner_certification_status.includes('not_required')) && <Alert variant="info" className="mb-4">Under this business type, business members are not required to be certified.</Alert>}
 
-            <Card className="mb-4">
+            <Card className="mb-4 text-nowrap">
               <Table responsive>
                 {members &&
                   <>
                     <thead>
                       <tr className="bg-secondary">
-                        <th width="1%" className="text-lg px-3 py-2 text-nowrap">Role</th>
+                        <th width="1%" className="text-lg px-3 py-2">Role</th>
                         <th className="text-lg px-3 py-2">Name</th>
                         <th className="text-lg px-3 py-2">Handle</th>
                         <th width="20%" className="text-lg px-3 py-2">Certification Status</th>
-                        <th className="text-lg px-3 py-2">Action</th>
+                        <th width="1%" className="text-lg px-3 py-2">Action</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -161,13 +161,13 @@ const BusinessMembers = ({ page, previous, next, location, history, isActive }) 
                         const statusLabel = member.beneficial_owner_certification_status.includes('not_required') ? 'Certification Not Required' : member.beneficial_owner_certification_status.includes('pending') ? 'Certification Pending' : 'Certfied';
                         return (
                           <tr key={index} className="loaded">
-                            <td width="1%" className="px-3 text-nowrap align-middle">{app.settings.kybRoles.find(role => role.name === member.role).label}</td>
-                            <td className="px-3 text-nowrap">{`${member.first_name} ${member.last_name}`}</td>
-                            <td className="px-3 text-nowrap">{member.user_handle}</td>
+                            <td width="1%" className="px-3 align-middle">{app.settings.kybRoles.find(role => role.name === member.role).label}</td>
+                            <td className="px-3">{`${member.first_name} ${member.last_name}`}</td>
+                            <td className="px-3">{member.user_handle}</td>
                             <td width="20%" className="px-3">
                               <Badge pill className="w-100 badge-outline py-2 px-3" variant={statusVariant}>{statusLabel}</Badge>
                             </td>
-                            <td className="actions">
+                            <td width="1%" className="actions">
                               {(member.beneficial_owner_certification_status.includes('pending')) ? <Button variant="link" className="p-0 important" as={NavLink} to={{ pathname: `/certify/${member.user_handle}`, state: { role: member.role, from: page } }}>Certify</Button> : <span className="text-meta">N/A</span>}
                             </td>
                           </tr>

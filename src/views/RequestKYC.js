@@ -42,12 +42,12 @@ const RequestKYC = ({ page, previous, next }) => {
     console.log(`Checking ${app.settings.flow.toUpperCase()} ...`);
     try {
       const res = await api.checkKYC(activeUser.handle, activeUser.private_key);
-      const certified = res.data.certification_history.some(history => !history.expires_after_epoch || history.expires_after_epoch > Date.now()) && res.data.certification_status.includes('certified');
+      const certified = res.data.certification_history && res.data.certification_history.some(history => !history.expires_after_epoch || history.expires_after_epoch > Date.now()) && res.data.certification_status && res.data.certification_status.includes('certified');
       let result = { kyc: {}, kyb: {} };
       console.log('  ... completed!');
       if (res.data.verification_status.includes('passed')) {
-        result.alert = !certified ? { message: 'Business has passed verification but needs to be certifed before it can transact. Click continue to certify.', type: 'warning' } : { message: res.data.message, type: 'success' };
-        result[app.settings.flow].alert = { message: 'Passed ID verification', type: certified ? 'success' : 'warning' };
+        result.alert = app.settings.flow === 'kyb' && !certified ? { message: 'Business has passed verification but needs to be certifed before it can transact. Click continue to certify.', type: 'warning' } : { message: res.data.message, type: 'success' };
+        result[app.settings.flow].alert = { message: 'Passed ID verification', type: app.settings.flow === 'kyb' && !certified ? 'warning' : 'success' };
       } else if (res.data.verification_status.includes('failed')) {
         result.alert = { message: res.data.message, type: 'danger' };
         result[app.settings.flow].alert = { message: 'Failed ID verification', type: 'danger' };

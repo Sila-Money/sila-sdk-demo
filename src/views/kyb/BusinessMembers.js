@@ -120,30 +120,30 @@ const BusinessMembers = ({ page, previous, next, history, location }) => {
       <div className="members position-relative">
         {!loaded ? <Loader overlay /> : <>
 
-          <Card className="mb-4">
+          <Card className="mb-4 text-nowrap">
             <Table responsive>
               <thead>
                 <tr className="bg-secondary">
-                  <th width="1%" className="text-lg pl-3 py-2 text-nowrap">Role</th>
+                  <th width="1%" className="text-lg pl-3 py-2">Role</th>
                   <th>&nbsp;</th>
                   {members.length !== 0 && <th className="text-lg px-3 py-2">Name</th>}
                   {members.length !== 0 && <th className="text-lg px-3 py-2">Handle</th>}
-                  <th className="text-lg px-3 py-2">Status</th>
-                  <th className="text-lg px-3 py-2">Action</th>
+                  <th className="text-lg px-3 py-2" width="20%">Status</th>
+                  <th className="text-lg px-3 py-2" width="1%">Action</th>
                 </tr>
               </thead>
               <tbody>
                 {rolesAndMembers.sort((a, b) => isRoleRequired(a) ? -1 : isRoleRequired(b) ? 1 : 0).map((member, index) => {
                   return member.user_handle ? (
                     <tr key={index} className="loaded">
-                      <td width="1%" className="pl-3 text-nowrap align-middle">{app.settings.kybRoles.find(role => role.name === member.role).label}</td>
+                      <td width="1%" className="pl-3align-middle">{app.settings.kybRoles.find(role => role.name === member.role).label}</td>
                       <td className="align-middle"><RoleDescription role={member.role} /></td>
-                      <td className="px-3 text-nowrap">{`${member.first_name} ${member.last_name}`}</td>
-                      <td className="px-3 text-nowrap">{member.user_handle}</td>
-                      <td className="px-3">
+                      <td className="px-3">{`${member.first_name} ${member.last_name}`}</td>
+                      <td className="px-3">{member.user_handle}</td>
+                      <td className="px-3" width="20%">
                         <Badge pill className="badge-outline py-2 px-3 w-100" variant="success">Linked</Badge>
                       </td>
-                      <td className="actions text-nowrap">
+                      <td className="actions" width="1%">
                         <Button variant="link" className="p-1 mr-3 text-decoration-none" title="Edit" as={NavLink} to={{ pathname: `/members/${member.user_handle}`, state: { role: member.role, from: page } }}><i className="sila-icon sila-icon-edit text-lg"></i></Button>
                         <Button variant="link" className="p-1 mr-3 text-decoration-none" title="Unlink" onClick={() => unlinkMember(app.settings.kybRoles.find(role => role.name === member.role), member.user_handle)}><i className="sila-icon sila-icon-delete text-lg"></i></Button>
                       </td>
