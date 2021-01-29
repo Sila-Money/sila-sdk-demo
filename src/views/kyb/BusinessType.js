@@ -71,12 +71,12 @@ const BusinessType = ({ page, previous, next }) => {
       <Form.Label>NAICS Category:</Form.Label>
       <SelectMenu fullWidth
         title={app.settings.kybNaicsCategory ? Object.keys(categories)[app.settings.kybNaicsCategory] : 'Please choose a NAICS category...'}
-        onChange={(value) => setAppData({ settings: { ...app.settings, kybNaicsCategory: value } })}
+        onChange={(value) => setAppData({ settings: { ...app.settings, kybNaicsCategory: value, kybNaicsCode: false } })}
         className="categories mb-4"
         value={app.settings.kybNaicsCategory}
         options={Object.keys(categories).map((category, index) => ({ label: category, value: index }))} /></>}
 
-      {app.settings.kybNaicsCategory && categories && <>
+      {(app.settings.kybNaicsCategory === 0 || app.settings.kybNaicsCategory) && categories && <>
       <Form.Label>NAICS Sub-Category:</Form.Label>
       <SelectMenu fullWidth
         title={app.settings.kybNaicsCode && Object.values(categories)[app.settings.kybNaicsCategory].find(category => app.settings.kybNaicsCode === category.code) ? Object.values(categories)[app.settings.kybNaicsCategory].find(category => app.settings.kybNaicsCode === category.code).subcategory : 'Please choose a NAICS subcategory...'}

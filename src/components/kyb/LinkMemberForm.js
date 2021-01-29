@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
 import RangeSlider from 'react-bootstrap-range-slider';
@@ -13,6 +13,8 @@ const LinkMemberForm = ({ member, onLinked, onUnlinked }) => {
   const [details, setDetails] = useState('');
   const location = useLocation();
 
+  const hasRole = (role) => member.memberships && member.memberships.some(membership => membership.role === role);
+
   const linkMember = async (role) => {
     console.log('Linking Business Member ...');
     const activeUser = app.users.find(user => member.user_handle === user.handle);
@@ -23,7 +25,7 @@ const LinkMemberForm = ({ member, onLinked, onUnlinked }) => {
       const res = await api.linkBusinessMember(activeUser.handle, activeUser.private_key, businessUser.handle, businessUser.private_key, role.name, undefined, details, ownership_stake);
       if (res.data.status === 'SUCCESS') {
         result.alert = { message: `Successfully linked as a ${role.label}!`, type: 'success' };
-        if (onUnlinked) onLinked({ handle: activeUser.handle, role: role.name });
+        if (onLinked) onLinked({ handle: activeUser.handle, role: role.name });
         if (ownershipStake) setOwnershipStake(0);
       } else {
         result.alert = { message: res.data.message, type: 'danger' };
@@ -70,6 +72,12 @@ const LinkMemberForm = ({ member, onLinked, onUnlinked }) => {
     };
   };
 
+  useEffect(() => {
+    if (member && location.state.role && !hasRole(location.state.role)) {
+      linkMember(app.settings.kybRoles.find(role => role.name === location.state.role));
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <>
       <h1 className="mb-4">Link {member.entity.entity_name} to this Business</h1>
@@ -83,37 +91,31 @@ const LinkMemberForm = ({ member, onLinked, onUnlinked }) => {
       </Form.Group>
 
       <div className="d-none d-xl-block">
-        {app.settings.kybRoles.sort((a, b) => a.name !== 'beneficial_owner' ? -1 : 0).map((role, index) => {
-          const hasRole = member.memberships && member.memberships.some(membership => membership.role === role.name);
-          return (<div className={`d-flex mt-4 align-items-center${location.state.role && location.state.role === role.name ? ' p-3 border border-primary rounded bg-light' : ''}`}>
-            <div>
-              <p className="text-lg mb-0 text-muted">As a {role.label} of this Business</p>
-              {role.name === 'beneficial_owner' && !hasRole && <Form.Group className="mt-3 d-block text-nowrap">
-                <Form.Label className="d-block text-muted">Ownership Percentage ({ownershipStake}%)</Form.Label>
-                <RangeSlider value={ownershipStake} onChange={e => setOwnershipStake(parseInt(e.target.value))} tooltipLabel={(label) => `${label}%`} name="ownership_stake" />
-                {!ownershipStake && <Form.Text className="text-muted mt-2 text-nowrap loaded">Ownership Percentage is required before you can link to this business.</Form.Text>}
-              </Form.Group>}
-            </div>
-            <Button block key={index} style={{ width: '260px' }} className="ml-auto text-center text-nowrap" disabled={role.name === 'beneficial_owner' && !ownershipStake && !hasRole} onClick={() => hasRole ? unlinkMember(role) : linkMember(role)}>{hasRole ? 'Unlink' : 'Link'} as a {role.label}</Button>
+        {app.settings.kybRoles.sort((a, b) => a.name !== 'beneficial_owner' ? -1 : 0).map((role, index) => (<div key={index} className="d-flex mt-4 align-items-center">
+          <div>
+            <p className="text-lg mb-0 text-muted">As a {role.label} of this Business</p>
+            {role.name === 'beneficial_owner' && !hasRole(role.name) && <Form.Group className="mt-3 d-block text-nowrap">
+              <Form.Label className="d-block text-muted">Ownership Percentage ({ownershipStake}%)</Form.Label>
+              <RangeSlider value={ownershipStake} onChange={e => setOwnershipStake(parseInt(e.target.value))} tooltipLabel={(label) => `${label}%`} name="ownership_stake" />
+              {!ownershipStake && <Form.Text className="text-muted mt-2 text-nowrap loaded">Ownership Percentage is required before you can link to this business.</Form.Text>}
+            </Form.Group>}
           </div>
-          );
-        })}
+          <Button block key={index} style={{ width: '260px' }} className="ml-auto text-center text-nowrap" disabled={role.name === 'beneficial_owner' && !ownershipStake && !hasRole(role.name)} onClick={() => hasRole(role.name) ? unlinkMember(role) : linkMember(role)}>{hasRole(role.name) ? 'Unlink' : 'Link'} as a {role.label}</Button>
+        </div>
+        ))}
       </div>
 
       <div className="d-block d-xl-none">
-        {app.settings.kybRoles.sort((a, b) => a.name !== 'beneficial_owner' ? -1 : 0).map((role, index) => {
-          const hasRole = member.memberships && member.memberships.some(membership => membership.role === role.name);
-          return (<div className={`mt-5${location.state.role && location.state.role === role.name ? ' p-3 border border-primary rounded bg-light' : ''}`}>
-            <p className="text-lg mb-3 text-muted">As a {role.label} of this Business</p>
-            {role.name === 'beneficial_owner' && !hasRole && <Form.Group className="mt-3">
-              <Form.Label className="d-block text-muted">Ownership Percentage ({ownershipStake}%)</Form.Label>
-              <RangeSlider value={ownershipStake} onChange={e => setOwnershipStake(parseInt(e.target.value))} tooltipLabel={(label) => `${label}%`} name="ownership_stake" />
-              {!ownershipStake && <Form.Text className="text-muted mt-2 loaded">Ownership Percentage is required before you can link to this business.</Form.Text>}
-            </Form.Group>}
-            <Button key={index} className="w-100 text-center text-nowrap" disabled={role.name === 'beneficial_owner' && !ownershipStake && !hasRole} onClick={() => hasRole ? unlinkMember(role) : linkMember(role)}>{hasRole ? 'Unlink' : 'Link'} as a {role.label}</Button>
-          </div>
-          );
-        })}
+        {app.settings.kybRoles.sort((a, b) => a.name !== 'beneficial_owner' ? -1 : 0).map((role, index) => (<div key={index} className="d-flex mt-4 align-items-center">
+          <p className="text-lg mb-3 text-muted">As a {role.label} of this Business</p>
+          {role.name === 'beneficial_owner' && !hasRole(role.name) && <Form.Group className="mt-3">
+            <Form.Label className="d-block text-muted">Ownership Percentage ({ownershipStake}%)</Form.Label>
+            <RangeSlider value={ownershipStake} onChange={e => setOwnershipStake(parseInt(e.target.value))} tooltipLabel={(label) => `${label}%`} name="ownership_stake" />
+            {!ownershipStake && <Form.Text className="text-muted mt-2 loaded">Ownership Percentage is required before you can link to this business.</Form.Text>}
+          </Form.Group>}
+          <Button key={index} className="w-100 text-center text-nowrap" disabled={role.name === 'beneficial_owner' && !ownershipStake && !hasRole(role.name)} onClick={() => hasRole(role.name) ? unlinkMember(role) : linkMember(role)}>{hasRole ? 'Unlink' : 'Link'} as a {role.label}</Button>
+        </div>
+        ))}
       </div>
 
       {app.alert.message && <div className="mt-5"><AlertMessage message={app.alert.message} type={app.alert.type} /></div>}

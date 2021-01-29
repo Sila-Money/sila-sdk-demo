@@ -17,7 +17,6 @@ const RegisterBusiness = ({ page, previous, next, isActive }) => {
   const register = async (e) => {
     console.log('\n*** BEGIN REGISTER BUSINESS ***');
     e.preventDefault();
-    console.log(app.settings.kybBusinessType);
     const wallet = api.generateWallet();
     const user = new api.User();
     user.handle = app.settings.kybHandle;

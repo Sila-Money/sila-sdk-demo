@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Container, Button, OverlayTrigger, Tooltip, Alert } from 'react-bootstrap';
 
 import { useAppContext } from '../components/context/AppDataProvider';
 
 import Pagination from '../components/common/Pagination';
 import AlertMessage from '../components/common/AlertMessage';
+import KybKycModal from '../components/home/KybKycModal';
 
 const RequestKYC = ({ page, previous, next }) => {
+  const [show, setShow] = useState(false);
   const { app, api, handleError, updateApp, setAppData } = useAppContext();
   const activeUser = app.settings.flow === 'kyb' ? app.users.find(user => app.settings.kybHandle === user.handle) : app.activeUser;
   const isActive = app.success.find(success => activeUser && success.handle === activeUser.handle && success[app.settings.flow] && success.page === page) ? true : false;
@@ -80,7 +82,10 @@ const RequestKYC = ({ page, previous, next }) => {
 
       <p className="text-lg text-muted mb-4">{app.settings.flow === 'kyc' ? 'We must verify that all users of the Sila platform are who they say they are, present a low fraud risk, and are not on any watchlists. We do this by submitting end-user information for KYC review by our identity verification partner, Alloy. The user will not be able to transact until the user is verified.  With great power comes great responsibility.' : 'We must verify that all users of the Sila platform are who they say they are, present a low fraud risk, and are not on any watchlists. The members of this business will be submitted for KYC review and their end-user information will be reviewed by our identity verification partner, Alloy. The business will not be able to transact until all users are verified. Additionally, the business will be submited for KYB review, to ensure that all information is correct.'}</p>
 
-      <p className="text-muted mb-4">This page represents <a href="https://docs.silamoney.com/docs/request_kyc" target="_blank" rel="noopener noreferrer">/request_kyc</a> and <a href="https://docs.silamoney.com/docs/check_kyc" target="_blank" rel="noopener noreferrer">/check_kyc</a> functionality.</p>
+      <div className="d-lg-flex justify-content-lg-between">
+        <p className="text-muted mb-4">This page represents <a href="https://docs.silamoney.com/docs/request_kyc" target="_blank" rel="noopener noreferrer">/request_kyc</a> and <a href="https://docs.silamoney.com/docs/check_kyc" target="_blank" rel="noopener noreferrer">/check_kyc</a> functionality.</p>
+        <p><Button variant="link" className="text-muted font-italic p-0 text-decoration-none" onClick={() => setShow(true)}><span className="lnk">What’s the difference between KYC and KYB?</span> <i className="sila-icon sila-icon-info text-primary ml-2"></i></Button></p>
+      </div>
 
       <p className="mb-5"><Button className="float-right" onClick={requestKyc}>Request {app.settings.flow.toUpperCase()}</Button></p>
 
@@ -129,6 +134,8 @@ const RequestKYC = ({ page, previous, next }) => {
         previous={previous}
         next={isActive ? next : undefined}
         currentPage={page} />
+
+      <KybKycModal show={show} onHide={() => setShow(false)} />
 
     </Container>
   );

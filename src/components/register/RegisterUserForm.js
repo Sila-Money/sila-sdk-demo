@@ -40,7 +40,7 @@ const RegisterUserForm = ({ className, handle, page, isActive, children, onError
         user.active = true;
         result = {
           activeUser: user,
-          alert: { message: `Success! ${app.settings.kycHandle} is now registered.`, type: 'success' }
+          alert: { message: `Success! ${handle} is now registered.`, type: 'success' }
         };
         appData = {
           settings: { ...app.settings, kycHandle: false },
