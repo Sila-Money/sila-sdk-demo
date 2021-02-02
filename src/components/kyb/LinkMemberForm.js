@@ -13,7 +13,7 @@ const LinkMemberForm = ({ member, onLinked, onUnlinked }) => {
   const [details, setDetails] = useState('');
   const location = useLocation();
 
-  const hasRole = (role) => member.memberships && member.memberships.some(membership => membership.role === role);
+  const hasRole = (role) => member.memberships && member.memberships.some(membership => membership.role === role && membership.business_handle === app.settings.kybHandle);
 
   const linkMember = async (role) => {
     console.log('Linking Business Member ...');

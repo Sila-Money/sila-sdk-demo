@@ -136,7 +136,7 @@ const BusinessMembers = ({ page, previous, next, history, location }) => {
                 {rolesAndMembers.sort((a, b) => isRoleRequired(a) ? -1 : isRoleRequired(b) ? 1 : 0).map((member, index) => {
                   return member.user_handle ? (
                     <tr key={index} className="loaded">
-                      <td width="1%" className="pl-3align-middle">{app.settings.kybRoles.find(role => role.name === member.role).label}</td>
+                      <td width="1%" className="pl-3 align-middle">{app.settings.kybRoles.find(role => role.name === member.role).label}</td>
                       <td className="align-middle"><RoleDescription role={member.role} /></td>
                       <td className="px-3">{`${member.first_name} ${member.last_name}`}</td>
                       <td className="px-3">{member.user_handle}</td>

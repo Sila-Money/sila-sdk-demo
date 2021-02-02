@@ -93,24 +93,24 @@ const RegisterUserForm = ({ className, handle, page, isActive, children, onError
           {errors.entity && errors.entity.last_name && <Form.Control.Feedback type="invalid">{errors.entity.last_name}</Form.Control.Feedback>}
         </Form.Group>
       </Form.Row>
-      <Form.Group controlId="registerAddress" className="required">
-        <Form.Control required placeholder="Street Address" name="address" />
+      <Form.Group controlId="registerAddress">
+        <Form.Control placeholder="Street Address" name="address" />
         {errors.address && errors.address.street_address_1 && <Form.Control.Feedback type="invalid">{errors.address.street_address_1}</Form.Control.Feedback>}
       </Form.Group>
       <Form.Row>
-        <Form.Group as={Col} md="4" controlId="registerCity" className="required">
-          <Form.Control required placeholder="City" name="city" />
+        <Form.Group as={Col} md="4" controlId="registerCity">
+          <Form.Control placeholder="City" name="city" />
           {errors.address && errors.address.city && <Form.Control.Feedback type="invalid">{errors.address.city}</Form.Control.Feedback>}
         </Form.Group>
-        <Form.Group as={Col} md="4" controlId="registerState" className="select required">
-          <Form.Control required as="select" name="state">
+        <Form.Group as={Col} md="4" controlId="registerState" className="select">
+          <Form.Control as="select" name="state">
             <option value="">State</option>
             {STATES_ARRAY.map((option, index) => <option key={index} value={option.value}>{option.label}</option>)}
           </Form.Control>
           {errors.address && errors.address.state && <Form.Control.Feedback type="invalid">{errors.address.state}</Form.Control.Feedback>}
         </Form.Group>
-        <Form.Group as={Col} md="4" controlId="registerZip" className="required">
-          <Form.Control required placeholder="Zip" name="zip" />
+        <Form.Group as={Col} md="4" controlId="registerZip">
+          <Form.Control placeholder="Zip" name="zip" />
           {errors.address && errors.address.postal_code && <Form.Control.Feedback type="invalid">{errors.address.postal_code}</Form.Control.Feedback>}
         </Form.Group>
       </Form.Row>
@@ -125,8 +125,8 @@ const RegisterUserForm = ({ className, handle, page, isActive, children, onError
         </Form.Group>
       </Form.Row>
       <Form.Row>
-        <Form.Group as={Col} md="6" controlId="registerEmail" className="required">
-          <Form.Control required type="email" placeholder="Email" name="email" />
+        <Form.Group as={Col} md="6" controlId="registerEmail">
+          <Form.Control type="email" placeholder="Email" name="email" />
           {errors.contact && errors.contact.email && <Form.Control.Feedback type="invalid">{errors.contact.email}</Form.Control.Feedback>}
         </Form.Group>
         <Form.Group as={Col} md="6" controlId="registerPhone" className="required">

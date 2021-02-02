@@ -31,7 +31,7 @@ const CheckHandle = ({ page, previous, next }) => {
 
       <Pagination
         previous={previous}
-        next={success ? next : undefined}
+        next={(success || handle) ? next : undefined}
         currentPage={page} />
 
     </Container>
