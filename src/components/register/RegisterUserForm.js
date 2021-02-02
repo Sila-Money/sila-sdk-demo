@@ -16,37 +16,37 @@ const RegisterUserForm = ({ className, handle, page, isActive, children, onError
     e.preventDefault();
     console.log('Waking up the API service ...');
     const wallet = api.generateWallet();
-    const user = new api.User();
-    user.handle = handle;
-    user.firstName = e.target.firstName.value;
-    user.lastName = e.target.lastName.value;
-    user.address = e.target.address.value;
-    user.city = e.target.city.value;
-    user.state = e.target.state.value;
-    user.zip = e.target.zip.value;
-    user.phone = e.target.phone.value;
-    user.email = e.target.email.value;
-    user.dateOfBirth = e.target.dateOfBirth.value;
-    user.ssn = e.target.ssn.value;
-    user.cryptoAddress = wallet.address;
+    const entity = new api.User();
+    entity.handle = handle;
+    entity.firstName = e.target.firstName.value;
+    entity.lastName = e.target.lastName.value;
+    entity.address = e.target.address.value;
+    entity.city = e.target.city.value;
+    entity.state = e.target.state.value;
+    entity.zip = e.target.zip.value;
+    entity.phone = e.target.phone.value;
+    entity.email = e.target.email.value;
+    entity.dateOfBirth = e.target.dateOfBirth.value;
+    entity.ssn = e.target.ssn.value;
+    entity.cryptoAddress = wallet.address;
     try {
-      const res = await api.register(user);
+      const res = await api.register(entity);
       let result = {};
       let appData = {};
       console.log('  ... completed!');
       if (res.data.status === 'SUCCESS') {
         refreshApp();
-        user.private_key = wallet.privateKey;
-        user.active = true;
+        entity.private_key = wallet.privateKey;
+        entity.active = true;
         result = {
-          activeUser: user,
+          activeUser: entity,
           alert: { message: `Success! ${handle} is now registered.`, type: 'success' }
         };
         appData = {
           settings: { ...app.settings, kycHandle: false },
-          users: [...app.users.map(({ active, ...u }) => u), user],
+          users: [...app.users.map(({ active, ...u }) => u), entity],
           wallets: [...app.wallets, {
-            handle: user.handle,
+            handle: entity.handle,
             blockchain_address: wallet.address,
             private_key: wallet.privateKey,
             nickname: 'My Wallet',
@@ -54,14 +54,14 @@ const RegisterUserForm = ({ className, handle, page, isActive, children, onError
           }]
         };
         if (Object.keys(errors).length) setErrors({});
-        if (onSuccess) onSuccess(user);
+        if (onSuccess) onSuccess(entity);
       } else if (res.data.validation_details) {
         setErrors(res.data.validation_details);
         if (onError) onError(res.data.validation_details);
       }
       setAppData({
         ...appData,
-        success: res.data.status === 'SUCCESS' && !isActive ? [...app.success, { handle: user.handle, page }] : app.success,
+        success: res.data.status === 'SUCCESS' && !isActive ? [...app.success, { handle: entity.handle, page }] : app.success,
         responses: [{
           endpoint: '/register',
           result: JSON.stringify(res, null, '\t')
@@ -79,9 +79,10 @@ const RegisterUserForm = ({ className, handle, page, isActive, children, onError
   return (
     <Form noValidate className={className} validated={validated} autoComplete="off" onSubmit={register}>
 
-      <p className="text-muted mb-4">{description || 'Please fill out the fields below.'}</p>
-
-      <p className="text-right text-sm text-primary ml-auto"><span className="text-lg">*</span> Required field</p>
+      <div className="d-flex justify-content-between align-items-center mb-2">
+        <p className="text-muted mr-5">{description || 'Please fill out the fields below.'}</p>
+        <p className="text-right text-sm text-primary"><span className="text-lg">*</span> Required field</p>
+      </div>
 
       <Form.Row>
         <Form.Group as={Col} md="6" controlId="registerFirstName" className="required">
@@ -94,23 +95,23 @@ const RegisterUserForm = ({ className, handle, page, isActive, children, onError
         </Form.Group>
       </Form.Row>
       <Form.Group controlId="registerAddress">
-        <Form.Control placeholder="Street Address" name="address" />
+        <Form.Control placeholder="Street Address" name="address" isInvalid={Boolean(errors.address && errors.address.street_address_1)} />
         {errors.address && errors.address.street_address_1 && <Form.Control.Feedback type="invalid">{errors.address.street_address_1}</Form.Control.Feedback>}
       </Form.Group>
       <Form.Row>
         <Form.Group as={Col} md="4" controlId="registerCity">
-          <Form.Control placeholder="City" name="city" />
+          <Form.Control placeholder="City" name="city" isInvalid={Boolean(errors.address && errors.address.city)} />
           {errors.address && errors.address.city && <Form.Control.Feedback type="invalid">{errors.address.city}</Form.Control.Feedback>}
         </Form.Group>
         <Form.Group as={Col} md="4" controlId="registerState" className="select">
-          <Form.Control as="select" name="state">
+          <Form.Control as="select" name="state" isInvalid={Boolean(errors.address && errors.address.state)}>
             <option value="">State</option>
             {STATES_ARRAY.map((option, index) => <option key={index} value={option.value}>{option.label}</option>)}
           </Form.Control>
           {errors.address && errors.address.state && <Form.Control.Feedback type="invalid">{errors.address.state}</Form.Control.Feedback>}
         </Form.Group>
         <Form.Group as={Col} md="4" controlId="registerZip">
-          <Form.Control placeholder="Zip" name="zip" />
+          <Form.Control placeholder="Zip" name="zip" isInvalid={Boolean(errors.address && errors.address.postal_code)} />
           {errors.address && errors.address.postal_code && <Form.Control.Feedback type="invalid">{errors.address.postal_code}</Form.Control.Feedback>}
         </Form.Group>
       </Form.Row>
@@ -120,17 +121,17 @@ const RegisterUserForm = ({ className, handle, page, isActive, children, onError
           {errors.identity && <Form.Control.Feedback type="invalid">{errors.identity.identity_value || errors.identity}</Form.Control.Feedback>}
         </Form.Group>
         <Form.Group as={Col} md="6" controlId="registerDateOfBirth" className="required">
-          <Form.Control required type="date" placeholder="Date of Birth" name="dateOfBirth" />
+          <Form.Control required type="date" placeholder="Date of Birth" name="dateOfBirth" isInvalid={Boolean(errors.entity && errors.entity.birthdate)} />
           {errors.entity && errors.entity.birthdate && <Form.Control.Feedback type="invalid">{errors.entity.birthdate}</Form.Control.Feedback>}
         </Form.Group>
       </Form.Row>
       <Form.Row>
         <Form.Group as={Col} md="6" controlId="registerEmail">
-          <Form.Control type="email" placeholder="Email" name="email" />
+          <Form.Control type="email" placeholder="Email" name="email" isInvalid={Boolean(errors.contact && errors.contact.email)} />
           {errors.contact && errors.contact.email && <Form.Control.Feedback type="invalid">{errors.contact.email}</Form.Control.Feedback>}
         </Form.Group>
         <Form.Group as={Col} md="6" controlId="registerPhone" className="required">
-          <Form.Control required name="phone" type="tel" as={NumberFormat} placeholder="Phone Number (___) ___-____" format="(###) ###-####" mask="_" />
+          <Form.Control required name="phone" type="tel" as={NumberFormat} placeholder="Phone Number (___) ___-____" format="(###) ###-####" mask="_" isInvalid={Boolean(errors.contact && errors.contact.phone)} />
           {errors.contact && errors.contact.phone && <Form.Control.Feedback type="invalid">{errors.contact.phone}</Form.Control.Feedback>}
         </Form.Group>
       </Form.Row>

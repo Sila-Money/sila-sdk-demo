@@ -93,44 +93,43 @@ const RegisterBusiness = ({ page, previous, next, isActive }) => {
     console.log('\n*** BEGIN REGISTER BUSINESS ***');
     e.preventDefault();
     const wallet = api.generateWallet();
-    const user = {};
-    user.type = 'business';
-    user.identity_alias = 'EIN';
-    user.handle = app.settings.kybHandle;
-    user.entity_name = e.target.entity_name.value;
-    user.address = e.target.address.value;
-    user.addresAlias = 'primary';
-    user.city = e.target.city.value;
-    user.state = e.target.state.value;
-    user.zip = e.target.zip.value;
-    user.phone = e.target.phone.value;
-    user.email = e.target.email.value;
-    user.ein = e.target.ein.value;
-    user.cryptoAddress = wallet.address
-    user.business_type = app.settings.kybBusinessType;
-    user.naics_code = app.settings.kybNaicsCode;
-    if (e.target.business_website.value) user.business_website = e.target.business_website.value;
-    if (e.target.doing_business_as.value) user.doing_business_as = e.target.doing_business_as.value;
-    console.log(user);
+    const entity = {};
+    entity.type = 'business';
+    entity.identity_alias = 'EIN';
+    entity.handle = app.settings.kybHandle;
+    entity.entity_name = e.target.entity_name.value;
+    entity.address = e.target.address.value;
+    entity.addresAlias = 'primary';
+    entity.city = e.target.city.value;
+    entity.state = e.target.state.value;
+    entity.zip = e.target.zip.value;
+    entity.phone = e.target.phone.value;
+    entity.email = e.target.email.value;
+    entity.ein = e.target.ein.value;
+    entity.cryptoAddress = wallet.address
+    entity.business_type = app.settings.kybBusinessType;
+    entity.naics_code = app.settings.kybNaicsCode;
+    if (e.target.business_website.value) entity.business_website = e.target.business_website.value;
+    if (e.target.doing_business_as.value) entity.doing_business_as = e.target.doing_business_as.value;
     try {
-      const res = await api.register(user);
+      const res = await api.register(entity);
       let result = {};
       let appData = {};
       console.log('  ... completed!');
       if (res.data.status === 'SUCCESS') {
         refreshApp();
-        user.private_key = wallet.privateKey;
-        user.active = true;
-        user.business = true;
+        entity.private_key = wallet.privateKey;
+        entity.active = true;
+        entity.business = true;
         result = {
-          activeUser: user,
-          alert: { message: `Success! ${user.handle} is now registered.`, type: 'success' }
+          activeUser: entity,
+          alert: { message: `Success! ${entity.handle} is now registered.`, type: 'success' }
         };
         appData = {
           settings: { ...app.settings, kybBusinessType: false, kybNaicsCode: false, kybNaicsCategory: false },
-          users: [...app.users.map(({ active, ...u }) => u), user],
+          users: [...app.users.map(({ active, ...u }) => u), entity],
           wallets: [...app.wallets, {
-            handle: user.handle,
+            handle: entity.handle,
             blockchain_address: wallet.address,
             private_key: wallet.privateKey,
             nickname: 'My Wallet',
@@ -143,7 +142,7 @@ const RegisterBusiness = ({ page, previous, next, isActive }) => {
       }
       setAppData({
         ...appData,
-        success: res.data.status === 'SUCCESS' && !isActive ? [...app.success, { handle: user.handle, page }] : app.success,
+        success: res.data.status === 'SUCCESS' && !isActive ? [...app.success, { handle: entity.handle, page }] : app.success,
         responses: [{
           endpoint: '/register',
           result: JSON.stringify(res, null, '\t')
@@ -179,60 +178,60 @@ const RegisterBusiness = ({ page, previous, next, isActive }) => {
       <Form noValidate validated={validated} autoComplete="off" onSubmit={register}>
         <Form.Row>
           <Form.Group as={Col} md="6" controlId="businessName" className="required">
-            <Form.Control required placeholder="Legal Company Name" name="entity_name" />
+            <Form.Control required placeholder="Legal Company Name" name="entity_name" isInvalid={Boolean(errors.entity && errors.entity.entity_name)} />
             <Form.Control.Feedback type="invalid">{errors.entity && errors.entity.entity_name ? errors.entity.entity_name : 'This field may not be blank.'}</Form.Control.Feedback>
           </Form.Group>
           <Form.Group as={Col} md="6" controlId="businessDBA">
-            <Form.Control placeholder="DBA (If Applicable)" name="doing_business_as" />
+            <Form.Control placeholder="DBA (If Applicable)" name="doing_business_as" isInvalid={Boolean(errors.entity && errors.entity.doing_business_as)} />
             {errors.entity && errors.entity.doing_business_as && <Form.Control.Feedback type="invalid">{errors.entity.doing_business_as}</Form.Control.Feedback>}
             <Form.Text className="text-muted">Optional business name if it differs from the legally registered name.</Form.Text>
           </Form.Group>
         </Form.Row>
-        <Form.Group controlId="businessAddress">
-          <Form.Control placeholder="Business Address" name="address" />
-          {errors.address && errors.address.street_address_1 && <Form.Control.Feedback type="invalid">{errors.address.street_address_1}</Form.Control.Feedback>}
+        <Form.Group controlId="businessAddress" className="required">
+          <Form.Control required placeholder="Business Address" name="address" isInvalid={Boolean(errors.address && errors.address.street_address_1)} />
+          <Form.Control.Feedback type="invalid">{errors.address && errors.address.street_address_1 ? errors.address.street_address_1 : 'This field may not be blank.'}</Form.Control.Feedback>
         </Form.Group>
         <Form.Row>
-          <Form.Group as={Col} md="4" controlId="businessCity">
-            <Form.Control placeholder="City" name="city" />
-            {errors.address && errors.address.city && <Form.Control.Feedback type="invalid">{errors.address.city}</Form.Control.Feedback>}
+          <Form.Group as={Col} md="4" controlId="businessCity" className="required">
+            <Form.Control required  placeholder="City" name="city" isInvalid={Boolean(errors.address && errors.address.city)} />
+            <Form.Control.Feedback type="invalid">{errors.address && errors.address.city ? errors.address.city : 'This field may not be blank.'}</Form.Control.Feedback>
           </Form.Group>
-          <Form.Group as={Col} md="4" controlId="businessState" className="select">
-            <Form.Control as="select" name="state">
+          <Form.Group as={Col} md="4" controlId="businessState" className="select required">
+            <Form.Control required as="select" name="state" isInvalid={Boolean(errors.address && errors.address.state)}>
               <option value="">State</option>
               {STATES_ARRAY.map((option, index) => <option key={index} value={option.value}>{option.label}</option>)}
             </Form.Control>
-            {errors.address && errors.address.state && <Form.Control.Feedback type="invalid">{errors.address.state}</Form.Control.Feedback>}
+            <Form.Control.Feedback type="invalid">{errors.address && errors.address.state ? errors.address.state : 'This field may not be blank.'}</Form.Control.Feedback>
           </Form.Group>
-          <Form.Group as={Col} md="4" controlId="businessZip">
-            <Form.Control placeholder="Zip" name="zip" />
-            {errors.address && errors.address.postal_code && <Form.Control.Feedback type="invalid">{errors.address.postal_code}</Form.Control.Feedback>}
+          <Form.Group as={Col} md="4" controlId="businessZip" className="required">
+            <Form.Control required placeholder="Zip" name="zip" isInvalid={Boolean(errors.address && errors.address.postal_code)} />
+            <Form.Control.Feedback type="invalid">{errors.address && errors.address.postal_code ? errors.address.postal_code : 'This field may not be blank.'}</Form.Control.Feedback>
           </Form.Group>
         </Form.Row>
         <Form.Row>
           <Form.Group as={Col} md="6" controlId="businessPhone" className="required">
-            <Form.Control required name="phone" type="tel" as={NumberFormat} placeholder="Phone Number (___) ___-____" format="(###) ###-####" mask="_" />
-            {errors.contact && errors.contact.phone && <Form.Control.Feedback type="invalid">{errors.contact.phone}</Form.Control.Feedback>}
+            <Form.Control required name="phone" type="tel" as={NumberFormat} placeholder="Phone Number (___) ___-____" format="(###) ###-####" mask="_" isInvalid={Boolean(errors.contact && errors.contact.phone)} />
+            <Form.Control.Feedback type="invalid">{errors.contact && errors.contact.phone ? errors.contact.phone : 'This field may not be blank.'}</Form.Control.Feedback>
           </Form.Group>
-          <Form.Group as={Col} md="6" controlId="businessEIN"  className="required">
-            <Form.Control required placeholder="Employer ID Number (EIN)" name="ein" isInvalid={errors.identity} />
-            {errors.identity && <Form.Control.Feedback type="invalid">{errors.identity.identity_value || errors.identity}</Form.Control.Feedback>}
+          <Form.Group as={Col} md="6" controlId="businessEIN" className="required">
+            <Form.Control required placeholder="Employer ID Number (EIN)" name="ein" isInvalid={Boolean(errors.identity)} />
+            <Form.Control.Feedback type="invalid">{errors.identity ? (errors.identity.identity_value || errors.identity) : 'This field may not be blank.'}</Form.Control.Feedback>
           </Form.Group>
         </Form.Row>
         <Form.Row>
-          <Form.Group as={Col} md="6" controlId="businessEmail">
-            <Form.Control type="email" placeholder="Business Email" name="email" />
-            {errors.contact && errors.contact.email && <Form.Control.Feedback type="invalid">{errors.contact.email}</Form.Control.Feedback>}
+          <Form.Group as={Col} md="6" controlId="businessEmail" className="required">
+            <Form.Control required type="email" placeholder="Business Email" name="email" isInvalid={Boolean(errors.contact && errors.contact.email)} />
+            <Form.Control.Feedback type="invalid">{errors.contact && errors.contact.email ? errors.contact.email : 'This field may not be blank.'}</Form.Control.Feedback>
           </Form.Group>
           <Form.Group as={Col} md="6" controlId="businessWebsite">
-            <Form.Control type="url" placeholder="Business Website" name="business_website" />
+            <Form.Control type="url" placeholder="Business Website" name="business_website" isInvalid={Boolean(errors.entity && errors.entity.business_website)} />
             {errors.entity && errors.entity.business_website && <Form.Control.Feedback type="invalid">{errors.entity.business_website}</Form.Control.Feedback>}
           </Form.Group>
         </Form.Row>
 
         <div className="d-flex mt-5">
           {app.alert.message && <AlertMessage message={app.alert.message} type={app.alert.type} />}
-          <Button type="submit" className="ml-auto" disabled={!app.settings.kybHandle || (app.activeUser && app.activeUser.handle === app.settings.kybHandle)}>Register Business</Button>
+          <Button type="submit" className="ml-auto" disabled={!app.settings.kybHandle || (app.activeUser && app.activeentity.handle === app.settings.kybHandle)}>Register Business</Button>
         </div>
 
       </Form>

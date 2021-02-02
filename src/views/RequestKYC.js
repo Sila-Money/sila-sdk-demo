@@ -49,7 +49,7 @@ const RequestKYC = ({ page, previous, next }) => {
       console.log('  ... completed!');
       if (res.data.verification_status.includes('passed')) {
         result.alert = app.settings.flow === 'kyb' && !certified ? { message: 'Business has passed verification but needs to be certifed before it can transact. Click continue to certify.', type: 'warning' } : { message: res.data.message, type: 'success' };
-        result[app.settings.flow].alert = { message: 'Passed ID verification', type: app.settings.flow === 'kyb' && !certified ? 'warning' : 'success' };
+        result[app.settings.flow].alert = { message: 'Passed ID verification', type: 'success' };
       } else if (res.data.verification_status.includes('failed')) {
         result.alert = { message: res.data.message, type: 'danger' };
         result[app.settings.flow].alert = { message: 'Failed ID verification', type: 'danger' };

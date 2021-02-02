@@ -140,7 +140,7 @@ const BusinessMembers = ({ page, previous, next, location, history, isActive }) 
               </Col>
             </Row>
 
-            {members.every(member => member.beneficial_owner_certification_status.includes('not_required')) && <Alert variant="info" className="mb-4">Under this business type, business members are not required to be certified.</Alert>}
+            {members.every(member => member.beneficial_owner_certification_status.includes('not_required')) && <Alert variant="info" className="mb-4">Under this business type, business members are not required to be certified.  Hovever, the business itself requires certiciation in order to transact.</Alert>}
 
             <Card className="mb-4 text-nowrap">
               <Table responsive>
