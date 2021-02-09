@@ -10,14 +10,15 @@ import Wallet from '../components/wallets/Wallet';
 
 const Wallets = ({ page, previous, next, isActive }) => {
   const { app, api, updateApp, handleError, setAppData } = useAppContext();
-  const [wallets, setWallets] = useState(app.wallets.filter(wallet => wallet.handle === app.activeUser.handle).sort((x, y) => x.default ? -1 : y.default ? 1 : x.private_key === app.activeUser.private_key ? -1 : y.private_key === app.activeUser.private_key ? 1 : 0));
+  const activeUser = app.settings.flow === 'kyb' ? app.users.find(user => app.settings.kybHandle === user.handle) : app.activeUser;
+  const [wallets, setWallets] = useState(app.wallets.filter(wallet => wallet.handle === activeUser.handle).sort((x, y) => x.default ? -1 : y.default ? 1 : x.private_key === activeUser.private_key ? -1 : y.private_key === activeUser.private_key ? 1 : 0));
   const [loaded, setLoaded] = useState(false);
 
   const getWallets = async () => {
     console.log('Getting Wallets ...');
     setLoaded(false);
     try {
-      const res = await api.getWallets(app.activeUser.handle, app.activeUser.private_key);
+      const res = await api.getWallets(activeUser.handle, activeUser.private_key);
       let newWallets = wallets;
       let result = {};
       console.log('  ... completed!');
@@ -29,7 +30,7 @@ const Wallets = ({ page, previous, next, isActive }) => {
         result.alert = { message: res.data.message, type: 'danger' };
       }
       setAppData({
-        wallets: [...app.wallets.filter(wallet => wallet.handle !== app.activeUser.handle), ...newWallets],
+        wallets: [...app.wallets.filter(wallet => wallet.handle !== activeUser.handle), ...newWallets],
         responses: [{
           endpoint: '/get_wallets',
           result: JSON.stringify(res, null, '\t')
@@ -47,7 +48,7 @@ const Wallets = ({ page, previous, next, isActive }) => {
   const updateWallet = async (wallet) => {
     console.log('Updating Wallet ...');
     try {
-      const res = await api.updateWallet(app.activeUser.handle, wallet.private_key, {
+      const res = await api.updateWallet(activeUser.handle, wallet.private_key, {
         nickname: wallet.nickname,
         default: wallet.default
       });
@@ -57,7 +58,7 @@ const Wallets = ({ page, previous, next, isActive }) => {
       if (res.data.success) {
         newWallet = { ...wallet, ...res.data.wallet };
         result.alert = { message: 'Wallet saved!', type: 'success' };
-        if (newWallet.default || wallets.length === 1) result.activeUser = { ...app.activeUser, private_key: newWallet.private_key, cryptoAddress: newWallet.blockchain_address }
+        if (newWallet.default || wallets.length === 1) result.activeUser = { ...activeUser, private_key: newWallet.private_key, cryptoAddress: newWallet.blockchain_address }
       } else {
         result.alert = { message: res.data.message, type: 'danger' };
       }
@@ -67,7 +68,7 @@ const Wallets = ({ page, previous, next, isActive }) => {
           if (w.default) delete w.default;
           return w.blockchain_address === newWallet.blockchain_address ? newWallet : w
         }),
-        users: app.users.map(u => result.activeUser && u.handle === app.activeUser.handle ? result.activeUser : u),
+        users: app.users.map(u => result.activeUser && u.handle === activeUser.handle ? result.activeUser : u),
         responses: [{
           endpoint: '/update_wallet',
           result: JSON.stringify(res, null, '\t')
@@ -88,7 +89,7 @@ const Wallets = ({ page, previous, next, isActive }) => {
   const registerWallet = async (wallet) => {
     console.log('Registering Wallet ...');
     try {
-      const res = await api.registerWallet(app.activeUser.handle, app.activeUser.private_key, {
+      const res = await api.registerWallet(activeUser.handle, activeUser.private_key, {
         address: wallet.blockchain_address,
         privateKey: wallet.private_key
       }, wallet.nickname);
@@ -118,7 +119,7 @@ const Wallets = ({ page, previous, next, isActive }) => {
   const deleteWallet = async (wallet) => {
     console.log('Deleting Wallet ...');
     try {
-      const res = await api.deleteWallet(app.activeUser.handle, wallet.private_key);
+      const res = await api.deleteWallet(activeUser.handle, wallet.private_key);
       let result = {};
       let newWallets = app.wallets;
       console.log('  ... completed!');
@@ -149,7 +150,7 @@ const Wallets = ({ page, previous, next, isActive }) => {
     setWallets([...wallets, {
       blockchain_address: newWallet.address,
       private_key: newWallet.privateKey,
-      handle: app.activeUser.handle,
+      handle: activeUser.handle,
       isNew: true,
       nickname: ''
     }]);
@@ -182,7 +183,12 @@ const Wallets = ({ page, previous, next, isActive }) => {
   }, [app.activeUser]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (wallets.length && !isActive) setAppData({ success: [...app.success, { handle: app.activeUser.handle, page }] });
+    setAppData({
+      success: wallets.length && !isActive ? [...app.success, { handle:  app.settings.kybHandle || activeUser.handle, page }] :  app.success,
+      users: app.settings.kybHandle ? app.users.map(({ active, ...u }) => u.handle === app.settings.kybHandle ? { ...u, active: true } : u) : app.users
+    }, () => {
+      updateApp({ activeUser: app.settings.kybHandle ? app.users.find(u => u.handle === app.settings.kybHandle) : activeUser, kyc: {}, kyb: {} });
+    });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
@@ -201,7 +207,7 @@ const Wallets = ({ page, previous, next, isActive }) => {
 
       <div className="d-flex mt-5">
         {app.alert.message && <AlertMessage message={app.alert.message} type={app.alert.type} />}
-        <Button onClick={addWallet} className="ml-auto">Add Wallet <i className="fas fa-plus-circle ml-2"></i></Button>
+        <Button onClick={addWallet} className="ml-auto">Add Additonal Wallet <i className="fas fa-plus-circle ml-2"></i></Button>
       </div>
 
       <Pagination

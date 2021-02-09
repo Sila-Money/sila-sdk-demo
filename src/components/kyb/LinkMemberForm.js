@@ -31,6 +31,7 @@ const LinkMemberForm = ({ member, onLinked, onUnlinked }) => {
         result.alert = { message: res.data.message, type: 'danger' };
       }
       setAppData({
+        settings: role.name === 'administrator' ? { ...app.settings, kybAdminHandle: activeUser.handle } : app.settings,
         responses: [{
           endpoint: '/link_business_member',
           result: JSON.stringify(res, null, '\t')
@@ -59,6 +60,7 @@ const LinkMemberForm = ({ member, onLinked, onUnlinked }) => {
         result.alert = { message: res.data.message, type: 'danger' };
       }
       setAppData({
+        settings: role.name === 'administrator' ? { ...app.settings, kybAdminHandle: false } : app.settings,
         responses: [{
           endpoint: '/unlink_business_member',
           result: JSON.stringify(res, null, '\t')
@@ -80,11 +82,13 @@ const LinkMemberForm = ({ member, onLinked, onUnlinked }) => {
 
   return (
     <>
-      <h1 className="mb-4">Link {member.entity.entity_name} to this Business</h1>
+      <h1 className="mb-4">Link or unlink  {member.entity.entity_name} to this Business</h1>
 
       <Alert variant="info" className="mb-4">Once a business member has been registered, you can only link and unlink their account to a role in the business. You can not go back and edit personal details.</Alert>
 
       <p className="text-muted text-lg mb-4">Link or unlink your individual business member account to your role in this business. It is possible for one individual account to be linked as more than one role. You may provide an optional title to your account (such as CEO, CTO, etc,) as well as provide us with your ownership stake, if applicable. </p>
+
+      <p className="text-muted mb-5">This page represents <a href="https://docs.silamoney.com/docs/link_business_member" target="_blank" rel="noopener noreferrer">/link_business_member</a> and <a href="https://docs.silamoney.com/docs/unlink_business_member" target="_blank" rel="noopener noreferrer">/unlink_business_member</a> functionality.</p>
 
       <Form.Group controlId="linkDetails">
         <Form.Control onChange={(e) => setDetails(e.target.value)} placeholder="Optional Position Title" name="detail" />

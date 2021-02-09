@@ -17,6 +17,7 @@
     "react": "^16.13.1",
     "react-bootstrap": "^1.3.0",
     "react-bootstrap-range-slider": "^1.2.1",
+    "react-bootstrap-typeahead": "^5.1.4",
     "react-dom": "^16.13.1",
     "react-number-format": "^4.4.1",
     "react-p5": "^1.3.6",

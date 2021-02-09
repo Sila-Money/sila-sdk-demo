@@ -231,7 +231,7 @@ const RegisterBusiness = ({ page, previous, next, isActive }) => {
 
         <div className="d-flex mt-5">
           {app.alert.message && <AlertMessage message={app.alert.message} type={app.alert.type} />}
-          <Button type="submit" className="ml-auto" disabled={!app.settings.kybHandle || (app.activeUser && app.activeUser.handle === app.settings.kybHandle)}>Register Business</Button>
+          <Button type="submit" className="ml-auto" disabled={!app.settings.kybHandle}>Register Business</Button>
         </div>
 
       </Form>

@@ -13,33 +13,34 @@ const Accounts = ({ page, previous, next, isActive }) => {
   const [loaded, setLoaded] = useState(false);
   const [plaidToken, setPlaidToken] = useState(false);
   const { app, api, setAppData, updateApp, handleError } = useAppContext();
+  const activeUser = app.settings.flow === 'kyb' ? app.users.find(user => app.settings.kybHandle === user.handle) : app.activeUser;
   const { open, ready, error } = usePlaidLink({
     clientName: 'Plaid Walkthrough Demo',
     env: 'sandbox',
     product: ['auth'],
     publicKey: 'fa9dd19eb40982275785b09760ab79',
-    userLegalName: `${app.activeUser.firstName} ${app.activeUser.lastName}`,
-    userEmailAddress: app.activeUser.email,
+    userLegalName: !app.settings.kybHandle ? `${activeUser.firstName} ${activeUser.lastName}` : null,
+    userEmailAddress: !app.settings.kybHandle ? activeUser.email : null,
     token: plaidToken ? plaidToken.token : null,
     onSuccess: (token, metadata) => linkAccount(token, metadata)
   });
-  const userAccounts = app.accounts.filter(account => account.handle === app.activeUser.handle);
+  const userAccounts = app.accounts.filter(account => account.handle === activeUser.handle);
 
   const getAccounts = async () => {
     console.log('Getting Accounts ...');
     setLoaded(false);
     try {
-      const res = await api.getAccounts(app.activeUser.handle, app.activeUser.private_key);
+      const res = await api.getAccounts(activeUser.handle, activeUser.private_key);
       let newAccounts = [];
       let result = {};
       console.log('  ... completed!');
       if (res.statusCode === 200) {
-        newAccounts = res.data.map(acc => ({ ...acc, handle: app.activeUser.handle }));
+        newAccounts = res.data.map(acc => ({ ...acc, handle: activeUser.handle }));
       } else {
         result.alert = { message: res.data.message, type: 'danger' };
       }
       setAppData({
-        accounts: [...app.accounts.filter(acc => acc.handle !== app.activeUser.handle), ...newAccounts],
+        accounts: [...app.accounts.filter(acc => acc.handle !== activeUser.handle), ...newAccounts],
         responses: [{
           endpoint: '/get_accounts',
           result: JSON.stringify(res, null, '\t')
@@ -57,7 +58,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
   const linkAccount = async (token, metadata) => {
     console.log('Linking account ...');
     try {
-      const res = await api.linkAccount(app.activeUser.handle, app.activeUser.private_key, token, metadata.account.name, metadata.account_id);
+      const res = await api.linkAccount(activeUser.handle, activeUser.private_key, token, metadata.account.name, metadata.account_id);
       let result = {};
       console.log('  ... completed!');
       if (res.statusCode === 200) {
@@ -90,7 +91,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
   const plaidSamedayAuth = async (account_name) => {
     console.log('Retrieving public token ...');
     try {
-      const res = await api.plaidSamedayAuth(app.activeUser.handle, app.activeUser.private_key, account_name);
+      const res = await api.plaidSamedayAuth(activeUser.handle, activeUser.private_key, account_name);
       let result = {};
       console.log('  ... completed!');
       if (res.statusCode === 200) {
@@ -122,7 +123,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
   }, [app.activeUser]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (userAccounts.length && !isActive) setAppData({ success: [...app.success, { handle: app.activeUser.handle, page }] });
+    if (userAccounts.length && !isActive) setAppData({ success: [...app.success, { handle: activeUser.handle, page }] });
   }, [loaded]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (

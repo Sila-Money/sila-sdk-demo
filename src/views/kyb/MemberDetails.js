@@ -41,8 +41,9 @@ const MemberDetails = ({ page, match, history, location }) => {
   const certifyMember = async () => {
     console.log('Certify Benefical Owner ...');
     const businessUser = app.users.find(user => app.settings.kybHandle === user.handle);
+    const adminUser = app.users.find(user => app.settings.kybAdminHandle === user.handle);
     try {
-      const res = await api.certifyBeneficialOwner(app.activeUser.handle, app.activeUser.private_key, businessUser.handle, businessUser.private_key, match.params.handle, beneficialOwner.certification_token);
+      const res = await api.certifyBeneficialOwner(adminUser.handle, adminUser.private_key, businessUser.handle, businessUser.private_key, match.params.handle, beneficialOwner.certification_token);
       if (res.data.status === 'SUCCESS') {
         setAlert({ message: res.data.message, type: 'success' });
         history.goBack();

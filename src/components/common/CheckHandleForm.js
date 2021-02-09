@@ -45,7 +45,7 @@ const CheckHandleForm = ({ className, defaultValue, onSuccess, disabled, page })
   }
 
   const handleChange = (e) => {
-    setHandle(e.target.value.toLowerCase());
+    setHandle(e.target.value.toLowerCase().replace(/\s/g, ''));
     (error || validated) && resetForm();
   }
 
@@ -60,12 +60,14 @@ const CheckHandleForm = ({ className, defaultValue, onSuccess, disabled, page })
         <Form.Control
           placeholder={`${app.settings.flow === 'kyb' && page !== '/members/register' ? 'Business' : 'User'} Handle`}
           aria-label="handle"
-          defaultValue={defaultValue || handle}
+          defaultValue={defaultValue}
+          value={handle}
           onChange={handleChange}
           name="handle"
           isInvalid={error}
         />
         {error && <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>}
+        <Form.Text className="text-muted">Spaces, uppercase characters, and lowercase characters are not permitted.</Form.Text>
       </Form.Group>
 
       <div className="d-flex mt-4">

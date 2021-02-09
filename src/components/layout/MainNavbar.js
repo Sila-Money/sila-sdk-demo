@@ -13,8 +13,9 @@ import NavbarUsers from './NavbarUsers';
 const NavbarButtons = () => {
   const { updateApp } = useAppContext();
   return (<>
-    <Button variant="link" size="sm" className="text-uppercase d-block p-0" onClick={() => { updateApp({ manageReset: true }); }}>Reset App</Button>
-    <Button variant="link" size="sm" className="text-uppercase d-block p-0 ml-3 ml-md-4" onClick={() => { updateApp({ manageSettings: true }); }}>App Settings</Button>
+    <Button variant="link" size="sm" className="text-uppercase p-0 text-primary" as={NavLink} to="/">Home</Button>
+    <Button variant="link" size="sm" className="text-uppercase p-0 ml-3 ml-md-4" onClick={() => { updateApp({ manageReset: true }); }}>Reset App</Button>
+    <Button variant="link" size="sm" className="text-uppercase p-0 ml-3 ml-md-4" onClick={() => { updateApp({ manageSettings: true }); }}>App Settings</Button>
   </>);
 };
 
@@ -42,7 +43,7 @@ const MainNavbar = ({ stickyTop }) => {
             <Navbar.Text>
               <div className="d-block d-md-none d-lg-none d-xl-none">
                 <div className="d-block mb-3">
-                  <div className="d-flex w-100 justify-content-end">
+                  <div className="d-flex w-100 align-items-center justify-content-end">
                     <NavbarButtons />
                   </div>
                 </div>
@@ -52,7 +53,7 @@ const MainNavbar = ({ stickyTop }) => {
                   </div>
                 </div>}
               </div>
-              <div className="d-none d-md-flex d-lg-flex d-xl-flex justify-content-end">
+              <div className="d-none d-md-flex d-lg-flex d-xl-flex align-items-center justify-content-end">
                 <NavbarButtons />
                 {app.users.length > 0 && <NavbarUsers />}
               </div>

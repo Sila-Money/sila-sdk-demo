@@ -18,7 +18,7 @@ const App = () => {
   const { app, updateApp, checkAuth } = useAppContext();
   const history = useHistory();
   const location = useLocation();
-  const inFlow = app.settings.flow && flows[app.settings.flow].routes.some(route => route.includes(location.pathname.split('/')[1]));
+  const inFlow = app.settings.flow && flows[app.settings.flow].routes.some(route => route.includes(location.pathname.split('/')[1])) && flows[app.settings.flow].permissions(app);
 
   useEffect(() => {
     const unlisten = history.listen(() => {

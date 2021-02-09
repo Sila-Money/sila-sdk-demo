@@ -25,7 +25,9 @@ export const flows = {
     name: 'Individual Onboarding',
     icon: indvidualIcon,
     home: '/request_kyc',
-    permissions: (app) => !app.activeUser || !app.activeUser.business,
+    permissions: (app) => 
+      !app.activeUser || 
+      (app.activeUser && !app.activeUser.business),
     routes: [
       '/check_handle', 
       '/register_user', 
@@ -39,7 +41,11 @@ export const flows = {
     name: 'Business Onboarding',
     icon: businessIcon,
     home: '/members',
-    permissions: (app) => !app.activeUser || app.activeUser.business || app.activeUser.business_handle,
+    permissions: (app) => 
+      !app.activeUser || 
+      (app.activeUser && app.activeUser.business) || 
+      (app.activeUser && typeof app.activeUser.business_handle === 'string') ||
+      (app.activeUser && typeof app.settings.kybHandle === 'string'),
     routes: [
       '/business/type',
       '/business/handle', 

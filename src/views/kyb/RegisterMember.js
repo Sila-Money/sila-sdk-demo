@@ -9,6 +9,7 @@ import CheckHandleForm from '../../components/common/CheckHandleForm';
 import AlertMessage from '../../components/common/AlertMessage';
 import Pagination from '../../components/common/Pagination';
 import SelectMenu from '../../components/common/SelectMenu';
+import Loader from '../../components/common/Loader';
 
 const RegisterMember = ({ page, isActive, location, history }) => {
   const [handle, setHandle] = useState(false);
@@ -21,6 +22,7 @@ const RegisterMember = ({ page, isActive, location, history }) => {
 
   const getEntity = async () => {
     console.log('Getting Entity ...');
+    setMember({ loading: true });
     try {
       const res = await api.getEntity(activeUser.handle, activeUser.private_key);
       console.log('  ... completed!');
@@ -48,57 +50,58 @@ const RegisterMember = ({ page, isActive, location, history }) => {
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 
-      <div className="mb-4 d-flex">
-        <h1 className="mb-0">{location.state.role === 'administrator' ? 'Business Administration' : location.state.role ? app.settings.kybRoles.find(role => role.name === location.state.role).label : 'Add a Business Member'}</h1>
-        <Button variant="outline-light" className="text-muted text-uppercase ml-auto" onClick={() => history.goBack()}>Back</Button>
-      </div>
+      {!activeUser && <div className="loaded">
 
-      {activeUser && handle && <p className="text-muted mb-0 mb-5 loaded">This page represents <a href="https://docs.silamoney.com/docs/link_business_member" target="_blank" rel="noopener noreferrer">/link_business_member</a> functionality.</p>}
+        <div className="mb-4 d-flex">
+          <h1 className="mb-0">{location.state.role === 'administrator' ? 'Business Administration' : location.state.role ? app.settings.kybRoles.find(role => role.name === location.state.role).label : 'Add a Business Member'}</h1>
+          <Button variant="outline-light" className="text-muted text-uppercase ml-auto" onClick={() => history.goBack()}>Back</Button>
+        </div>
 
-      {!handle && app.users.filter(user => !user.business).length !== 0 && <><Form.Check custom id="register-user" className="mb-4 ml-n2" type="radio">
-        <Form.Check.Input name="existing" onChange={() => { setActiveUser(false); setExisting(false); }} defaultChecked type="radio" />
-        <Form.Check.Label className="ml-2 text-lg">Register and link a new user</Form.Check.Label>
-      </Form.Check>
-        <Form.Check custom id="existing-user" className="mb-5 ml-n2" type="radio">
-          <Form.Check.Input name="existing" onChange={() => { setExisting(true); }} type="radio" />
-          <Form.Check.Label className="ml-2 text-lg">Link an existing user</Form.Check.Label>
-        </Form.Check></>}
+        {!handle && app.users.filter(user => !user.business).length !== 0 && <div className="loaded"><Form.Check custom id="register-user" className="mb-4 ml-n2" type="radio">
+          <Form.Check.Input name="existing" onChange={() => { setActiveUser(false); setExisting(false); }} defaultChecked type="radio" />
+          <Form.Check.Label className="ml-2 text-lg">Register and link a new user</Form.Check.Label>
+        </Form.Check>
+          <Form.Check custom id="existing-user" className="mb-5 ml-n2" type="radio">
+            <Form.Check.Input name="existing" onChange={() => { setExisting(true); }} type="radio" />
+            <Form.Check.Label className="ml-2 text-lg">Link an existing user</Form.Check.Label>
+          </Form.Check></div>}
 
-      {!activeUser && !existing ? <>
-        <p className="mb-4 text-muted text-lg">As {currentRole ? `the ${currentRole.label}` : 'a business member'}, personal information is required before we can move on with the business registration (KYB) process.</p>
+        {!existing ? <div className="loaded">
+          <p className="mb-4 text-muted text-lg">As {currentRole ? `the ${currentRole.label}` : 'a business member'}, personal information is required before we can move on with the business registration (KYB) process.</p>
 
-        <CheckHandleForm page={page} disabled={activeUser} onSuccess={(handle) => setHandle(handle)} />
+          <CheckHandleForm page={page} disabled={activeUser} onSuccess={(handle) => setHandle(handle)} />
 
-        <RegisterUserForm
-          className="mt-4"
-          page={page}
-          handle={handle}
-          isActive={isActive}
-          description="Please fill out the below fields for this business member."
-          onSuccess={handleActiveUser}>
+          <RegisterUserForm
+            className="mt-4"
+            page={page}
+            handle={handle}
+            isActive={isActive}
+            description="Please fill out the below fields for this business member."
+            onSuccess={handleActiveUser}>
 
-          <div className="d-flex mt-4">
-            {app.alert.message && <AlertMessage message={app.alert.message} type={app.alert.type} />}
-            <Button type="submit" className="ml-auto" disabled={!handle || activeUser}>Register</Button>
-          </div>
+            <div className="d-flex mt-4">
+              {app.alert.message && <AlertMessage message={app.alert.message} type={app.alert.type} />}
+              <Button type="submit" className="ml-auto" disabled={!handle || activeUser}>Register</Button>
+            </div>
 
-        </RegisterUserForm>
-
-      </> : <>
-
-          {existing && <div className="mb-5 loaded position-relative" style={{ zIndex: 4 }}>
+          </RegisterUserForm>
+        </div>
+          :
+          <div className="mb-5 loaded position-relative" style={{ zIndex: 4 }}>
             <p className="text-lg text-muted mb-4 loaded">Select the user you wish to link to the business.</p>
             <SelectMenu fullWidth title="Choose a user..." options={app.users.filter(user => !user.business).map(user => ({ label: `${user.firstName} ${user.lastName} (${user.handle})`, value: user.handle }))} onChange={(handle) => handleActiveUser(app.users.find(user => user.handle === handle))} />
           </div>}
 
-          {member && <div className="loaded">
+      </div>}
 
-            <div className="mt-5"><LinkMemberForm member={member} onLinked={() => getEntity()} onUnlinked={() => getEntity()} /></div>
-            <p className="mt-5 mb-0 text-center"><Button variant="outline-light" className="text-muted text-uppercase" onClick={() => history.goBack()}>I'm Done</Button></p>
+      {member && <div className="loaded">
 
-          </div>}
+        {member.loading ? <Loader /> : <div className="loaded">
+          <LinkMemberForm member={member} onLinked={() => getEntity()} onUnlinked={() => getEntity()} />
+          <p className="mt-5 mb-0 text-center"><Button variant="outline-light" className="text-muted text-uppercase" onClick={() => history.goBack()}>I'm Done</Button></p>
+        </div>}
 
-        </>}
+      </div>}
 
       <Pagination hideNext
         previousOnClick={() => history.goBack()}

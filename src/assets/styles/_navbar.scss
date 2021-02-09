@@ -31,16 +31,3 @@
     }
   }
 }
-
-.navbar-light .navbar-text {
-  display: flex;
-  a,
-  a:hover,
-  a:nav,
-  a:focus {
-    color: $primary;
-  }
-  a:focus {
-    text-decoration: none;
-  }
-}

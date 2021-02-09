@@ -25,13 +25,13 @@ const TransactionsModal = ({ show, onHide, transactions, onRefresh, formatNumber
         <Modal.Title id="manage-settings-modal-title">Transactions</Modal.Title>
       </Modal.Header>
       <Modal.Body className="transactions position-relative">
-        <p className="text-right mb-2">
+        <p className="text-right mb-4">
         <OverlayTrigger
           placement="right"
           delay={{ show: 250, hide: 400 }}
           overlay={(props) => <Tooltip id="transactions-tooltip" className="ml-2" {...props}>Gets Transactions</Tooltip>}
         >
-          <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none" onClick={onRefresh}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
+          <Button variant="link" className="p-0 text-reset text-decoration-none" onClick={onRefresh}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
         </OverlayTrigger>
         </p>
         {!transactions && <Loader overlay />}
@@ -46,7 +46,7 @@ const TransactionsModal = ({ show, onHide, transactions, onRefresh, formatNumber
           </thead>
           <tbody>
             {transactionsData && transactionsData.length > 0 && transactionsData.map((transaction, index) => <tr key={index}>
-              <td>{transaction.transaction_type}</td>
+              <td>{transaction.transaction_type}{transaction.destination_handle && <em className="text-muted d-block">{`to ${transaction.destination_handle}`}</em>}</td>
               <td><i className="sila-icon sila-icon-sila"></i> {formatNumber(transaction.sila_amount)}</td>
               <td className={transaction.status === 'success' ? 'text-success' : transaction.status === 'pending' ? 'text-warning' : transaction.status === 'failed' ? 'text-danger' : 'text-primary'}>{transaction.status}</td>
               <td>{(new Date(transaction.created)).toISOString().split('T')[0]}</td>

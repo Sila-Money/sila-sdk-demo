@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Button, OverlayTrigger, Tooltip, Alert } from 'react-bootstrap';
+import { NavLink } from 'react-router-dom';
 
 import { useAppContext } from '../components/context/AppDataProvider';
 
@@ -8,6 +9,7 @@ import AlertMessage from '../components/common/AlertMessage';
 import KybKycModal from '../components/home/KybKycModal';
 
 const RequestKYC = ({ page, previous, next }) => {
+  const [certified, setCertified] = useState({ validated: false, valid: false });
   const [show, setShow] = useState(false);
   const { app, api, handleError, updateApp, setAppData } = useAppContext();
   const activeUser = app.settings.flow === 'kyb' ? app.users.find(user => app.settings.kybHandle === user.handle) : app.activeUser;
@@ -44,12 +46,12 @@ const RequestKYC = ({ page, previous, next }) => {
     console.log(`Checking ${app.settings.flow.toUpperCase()} ...`);
     try {
       const res = await api.checkKYC(activeUser.handle, activeUser.private_key);
-      const certified = res.data.certification_history && res.data.certification_history.some(history => !history.expires_after_epoch || history.expires_after_epoch > Date.now()) && res.data.certification_status && res.data.certification_status.includes('certified');
       let result = { kyc: {}, kyb: {} };
       console.log('  ... completed!');
       if (res.data.verification_status.includes('passed')) {
-        result.alert = app.settings.flow === 'kyb' && !certified ? { message: 'Business has passed verification but needs to be certifed before it can transact. Click continue to certify.', type: 'warning' } : { message: res.data.message, type: 'success' };
+        result.alert = { message: res.data.message, type: 'success' };
         result[app.settings.flow].alert = { message: 'Passed ID verification', type: 'success' };
+        setCertified({ validated: true, valid: res.data.certification_history && res.data.certification_history.some(history => !history.expires_after_epoch || history.expires_after_epoch > Date.now()) && res.data.certification_status && res.data.certification_status.includes('certified') });
       } else if (res.data.verification_status.includes('failed')) {
         result.alert = { message: res.data.message, type: 'danger' };
         result[app.settings.flow].alert = { message: 'Failed ID verification', type: 'danger' };
@@ -107,6 +109,8 @@ const RequestKYC = ({ page, previous, next }) => {
         <em className={`message ml-auto${app[app.settings.flow].alert ? ` text-${app[app.settings.flow].alert.type === 'wait' ? 'primary' : app[app.settings.flow].alert.type}` : ''}`}>{app[app.settings.flow].alert ? app[app.settings.flow].alert.message : 'Status'}</em>
       </div>
 
+      {certified.validated && certified.valid && <Alert variant="warning" className="mb-4 loaded">Business has passed verification but needs to be certifed before it can transact.  <Button variant="link" as={NavLink} className="p-0 text-reset important ml-2" to={{ pathname: '/certify', state: { from: page } }}>Certify The Business</Button></Alert>}
+
       {app.alert.message && <div className="mb-4"><AlertMessage message={app.alert.message} type={app.alert.type} /></div>}
 
       {app.settings.flow === 'kyb' && <>
@@ -118,6 +122,8 @@ const RequestKYC = ({ page, previous, next }) => {
             <em className="message ml-auto text-success">Passed ID verification</em> : 
             member.verification_status.includes('pending') ? 
             <em className="message ml-auto text-warning">Pending ID verification</em> : 
+            member.verification_status.includes('unverified') && member.role === 'administrator' ? 
+            <em className="message ml-auto text-success">Verification not required</em> : 
             member.verification_status.includes('unverified') ? 
             <em className="message ml-auto text-warning">Unverified ID verification</em> : 
             member.verification_status.includes('failed') ?

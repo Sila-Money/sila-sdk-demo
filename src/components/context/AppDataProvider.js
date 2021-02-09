@@ -13,6 +13,7 @@ let appData = {
     kybNaicsCode: false, 
     kybNaicsCategory: false, 
     kybHandle: false, 
+    kybAdminHandle: false,
     kycHandle: false, 
     kybMembersStatus: false,
     kybRoles: []

@@ -34,11 +34,11 @@ const BusinessMembers = ({ page, previous, next, history, location }) => {
   const [loaded, setLoaded] = useState(false);
   const [members, setMembers] = useState([]);
   const { api, app, setAppData, handleError, updateApp } = useAppContext();
+  const businessUser = app.users.find(user => app.settings.kybHandle === user.handle);
   const rolesAndMembers = [...members, ...app.settings.kybRoles.filter(role => !members.length || members.every(member => member.role !== role.name))];
 
   const getRolesAndMembers = async () => {
     console.log('Getting Roles, Business Members, and checking KYB ...');
-    const businessUser = app.users.find(user => app.settings.kybHandle === user.handle);
     try {
       const [rolesResponse, entityResponse, kycResponse] = await Promise.all([
         api.getBusinessRoles(),
@@ -69,7 +69,6 @@ const BusinessMembers = ({ page, previous, next, history, location }) => {
   const unlinkMember = async (role, handle) => {
     console.log('Unlinking Business Member ...');
     const activeUser = app.users.find(user => handle === user.handle);
-    const businessUser = app.users.find(user => app.settings.kybHandle === user.handle);
     const deletedIndex = members.findIndex(member => member.user_handle === handle && member.role === role.name);
     let result = {};
     try {
@@ -81,6 +80,7 @@ const BusinessMembers = ({ page, previous, next, history, location }) => {
         result.alert = { message: res.data.message, type: 'danger' };
       }
       setAppData({
+        settings: role.name === 'administrator' ? { ...app.settings, kybAdminHandle: false } : app.settings,
         responses: [{
           endpoint: '/unlink_business_member',
           result: JSON.stringify(res, null, '\t')
@@ -95,18 +95,14 @@ const BusinessMembers = ({ page, previous, next, history, location }) => {
   };
 
   useEffect(() => {
-    if (location.pathname === page && app.settings.kybHandle) {
-      getRolesAndMembers();
-    } else {
-      history.push('/');
-    }
-  }, [location.pathname]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
     if (rolesAndMembers.length && rolesAndMembers.filter(member => member.label && isRoleRequired(member)).length === 0) {
       updateApp({ alert: { message: 'Success! All required business members have now been registerd, you may now continue to the KYB process, or add more business members if necessary.', type: 'success' } });
     }
   }, [members]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    getRolesAndMembers();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
