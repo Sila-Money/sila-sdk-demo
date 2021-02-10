@@ -12,7 +12,7 @@
     "bootstrap": "^4.6.0",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.3",
-    "react-bootstrap-range-slider": "^1.2.2",
+    "react-bootstrap-range-slider": "^2.0.2",
     "react-bootstrap-typeahead": "^5.1.4",
     "react-dom": "^17.0.1",
     "react-number-format": "^4.4.4",
@@ -20,7 +20,7 @@
     "react-plaid-link": "^3.1.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.2",
-    "react-syntax-highlighter": "^12.2.1",
+    "react-syntax-highlighter": "^15.4.3",
     "sila-sdk": "^0.2.13-rc.5",
     "stickybits": "^3.7.8"
   },
