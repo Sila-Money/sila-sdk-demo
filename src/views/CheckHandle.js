@@ -63,7 +63,7 @@ const CheckHandle = ({ page }) => {
 
       <p className="mb-4 text-lg text-meta">Create a unique handle to identify the end-user and check to ensure it is available.</p>
 
-      <p className="text-meta mb-40">This page represents <a href="https://docs.silamoney.com/#check_handle" target="_blank" rel="noopener noreferrer">/check_handle</a> functionality.</p>
+      <p className="text-meta mb-40">This page represents <a href="https://docs.silamoney.com/docs/check_handle" target="_blank" rel="noopener noreferrer">/check_handle</a> functionality.</p>
 
       <Form noValidate validated={validated} autoComplete="off" onSubmit={checkHandle}>
         <Form.Group controlId="formGroupHandle">
