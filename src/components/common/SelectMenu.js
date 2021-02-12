@@ -5,10 +5,10 @@ import { NavLink } from 'react-router-dom';
 import classNames from 'classnames';
 
 const SelectMenu = ({ fullWidth, className, show, id, variant, options, onChange, value, size, action, title }) => {
-  const [menuTitle, setMenuTitle] = useState(title ? title : value ? options.find(option => option.value === value).label : options.length ? options[0].label : false);
+  const [menuTitle, setMenuTitle] = useState(title ? title : value ? options.find(option => option.value === value).label : options.length ? options[0].label : false);  
   const menuItems = options.filter(option => option.label !== menuTitle);
   const classes = classNames(
-    'select-menu',
+    'select-menu flex-grow-0 flex-shrink-1',
     size === 'sm' && 'dropdown-small',
     fullWidth && 'w-100'
   );
@@ -34,13 +34,13 @@ const SelectMenu = ({ fullWidth, className, show, id, variant, options, onChange
   }, [title]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <Dropdown id={id || undefined} className={classes} as={Nav.Item}>
-      <Dropdown.Toggle size={size || undefined} variant={variant || 'outline-light'} className={buttonClasses} as={Button}>{menuTitle} </Dropdown.Toggle>
+    <Dropdown id={id} className={classes} as={Nav.Item}>
+      <Dropdown.Toggle size={size} variant={variant || 'outline-light'} className={buttonClasses} as={Button}>{menuTitle}</Dropdown.Toggle>
       {((menuItems.length) || (!menuItems.length && action)) && <Dropdown.Menu show={show} className={menuClasses}>
-        {menuItems.filter(option => option.label !== menuTitle).map((option, index) => <Dropdown.Item key={index} eventKey={index + 1} onClick={() => handleChange(option)} className={itemClasses}>{option.label}</Dropdown.Item>)}
+        {menuItems.filter(option => option.label !== menuTitle).map((option, index) => <Dropdown.Item key={index} eventKey={index + 1} onClick={() => handleChange(option)} className={itemClasses}>{option.htmlBefore}{option.label}{option.htmlAfter}</Dropdown.Item>)}
         {action && <>
           {menuItems.length !== 0 && <Dropdown.Divider />}
-          <Dropdown.Item as={action.to ? NavLink : undefined} to={action.to || undefined} href={action.href || undefined} className={itemClasses}>{action.label}</Dropdown.Item>
+          <Dropdown.Item as={action.to && NavLink} to={action.to} href={action.href} className={itemClasses}>{action.htmlBefore}{action.label}{action.htmlAfter}</Dropdown.Item>
         </>}
       </Dropdown.Menu>}
     </Dropdown>
@@ -61,13 +61,22 @@ SelectMenu.propTypes = {
    */
   options: PropTypes.array.isRequired,
   /**
-   * 
+   * Current value
    */
-  value: PropTypes.string,
+  value: PropTypes.any,
   /**
   * Action object { to: '', href: '', label: '' }
   */
-  action: PropTypes.object
+  action: PropTypes.object,
+  /**
+  * Optional HTML before label
+  */
+  htmlBefore: PropTypes.node,
+  /**
+  * Optional HTML after label
+  */
+  htmlAfter: PropTypes.node,
 };
 
 export default SelectMenu;
+

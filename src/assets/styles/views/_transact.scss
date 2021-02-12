@@ -1,6 +1,16 @@
 // Transaction view
 
 .transact {
+
+  .destination-typeahead {
+    .close {
+      position: absolute;
+      top: $input-padding-y;
+      right: $input-padding-x;
+      z-index: 5;
+    }
+  }
+
   @include media-breakpoint-up(md) {
     input[name="transfer"] {
       border-top-right-radius: 0 !important;

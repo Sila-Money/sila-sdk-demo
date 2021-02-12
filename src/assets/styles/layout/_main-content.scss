@@ -16,7 +16,7 @@
 }
 
 
-@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: nav) {
   .main .main-navbar.js-is-sticky, .main .main-navbar.js-is-stuck {
     position: fixed !important;
     height: 4rem;
@@ -31,12 +31,7 @@
   margin-bottom: $pagination-height;
   @include animation(fadein, 0.5s, forwards);
   @include media-breakpoint-up(sm) {
-    min-height: calc(100vh - #{$main-navbar-height} - #{$stepper-height} - #{$pagination-height});
-    margin-top: $stepper-height;
-  }
-  @include media-breakpoint-down(md) {
-    min-height: calc(100vh - #{$main-navbar-height} - #{$stepper-height-mobile} - #{$pagination-height});
-    margin-top: $stepper-height-mobile;
+    min-height: calc(100vh - #{$main-navbar-height} - #{$pagination-height});
   }
 }
 

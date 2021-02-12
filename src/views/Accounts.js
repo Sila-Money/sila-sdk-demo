@@ -9,37 +9,38 @@ import Loader from '../components/common/Loader';
 import Pagination from '../components/common/Pagination';
 import LinkAccountModal from '../components/accounts/LinkAccountModal';
 
-const Accounts = ({ page }) => {
+const Accounts = ({ page, previous, next, isActive }) => {
   const [loaded, setLoaded] = useState(false);
   const [plaidToken, setPlaidToken] = useState(false);
   const { app, api, setAppData, updateApp, handleError } = useAppContext();
+  const activeUser = app.settings.flow === 'kyb' ? app.users.find(user => app.settings.kybHandle === user.handle) : app.activeUser;
   const { open, ready, error } = usePlaidLink({
     clientName: 'Plaid Walkthrough Demo',
     env: 'sandbox',
     product: ['auth'],
     publicKey: 'fa9dd19eb40982275785b09760ab79',
-    userLegalName: `${app.activeUser.firstName} ${app.activeUser.lastName}`,
-    userEmailAddress: app.activeUser.email,
+    userLegalName: !app.settings.kybHandle ? `${activeUser.firstName} ${activeUser.lastName}` : null,
+    userEmailAddress: !app.settings.kybHandle ? activeUser.email : null,
     token: plaidToken ? plaidToken.token : null,
     onSuccess: (token, metadata) => linkAccount(token, metadata)
   });
-  const userAccounts = app.accounts.filter(account => account.handle === app.activeUser.handle);
+  const userAccounts = app.accounts.filter(account => account.handle === activeUser.handle);
 
   const getAccounts = async () => {
     console.log('Getting Accounts ...');
     setLoaded(false);
     try {
-      const res = await api.getAccounts(app.activeUser.handle, app.activeUser.private_key);
+      const res = await api.getAccounts(activeUser.handle, activeUser.private_key);
       let newAccounts = [];
       let result = {};
       console.log('  ... completed!');
       if (res.statusCode === 200) {
-        newAccounts = res.data.map(acc => ({ ...acc, handle: app.activeUser.handle }));
+        newAccounts = res.data.map(acc => ({ ...acc, handle: activeUser.handle }));
       } else {
         result.alert = { message: res.data.message, type: 'danger' };
       }
       setAppData({
-        accounts: [...app.accounts.filter(acc => acc.handle !== app.activeUser.handle), ...newAccounts],
+        accounts: [...app.accounts.filter(acc => acc.handle !== activeUser.handle), ...newAccounts],
         responses: [{
           endpoint: '/get_accounts',
           result: JSON.stringify(res, null, '\t')
@@ -57,7 +58,7 @@ const Accounts = ({ page }) => {
   const linkAccount = async (token, metadata) => {
     console.log('Linking account ...');
     try {
-      const res = await api.linkAccount(app.activeUser.handle, app.activeUser.private_key, token, metadata.account.name, metadata.account_id);
+      const res = await api.linkAccount(activeUser.handle, activeUser.private_key, token, metadata.account.name, metadata.account_id);
       let result = {};
       console.log('  ... completed!');
       if (res.statusCode === 200) {
@@ -90,7 +91,7 @@ const Accounts = ({ page }) => {
   const plaidSamedayAuth = async (account_name) => {
     console.log('Retrieving public token ...');
     try {
-      const res = await api.plaidSamedayAuth(app.activeUser.handle, app.activeUser.private_key, account_name);
+      const res = await api.plaidSamedayAuth(activeUser.handle, activeUser.private_key, account_name);
       let result = {};
       console.log('  ... completed!');
       if (res.statusCode === 200) {
@@ -122,21 +123,21 @@ const Accounts = ({ page }) => {
   }, [app.activeUser]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (userAccounts.length && !app.success.includes(page)) setAppData({ success: [...app.success, page] });
-  }, [userAccounts]); // eslint-disable-line react-hooks/exhaustive-deps
+    if (userAccounts.length && !isActive) setAppData({ success: [...app.success, { handle: activeUser.handle, page }] });
+  }, [loaded]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page}`}>
+    <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 
       <h1 className="mb-4">Link a Bank Account</h1>
 
-      <p className="text-meta text-lg">We've partnered with Plaid to connect bank accounts to the Sila platform. This helps us ensure account ownership.</p>
+      <p className="text-muted text-lg">We've partnered with Plaid to connect bank accounts to the Sila platform. This helps us ensure account ownership.</p>
 
-      <p className="text-meta text-lg">We also have the ability to connect bank accounts with just an account and routing number, if your product is dependent on receiving account information over the phone, on a form, or similar. This feature needs to be approved by Sila for use.</p>
+      <p className="text-muted text-lg">We also have the ability to connect bank accounts with just an account and routing number, if your product is dependent on receiving account information over the phone, on a form, or similar. This feature needs to be approved by Sila for use.</p>
 
-      <p className="text-meta mb-0">This page represents <a href="https://docs.silamoney.com/docs/get_accounts" target="_blank" rel="noopener noreferrer">/get_accounts</a>, <a href="https://docs.silamoney.com/docs/link_account" target="_blank" rel="noopener noreferrer">/link_account</a>, and <a href="https://docs.silamoney.com/docs/plaid_sameday_auth" target="_blank" rel="noopener noreferrer">/plaid_sameday_auth</a> functionality.</p>
+      <p className="text-muted mb-0 mb-5">This page represents <a href="https://docs.silamoney.com/docs/get_accounts" target="_blank" rel="noopener noreferrer">/get_accounts</a>, <a href="https://docs.silamoney.com/docs/link_account" target="_blank" rel="noopener noreferrer">/link_account</a>, and <a href="https://docs.silamoney.com/docs/plaid_sameday_auth" target="_blank" rel="noopener noreferrer">/plaid_sameday_auth</a> functionality.</p>
 
-      <div className="accounts position-relative mt-40 mb-40">
+      <div className="accounts position-relative mb-5">
         {!loaded && <Loader overlay />}
         <Table bordered responsive>
           <thead>
@@ -171,7 +172,7 @@ const Accounts = ({ page }) => {
             }
           </tbody>
         </Table>
-        {userAccounts.find(acc => acc.account_link_status === 'microdeposit_pending_manual_verification' || acc.account_link_status === 'microdeposit_pending_automatic_verification') && <p className="text-meta mt-4">With Same Day Micro-deposits, Plaid verfies the deposit within 1 business days Within the Sandbox timeframe, it’s only takes a few minutes. To jump back into your session, we’ll need you to retrieve a public token from Plaid. From there, two microdeposits should appear in your account within minutes. We will need you to verify the amount of these depsoits in order to launch Phase 2.</p>}
+        {userAccounts.find(acc => acc.account_link_status === 'microdeposit_pending_manual_verification' || acc.account_link_status === 'microdeposit_pending_automatic_verification') && <p className="text-muted mt-4">With Same Day Micro-deposits, Plaid verfies the deposit within 1 business days Within the Sandbox timeframe, it’s only takes a few minutes. To jump back into your session, we’ll need you to retrieve a public token from Plaid. From there, two microdeposits should appear in your account within minutes. We will need you to verify the amount of these depsoits in order to launch Phase 2.</p>}
       </div>
 
       <div className="d-flex mb-4">
@@ -185,8 +186,8 @@ const Accounts = ({ page }) => {
       <p className="text-right"><Button variant="link" className="text-reset font-italic p-0 text-decoration-none" href="http://plaid.com/docs/#testing-auth" target="_blank" rel="noopener noreferrer"><span className="lnk">How do I login to Plaid?</span> <i className="sila-icon sila-icon-info text-primary ml-2"></i></Button></p>
 
       <Pagination
-        previous="/wallets"
-        next={app.success.includes(page) ? '/transact' : undefined}
+        previous={previous}
+        next={isActive ? next : undefined}
         currentPage={page} />
 
       <LinkAccountModal show={app.manageLinkAccount} onSuccess={getAccounts} />

@@ -1,0 +1,25 @@
+// Mobile menu
+
+@include media-breakpoint-down(md) {
+    .mobile-menu {
+        position: fixed;
+        top: $main-navbar-height;
+        left: 0;
+        height: $mobile-menu-height;
+        width: 100%;
+        z-index: 2;
+        background: white;
+
+        .dropdown-toggle,
+        .dropdown-menu {
+            width: 100%;
+        }
+    }
+}
+
+@include media-breakpoint-down(md) {
+    .mobile-menu+.main-content {
+        min-height: calc(100vh - #{$main-navbar-height} - #{$mobile-menu-height} - #{$pagination-height});
+        margin-top: $mobile-menu-height;
+    }
+}

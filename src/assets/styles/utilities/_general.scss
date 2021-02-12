@@ -26,23 +26,19 @@
 
 // Links
 a:hover .lnk,
-.btn-link:hover .lnk {
+.btn-link:hover .lnk,
+.btn-link.important,
+a.important {
   text-decoration: underline;
 }
 
-// Margins
-.mt-40 {
-  margin-top: 2.5rem;
-}
-
-.mr-40 {
-  margin-right: 2.5rem;
-}
-
-.mb-40 {
-  margin-bottom: 2.5rem;
-}
-
-.ml-40 {
-  margin-left: 2.5rem;
+// disabled overlay
+.disabled-overlay {
+  top: 0;
+  left: 0;
+  background: rgba($white, 0.7);
+  z-index: 5;
+  .content {
+    background: rgba($black, 0.7);
+  }
 }
