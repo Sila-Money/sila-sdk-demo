@@ -26,7 +26,7 @@ const Wallet = ({ wallets, data, onHandleChange, onCreate, onUpdate, onEdit, onD
 
   return (
     <div key={data.blockchain_address} className="wallet loaded">
-      <Form.Group controlId="formGroupWalletName" className={!data.editing && !data.isNew ? 'readonly' : undefined}>
+      <Form.Group controlId="formGroupWalletName" className={!data.editing && !data.isNew && 'readonly'}>
         <InputGroup className="mb-3">
           <Form.Control
             ref={nicknameRef}

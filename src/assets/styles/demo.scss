@@ -1,6 +1,7 @@
 // Bootstrap
 @import "overrides";
 @import "~bootstrap/scss/bootstrap";
+@import "~react-bootstrap-range-slider/dist/react-bootstrap-range-slider.scss";
 
 // Variables
 @import "variables";
@@ -23,19 +24,22 @@
 @import "modal";
 @import "card";
 @import "popover";
+@import "tooltip";
 @import "utilities";
 
 // Layout
 @import "layout/main-navbar";
 @import "layout/main-sidebar";
 @import "layout/main-content";
+@import "layout/vertical-navbar";
+@import "layout/mobile-menu";
 
 // Components
 @import "components/loader";
-@import "components/stepper";
 @import "components/splash";
 @import "components/pagination";
 
 // Views
 @import "views/transact";
+@import "views/certify";
 

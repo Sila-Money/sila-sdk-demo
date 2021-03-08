@@ -46,9 +46,15 @@ $header-navbar-nav-link-font-size: 0.8125rem !default;
 $header-navbar-nav-link-background: transparent !default;
 $header-navbar-nav-link-border-bottom: 1px solid transparent !default;
 
-// Stepper
-$stepper-height: 8rem !default;
-$stepper-height-mobile: 6.25rem !default;
+// Vertical navbar
+$vertical-navbar-width: 70px;
+$vertical-navbar-width-expanded: 250px;
+$vertical-navbar-offset: 180px;
+$vertical-navbar-will-change: transform !default;
+$vertical-navbar-transition: transform 200ms ease-in-out !default;
+
+// Mobile menu
+$mobile-menu-height: 6.25rem !default;
 
 // Main sidebar
 $main-sidebar-height: calc(100vh) !default;

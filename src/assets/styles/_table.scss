@@ -1,9 +1,5 @@
 // Table Adjustments
 
-.table-responsive {
-  padding-right: 1px;
-}
-
 .table {
   margin: 0;
   &-bordered {
@@ -31,5 +27,9 @@
     tr:not(.no-hover):hover {
       background: rgba($border-color, 0.10);
     }
+  }
+
+  &-responsive {
+    padding-right: 1px;
   }
 }

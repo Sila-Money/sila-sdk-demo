@@ -1,37 +1,40 @@
 import React, { useEffect } from 'react';
-import { Switch, Route, useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
-import classNames from 'classnames';
 
 import { useAppContext } from './components/context/AppDataProvider';
+
 import MainNavbar from './components/layout/MainNavbar';
 import MainSidebar from './components/layout/MainSidebar';
+import VerticalNavbar from './components/layout/VerticalNavbar';
 import Loader from './components/common/Loader';
-import Stepper from './components/common/Stepper';
+import RouteConfig from './components/routes/RouteConfig';
 import SettingsModal from './components/common/SettingsModal';
 import ResetModal from './components/common/ResetModal';
 
-import routes from './routes';
+import routes, { flows } from './routes';
 
 const App = () => {
-  const { app, updateApp } = useAppContext();
+  const { app, updateApp, checkAuth } = useAppContext();
   const history = useHistory();
-  const classes = classNames(
-    'main',
-    'p-0'
-  );
+  const location = useLocation();
+  const inFlow = app.settings.flow && flows[app.settings.flow].routes.some(route => route.includes(location.pathname.split('/')[1])) && flows[app.settings.flow].permissions(app);
 
   useEffect(() => {
-    const unlisten = history.listen((location) => {
+    const unlisten = history.listen(() => {
       updateApp({ alert: {} });
     });
     return unlisten;
   }, [history]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    const appData = { loaded: true };
-    if (!app.auth) appData.manageSettings = true;
-    updateApp({ ...appData });
+    if (app.auth.handle) {
+      checkAuth();
+      updateApp({ loaded: true });
+    } else {
+      history.push('/')
+      updateApp({ loaded: true, manageSettings: true });
+    }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
@@ -40,25 +43,15 @@ const App = () => {
       <MainNavbar />
       <Row noGutters>
         <Col
-          className={classes}
+          className="main p-0"
           lg={{ span: 8 }}
           md={{ span: 8 }}
           sm={12}
           as="main"
         >
-          <Stepper items={routes.filter(route => route.stepper)} />
+          {location.pathname !== '/' && inFlow && <VerticalNavbar routes={routes.filter(route => route[app.settings.flow] || (!route.disabled && flows[app.settings.flow].routes.includes(route.path))).sort((a, b) => flows[app.settings.flow].routes.indexOf(a.path) - flows[app.settings.flow].routes.indexOf(b.path))} />}
           <div className="main-content d-flex flex-column">
-            <Switch>
-              {routes.map((route, i) => (
-                <Route
-                  key={i}
-                  path={route.path}
-                  exact={route.exact}
-                  strict={route.strict}
-                  render={(props) => <route.component page={route.page || undefined} {...props} />}
-                />
-              ))}
-            </Switch>
+            <RouteConfig routes={routes} inFlow={inFlow} />
           </div>
         </Col>
         <MainSidebar />

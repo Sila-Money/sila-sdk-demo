@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, CardGroup, Card, Form, Button, Row, Col, InputGroup, Tab, Nav, Alert, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Typeahead } from 'react-bootstrap-typeahead';
 import { NavLink } from 'react-router-dom';
 
 import { useAppContext } from '../components/context/AppDataProvider';
@@ -22,11 +23,12 @@ const formatNumber = (num) => {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
-const Transact = ({ page }) => {
+const Transact = ({ page, previous, next, isActive }) => {
   const { app, api, setAppData, updateApp, handleError } = useAppContext();
-  const userWallets = app.wallets.filter(wallet => wallet.handle === app.activeUser.handle).sort((x, y) => x.default ? -1 : y.default ? 1 : x.private_key === app.activeUser.private_key ? -1 : y.private_key === app.activeUser.private_key ? 1 : 0);
-  const userAccounts = app.accounts.filter(account => account.handle === app.activeUser.handle && account.account_number);
-  const [wallet, setWallet] = useState(userWallets.find(wallet => wallet.default || wallet.private_key === app.activeUser.private_key));
+  const activeUser = app.settings.flow === 'kyb' ? app.users.find(user => app.settings.kybHandle === user.handle) : app.activeUser;
+  const userWallets = app.wallets.filter(wallet => wallet.handle === activeUser.handle).sort((x, y) => x.default ? -1 : y.default ? 1 : x.private_key === activeUser.private_key ? -1 : y.private_key === activeUser.private_key ? 1 : 0);
+  const userAccounts = app.accounts.filter(account => account.handle === activeUser.handle && account.account_number);
+  const [wallet, setWallet] = useState(userWallets.find(wallet => wallet.default || wallet.private_key === activeUser.private_key));
   const [account, setAccount] = useState(userAccounts[0]);
   const [balance, setBalance] = useState('Checking Balance ...');
   const [forms, setForms] = useState(defaultForms);
@@ -38,7 +40,7 @@ const Transact = ({ page }) => {
   const handleAccount = (index) => setAccount(userAccounts[index]);
   const handleWallet = (index) => {
     setWallet(userWallets[index]);
-    updateApp({ activeUser: { ...app.activeUser, private_key: userWallets[index].private_key, cryptoAddress: userWallets[index].blockchain_address } });
+    updateApp({ activeUser: { ...activeUser, private_key: userWallets[index].private_key, cryptoAddress: userWallets[index].blockchain_address } });
   };
 
   const refreshBalance = async () => {
@@ -55,7 +57,7 @@ const Transact = ({ page }) => {
         result.alert = { message: res.data.message, type: 'danger' }
       }
       setAppData({
-        success: res.statusCode === 200 && !app.success.includes(page) ? [...app.success, page] : app.success.filter(p => p !== page),
+        success: res.statusCode === 200 && !isActive ? [...app.success, { handle: activeUser.handle, page }] : app.success,
         responses: [{
           endpoint: '/get_sila_balance',
           result: JSON.stringify(res, null, '\t')
@@ -70,9 +72,9 @@ const Transact = ({ page }) => {
   };
 
   const issueSila = async (amount) => {
-    console.log(`Issuing ${amount} sila ...`);
+    console.log(`Issuing ${amount} Sila ...`);
     try {
-      const res = await api.issueSila(amount, app.activeUser.handle, app.activeUser.private_key, account.account_name);
+      const res = await api.issueSila(amount, activeUser.handle, activeUser.private_key, account.account_name);
       let result = {};
       console.log('  ... completed!');
       if (res.data.status === 'SUCCESS') {
@@ -96,9 +98,9 @@ const Transact = ({ page }) => {
   };
 
   const redeemSila = async (amount) => {
-    console.log(`Redeeming ${amount} sila ...`);
+    console.log(`Redeeming ${amount} Sila ...`);
     try {
-      const res = await api.redeemSila(amount, app.activeUser.handle, app.activeUser.private_key, account.account_name);
+      const res = await api.redeemSila(amount, activeUser.handle, activeUser.private_key, account.account_name);
       let result = {};
       console.log('  ... completed!');
       if (res.data.status === 'SUCCESS') {
@@ -122,9 +124,9 @@ const Transact = ({ page }) => {
   };
 
   const transferSila = async (amount, destination) => {
-    console.log(`Transferring ${amount} sila to ${destination} ...`);
+    console.log(`Transferring ${amount} Sila to ${destination} ...`);
     try {
-      const res = await api.transferSila(amount, app.activeUser.handle, app.activeUser.private_key, destination);
+      const res = await api.transferSila(amount, activeUser.handle, activeUser.private_key, destination);
       let result = {};
       console.log('  ... completed!');
       if (res.data.status === 'SUCCESS') {
@@ -151,7 +153,7 @@ const Transact = ({ page }) => {
     console.log('Refreshing transactions ...');
     updateApp({ transactions: false });
     try {
-      const res = await api.getTransactions(app.activeUser.handle, app.activeUser.private_key);
+      const res = await api.getTransactions(activeUser.handle, activeUser.private_key);
       let result = {};
       console.log('  ... completed!');
       if (res.data.success) {
@@ -186,7 +188,7 @@ const Transact = ({ page }) => {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page}`}>
+    <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 
       <div className="d-flex mb-4">
         <h1 className="mb-0">Transact</h1>
@@ -198,20 +200,20 @@ const Transact = ({ page }) => {
 
       {userAccounts.length === 0 && <Alert variant="warning" className="mb-4">An active account is required to initiate a transaction.  <NavLink to="/accounts" className="text-reset text-underline">Link an account</NavLink></Alert>}
 
-      <p className="text-meta mb-40">This page represents <a href="https://docs.silamoney.com/docs/get_sila_balance" target="_blank" rel="noopener noreferrer">/get_sila_balance</a>, <a href="https://docs.silamoney.com/docs/issue_sila" target="_blank" rel="noopener noreferrer">/issue_sila</a>, <a href="https://docs.silamoney.com/docs/redeem_sila" target="_blank" rel="noopener noreferrer">/redeem_sila</a>, <a href="https://docs.silamoney.com/docs/transfer_sila" target="_blank" rel="noopener noreferrer">/transfer_sila</a>, and <a href="https://docs.silamoney.com/docs/get_transactions" target="_blank" rel="noopener noreferrer">/get_transactions</a>  functionality.</p>
+      <p className="text-muted mb-5">This page represents <a href="https://docs.silamoney.com/docs/get_sila_balance" target="_blank" rel="noopener noreferrer">/get_sila_balance</a>, <a href="https://docs.silamoney.com/docs/issue_sila" target="_blank" rel="noopener noreferrer">/issue_sila</a>, <a href="https://docs.silamoney.com/docs/redeem_sila" target="_blank" rel="noopener noreferrer">/redeem_sila</a>, <a href="https://docs.silamoney.com/docs/transfer_sila" target="_blank" rel="noopener noreferrer">/transfer_sila</a>, and <a href="https://docs.silamoney.com/docs/get_transactions" target="_blank" rel="noopener noreferrer">/get_transactions</a>  functionality.</p>
 
       <div className="d-flex mb-4">
         <h2 className="mb-0">Wallet Balance</h2>
         <OverlayTrigger
           placement="right"
           delay={{ show: 250, hide: 400 }}
-          overlay={(props) => <Tooltip id="balance-tooltip" className="ml-2" {...props}>Gets Sila balance</Tooltip>}
+          overlay={(props) => <Tooltip id="balance-tooltip" className="ml-2" {...props}>Gets Sila Balance</Tooltip>}
         >
           <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none" onClick={refreshBalance}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
         </OverlayTrigger>
       </div>
 
-      <CardGroup className="mb-4">
+      <CardGroup className="mb-5">
         <Card>
           <Form.Group className="select mb-0">
             <Card.Header className="bg-secondary p-3">
@@ -226,7 +228,7 @@ const Transact = ({ page }) => {
         <Card>
           <Form.Group className="mb-0">
             <Card.Header className="bg-secondary p-3">
-              <Form.Label className="m-0" htmlFor="balance"><h3 className="m-0">Amount of Sila</h3></Form.Label>
+              <Form.Label className="m-0" htmlFor="balance"><h3 className="m-0">Amount in Sila</h3></Form.Label>
             </Card.Header>
             <Card.Body className="form-control balance p-3 border-0">
               {balance}
@@ -256,7 +258,7 @@ const Transact = ({ page }) => {
           <Card.Body>
             <Tab.Content>
               <Tab.Pane eventKey="issue">
-                <p className="text-meta">Add Sila to your wallet by debiting a linked account.</p>
+                <p className="text-muted">Add Sila to your wallet by debiting a linked account. One Sila = 1¢.</p>
                 <Form noValidate validated={forms.issue.validated} autoComplete="off" className="d-flex mt-auto" onSubmit={(e) => {
                   e.preventDefault();
                   const amount = parseFloat(e.target.issue.value);
@@ -285,11 +287,11 @@ const Transact = ({ page }) => {
                 </Form>
               </Tab.Pane>
               <Tab.Pane eventKey="transfer">
-                <p className="text-meta">Transfer sila from your selected linked wallet to another user.</p>
+                <p className="text-muted">Transfer Sila from your selected linked wallet to another user.{app.settings.flow === 'kyb' && <span className="ml-2">Destination suggestions are scoped to members of the business, but all Sila accounts can recieve Sila.</span>}</p>
                 <Form noValidate validated={forms.transfer.validated} autoComplete="off" className="d-flex" onSubmit={(e) => {
                   e.preventDefault();
                   const amount = parseFloat(e.target.transfer.value);
-                  const destination = e.target.destination.value;
+                  const destination = forms.transfer.values.destination.toString();
                   if (isNaN(amount) || amount % 1 !== 0) {
                     handleFormError('transfer', 'transfer', 'Please enter a whole number');
                   } else {
@@ -313,15 +315,21 @@ const Transact = ({ page }) => {
                         <Form.Control type="number" name="transfer" id="transfer" value={forms.transfer.values.transfer || ''} onChange={(e) => handleChange(e, 'transfer')} placeholder="# of Sila" />
                       </InputGroup>
                     </Col>
-                    <Col sm="12" md="6">
-                      <Form.Control name="destination" id="destination" value={forms.transfer.values.destination || ''} onChange={(e) => handleChange(e, 'transfer')} placeholder="Destination handle" style={{ marginLeft: '-1px' }} />
+                    <Col className="destination-typeahead position-relative" sm="12" md="6">
+                      <Typeahead clearButton style={{ marginLeft: '-1px' }}
+                        id="destination"
+                        labelKey="destination"
+                        onChange={(handle) => setForms({ ...forms, transfer: { ...forms.transfer, values: { ...forms.transfer.values, destination: handle } } })}
+                        options={app.settings.flow === 'kyb' ? app.users.filter(user => user.business_handle === app.settings.kybHandle).map(user => user.handle) : app.users.filter(user => user.handle !== app.activeUser).map(user => user.handle)}
+                        placeholder="Destination handle"
+                        selected={forms.transfer.values.destination || ''} />
                     </Col>
                   </Row>
                   <Button className="text-nowrap ml-2" variant="primary" type="submit" disabled={!forms.transfer.values.transfer || !forms.transfer.values.destination}>GO</Button>
                 </Form>
               </Tab.Pane>
               <Tab.Pane eventKey="redeem">
-                <p className="text-meta">Convert Sila from your selected linked wallet to dollars in your primary linked account.</p>
+                <p className="text-muted">Convert Sila from your selected linked wallet to dollars in your primary linked account.</p>
                 <Form noValidate validated={forms.redeem.validated} autoComplete="off" className="d-flex mt-auto" onSubmit={(e) => {
                   e.preventDefault();
                   const amount = parseFloat(e.target.redeem.value);
@@ -357,7 +365,8 @@ const Transact = ({ page }) => {
       {app.alert.message && <div className="mt-4"><AlertMessage message={app.alert.message} type={app.alert.type} /></div>}
 
       <Pagination hideNext
-        previous="/accounts"
+        previous={previous}
+        next={next}
         currentPage={page} />
 
       <ConfirmModal show={confirm.show} message={confirm.message} onHide={() => setConfirm(defaultConfirm)} onSuccess={confirm.onSuccess} />

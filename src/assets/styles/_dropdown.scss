@@ -3,8 +3,8 @@
 .dropdown-item {
   transition: background-color $transition-duration $ease-in-out-circ, color $transition-duration $ease-in-out-circ;
 
-  &:active,
-  &:active {
+  &:nav,
+  &:nav {
     transition: color $transition-duration $ease-in-out-circ;
     color: $white !important;
   }

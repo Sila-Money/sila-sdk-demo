@@ -1,7 +1,4 @@
 // Borders adjustments
-.border {
-  border: 1px solid $border-color !important;
-}
 
 .border-top {
   border-top: 1px solid $border-color !important;
@@ -86,14 +83,4 @@
 
 .rounded-br-0 {
   border-bottom-right-radius: 0 !important;
-}
-
-// Light color border variation
-.border-light {
-  border-color: $border-color-light !important;
-}
-
-// Accent color border variation
-.border-accent {
-  border-color: $primary !important;
 }

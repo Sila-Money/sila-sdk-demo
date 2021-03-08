@@ -3,9 +3,11 @@
 // Grays colors
 $white: #fff !default;
 $gray-almost-white: #E9E9E9 !default;
+$gray-lightest: #D5D5D5 !default;
 $gray-lighter: #909090 !default;
 $gray-light: #898989 !default;
 $gray-medium: #787878 !default;
+$gray-blue-light: #A5B5B9 !default;
 $gray-blue: #6C7792 !default;
 $gray-dark: #222222 !default;
 $gray-darker: #121212 !default;
@@ -16,11 +18,12 @@ $gray-100: $gray-almost-white;
 // Theme colors
 $primary: #3F63F7 !default;
 $primary-hover: #4E70F8 !default;
-$primary-active: #5638FF !default;
+$primary-nav: #5638FF !default;
 $secondary: rgba($black, 0.10) !default;
 $warning: #F16203 !default;
 $danger: #ED5555 !default;
 $success: #2ECC91 !default;
+$light: #F9FAFF !default;
 
 // Misc colors
 $border-color: #D8D8D8;

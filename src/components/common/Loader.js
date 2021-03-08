@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 const Loader = ({ label, overlay, ...rest }) => (
   <div className={`loader overlay d-flex justify-content-center align-items-center text-center`}>
     <Spinner animation="border" role="status" variant="primary" {...rest}><span className="sr-only">Loading....</span></Spinner>
-    {label && <p className="text-meta text-sm mt-2" dangerouslySetInnerHTML={{ __html: label }}></p>}
+    {label && <p className="text-muted text-sm mt-2" dangerouslySetInnerHTML={{ __html: label }}></p>}
   </div>
 );
 

@@ -1,69 +1,169 @@
 import React from 'react';
 
-import { Redirect } from 'react-router-dom';
-
 // Route Views
+import Home from '../views/Home';
 import CheckHandle from '../views/CheckHandle';
-import Register from '../views/Register';
+import RegisterUser from '../views/kyc/RegisterUser';
 import RequestKYC from '../views/RequestKYC';
+import BusinessType from '../views/kyb/BusinessType';
+import RegisterBusiness from '../views/kyb/RegisterBusiness';
+import BusinessMembers from '../views/kyb/BusinessMembers';
+import RegisterMember from '../views/kyb/RegisterMember';
+import CertifyBusiness from '../views/kyb/CertifyBusiness';
+import MemberDetails from '../views/kyb/MemberDetails';
+
 import Wallets from '../views/Wallets';
 import Accounts from '../views/Accounts';
 import Transact from '../views/Transact';
 import Errors from '../views/Errors';
 
+import indvidualIcon from '../assets/images/indvidual.svg';
+import businessIcon from '../assets/images/business.svg';
+
+export const flows = {
+  kyc: {
+    name: 'Individual Onboarding',
+    icon: indvidualIcon,
+    home: '/request_kyc',
+    permissions: (app) => 
+      !app.activeUser || 
+      (app.activeUser && !app.activeUser.business),
+    routes: [
+      '/check_handle', 
+      '/register_user', 
+      '/request_kyc', 
+      '/wallets', 
+      '/accounts', 
+      '/transact'
+    ]
+  },
+  kyb: {
+    name: 'Business Onboarding',
+    icon: businessIcon,
+    home: '/members',
+    permissions: (app) => 
+      !app.activeUser || 
+      (app.activeUser && app.activeUser.business) || 
+      (app.activeUser && typeof app.activeUser.business_handle === 'string') ||
+      (app.activeUser && typeof app.settings.kybHandle === 'string'),
+    routes: [
+      '/business/type',
+      '/business/handle', 
+      '/business/register', 
+      '/members',
+      '/request_kyc',
+      '/certify', 
+      '/wallets', 
+      '/accounts', 
+      '/transact'
+    ]
+  }
+};
+
 export default [
   {
-    stepper: true,
-    page: 'handle',
+    all: true,
+    title: 'Home',
+    path: '/',
+    exact: true,
+    component: Home
+  },
+  {
+    restricted: false,
     title: 'Check Handle',
     path: '/check_handle',
     component: CheckHandle
   },
   {
-    stepper: true,
-    page: 'register',
+    all: true,
+    restricted: false,
     title: 'Register User',
-    path: '/register',
-    component: Register
+    path: '/register_user',
+    component: RegisterUser
   },
   {
-    stepper: true,
     restricted: true,
-    page: 'request_kyc',
     title: 'Request KYC',
     path: '/request_kyc',
     component: RequestKYC
   },
   {
-    stepper: true,
     restricted: true,
-    page: 'wallets',
     title: 'Wallets',
     path: '/wallets',
     component: Wallets
   },
   {
-    stepper: true,
     restricted: true,
-    page: 'accounts',
     title: 'Link Account',
     path: '/accounts',
     component: Accounts
   },
   {
-    stepper: true,
     restricted: true,
-    page: 'transact',
     title: 'Transact',
     path: '/transact',
     component: Transact
   },
   {
-    exact: true,
-    path: '/',
-    component: () => <Redirect to="/check_handle" />
+    all: true,
+    kyb: true,
+    placeholder: true,
+    title: 'Register Business',
+    path: '/business',
+    routes: [{
+      all: true,
+      title: 'Business Type',
+      path: '/business/type',
+      component: BusinessType
+    },
+    {
+      all: true,
+      title: 'Check Handle',
+      path: '/business/handle',
+      component: CheckHandle
+    }, {
+      all: true,
+      title: 'Business Info',
+      path: '/business/register',
+      component: RegisterBusiness
+    }]
   },
   {
+    restricted: true,
+    title: 'Business Members',
+    path: '/members',
+    component: BusinessMembers,
+    routes: [{
+      disabled: true,
+      restricted: true,
+      title: 'Register Business Member',
+      path: '/members/register',
+      component: RegisterMember
+    },
+    {
+      disabled: true,
+      restricted: true,
+      title: 'Business Member',
+      path: '/members/:handle',
+      component: MemberDetails
+    }]
+  },
+  {
+    restricted: true,
+    title: 'Certify Business',
+    path: '/certify',
+    component: CertifyBusiness,
+    routes: [{
+      disabled: true,
+      restricted: true,
+      title: 'Certify Member',
+      path: '/certify/:handle',
+      component: MemberDetails
+    }]
+  },
+  {
+    all: true,
     path: '*',
     component: () => <Errors status={404} />
   }
