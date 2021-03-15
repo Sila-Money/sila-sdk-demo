@@ -104,7 +104,7 @@ const LinkMemberForm = ({ member, onLinked, onUnlinked }) => {
               {!ownershipStake && <Form.Text className="text-muted mt-2 text-nowrap loaded">Ownership Percentage is required before you can link to this business.</Form.Text>}
             </Form.Group>}
           </div>
-          <Button block key={index} style={{ width: '260px' }} className="ml-auto text-center text-nowrap" disabled={role.name === 'beneficial_owner' && !ownershipStake && !hasRole(role.name)} onClick={() => hasRole(role.name) ? unlinkMember(role) : linkMember(role)}>{hasRole(role.name) ? 'Unlink' : 'Link'} as a {role.label}</Button>
+          <Button block size="sm" key={index} style={{ width: '260px' }} className="ml-auto text-center text-nowrap" disabled={role.name === 'beneficial_owner' && !ownershipStake && !hasRole(role.name)} onClick={() => hasRole(role.name) ? unlinkMember(role) : linkMember(role)}>{hasRole(role.name) ? 'Unlink' : 'Link'} as a {role.label}</Button>
         </div>
         ))}
       </div>

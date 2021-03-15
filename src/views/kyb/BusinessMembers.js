@@ -140,8 +140,20 @@ const BusinessMembers = ({ page, previous, next, history, location }) => {
                         <Badge pill className="badge-outline py-2 px-3 w-100" variant="success">Linked</Badge>
                       </td>
                       <td className="actions" width="1%">
-                        <Button variant="link" className="p-1 mr-3 text-decoration-none" title="Edit" as={NavLink} to={{ pathname: `/members/${member.user_handle}`, state: { role: member.role, from: page } }}><i className="sila-icon sila-icon-edit text-lg"></i></Button>
-                        <Button variant="link" className="p-1 mr-3 text-decoration-none" title="Unlink" onClick={() => unlinkMember(app.settings.kybRoles.find(role => role.name === member.role), member.user_handle)}><i className="sila-icon sila-icon-delete text-lg"></i></Button>
+                        <OverlayTrigger
+                          placement="top"
+                          delay={{ show: 250, hide: 400 }}
+                          overlay={(props) => <Tooltip id="edit-tooltip" {...props}>Edit</Tooltip>}
+                        >
+                          <Button variant="link" className="p-1 mr-2 text-decoration-none" as={NavLink} to={{ pathname: `/members/${member.user_handle}`, state: { role: member.role, from: page } }}><i className="sila-icon sila-icon-edit text-lg"></i></Button>
+                        </OverlayTrigger>
+                        <OverlayTrigger
+                          placement="top"
+                          delay={{ show: 250, hide: 400 }}
+                          overlay={(props) => <Tooltip id="unlink-tooltip" {...props}>Unlink</Tooltip>}
+                        >
+                          <Button variant="link" className="p-1 mr-2 text-decoration-none text-reset" title="" onClick={() => unlinkMember(app.settings.kybRoles.find(role => role.name === member.role), member.user_handle)}><i className="fas fa-unlink text-lg"></i></Button>
+                        </OverlayTrigger>
                       </td>
                     </tr>
                   ) : (
@@ -154,7 +166,7 @@ const BusinessMembers = ({ page, previous, next, history, location }) => {
                           <Badge pill className="badge-outline py-2 px-3 w-100" variant={isRoleRequired(member) ? 'warning' : 'primary'}>{isRoleRequired(member) ? 'Required' : 'Optional'}</Badge>
                         </td>
                         <td className="actions">
-                          <Button variant="link" className="p-0 important" as={NavLink} to={{ pathname: '/members/register', state: { role: member.name, from: page } }}>{members.some(member => member.user_handle) ? 'Add' : 'Add Business Member'} +</Button>
+                          <Button size="sm" as={NavLink} to={{ pathname: '/members/register', state: { role: member.name, from: page } }}>{members.some(member => member.user_handle) ? 'Add' : 'Add Business Member'}</Button>
                         </td>
                       </tr>
                     );
@@ -165,7 +177,7 @@ const BusinessMembers = ({ page, previous, next, history, location }) => {
 
           <div className="d-flex">
             <span className="text-primary font-italic">* Indicates the role is required</span>
-            <Button as={NavLink} to={{ pathname: '/members/register', state: { from: page } }} className="ml-auto">Add Additonal Business Members</Button>
+            <Button variant="link" className="p-0 important ml-auto" as={NavLink} to={{ pathname: '/members/register', state: { from: page } }}>Add Additonal Business Members +</Button>
           </div>
 
         </>

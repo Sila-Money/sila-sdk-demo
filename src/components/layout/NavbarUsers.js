@@ -28,7 +28,7 @@ const NavbarUsers = () => {
   return <div className="ml-md-4 d-flex align-items-center">
     <Form.Label className="mr-2 mb-0" htmlFor="account">{app.activeUser && app.activeUser.handle ? 'Business' : 'User'}:</Form.Label>
     <SelectMenu
-      title={app.activeUser ? app.activeUser.handle : app.settings.flow ? `Creating a new ${app.settings.flow === 'kyb' ? 'business' : 'user'}` : 'Choose your flow...'}
+      title={app.activeUser ? app.activeUser.handle : app.settings.flow ? `Creating a new ${app.settings.flow === 'kyb' ? 'business' : 'user'}` : 'Register...'}
       size="sm"
       onChange={setActiveUser}
       className="text-uppercase text-nowrap users"

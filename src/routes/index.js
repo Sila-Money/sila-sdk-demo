@@ -22,7 +22,7 @@ import businessIcon from '../assets/images/business.svg';
 
 export const flows = {
   kyc: {
-    name: 'Individual Onboarding',
+    name: 'Individual Onboarding (KYC)',
     icon: indvidualIcon,
     home: '/request_kyc',
     permissions: (app) => 
@@ -38,7 +38,7 @@ export const flows = {
     ]
   },
   kyb: {
-    name: 'Business Onboarding',
+    name: 'Business Onboarding (KYB)',
     icon: businessIcon,
     home: '/members',
     permissions: (app) => 

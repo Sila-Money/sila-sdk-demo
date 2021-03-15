@@ -140,8 +140,8 @@ const BusinessMembers = ({ page, previous, next, location, history, isActive }) 
                             <td width="20%" className="px-3">
                               <Badge pill className="w-100 badge-outline py-2 px-3" variant={statusVariant}>{statusLabel}</Badge>
                             </td>
-                            <td width="1%" className="actions">
-                              {(member.beneficial_owner_certification_status.includes('pending')) ? <Button variant="link" className="p-0 important" as={NavLink} to={{ pathname: `/certify/${member.user_handle}`, state: { role: member.role, from: page } }}>Certify</Button> : <span className="text-meta">N/A</span>}
+                            <td width="1%" className="actions text-center">
+                              {(member.beneficial_owner_certification_status.includes('pending')) ? <Button size="sm" as={NavLink} to={{ pathname: `/certify/${member.user_handle}`, state: { role: member.role, from: page } }}>Certify</Button> : <span className="text-meta">N/A</span>}
                             </td>
                           </tr>
                         );

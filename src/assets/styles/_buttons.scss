@@ -77,11 +77,11 @@
 
     // Link
     &[class*="btn-link"] {
-      .sila-icon {
+      i {
         color: $gray-medium;
       }
       &:hover {
-        .sila-icon {
+        i {
           color: $primary;
         }
       }
