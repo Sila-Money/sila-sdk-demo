@@ -8,7 +8,6 @@ import { useAppContext } from '../context/AppDataProvider';
 
 const RouteConfig = ({ routes, inFlow }) => {
   const { app } = useAppContext();
-  console.log(inFlow);
   return (
     <Switch>
       {routes.map((route, i) => <Route

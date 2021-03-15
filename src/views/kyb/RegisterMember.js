@@ -37,6 +37,7 @@ const RegisterMember = ({ page, isActive, location, history }) => {
   };
 
   const handleActiveUser = (user) => {
+    console.log(user);
     setActiveUser(user);
     setAppData({
       users: app.users.map(u => u.handle === user.handle ? { ...u, business_handle: app.settings.kybHandle } : u)

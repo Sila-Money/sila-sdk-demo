@@ -54,7 +54,6 @@ const RegisterUserForm = ({ className, handle, page, isActive, children, onError
           }]
         };
         if (Object.keys(errors).length) setErrors({});
-        if (onSuccess) onSuccess(entity);
       } else if (res.data.validation_details) {
         setErrors(res.data.validation_details);
         if (onError) onError(res.data.validation_details);
@@ -68,6 +67,7 @@ const RegisterUserForm = ({ className, handle, page, isActive, children, onError
         }, ...app.responses]
       }, () => {
         updateApp({ ...result });
+        if (res.data.status === 'SUCCESS' && onSuccess) onSuccess(entity);
       });
     } catch (err) {
       console.log('  ... looks like we ran into an issue!');
