@@ -61,7 +61,7 @@ let initAppData = getAppStorage();
 let auth = initAppData.auth;
 if (!auth) auth = { handle: false, key: false };
 Sila.configure(auth);
-Sila.setEnvironment('prod');
+Sila.setEnvironment('sandbox');
 Sila.enableSandbox();
 // Sila.disableSandbox();
 
