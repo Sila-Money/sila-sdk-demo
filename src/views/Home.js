@@ -12,9 +12,10 @@ const Home = ({ page, history }) => {
   const { app, setAppData } = useAppContext();
 
   const handleClick = (e, flow) => {
+    const success = app.success.find(success => app.activeUser && success.handle === app.activeUser.handle);
     if (Object.keys(app.auth).length && !app.auth.failed) {
       setAppData({ settings: { ...app.settings, flow } }, () => {
-        history.push({ pathname: app.activeUser ? flows[flow].home : flows[flow].routes[0], state: { from: page } });
+        history.push({ pathname: success ? flows[flow].routes.slice().reverse().find(route => route === success.page) : flows[flow].routes[0], state: { from: page } });
       });
     } else {
       e.preventDefault();

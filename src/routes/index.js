@@ -24,7 +24,6 @@ export const flows = {
   kyc: {
     name: 'Individual Onboarding (KYC)',
     icon: indvidualIcon,
-    home: '/request_kyc',
     permissions: (app) => 
       !app.activeUser || 
       (app.activeUser && !app.activeUser.business),
@@ -40,7 +39,6 @@ export const flows = {
   kyb: {
     name: 'Business Onboarding (KYB)',
     icon: businessIcon,
-    home: '/members',
     permissions: (app) => 
       !app.activeUser || 
       (app.activeUser && app.activeUser.business) || 
@@ -69,6 +67,7 @@ export default [
     component: Home
   },
   {
+    all: true,
     restricted: false,
     title: 'Check Handle',
     path: '/check_handle',
