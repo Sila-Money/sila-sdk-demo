@@ -18,14 +18,19 @@ const NavbarUsers = () => {
   const setActiveUser = (handle) => {
     const businessUser = app.users.find(user => user.handle === handle && user.business);
     const businessMember = app.users.find(user => user.handle === handle && user.business_handle);
+    const adminMember = app.users.find(user => user.handle === handle && user.business_handle && user.admin);
     const activeUser = app.users.find(u => u.handle === handle);
-    const success = app.success.find(success => activeUser && success.handle === activeUser.handle);
     setAppData({
-      settings: { ...app.settings, kybHandle: businessUser ? businessUser.handle : businessMember ? businessMember.business_handle : false },
+      settings: { ...app.settings, 
+        kybHandle: businessUser ? businessUser.handle : businessMember ? businessMember.business_handle : false,
+        kybAdminHandle: adminMember ? adminMember.handle : false
+      },
       users: app.users.map(({ active, ...u }) => u.handle === handle ? { ...u, active: true } : u)
     }, () => {
-      updateApp({ activeUser: app.users.find(u => u.handle === handle), kyc: {}, kyb: {} });
-      history.push({ pathname: success ? flows[app.settings.flow].routes.slice().reverse().find(route => route === success.page) : flows[app.settings.flow].routes[0], state: { from: history.location.pathname } });
+      updateApp({ 
+        activeUser: businessUser && adminMember && !businessUser.certified ? adminMember : activeUser, 
+      });
+      history.go();
     });
   };
 

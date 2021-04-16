@@ -26,6 +26,7 @@ const RegisterMember = ({ page, isActive, location, history }) => {
     try {
       const res = await api.getEntity(activeUser.handle, activeUser.private_key);
       console.log('  ... completed!');
+      console.log(res);
       if (res.data.success) {
         setMember(res.data);
         setSelectedRoles([...selectedRoles, ...res.data.memberships.filter(membership => !selectedRoles.length || selectedRoles.some(role => membership.role !== role)).map(membership => membership.role)]);
@@ -37,7 +38,6 @@ const RegisterMember = ({ page, isActive, location, history }) => {
   };
 
   const handleActiveUser = (user) => {
-    console.log(user);
     setActiveUser(user);
     setAppData({
       users: app.users.map(u => u.handle === user.handle ? { ...u, business_handle: app.settings.kybHandle } : u)

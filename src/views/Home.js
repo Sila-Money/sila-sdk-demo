@@ -13,9 +13,10 @@ const Home = ({ page, history }) => {
 
   const handleClick = (e, flow) => {
     const success = app.success.find(success => app.activeUser && success.handle === app.activeUser.handle);
+    const last = success && flows[flow].routes.slice().reverse().find(route => route === success.page);
     if (Object.keys(app.auth).length && !app.auth.failed) {
       setAppData({ settings: { ...app.settings, flow } }, () => {
-        history.push({ pathname: success ? flows[flow].routes.slice().reverse().find(route => route === success.page) : flows[flow].routes[0], state: { from: page } });
+        history.push({ pathname: last && flows[flow].routes.indexOf(last) !== flows[flow].routes.length - 1 ? flows[flow].routes[flows[flow].routes.indexOf(last) + 1] : flows[flow].routes[0], state: { from: page } });
       });
     } else {
       e.preventDefault();

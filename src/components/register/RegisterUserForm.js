@@ -116,8 +116,8 @@ const RegisterUserForm = ({ className, handle, page, isActive, children, onError
         </Form.Group>
       </Form.Row>
       <Form.Row>
-        <Form.Group as={Col} md="6" controlId="registerSSN" className="required">
-          <Form.Control required placeholder="Social Security Number 111223333" name="ssn" isInvalid={errors.identity} />
+        <Form.Group as={Col} md="6" controlId="registerSSN">
+          <Form.Control placeholder="Social Security Number 111223333" name="ssn" isInvalid={errors.identity} />
           {errors.identity && <Form.Control.Feedback type="invalid">{errors.identity.identity_value || errors.identity}</Form.Control.Feedback>}
         </Form.Group>
         <Form.Group as={Col} md="6" controlId="registerDateOfBirth" className="required">
@@ -130,8 +130,8 @@ const RegisterUserForm = ({ className, handle, page, isActive, children, onError
           <Form.Control type="email" placeholder="Email" name="email" isInvalid={Boolean(errors.contact && errors.contact.email)} />
           {errors.contact && errors.contact.email && <Form.Control.Feedback type="invalid">{errors.contact.email}</Form.Control.Feedback>}
         </Form.Group>
-        <Form.Group as={Col} md="6" controlId="registerPhone" className="required">
-          <Form.Control required name="phone" type="tel" as={NumberFormat} placeholder="Phone Number (___) ___-____" format="(###) ###-####" mask="_" isInvalid={Boolean(errors.contact && errors.contact.phone)} />
+        <Form.Group as={Col} md="6" controlId="registerPhone">
+          <Form.Control name="phone" type="tel" as={NumberFormat} placeholder="Phone Number (___) ___-____" format="(###) ###-####" mask="_" isInvalid={Boolean(errors.contact && errors.contact.phone)} />
           {errors.contact && errors.contact.phone && <Form.Control.Feedback type="invalid">{errors.contact.phone}</Form.Control.Feedback>}
         </Form.Group>
       </Form.Row>
