@@ -98,7 +98,7 @@ const BusinessMembers = ({ page, previous, next, history, location }) => {
 
   useEffect(() => {
     if (rolesAndMembers.length && rolesAndMembers.filter(member => member.label && isRoleRequired(member)).length === 0) {
-      updateApp({ alert: { message: 'Success! All required business members have now been registerd, you may now continue to the KYB process, or add more business members if necessary.', type: 'success' } });
+      updateApp({ alert: { message: 'Success! All required business members have now been registered, you may now continue to the KYB process, or add more business members if necessary.', type: 'success' } });
     }
   }, [members]); // eslint-disable-line react-hooks/exhaustive-deps
 
