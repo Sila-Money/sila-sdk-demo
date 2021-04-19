@@ -15,13 +15,15 @@ const RequestKYC = ({ page, previous, next }) => {
   const activeUser = app.settings.flow === 'kyb' ? app.users.find(user => app.settings.kybHandle === user.handle) : app.activeUser;
   const isActive = app.success.find(success => activeUser && success.handle === activeUser.handle && success[app.settings.flow] && success.page === page) ? true : false;
 
+  console.log(activeUser);
+
   const requestKyc = async () => {
     console.log(`Requesting ${app.settings.flow.toUpperCase()} ...`);
     try {
       const res = await api.requestKYC(activeUser.handle, activeUser.private_key)
       let result = { kyc: {}, kyb: {} };
       console.log('  ... completed!');
-      if (res.data.status === 'SUCCESS') {
+      if (res.data.success) {
         result.alert = { message: `Submitted for ${app.settings.flow.toUpperCase()} Review`, type: 'wait' };
         result[app.settings.flow].alert = { message: 'Submitted for review', type: 'wait' };
       } else {
@@ -120,9 +122,9 @@ const RequestKYC = ({ page, previous, next }) => {
             <span className="user"><span className="text-primary">{`${member.first_name} ${member.last_name} (${member.user_handle})`}</span> <span className="mx-2">&ndash;</span> <em>{app.settings.kybRoles.find(role => role.name === member.role).label}</em></span>
             {member.verification_status.includes('passed') ? 
             <em className="message ml-auto text-success">Passed ID verification</em> : 
-            member.verification_status.includes('pending') ? 
+            member.verification_status.includes('pending') && member.role !== 'administrator' ? 
             <em className="message ml-auto text-warning">Pending ID verification</em> : 
-            member.verification_status.includes('unverified') && member.role === 'administrator' ? 
+            !member.verification_required && member.role === 'administrator' ? 
             <em className="message ml-auto text-success">Verification not required</em> : 
             member.verification_status.includes('unverified') ? 
             <em className="message ml-auto text-warning">Unverified ID verification</em> : 

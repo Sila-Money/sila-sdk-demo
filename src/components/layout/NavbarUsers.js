@@ -9,8 +9,6 @@ import SelectMenu from '../common/SelectMenu';
 import indvidualIcon from '../../assets/images/indvidual.svg';
 import businessIcon from '../../assets/images/business.svg';
 
-import { flows } from '../../routes';
-
 const NavbarUsers = () => {
   const { app, updateApp, setAppData, setNewUser } = useAppContext();
   const history = useHistory();
@@ -18,19 +16,24 @@ const NavbarUsers = () => {
   const setActiveUser = (handle) => {
     const businessUser = app.users.find(user => user.handle === handle && user.business);
     const businessMember = app.users.find(user => user.handle === handle && user.business_handle);
+    const adminMember = app.users.find(user => user.handle === handle && user.business_handle && user.admin);
     const activeUser = app.users.find(u => u.handle === handle);
-    const success = app.success.find(success => activeUser && success.handle === activeUser.handle);
     setAppData({
-      settings: { ...app.settings, kybHandle: businessUser ? businessUser.handle : businessMember ? businessMember.business_handle : false },
+      settings: { ...app.settings, 
+        kybHandle: businessUser ? businessUser.handle : businessMember ? businessMember.business_handle : false,
+        kybAdminHandle: adminMember ? adminMember.handle : false
+      },
       users: app.users.map(({ active, ...u }) => u.handle === handle ? { ...u, active: true } : u)
     }, () => {
-      updateApp({ activeUser: app.users.find(u => u.handle === handle), kyc: {}, kyb: {} });
-      history.push({ pathname: success ? flows[app.settings.flow].routes.slice().reverse().find(route => route === success.page) : flows[app.settings.flow].routes[0], state: { from: history.location.pathname } });
+      updateApp({ 
+        activeUser: businessUser && adminMember && !businessUser.certified ? adminMember : activeUser, 
+      });
+      history.go();
     });
   };
 
   return <div className="ml-md-4 d-flex align-items-center">
-    {app.activeUser && <Form.Label className="mr-2 mb-0" htmlFor="account">{app.activeUser && app.activeUser.business ? 'Business' : 'User'}:</Form.Label>}
+    {app.activeUser && <Form.Label className="mr-2 mb-0" htmlFor="account">{app.activeUser && app.activeUser.business_handle && app.activeUser.admin ? 'Administrator' : app.activeUser && app.activeUser.business ? 'Business' : 'User'}:</Form.Label>}
     <SelectMenu
       title={app.activeUser ? app.activeUser.handle : app.settings.flow ? `New ${app.settings.flow === 'kyb' ? 'business' : 'individual'}...` : 'Register...'}
       size="sm"

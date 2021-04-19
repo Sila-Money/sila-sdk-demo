@@ -40,9 +40,15 @@ const BusinessMembers = ({ page, previous, next, location, history, isActive }) 
         api.checkKYC(businessUser.handle, businessUser.private_key)
       ]);
       if (entityResponse.statusCode === 200 && kycResponse.statusCode === 200) {
+        const certified = kycResponse.data.certification_history.some(history => !history.expires_after_epoch || history.expires_after_epoch > Date.now()) && kycResponse.data.certification_status.includes('certified');
         setMembers(entityResponse.data.members.map(member => ({ ...member, ...kycResponse.data.members.find(kyc => member.user_handle === kyc.user_handle && member.role === kyc.role) })));
-        setShowCongrats(kycResponse.data.certification_history.some(history => !history.expires_after_epoch || history.expires_after_epoch > Date.now()) && kycResponse.data.certification_status.includes('certified'));
-        setLoaded(true);
+        setShowCongrats(certified);
+        setAppData({
+          users: certified ? app.users.map(({ active, ...u }) => u.handle === businessUser.handle ? { ...u, active: true, certified: true } : u) : app.users
+        }, () => {
+          if (certified) updateApp({ activeUser: businessUser });
+          setLoaded(true);
+        });
       }
     } catch (err) {
       console.log('  ... looks like we ran into an issue!');
@@ -55,14 +61,16 @@ const BusinessMembers = ({ page, previous, next, location, history, isActive }) 
     let result = {};
     try {
       const res = await api.certifyBusiness(adminUser.handle, adminUser.private_key, businessUser.handle, businessUser.private_key);
-      if (res.data.status === 'SUCCESS') {
+      if (res.data.success) {
         result.alert = { message: res.data.message, type: 'success' };
+        result.activeUser = businessUser;
         setShowCongrats(true);
       } else {
         result.alert = { message: res.data.message, type: 'danger' };
       }
       setAppData({
-        success: res.data.success && showCongrats && !isActive ? [...app.success, { handle: businessUser.handle, page }] : app.success,
+        success: res.data.success && !isActive ? [...app.success, { handle: businessUser.handle, page }] : app.success,
+        users: res.data.success ? app.users.map(({ active, ...u }) => u.handle === businessUser.handle ? { ...u, certified: true, active: true } : u) : app.users,
         responses: [{
           endpoint: '/certify_business',
           result: JSON.stringify(res, null, '\t')
@@ -79,9 +87,6 @@ const BusinessMembers = ({ page, previous, next, location, history, isActive }) 
   useEffect(() => {
     getMembersAndCheckKyc();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-
-  
 
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>

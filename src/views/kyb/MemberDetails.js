@@ -44,7 +44,7 @@ const MemberDetails = ({ page, match, history, location }) => {
     const adminUser = app.users.find(user => app.settings.kybAdminHandle === user.handle);
     try {
       const res = await api.certifyBeneficialOwner(adminUser.handle, adminUser.private_key, businessUser.handle, businessUser.private_key, match.params.handle, beneficialOwner.certification_token);
-      if (res.data.status === 'SUCCESS') {
+      if (res.data.success) {
         setAlert({ message: res.data.message, type: 'success' });
         history.goBack();
       } else {

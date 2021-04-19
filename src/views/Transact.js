@@ -77,7 +77,7 @@ const Transact = ({ page, previous, next, isActive }) => {
       const res = await api.issueSila(amount, activeUser.handle, activeUser.private_key, account.account_name);
       let result = {};
       console.log('  ... completed!');
-      if (res.data.status === 'SUCCESS') {
+      if (res.data.success) {
         result.alert = { message: res.data.message, type: 'wait' };
         refreshTransactions();
       } else {
@@ -103,7 +103,7 @@ const Transact = ({ page, previous, next, isActive }) => {
       const res = await api.redeemSila(amount, activeUser.handle, activeUser.private_key, account.account_name);
       let result = {};
       console.log('  ... completed!');
-      if (res.data.status === 'SUCCESS') {
+      if (res.data.success) {
         result.alert = { message: res.data.message, type: 'wait' };
         refreshTransactions();
       } else {
@@ -129,7 +129,7 @@ const Transact = ({ page, previous, next, isActive }) => {
       const res = await api.transferSila(amount, activeUser.handle, activeUser.private_key, destination);
       let result = {};
       console.log('  ... completed!');
-      if (res.data.status === 'SUCCESS') {
+      if (res.data.success) {
         result.alert = { message: res.data.message, type: 'wait' };
         refreshTransactions();
       } else {

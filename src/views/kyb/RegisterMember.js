@@ -11,7 +11,7 @@ import Pagination from '../../components/common/Pagination';
 import SelectMenu from '../../components/common/SelectMenu';
 import Loader from '../../components/common/Loader';
 
-const RegisterMember = ({ page, isActive, location, history }) => {
+const RegisterMember = ({ page, location, history }) => {
   const [handle, setHandle] = useState(false);
   const [member, setMember] = useState(false);
   const [activeUser, setActiveUser] = useState(false);
@@ -19,6 +19,8 @@ const RegisterMember = ({ page, isActive, location, history }) => {
   const [selectedRoles, setSelectedRoles] = useState(location.state.role ? [location.state.role] : []);
   const { app, api, handleError, setAppData } = useAppContext();
   const currentRole = app.settings.kybRoles.find(role => role.name === location.state.role);
+
+  console.log(selectedRoles);
 
   const getEntity = async () => {
     console.log('Getting Entity ...');
@@ -37,10 +39,11 @@ const RegisterMember = ({ page, isActive, location, history }) => {
   };
 
   const handleActiveUser = (user) => {
-    console.log(user);
-    setActiveUser(user);
+    const isAdmin = currentRole === 'administrator' || selectedRoles.some(role => role === 'administrator');
+    const userProps = { business_handle: app.settings.kybHandle, admin: isAdmin, active: isAdmin };
+    setActiveUser({ ...user, ...userProps });
     setAppData({
-      users: app.users.map(u => u.handle === user.handle ? { ...u, business_handle: app.settings.kybHandle } : u)
+      users: app.users.some(u => u.handle === user.handle) ? app.users.map(({ active, ...u }) => u.handle === user.handle ? { ...u, ...userProps } : u) : [...app.users.map(({ active, ...u }) => u), { ...user, ...userProps }]
     });
   };
 
@@ -74,9 +77,7 @@ const RegisterMember = ({ page, isActive, location, history }) => {
 
           <RegisterUserForm
             className="mt-4"
-            page={page}
             handle={handle}
-            isActive={isActive}
             description="Please fill out the below fields for this business member."
             onSuccess={handleActiveUser}>
 
@@ -98,7 +99,7 @@ const RegisterMember = ({ page, isActive, location, history }) => {
       {member && <div className="loaded">
 
         {member.loading ? <Loader /> : <div className="loaded">
-          <LinkMemberForm member={member} onLinked={() => getEntity()} onUnlinked={() => getEntity()} />
+          <LinkMemberForm member={{ ...activeUser, ...member }} onLinked={() => getEntity()} onUnlinked={() => getEntity()} />
           <p className="mt-5 mb-0 text-center"><Button variant="outline-light" className="text-muted text-uppercase" onClick={() => history.goBack()}>I'm Done</Button></p>
         </div>}
 

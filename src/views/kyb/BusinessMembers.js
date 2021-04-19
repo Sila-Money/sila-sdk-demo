@@ -73,14 +73,16 @@ const BusinessMembers = ({ page, previous, next, history, location }) => {
     let result = {};
     try {
       const res = await api.unlinkBusinessMember(activeUser.handle, activeUser.private_key, businessUser.handle, businessUser.private_key, role.name);
-      if (res.data.status === 'SUCCESS') {
+      if (res.data.success) {
         result.alert = { message: `Successfully unlinked ${activeUser.firstName} ${activeUser.lastName} as a ${role.label}!`, type: 'success' };
+        result.activeUser = role.name === 'administrator' ? businessUser : app.activeUser;
         setMembers(members.slice(0, deletedIndex).concat(members.slice(deletedIndex + 1, members.length)));
       } else {
         result.alert = { message: res.data.message, type: 'danger' };
       }
       setAppData({
         settings: role.name === 'administrator' ? { ...app.settings, kybAdminHandle: false } : app.settings,
+        users: role.name === 'administrator' ? app.users.map(u => u.handle === activeUser.handle ? { ...u, admin: false } : u) : app.users,
         responses: [{
           endpoint: '/unlink_business_member',
           result: JSON.stringify(res, null, '\t')
