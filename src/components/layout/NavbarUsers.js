@@ -40,7 +40,7 @@ const NavbarUsers = () => {
       onChange={setActiveUser}
       className="text-nowrap users"
       value={app.activeUser ? app.activeUser.handle : undefined}
-      options={app.users.map(user => ({ label: user.handle, value: user.handle, htmlBefore: user.business ? <img src={businessIcon} width={16} height={16} alt="Business" className="mt-n1 mr-2" /> : 
+      options={app.users.filter(u => app.settings.kybHandle ? !u.business_handle : u).map(user => ({ label: user.handle, value: user.handle, htmlBefore: user.business ? <img src={businessIcon} width={16} height={16} alt="Business" className="mt-n1 mr-2" /> : 
       <img src={indvidualIcon} width={16} height={16} alt="Individual" className="mt-n1 mr-2" /> }))} />
     <Button as={NavLink} to="/" onClick={() => setNewUser(() => history.push('/'))} className="ml-2 text-nowrap" size="sm"><i className="fas fa-user-plus text-lg text-white"></i><span className="ml-2 d-none d-sm-inline">New Entity</span></Button>
   </div>;
