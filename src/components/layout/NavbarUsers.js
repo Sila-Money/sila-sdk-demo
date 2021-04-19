@@ -9,8 +9,6 @@ import SelectMenu from '../common/SelectMenu';
 import indvidualIcon from '../../assets/images/indvidual.svg';
 import businessIcon from '../../assets/images/business.svg';
 
-import { flows } from '../../routes';
-
 const NavbarUsers = () => {
   const { app, updateApp, setAppData, setNewUser } = useAppContext();
   const history = useHistory();
@@ -35,7 +33,7 @@ const NavbarUsers = () => {
   };
 
   return <div className="ml-md-4 d-flex align-items-center">
-    {app.activeUser && <Form.Label className="mr-2 mb-0" htmlFor="account">{app.activeUser && app.activeUser.business ? 'Business' : 'User'}:</Form.Label>}
+    {app.activeUser && <Form.Label className="mr-2 mb-0" htmlFor="account">{app.activeUser && app.activeUser.business_handle && app.activeUser.admin ? 'Administrator' : app.activeUser && app.activeUser.business ? 'Business' : 'User'}:</Form.Label>}
     <SelectMenu
       title={app.activeUser ? app.activeUser.handle : app.settings.flow ? `New ${app.settings.flow === 'kyb' ? 'business' : 'individual'}...` : 'Register...'}
       size="sm"
