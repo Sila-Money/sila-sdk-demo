@@ -73,7 +73,7 @@ const BusinessMembers = ({ page, previous, next, history, location }) => {
     let result = {};
     try {
       const res = await api.unlinkBusinessMember(activeUser.handle, activeUser.private_key, businessUser.handle, businessUser.private_key, role.name);
-      if (res.data.status === 'SUCCESS') {
+      if (res.data.success) {
         result.alert = { message: `Successfully unlinked ${activeUser.firstName} ${activeUser.lastName} as a ${role.label}!`, type: 'success' };
         result.activeUser = role.name === 'administrator' ? businessUser : app.activeUser;
         setMembers(members.slice(0, deletedIndex).concat(members.slice(deletedIndex + 1, members.length)));

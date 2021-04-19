@@ -19,7 +19,7 @@ const CheckHandleForm = ({ className, defaultValue, onSuccess, disabled, page })
     try {
       const res = await api.checkHandle(handle);
       console.log('  ... completed!');
-      if (res.data.status === 'SUCCESS') {
+      if (res.data.success) {
         setAlert({ message: `Success! ${res.data.message}`, type: 'success' });
         resetForm();
         onSuccess(handle);

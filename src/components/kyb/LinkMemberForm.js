@@ -21,12 +21,11 @@ const LinkMemberForm = ({ member, onLinked, onUnlinked }) => {
     const businessUser = app.users.find(u => app.settings.kybHandle === u.handle);
     const ownership_stake = role.name === 'beneficial_owner' && ownershipStake ? (ownershipStake / 100).toFixed(2) : undefined;
     let result = {};
-    console.log(app.users);
     try {
       const res = await api.linkBusinessMember(activeUser.handle, activeUser.private_key, businessUser.handle, businessUser.private_key, role.name, undefined, details, ownership_stake);
       if (res.data.success) {
         result.alert = { message: `Successfully linked as a ${role.label}!`, type: 'success' };
-        // result.activeUser = role.name === 'administrator' ? activeUser : app.activeUser;
+        result.activeUser = role.name === 'administrator' ? activeUser : app.activeUser;
         if (onLinked) onLinked({ handle: activeUser.handle, role: role.name });
         if (ownershipStake) setOwnershipStake(0);
       } else {
@@ -34,7 +33,7 @@ const LinkMemberForm = ({ member, onLinked, onUnlinked }) => {
       }
       setAppData({
         settings: role.name === 'administrator' ? { ...app.settings, kybAdminHandle: activeUser.handle } : app.settings,
-        // users: app.users.map(u => u.handle === activeUser.handle ? { ...u, admin: true } : u),
+        users: app.users.map(u => u.handle === activeUser.handle ? { ...u, admin: true } : u),
         responses: [{
           endpoint: '/link_business_member',
           result: JSON.stringify(res, null, '\t')

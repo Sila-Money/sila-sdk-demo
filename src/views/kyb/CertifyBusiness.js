@@ -44,8 +44,9 @@ const BusinessMembers = ({ page, previous, next, location, history, isActive }) 
         setMembers(entityResponse.data.members.map(member => ({ ...member, ...kycResponse.data.members.find(kyc => member.user_handle === kyc.user_handle && member.role === kyc.role) })));
         setShowCongrats(certified);
         setAppData({
-          users: app.users.map(u => u.handle === businessUser.handle ? { ...u, certified } : u)
+          users: certified ? app.users.map(({ active, ...u }) => u.handle === businessUser.handle ? { ...u, active: true, certified: true } : u) : app.users
         }, () => {
+          if (certified) updateApp({ activeUser: businessUser });
           setLoaded(true);
         });
       }
@@ -62,13 +63,14 @@ const BusinessMembers = ({ page, previous, next, location, history, isActive }) 
       const res = await api.certifyBusiness(adminUser.handle, adminUser.private_key, businessUser.handle, businessUser.private_key);
       if (res.data.success) {
         result.alert = { message: res.data.message, type: 'success' };
+        result.activeUser = businessUser;
         setShowCongrats(true);
       } else {
         result.alert = { message: res.data.message, type: 'danger' };
       }
       setAppData({
         success: res.data.success && !isActive ? [...app.success, { handle: businessUser.handle, page }] : app.success,
-        users: res.data.success ? app.users.map(u => u.handle === businessUser.handle ? { ...u, certified: true } : u) : app.users,
+        users: res.data.success ? app.users.map(({ active, ...u }) => u.handle === businessUser.handle ? { ...u, certified: true, active: true } : u) : app.users,
         responses: [{
           endpoint: '/certify_business',
           result: JSON.stringify(res, null, '\t')
