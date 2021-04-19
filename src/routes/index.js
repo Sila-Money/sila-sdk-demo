@@ -26,7 +26,7 @@ export const flows = {
     icon: indvidualIcon,
     permissions: (app) => 
       !app.activeUser || 
-      (app.activeUser && !app.activeUser.business),
+      (app.activeUser && !app.activeUser.business && !app.activeUser.business_handle),
     routes: [
       '/check_handle', 
       '/register_user', 
