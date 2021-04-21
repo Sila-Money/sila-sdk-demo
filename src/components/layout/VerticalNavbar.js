@@ -6,12 +6,15 @@ import classNames from 'classnames';
 
 import { useAppContext } from '../context/AppDataProvider';
 
+import { flows } from '../../routes';
+
 const NavItem = ({ route, number, show }) => {
   const [hover, setHover] = useState(false);
   const { app } = useAppContext();
   const location = useLocation();
+  const success = app.activeUser && flows[app.settings.flow].routes.filter(route => app.success.some(success => success.handle === app.activeUser.handle && success.page === route)).pop();
   const isActive = (route.path && location.pathname.includes(route.path)) || (route.routes && route.routes.includes(location.pathname));
-  const isEnabled = (app.activeUser && route.restricted) || (!app.activeUser && !route.restricted) || isActive;
+  const isEnabled = isActive || (app.activeUser && app.success.some(success => success.handle === app.activeUser.handle && success.page === route.path)) || flows[app.settings.flow].routes[flows[app.settings.flow].routes.indexOf(success) + 1] === route.path;
   const subRoutes = route.routes ? route.routes.filter(subroute => !subroute.disabled) : false;
   const classes = classNames('nav-item', !isEnabled && 'disabled', isActive && 'active');
   return <li
@@ -42,7 +45,7 @@ const MobileMenu = ({ routes }) => {
       md={{ span: 8 }}
       sm={12}>
       <DropdownButton size="lg" variant="secondary" title={currentRoute.title}>
-        {routes.filter(route => (app.activeUser && route.restricted) || location.pathname.includes(route.path)).map((route, index) => {
+        {routes.filter(route => (app.activeUser && app.success.some(success => success.handle === app.activeUser.handle && success.page === route.path)) || location.pathname.includes(route.path)).map((route, index) => {
           const subRoutes = route.routes ? route.routes.filter(subroute => !subroute.disabled) : false;
           return (
             <div key={index}>

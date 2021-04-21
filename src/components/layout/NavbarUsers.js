@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Form } from 'react-bootstrap';
-import { useHistory, NavLink } from 'react-router-dom';
+import { useHistory, useLocation, NavLink } from 'react-router-dom';
 
 import { useAppContext } from '../context/AppDataProvider';
 
@@ -9,38 +9,37 @@ import SelectMenu from '../common/SelectMenu';
 import indvidualIcon from '../../assets/images/indvidual.svg';
 import businessIcon from '../../assets/images/business.svg';
 
+import { handleHomeRedirect } from '../../utils';
+import { flows } from '../../routes';
+
 const NavbarUsers = () => {
   const { app, updateApp, setAppData, setNewUser } = useAppContext();
   const history = useHistory();
+  const location = useLocation();
 
   const setActiveUser = (handle) => {
-    const businessUser = app.users.find(user => user.handle === handle && user.business);
-    const businessMember = app.users.find(user => user.handle === handle && user.business_handle);
-    const adminMember = app.users.find(user => user.handle === handle && user.business_handle && user.admin);
     const activeUser = app.users.find(u => u.handle === handle);
     setAppData({
       settings: { ...app.settings, 
-        kybHandle: businessUser ? businessUser.handle : businessMember ? businessMember.business_handle : false,
-        kybAdminHandle: adminMember ? adminMember.handle : false
+        kybHandle: activeUser && activeUser.business ? activeUser.handle : false,
+        kybAdminHandle: activeUser && activeUser.admin ? activeUser : activeUser && activeUser.business && !activeUser.certified && app.users.some(u => u.admin && u.business_handle === activeUser.handle) ? app.users.find(u => u.admin && u.business_handle === activeUser.handle).handle : false
       },
       users: app.users.map(({ active, ...u }) => u.handle === handle ? { ...u, active: true } : u)
     }, () => {
-      updateApp({ 
-        activeUser: businessUser && adminMember && !businessUser.certified ? adminMember : activeUser, 
-      });
-      history.go();
+      updateApp({ activeUser });
+      history.push({ pathname: handleHomeRedirect(app, flows, app.settings.flow, handle), state: { from: location.pathname } });
     });
   };
 
   return <div className="ml-md-4 d-flex align-items-center">
-    {app.activeUser && <Form.Label className="mr-2 mb-0" htmlFor="account">{app.activeUser && app.activeUser.business_handle && app.activeUser.admin ? 'Administrator' : app.activeUser && app.activeUser.business ? 'Business' : 'User'}:</Form.Label>}
+    {app.activeUser && <Form.Label className="mr-2 mb-0" htmlFor="account">{app.settings.kybAdminHandle ? 'Administrator' : app.settings.kybHandle ? 'Business' : 'User'}:</Form.Label>}
     <SelectMenu
-      title={app.activeUser ? app.activeUser.handle : app.settings.flow ? `New ${app.settings.flow === 'kyb' ? 'business' : 'individual'}...` : 'Register...'}
+      title={app.activeUser ? (app.settings.kybAdminHandle || app.activeUser.handle) : app.settings.flow ? `New ${app.settings.flow === 'kyb' ? 'business' : 'individual'}...` : 'Register...'}
       size="sm"
       onChange={setActiveUser}
       className="text-nowrap users"
-      value={app.activeUser ? app.activeUser.handle : undefined}
-      options={app.users.filter(u => app.settings.kybHandle ? !u.business_handle : u).map(user => ({ label: user.handle, value: user.handle, htmlBefore: user.business ? <img src={businessIcon} width={16} height={16} alt="Business" className="mt-n1 mr-2" /> : 
+      value={app.activeUser ? (app.settings.kybAdminHandle || app.activeUser.handle) : undefined}
+      options={app.users.filter(u => !u.business_handle).map(user => ({ label: user.handle, value: user.handle, htmlBefore: user.business ? <img src={businessIcon} width={16} height={16} alt="Business" className="mt-n1 mr-2" /> : 
       <img src={indvidualIcon} width={16} height={16} alt="Individual" className="mt-n1 mr-2" /> }))} />
     <Button as={NavLink} to="/" onClick={() => setNewUser(() => history.push('/'))} className="ml-2 text-nowrap" size="sm"><i className="fas fa-user-plus text-lg text-white"></i><span className="ml-2 d-none d-sm-inline">New Entity</span></Button>
   </div>;

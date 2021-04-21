@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Button } from 'react-bootstrap';
 
 import { useAppContext } from '../context/AppDataProvider';
@@ -42,17 +42,21 @@ const CheckHandleForm = ({ className, defaultValue, onSuccess, disabled, page })
       handleError(err);
     }
     setValidated(true);
-  }
+  };
 
   const handleChange = (e) => {
     setHandle(e.target.value.toLowerCase().replace(/\s/g, ''));
     (error || validated) && resetForm();
-  }
+  };
 
   const resetForm = () => {
     setError(false);
     setValidated(false);
-  }
+  };
+
+  useEffect(() => {
+    if (handle.length && handle.length < 3) setError('Minimum of 3 characters');
+  }, [handle]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Form noValidate className={className} validated={validated} autoComplete="off" onSubmit={checkHandle}>
@@ -64,15 +68,16 @@ const CheckHandleForm = ({ className, defaultValue, onSuccess, disabled, page })
           value={handle}
           onChange={handleChange}
           name="handle"
+          minLength="3"
           isInvalid={error}
         />
         {error && <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>}
-        <Form.Text className="text-muted">Spaces, uppercase characters, and lowercase characters are not permitted.</Form.Text>
+        <Form.Text className="text-muted">Spaces, uppercase characters, and lowercase characters are not permitted.  Minimum of 3 characters.</Form.Text>
       </Form.Group>
 
       <div className="d-flex mt-4">
         {alert && <AlertMessage message={alert.message} type={alert.type} onHide={() => setAlert(false)} />}
-        <Button type="submit" className="ml-auto" disabled={disabled || !handle || (validated && !error)}>Check handle</Button>
+        <Button type="submit" className="ml-auto" disabled={disabled || !handle || error}>Check handle</Button>
       </div>
     </Form>
   );

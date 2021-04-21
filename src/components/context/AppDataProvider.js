@@ -68,17 +68,22 @@ Sila.enableSandbox();
 
 // Create a provider for components to consume and subscribe to changes
 const AppDataProvider = props => {
+  const activeUser = initAppData.users.find(u => u.active);
 
   // Initialize app state
   const [app, setApp] = useState({
     auth: initAppData.auth,
-    settings: initAppData.settings,
+    settings: { 
+      ...initAppData.settings,
+      kybHandle: activeUser && activeUser.business ? activeUser.handle : false,
+      kybAdminHandle: activeUser && activeUser.admin ? activeUser : activeUser && activeUser.business && !activeUser.certified && initAppData.users.some(u => u.admin && u.business_handle === activeUser.handle) ? initAppData.users.find(u => u.admin && u.business_handle === activeUser.handle).handle : false
+    },
     responses: initAppData.responses,
     wallets: initAppData.wallets,
     accounts: initAppData.accounts,
     users: initAppData.users,
     success: initAppData.success,
-    activeUser: initAppData.users.length ? initAppData.users.find(user => user.active) : false,
+    activeUser: activeUser || false,
     kyc: {},
     kyb: {},
     alert: {},

@@ -30,12 +30,13 @@ const RoleDescription = ({ role }) => {
   );
 };
 
-const BusinessMembers = ({ page, previous, next, history, location }) => {
+const BusinessMembers = ({ page, previous, next, isActive }) => {
   const [loaded, setLoaded] = useState(false);
   const [members, setMembers] = useState([]);
   const { api, app, setAppData, handleError, updateApp } = useAppContext();
   const businessUser = app.users.find(user => app.settings.kybHandle === user.handle);
   const rolesAndMembers = [...members, ...app.settings.kybRoles.filter(role => !members.length || members.every(member => member.role !== role.name))];
+  const allMembersAdded = rolesAndMembers.length && rolesAndMembers.filter(member => member.label && isRoleRequired(member)).length === 0;
 
   const getRolesAndMembers = async () => {
     console.log('Getting Roles, Business Members, and checking KYB ...');
@@ -97,8 +98,12 @@ const BusinessMembers = ({ page, previous, next, history, location }) => {
   };
 
   useEffect(() => {
-    if (rolesAndMembers.length && rolesAndMembers.filter(member => member.label && isRoleRequired(member)).length === 0) {
-      updateApp({ alert: { message: 'Success! All required business members have now been registered, you may now continue to the KYB process, or add more business members if necessary.', type: 'success' } });
+    if (allMembersAdded) {
+      setAppData({
+        success: !isActive ? [...app.success, { handle: businessUser.handle, page }] : app.success,
+      }, () => {
+        updateApp({ alert: { message: 'Success! All required business members have now been registered, you may now continue to the KYB process, or add more business members if necessary.', type: 'success' } });
+      });
     }
   }, [members]); // eslint-disable-line react-hooks/exhaustive-deps
 

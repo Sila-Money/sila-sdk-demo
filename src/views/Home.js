@@ -5,6 +5,7 @@ import { useAppContext } from '../components/context/AppDataProvider';
 
 import KybKycModal from '../components/home/KybKycModal';
 
+import { handleHomeRedirect } from '../utils';
 import { flows } from '../routes';
 
 const Home = ({ page, history }) => {
@@ -12,11 +13,9 @@ const Home = ({ page, history }) => {
   const { app, setAppData } = useAppContext();
 
   const handleClick = (e, flow) => {
-    const activeUser = app.settings.kybHandle ? app.users.find(u => u.handle === app.settings.kybHandle) : app.activeUser;
-    const success = flows[flow].routes.filter(route => app.success.some(success => activeUser && success.handle === activeUser.handle && success.page === route)).pop();
     if (Object.keys(app.auth).length && !app.auth.failed) {
       setAppData({ settings: { ...app.settings, flow } }, () => {
-        history.push({ pathname: success && flows[flow].routes.indexOf(success) !== flows[flow].routes.length - 1 ? flows[flow].routes[flows[flow].routes.indexOf(success) + 1] : flows[flow].routes[0], state: { from: page } });
+        history.push({ pathname: handleHomeRedirect(app, flows, flow, app.activeUser ? app.activeUser.handle : null), state: { from: page } });
       });
     } else {
       e.preventDefault();
