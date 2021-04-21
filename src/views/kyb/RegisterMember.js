@@ -20,8 +20,6 @@ const RegisterMember = ({ page, location, history }) => {
   const { app, api, handleError, setAppData } = useAppContext();
   const currentRole = app.settings.kybRoles.find(role => role.name === location.state.role);
 
-  console.log(selectedRoles);
-
   const getEntity = async () => {
     console.log('Getting Entity ...');
     setMember({ loading: true });
@@ -39,14 +37,12 @@ const RegisterMember = ({ page, location, history }) => {
   };
 
   const handleActiveUser = (user) => {
-    const isAdmin = currentRole === 'administrator' || selectedRoles.some(role => role === 'administrator');
-    const userProps = { business_handle: app.settings.kybHandle, admin: isAdmin, active: isAdmin };
-    setActiveUser({ ...user, ...userProps });
-    setAppData({
-      users: app.users.some(u => u.handle === user.handle) ? app.users.map(({ active, ...u }) => u.handle === user.handle ? { ...u, ...userProps } : u) : [...app.users.map(({ active, ...u }) => u), { ...user, ...userProps }]
-    });
+    if (currentRole === 'administrator' || selectedRoles.some(role => role === 'administrator')) user.admin = true;
+    if (app.settings.kybHandle) user.business_handle = app.settings.kybHandle;
+    setActiveUser(user);
+    setAppData({ users: app.users.some(u => u.handle === user.handle) ? app.users.map(u => u.handle === user.handle ? { ...u, ...user } : u) : [...app.users, user] });
   };
-
+  
   useEffect(() => {
     if (activeUser) getEntity();
   }, [activeUser]); // eslint-disable-line react-hooks/exhaustive-deps
