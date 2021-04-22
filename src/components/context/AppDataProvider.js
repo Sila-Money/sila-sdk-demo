@@ -26,19 +26,15 @@ let appData = {
 };
 
 // Get app data
-const getAppStorage = () => {
-  const storage = {
-    auth: JSON.parse(localStorage.getItem('auth')) || appData.auth,
-    settings: JSON.parse(localStorage.getItem('settings')) || appData.settings,
-    users: JSON.parse(localStorage.getItem('users')) || appData.users,
-    wallets: JSON.parse(localStorage.getItem('wallets')) || appData.wallets,
-    accounts: JSON.parse(localStorage.getItem('accounts')) || appData.accounts,
-    responses: JSON.parse(localStorage.getItem('responses')) || appData.responses,
-    success: JSON.parse(localStorage.getItem('success')) || appData.success
-  };
-  console.log(storage);
-  return storage;
-};
+const getAppStorage = () => ({
+  auth: JSON.parse(localStorage.getItem('auth')) || appData.auth,
+  settings: JSON.parse(localStorage.getItem('settings')) || appData.settings,
+  users: JSON.parse(localStorage.getItem('users')) || appData.users,
+  wallets: JSON.parse(localStorage.getItem('wallets')) || appData.wallets,
+  accounts: JSON.parse(localStorage.getItem('accounts')) || appData.accounts,
+  responses: JSON.parse(localStorage.getItem('responses')) || appData.responses,
+  success: JSON.parse(localStorage.getItem('success')) || appData.success
+});
 
 // Set app data
 const setAppStorage = (data) => ( // eslint-disable-next-line
