@@ -49,44 +49,23 @@ const LinkAccountModal = ({ show, onSuccess }) => {
       show={show}
       size="lg"
       aria-labelledby="link-account-modal-title"
-      onHide={() => { setErrors({}); setValidated(false); updateApp({ manageLinkAccount: false }); }}>
+      onHide={() => { setErrors({}); setValidated(false); updateApp({ manageProcessorToken: false }); }}>
       <Modal.Header className="text-center" closeButton>
-        <Modal.Title id="link-account-modal-title">Add your banking details</Modal.Title>
+        <Modal.Title id="link-account-modal-title">Link via processor token</Modal.Title>
       </Modal.Header>
       <Form noValidate validated={validated} autoComplete="off" onSubmit={linkAccount}>
         <Modal.Body>
 
+          <p className="text-lg text-meta mb-5">Sila has partnered with Plaid to allow us to link bank accounts using your Plaid integration. More information available <a href="https://plaid.com/docs/auth/partnerships/sila-money/" target="_blank" rel="noopener noreferrer">here</a></p>
+
           <Form.Group className="mb-3">
-            <Form.Label htmlFor="routingNumber">Routing Number</Form.Label>
+            <Form.Label htmlFor="processorToken">Processor Token</Form.Label>
             <Form.Control required isInvalid={errors.routing_number}
-              id="routingNumber"
+              id="processorToken"
               placeholder="123456789"
-              aria-label="Routing Number"
-              name="routingNumber"
+              aria-label="Processor Token"
+              name="processorToken"
               maxLength="9"
-            />
-            {errors.routing_number && <Form.Control.Feedback type="invalid">{errors.routing_number}</Form.Control.Feedback>}
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Label htmlFor="accountNumber">Account Number</Form.Label>
-            <Form.Control required isInvalid={errors.account_number}
-              id="accountNumber"
-              placeholder="123456789012"
-              aria-label="Account Number"
-              name="accountNumber"
-              maxLength="12"
-            />
-            {errors.account_number && <Form.Control.Feedback type="invalid">{errors.account_number}</Form.Control.Feedback>}
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Label htmlFor="accountName">Account Name</Form.Label>
-            <Form.Control
-              id="accountName"
-              placeholder="Checking"
-              aria-label="Account Name"
-              name="accountName"
             />
           </Form.Group>
 

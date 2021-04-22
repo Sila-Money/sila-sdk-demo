@@ -8,11 +8,11 @@ import AlertMessage from '../components/common/AlertMessage';
 import Loader from '../components/common/Loader';
 import Pagination from '../components/common/Pagination';
 import LinkAccountModal from '../components/accounts/LinkAccountModal';
+import ProcessorTokenModal from '../components/accounts/ProcessorTokenModal';
 
 const Accounts = ({ page, previous, next, isActive }) => {
   const [loaded, setLoaded] = useState(false);
   const [plaidToken, setPlaidToken] = useState(false);
-  const [processorToken, setProcessorToken] = useState(false);
   const { app, api, setAppData, updateApp, handleError } = useAppContext();
   const activeUser = app.settings.flow === 'kyb' ? app.users.find(user => app.settings.kybHandle === user.handle) : app.activeUser;
   const { open, ready, error } = usePlaidLink({
@@ -194,7 +194,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
 
       <LinkAccountModal show={app.manageLinkAccount} onSuccess={getAccounts} />
 
-      <ProcessorTokenModal show={app.manageProcessorToken} onSuccess={(value) => console.log(value)} />
+      <ProcessorTokenModal show={app.manageProcessorToken} onSuccess={getAccounts} />
 
     </Container>
   );
