@@ -8,6 +8,7 @@ import AlertMessage from '../components/common/AlertMessage';
 import Loader from '../components/common/Loader';
 import Pagination from '../components/common/Pagination';
 import LinkAccountModal from '../components/accounts/LinkAccountModal';
+import ProcessorTokenModal from '../components/accounts/ProcessorTokenModal';
 
 const PlaidButton = ({ plaidToken, onSuccess }) => {
   const { app, updateApp } = useAppContext();
@@ -69,7 +70,6 @@ const Accounts = ({ page, previous, next, isActive }) => {
 
   const linkAccount = async (token, metadata, open) => {
     console.log('Linking account ...');
-    console.log(token, metadata);
     try {
       const res = await api.linkAccount(activeUser.handle, activeUser.private_key, token, metadata.account.name, metadata.account_id, 'link');
       let result = {};
@@ -202,7 +202,8 @@ const Accounts = ({ page, previous, next, isActive }) => {
       <div className="d-flex mb-4">
         {app.alert.message && <AlertMessage message={app.alert.message} type={app.alert.type} />}
         <div className="ml-auto">
-          <Button onClick={() => updateApp({ manageLinkAccount: true })}>Enter Account/Routing</Button>
+          <Button className="mr-4" onClick={() => updateApp({ manageLinkAccount: true })}>Enter Account/Routing</Button>
+          <Button onClick={() => updateApp({ manageProcessorToken: true })}>Enter Processor Token</Button>
           {plaidToken && <PlaidButton plaidToken={plaidToken} onSuccess={linkAccount} />}
         </div>
       </div>
@@ -215,6 +216,8 @@ const Accounts = ({ page, previous, next, isActive }) => {
         currentPage={page} />
 
       <LinkAccountModal show={app.manageLinkAccount} onSuccess={getAccounts} />
+
+      <ProcessorTokenModal show={app.manageProcessorToken} onSuccess={getAccounts} />
 
     </Container>
   );
