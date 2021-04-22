@@ -70,7 +70,6 @@ const Accounts = ({ page, previous, next, isActive }) => {
 
   const linkAccount = async (token, metadata, open) => {
     console.log('Linking account ...');
-    console.log(token, metadata);
     try {
       const res = await api.linkAccount(activeUser.handle, activeUser.private_key, token, metadata.account.name, metadata.account_id, 'link');
       let result = {};
