@@ -89,6 +89,7 @@ const AppDataProvider = props => {
     alert: {},
     transactions: false,
     loaded: false,
+    manageProcessorToken: false,
     manageLinkAccount: false,
     manageSettings: false,
     manageReset: false
