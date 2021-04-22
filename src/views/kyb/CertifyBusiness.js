@@ -174,7 +174,7 @@ const BusinessMembers = ({ page, previous, next, isActive }) => {
 
           <h1 className="mb-4">Congratulations!</h1>
 
-          <p className="text-meta text-lg mb-5">You’ve completed all steps and certifications, and your team is ready to link bank accounts, create wallets, and transact! Continue on to get started. </p>
+          <p className="text-meta text-lg mb-5">You’ve completed all verification steps. This business is now ready to link bank accounts, create wallets, and transact!</p>
 
           <p className="text-right"><Button as={NavLink} to={{ pathname: next, state: { from: page } }}>Go to Wallets</Button></p>
 
