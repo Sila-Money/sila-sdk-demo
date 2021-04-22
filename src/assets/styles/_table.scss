@@ -17,6 +17,10 @@
     }
   }
 
+  &-responsive {
+    padding-right: 1px;
+  }
+
   &.table-hover tbody {
     tr:not(.disabled) {
       cursor: pointer;
