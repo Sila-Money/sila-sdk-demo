@@ -10,21 +10,33 @@ import Pagination from '../components/common/Pagination';
 import LinkAccountModal from '../components/accounts/LinkAccountModal';
 import ProcessorTokenModal from '../components/accounts/ProcessorTokenModal';
 
-const Accounts = ({ page, previous, next, isActive }) => {
-  const [loaded, setLoaded] = useState(false);
-  const [plaidToken, setPlaidToken] = useState(false);
-  const { app, api, setAppData, updateApp, handleError } = useAppContext();
+const PlaidButton = ({ plaidToken, onSuccess }) => {
+  const { app, updateApp } = useAppContext();
   const activeUser = app.settings.flow === 'kyb' ? app.users.find(user => app.settings.kybHandle === user.handle) : app.activeUser;
   const { open, ready, error } = usePlaidLink({
     clientName: 'Plaid Walkthrough Demo',
     env: 'sandbox',
     product: ['auth'],
-    publicKey: 'fa9dd19eb40982275785b09760ab79',
-    userLegalName: !app.settings.kybHandle ? `${activeUser.firstName} ${activeUser.lastName}` : null,
-    userEmailAddress: !app.settings.kybHandle ? activeUser.email : null,
-    token: plaidToken ? plaidToken.token : null,
-    onSuccess: (token, metadata) => linkAccount(token, metadata)
+    country_codes: ['US'],
+    language: 'en',
+    userLegalName: app.settings.kybHandle ? app.settings.kybHandle : `${activeUser.firstName} ${activeUser.lastName}`,
+    userEmailAddress: activeUser.email,
+    token: plaidToken.token,
+    onSuccess: (token, metadata) => onSuccess(token, metadata, open)
   });
+
+  useEffect(() => {
+    if (error) updateApp({ alert: { message: error, type: 'danger' }});
+  }, [error]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return <Button className="ml-4" onClick={() => open()} disabled={!ready}>{plaidToken && plaidToken.account_name ? 'Launch microdeposit verification in Plaid' : 'Connect via Plaid'}</Button>;
+};
+
+const Accounts = ({ page, previous, next, isActive }) => {
+  const [loaded, setLoaded] = useState(false);
+  const [plaidToken, setPlaidToken] = useState(false);
+  const { app, api, setAppData, updateApp, handleError } = useAppContext();
+  const activeUser = app.settings.flow === 'kyb' ? app.users.find(user => app.settings.kybHandle === user.handle) : app.activeUser;
   const userAccounts = app.accounts.filter(account => account.handle === activeUser.handle);
 
   const getAccounts = async () => {
@@ -56,16 +68,16 @@ const Accounts = ({ page, previous, next, isActive }) => {
     setLoaded(true);
   };
 
-  const linkAccount = async (token, metadata) => {
+  const linkAccount = async (token, metadata, open) => {
     console.log('Linking account ...');
+    console.log(token, metadata);
     try {
-      const res = await api.linkAccount(activeUser.handle, activeUser.private_key, token, metadata.account.name, metadata.account_id);
+      const res = await api.linkAccount(activeUser.handle, activeUser.private_key, token, metadata.account.name, metadata.account_id, 'link');
       let result = {};
       console.log('  ... completed!');
       if (res.statusCode === 200) {
         result.alert = { message: 'Bank account successfully linked!', type: 'success' };
         getAccounts();
-        if (plaidToken) setPlaidToken(false);
       } else if (res.statusCode === 202 && res.data.message.includes('microdeposit_pending_automatic_verification')) {
         setPlaidToken({ token });
         setTimeout(open, 500);
@@ -83,6 +95,18 @@ const Accounts = ({ page, previous, next, isActive }) => {
       }, () => {
         updateApp({ ...result });
       });
+    } catch (err) {
+      console.log('  ... looks like we ran into an issue!');
+      handleError(err);
+    }
+  };
+
+  const getPlaidLinkToken = async () => {
+    console.log('Getting Plaid link token ...');
+    try {
+      const res = await api.plaidLinkToken(activeUser.handle, activeUser.private_key);
+      console.log('  ... completed!');
+      setPlaidToken({ token: res.data.link_token });
     } catch (err) {
       console.log('  ... looks like we ran into an issue!');
       handleError(err);
@@ -116,16 +140,16 @@ const Accounts = ({ page, previous, next, isActive }) => {
   };
 
   useEffect(() => {
-    if (error) updateApp({ alert: { message: error, type: 'danger' }});
-  }, [error]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
     getAccounts();
   }, [app.activeUser]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (userAccounts.length && !isActive) setAppData({ success: [...app.success, { handle: activeUser.handle, page }] });
   }, [loaded]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    getPlaidLinkToken();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
@@ -179,9 +203,9 @@ const Accounts = ({ page, previous, next, isActive }) => {
       <div className="d-flex mb-4">
         {app.alert.message && <AlertMessage message={app.alert.message} type={app.alert.type} />}
         <div className="ml-auto">
-          {!plaidToken && <Button className=" mr-4" onClick={() => updateApp({ manageLinkAccount: true })}>Enter Account/Routing</Button>}
-          {!plaidToken && <Button onClick={() => updateApp({ manageProcessorToken: true })}>Enter Processor Token</Button>}
-          <Button onClick={() => open()} disabled={!ready}>{plaidToken && plaidToken.account_name ? 'Launch microdeposit verification in Plaid' : 'Connect via Plaid'}</Button>
+          <Button className="mr-4" onClick={() => updateApp({ manageLinkAccount: true })}>Enter Account/Routing</Button>
+          <Button onClick={() => updateApp({ manageProcessorToken: true })}>Enter Processor Token</Button>
+          {plaidToken && <PlaidButton plaidToken={plaidToken} onSuccess={linkAccount} />}
         </div>
       </div>
 
