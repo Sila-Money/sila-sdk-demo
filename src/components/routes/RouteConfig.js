@@ -18,7 +18,7 @@ const RouteConfig = ({ routes, inFlow }) => {
         routes={route.routes}
         render={(props) => {
           if (route.all || (inFlow && ((app.activeUser && route.restricted) || (!app.activeUser && !route.restricted)))) {
-            return <CustomRoute route={route} app={app} inFlow={inFlow} {...props} />
+            return <CustomRoute route={route} inFlow={inFlow} {...props} />
           } else {
             return <Redirect to="/" />
           }

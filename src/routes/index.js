@@ -82,6 +82,7 @@ export default [
   },
   {
     restricted: true,
+    admin: true,
     title: 'Request KYC',
     path: '/request_kyc',
     component: RequestKYC
@@ -130,6 +131,7 @@ export default [
   },
   {
     restricted: true,
+    admin: true,
     title: 'Business Members',
     path: '/members',
     component: BusinessMembers,
@@ -143,6 +145,7 @@ export default [
     {
       disabled: true,
       restricted: true,
+      admin: true,
       title: 'Business Member',
       path: '/members/:handle',
       component: MemberDetails
@@ -150,12 +153,14 @@ export default [
   },
   {
     restricted: true,
+    admin: true,
     title: 'Certify Business',
     path: '/certify',
     component: CertifyBusiness,
     routes: [{
       disabled: true,
       restricted: true,
+      admin: true,
       title: 'Certify Member',
       path: '/certify/:handle',
       component: MemberDetails
