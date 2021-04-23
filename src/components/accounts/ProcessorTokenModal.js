@@ -6,7 +6,7 @@ import AlertMessage from '../common/AlertMessage';
 
 const LinkAccountModal = ({ show, onSuccess }) => {
   const [validated, setValidated] = useState(false);
-  const [error, setError] = useState(false);
+  const [errors, setErrors] = useState(false);
   const [token, setToken] = useState(false);
   const [alert, setAlert] = useState(false);
   const { app, updateApp, setAppData, api, handleError } = useAppContext();
@@ -14,7 +14,7 @@ const LinkAccountModal = ({ show, onSuccess }) => {
   const linkAccount = (e) => {
     console.log('Linking account ...');
     e.preventDefault();
-    api.linkAccount(app.activeUser.handle, app.activeUser.private_key, token, null, null, 'processor').then(res => {
+    api.linkAccount(app.activeUser.handle, app.activeUser.private_key, token, e.target.accountName.value, null, 'processor').then(res => {
         let result = {};
         console.log('  ... completed!');
         if (res.data.success) {
@@ -22,10 +22,10 @@ const LinkAccountModal = ({ show, onSuccess }) => {
             alert: { message: 'Bank account successfully linked!', type: 'success' },
             manageProcessorToken: false
           }
-          if (error) setError(false);
+          if (errors) setErrors(false);
           onSuccess();
         } else if (res.data.validation_details) {
-          setError(res.data.validation_details.plaid_token);
+          setErrors(res.data.validation_details);
         } else {
           setAlert({ message: `Error! ${res.data.message}`, type: 'danger' });
         }
@@ -47,11 +47,11 @@ const LinkAccountModal = ({ show, onSuccess }) => {
 
   const handleChange = (e) => {
     setToken(e.target.value);
-    (alert || error || validated) && resetForm();
+    (alert || errors || validated) && resetForm();
   };
 
   const resetForm = () => {
-    setError(false);
+    setErrors(false);
     setAlert(false);
     setValidated(false);
   };
@@ -68,18 +68,29 @@ const LinkAccountModal = ({ show, onSuccess }) => {
       <Form noValidate validated={validated} autoComplete="off" onSubmit={linkAccount}>
         <Modal.Body>
 
-          <p className="text-lg text-meta mb-5">Sila has partnered with Plaid to allow us to link bank accounts using your Plaid integration. More information available <a href="https://plaid.com/docs/auth/partnerships/sila-money/" target="_blank" rel="noopener noreferrer">here</a></p>
+          <p className="text-lg mb-2">Sila has partnered with Plaid to allow us to link bank accounts using your Plaid integration.</p>
+          <p className="text-meta mb-5">More information available <a href="https://plaid.com/docs/auth/partnerships/sila-money/" target="_blank" rel="noopener noreferrer">here</a>.</p>
+
+          <Form.Group className="mb-3">
+            <Form.Label htmlFor="processorToken">Account Name</Form.Label>
+            <Form.Control
+              id="accountName"
+              placeholder="Optional"
+              aria-label="Account Name"
+              name="accountName"
+            />
+          </Form.Group>
 
           <Form.Group>
             <Form.Label htmlFor="processorToken">Processor Token</Form.Label>
-            <Form.Control required isInvalid={error}
+            <Form.Control required isInvalid={errors && errors.plaid_token}
               id="processorToken"
               placeholder="processor-xxx-xxx"
               aria-label="Processor Token"
               name="processorToken"
               onChange={handleChange}
             />
-            {error && <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>}
+            {errors && errors.plaid_token && <Form.Control.Feedback type="invalid">{errors.plaid_token}</Form.Control.Feedback>}
           </Form.Group>
 
           {alert && <div className="mt-4"><AlertMessage message={alert.message} type={alert.type} onHide={() => setAlert(false)} /></div>}
