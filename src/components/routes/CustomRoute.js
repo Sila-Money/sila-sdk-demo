@@ -35,10 +35,6 @@ CustomRoute.propTypes = {
    */
   route: PropTypes.object.isRequired,
   /**
-   * The current app state
-   */
-  app: PropTypes.object.isRequired,
-  /**
    * If the current route is in the selected flow
    */
   inFlow: PropTypes.bool.isRequired

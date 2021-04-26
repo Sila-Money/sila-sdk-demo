@@ -7,7 +7,7 @@ import AlertMessage from './AlertMessage';
 
 const CheckHandleForm = ({ className, defaultValue, onSuccess, disabled, page }) => {
   const [validated, setValidated] = useState(false);
-  const [handle, setHandle] = useState('');
+  const [handle, setHandle] = useState(defaultValue || '');
   const [error, setError] = useState(false);
   const [alert, setAlert] = useState(false);
   const { app, api, handleError, setAppData } = useAppContext();
@@ -64,7 +64,6 @@ const CheckHandleForm = ({ className, defaultValue, onSuccess, disabled, page })
         <Form.Control
           placeholder={`${app.settings.flow === 'kyb' && page !== '/members/register' ? 'Business' : 'User'} Handle`}
           aria-label="handle"
-          defaultValue={defaultValue}
           value={handle}
           onChange={handleChange}
           name="handle"
