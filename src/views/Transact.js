@@ -47,7 +47,7 @@ const Transact = ({ page, previous, next, isActive }) => {
     console.log('Checking Balance ...');
     setBalance('Checking Balance ...');
     try {
-      const res = await api.getBalance(wallet.blockchain_address);
+      const res = await api.getSilaBalance(wallet.blockchain_address);
       let result = {};
       console.log('  ... completed!');
       if (res.statusCode === 200) {
@@ -182,10 +182,6 @@ const Transact = ({ page, previous, next, isActive }) => {
   useEffect(() => {
     refreshBalance();
   }, [wallet]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    refreshBalance();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>

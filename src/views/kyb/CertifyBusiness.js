@@ -88,8 +88,6 @@ const BusinessMembers = ({ page, previous, next, isActive }) => {
     getMembersAndCheckKyc();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  console.log(showCongrats);
-
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 
