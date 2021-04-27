@@ -51,7 +51,7 @@ const Transact = ({ page, previous, next, isActive }) => {
       let result = {};
       console.log('  ... completed!');
       if (res.statusCode === 200) {
-        setBalance(res.data.silaBalance);
+        setBalance(res.data.sila_balance);
         result.alert = { message: res.data.message, type: 'success' }
       } else {
         result.alert = { message: res.data.message, type: 'danger' }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
-import { Col, Button, Collapse } from 'react-bootstrap';
+import { Col, Button, Collapse, Alert } from 'react-bootstrap';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import stickybits from 'stickybits';
 
@@ -81,7 +81,10 @@ const MainSidebar = () => {
   const [loading, setLoading] = useState(false);
   const { app, setAppData } = useAppContext();
 
-  const clearResponses = () => setAppData({ responses: [] });
+  const clearResponses = (e) => {
+    if (e) e.preventDefault();
+    setAppData({ responses: [] });
+  };
 
   useEffect(() => {
     stickybits('.main-sidebar .response-header', { useStickyClasses: true });
@@ -100,6 +103,7 @@ const MainSidebar = () => {
         {app.responses.length !== 0 && <Button variant="link" className="p-0" onClick={clearResponses}>Clear</Button>}
       </div>
       <div className="response-results pb-4 px-4">
+        {app.responses.length > 20 && <Alert variant="warning" className="mb-4">Local storage is slowing down this application.  Please <Button variant="link" className="p-0 text-reset important" onClick={clearResponses}>clear</Button> these responses to improve the experience.</Alert>}
         {app.responses.length ?
           <ul>
             {app.responses.map((response, index) => <Response response={response} index={index} onLoad={() => setLoading(true)} onLoaded={() => setLoading(false)} key={index} />)}

@@ -25,7 +25,7 @@ const Home = ({ page, history }) => {
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 
-      <h1 className="mb-4">Register an Individual or Your Business</h1>
+      <h1 className="mb-4">Choose Your Flow</h1>
 
       <Container className="mt-5">
         <Row className="justify-content-center">

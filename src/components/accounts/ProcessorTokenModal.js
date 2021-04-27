@@ -83,14 +83,14 @@ const LinkAccountModal = ({ show, onSuccess }) => {
 
           <Form.Group>
             <Form.Label htmlFor="processorToken">Processor Token</Form.Label>
-            <Form.Control required isInvalid={errors && errors.plaid_token}
+            <Form.Control required isInvalid={errors && errors.public_token}
               id="processorToken"
               placeholder="processor-xxx-xxx"
               aria-label="Processor Token"
               name="processorToken"
               onChange={handleChange}
             />
-            {errors && errors.plaid_token && <Form.Control.Feedback type="invalid">{errors.plaid_token}</Form.Control.Feedback>}
+            {errors && errors.public_token && <Form.Control.Feedback type="invalid">{errors.public_token}</Form.Control.Feedback>}
           </Form.Group>
 
           {alert && <div className="mt-4"><AlertMessage message={alert.message} type={alert.type} onHide={() => setAlert(false)} /></div>}
