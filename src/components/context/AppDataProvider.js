@@ -54,6 +54,7 @@ const setAppStorage = (data) => ( // eslint-disable-next-line
 // Initialize app data
 if (JSON.parse(localStorage.getItem('appData'))) {
   setAppStorage(JSON.parse(localStorage.getItem('appData')));
+  localStorage.removeItem('appData');
 }
 let initAppData = getAppStorage();
 
