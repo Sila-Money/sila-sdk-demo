@@ -166,8 +166,6 @@ const RegisterBusiness = ({ page, previous, next, isActive }) => {
 
       <p className="mb-4 text-muted text-lg">To register a new end-user as a business instead of an individual, the following must be sent in the request:</p>
 
-      <Alert variant="info" className="mb-4">A wallet is automatically generated for you using the generateWallet() function upon registration.</Alert>
-
       <div className="d-lg-flex justify-content-lg-between mb-2">
         <p className="text-muted mb-0">This page represents <a href="https://docs.silamoney.com/docs/register" target="_blank" rel="noopener noreferrer">/register</a> functionality.</p>
         <p className="text-right"><Button variant="link" className="text-muted font-italic p-0 text-decoration-none" onClick={() => setShow(true)}><span className="lnk">What’s the difference between registering an individual and a business?</span> <i className="sila-icon sila-icon-info text-primary ml-2"></i></Button></p>
@@ -229,7 +227,9 @@ const RegisterBusiness = ({ page, previous, next, isActive }) => {
           </Form.Group>
         </Form.Row>
 
-        <div className="d-flex mt-5">
+        <Alert variant="info" className="mt-4 mb-5">A wallet is automatically generated for you using the generateWallet() function upon registration.</Alert>
+
+        <div className="d-flex">
           {app.alert.message && <AlertMessage message={app.alert.message} type={app.alert.type} />}
           <Button type="submit" className="ml-auto" disabled={!app.settings.kybHandle}>Register Business</Button>
         </div>

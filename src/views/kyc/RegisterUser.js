@@ -26,15 +26,17 @@ const RegisterUser = ({ page, previous, next, isActive }) => {
 
       <p className="mb-4 text-muted text-lg">We need to gather some information to see if you meet KYC guidelines.</p>
 
-      <Alert variant="info" className="mb-4">A wallet is automatically generated for you using the generateWallet() function upon registration.</Alert>
-
       <p className="text-muted mb-5">This page represents <a href="https://docs.silamoney.com/docs/register" target="_blank" rel="noopener noreferrer">/register</a> functionality.</p>
 
       <RegisterUserForm handle={app.settings.kycHandle} onSuccess={registerUser}>
-        <div className="d-flex mt-5">
+
+        <Alert variant="info" className="mt-4 mb-5">A wallet is automatically generated for you using the generateWallet() function upon registration.</Alert>
+
+        <div className="d-flex">
           {app.alert.message && <AlertMessage message={app.alert.message} type={app.alert.type} />}
           <Button type="submit" className="ml-auto" disabled={!app.settings.kycHandle || (app.activeUser && app.activeUser.handle === app.settings.kycHandle)}>Register user</Button>
         </div>
+
       </RegisterUserForm>
 
       <Pagination
