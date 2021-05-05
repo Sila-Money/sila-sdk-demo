@@ -29,7 +29,7 @@ const PlaidButton = ({ plaidToken, onSuccess }) => {
     if (error) updateApp({ alert: { message: error, type: 'danger' } });
   }, [error]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return <Button block className="mb-4 text-nowrap" onClick={() => open()} disabled={!ready}>{plaidToken && plaidToken.account_name ? 'Launch microdeposit verification in Plaid' : 'Connect via Plaid'}</Button>;
+  return <Button block className="mb-4 text-nowrap" onClick={() => open()} disabled={!ready}>{plaidToken && plaidToken.account_name ? 'Launch microdeposit verification in Plaid' : 'Connect via Plaid Link'}</Button>;
 };
 
 const Accounts = ({ page, previous, next, isActive }) => {
