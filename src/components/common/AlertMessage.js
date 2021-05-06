@@ -1,15 +1,16 @@
 import React from 'react';
-import { Fade } from 'react-bootstrap';
+import { Fade, Spinner } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 
-const AlertMessage = ({ message, type, noIcon }) => {
+const AlertMessage = ({ message, type, noIcon, loading }) => {
   const icon = type === 'success' ? 'success' : type === 'danger' ? 'danger' : type === 'wait' ? 'wait' : 'info';
   return (
     <Fade in={true}>
-      <p className={!noIcon ? 'd-flex align-items-center' : undefined}>
+      <div className={!noIcon ? 'd-flex align-items-center position-relative' : undefined}>
         {!noIcon && type !== 'warning' ? <i className={`mr-3 sila-icon sila-icon-${icon} text-${type && type !== 'wait' ? type : 'primary'}`}></i> : !noIcon ? <i class="fas fa-exclamation text-warning mr-3"></i> : null}
+        {loading && <Spinner animation="border" role="status" variant="primary" size="sm" className="mr-2"></Spinner>}
         <span className="message">{message}</span>
-      </p>
+      </div>
     </Fade>
   );
 };
@@ -24,9 +25,13 @@ AlertMessage.propTypes = {
    */
   type: PropTypes.string,
   /**
-   * The visibility toggle (visible by default)
+   * The icon visibility toggle (visible by default)
    */
-  noIcon: PropTypes.bool
+  noIcon: PropTypes.bool,
+  /**
+   * The loading toggle (disabled by default)
+   */
+  loading: PropTypes.bool
 };
 
 export default AlertMessage;
