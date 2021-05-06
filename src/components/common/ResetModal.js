@@ -11,7 +11,8 @@ const ResetModal = () => {
   const handleReset = () => {
     resetApp(); 
     history.push('/');
-    updateApp({ manageReset: false, manageSettings: true });
+    updateApp({ manageReset: false });
+    window.location.reload();
   }
 
   return (

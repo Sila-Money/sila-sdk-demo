@@ -13,7 +13,7 @@ const CustomRoute = ({ route, inFlow, ...props }) => {
 
   useEffect(() => {
     setAppData({
-      settings: { ...app.settings, kybAdminHandle: route.admin ? (app.activeUser && app.activeUser.admin ? app.activeUser : app.activeUser && app.activeUser.business && app.users.some(u => u.admin && u.business_handle === app.activeUser.handle) ? app.users.find(u => u.admin && u.business_handle === app.activeUser.handle).handle : false) : false }
+      settings: { ...app.settings, kybAdminHandle: route.admin ? (app.activeUser && app.activeUser.admin ? app.activeUser.handle : app.activeUser && app.activeUser.business && app.users.some(u => u.admin && u.business_handle === app.activeUser.handle) ? app.users.find(u => u.admin && u.business_handle === app.activeUser.handle).handle : false) : false }
     });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 

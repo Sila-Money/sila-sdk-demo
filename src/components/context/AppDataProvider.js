@@ -173,7 +173,7 @@ const AppDataProvider = props => {
     });
   };
 
-  const checkAuth = async (handle, key) => {
+  const checkAuth = async (handle, key, callback) => {
     const newAuth = handle && key ? { handle, key } : app.auth;
     try {
       const res = await Sila.checkHandle('');
@@ -181,15 +181,18 @@ const AppDataProvider = props => {
         delete newAuth.failed;
         setAppData({ auth: newAuth }, () => {
           updateApp({ manageSettings: false });
+          if (callback) callback(true);
         });
       } else {
         setAppData({ auth: { ...newAuth, failed: true } }, () => {
           updateApp({ manageSettings: true });
+          if (callback) callback(false);
         });
       }
     } catch (err) {
       setAppData({ auth: {...newAuth, failed: true } }, () => {
         updateApp({ manageSettings: true });
+        if (callback) callback(false);
       });
     }
   };
