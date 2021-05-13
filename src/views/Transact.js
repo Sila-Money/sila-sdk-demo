@@ -283,7 +283,7 @@ const Transact = ({ page, previous, next, isActive }) => {
                 </Form>
               </Tab.Pane>
               <Tab.Pane eventKey="transfer">
-                <p className="text-muted">Transfer Sila from your selected linked wallet to another user.{app.settings.flow === 'kyb' && <span className="ml-2">Destination suggestions are scoped to members of the business, but all Sila accounts can recieve Sila.</span>}</p>
+                <p className="text-muted">Transfer Sila from your selected linked wallet to another user.  Destination suggestions are scoped to entities created in this application, but all Sila accounts can recieve Sila.</p>
                 <Form noValidate validated={forms.transfer.validated} autoComplete="off" className="d-flex" onSubmit={(e) => {
                   e.preventDefault();
                   const amount = parseFloat(e.target.transfer.value);
@@ -316,8 +316,10 @@ const Transact = ({ page, previous, next, isActive }) => {
                         id="destination"
                         labelKey="destination"
                         onChange={(handle) => setForms({ ...forms, transfer: { ...forms.transfer, values: { ...forms.transfer.values, destination: handle } } })}
-                        options={app.settings.flow === 'kyb' ? app.users.filter(user => user.business_handle === app.settings.kybHandle).map(user => user.handle) : app.users.filter(user => user.handle !== app.activeUser).map(user => user.handle)}
+                        options={app.users.filter(user => user.handle !== app.activeUser.handle).map(user => user.handle)}
                         placeholder="Destination handle"
+                        allowNew={true}
+                        newSelectionPrefix="New handle:"
                         selected={forms.transfer.values.destination || ''} />
                     </Col>
                   </Row>
