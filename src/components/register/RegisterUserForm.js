@@ -29,6 +29,7 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, des
     entity.dateOfBirth = e.target.dateOfBirth.value;
     entity.ssn = e.target.ssn.value;
     entity.cryptoAddress = wallet.address;
+    entity.flow = app.settings.flow;
     try {
       const res = await api.register(entity);
       let result = {};

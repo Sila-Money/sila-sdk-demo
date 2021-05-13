@@ -19,15 +19,17 @@ const NavbarUsers = () => {
 
   const setActiveUser = (handle) => {
     const activeUser = app.users.find(u => u.handle === handle);
+    const flow = activeUser.flow || app.settings.flow;
     setAppData({
       settings: { ...app.settings, 
+        flow,
         kybHandle: activeUser && activeUser.business ? activeUser.handle : false,
         kybAdminHandle: activeUser && activeUser.admin ? activeUser : activeUser && activeUser.business && !activeUser.certified && app.users.some(u => u.admin && u.business_handle === activeUser.handle) ? app.users.find(u => u.admin && u.business_handle === activeUser.handle).handle : false
       },
-      users: app.users.map(({ active, ...u }) => u.handle === handle ? { ...u, active: true } : u)
+      users: app.users.map(({ active, ...u }) => u.handle === handle ? { ...u, active: true, flow } : u)
     }, () => {
       updateApp({ activeUser });
-      history.push({ pathname: handleHomeRedirect(app, flows, app.settings.flow, handle), state: { from: location.pathname } });
+      history.push({ pathname: handleHomeRedirect(app, flows, flow, handle), state: { from: location.pathname } });
     });
   };
 
