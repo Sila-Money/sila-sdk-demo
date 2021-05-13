@@ -40,7 +40,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
         result.alert = { message: res.data.message, type: 'danger' };
       }
       setAppData({
-        accounts: [...accounts.filter(acc => acc.handle !== activeUser.handle), ...newAccounts],
+        accounts: [...app.accounts.filter(acc => acc.handle !== activeUser.handle), ...newAccounts],
         responses: [{
           endpoint: '/get_accounts',
           result: JSON.stringify(res, null, '\t')
@@ -69,7 +69,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
       } else if (metadata.account.verification_status === 'pending_automatic_verification') {
         setPlaidToken({ token, auto: true });
       } else if (metadata.account.verification_status === 'pending_manual_verification') {
-        result.alert = { message: 'Bank account requires manual verificaiton!', type: 'danger' };
+        result.alert = { message: 'Bank account requires manual verification!', type: 'danger' };
         getAccounts();
       } else {
         result.alert = { message: res.data.message, type: 'danger' };
