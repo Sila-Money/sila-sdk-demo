@@ -28,7 +28,6 @@ const RequestKYC = ({ page, previous, next }) => {
         result[app.settings.flow].alert = { message: res.data.message, type: 'danger' };
       }
       setAppData({
-        success: isActive ? app.success.filter(success => activeUser && success.handle === activeUser.handle && success[app.settings.flow] && success.page !== page) : app.success,
         responses: [{
           endpoint: '/request_kyc',
           result: JSON.stringify(res, null, '\t')
