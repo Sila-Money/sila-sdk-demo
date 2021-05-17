@@ -109,6 +109,7 @@ const RegisterBusiness = ({ page, previous, next, isActive }) => {
     entity.cryptoAddress = wallet.address
     entity.business_type = app.settings.kybBusinessType;
     entity.naics_code = app.settings.kybNaicsCode;
+    entity.flow = app.settings.flow;
     if (e.target.business_website.value) entity.business_website = e.target.business_website.value;
     if (e.target.doing_business_as.value) entity.doing_business_as = e.target.doing_business_as.value;
     try {
