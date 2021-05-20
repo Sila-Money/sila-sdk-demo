@@ -210,7 +210,10 @@ const AppDataProvider = props => {
   const setNewUser = (callback) => {
     setAppData({
       users: app.users.map(({ active, ...u }) => u),
-      settings: appData.settings,
+      settings: {
+        ...appData.settings,
+        kybRoles: app.settings.kybRoles
+      },
     }, () => {
       updateApp({ activeUser: false, kyc: {}, kyb: {} });
       if (callback) callback();
