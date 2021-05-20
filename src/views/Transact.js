@@ -316,11 +316,11 @@ const Transact = ({ page, previous, next, isActive }) => {
                         id="destination"
                         labelKey="destination"
                         onChange={(handle) => setForms({ ...forms, transfer: { ...forms.transfer, values: { ...forms.transfer.values, destination: handle } } })}
-                        options={app.users.filter(user => user.handle !== app.activeUser.handle).map(user => user.handle)}
+                        options={app.users.filter(u => (!u.business_handle && !app.settings.kybAdminHandle && u.handle !== app.activeUser.handle) || (u.handle !== app.activeUser.handle && app.settings.kybAdminHandle && app.settings.kybHandle !== u.handle)).map(u => u.handle)}
                         placeholder="Destination handle"
                         allowNew={true}
                         newSelectionPrefix="New handle:"
-                        selected={forms.transfer.values.destination || ''} />
+                        selected={forms.transfer.values.destination || ['']} />
                     </Col>
                   </Row>
                   <Button className="text-nowrap ml-2" variant="primary" type="submit" disabled={!forms.transfer.values.transfer || !forms.transfer.values.destination}>GO</Button>
