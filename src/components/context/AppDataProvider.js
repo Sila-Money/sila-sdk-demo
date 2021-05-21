@@ -26,19 +26,15 @@ let appData = {
 };
 
 // Get app data
-const getAppStorage = () => {
-  const storage = {
-    auth: JSON.parse(localStorage.getItem('auth')) || appData.auth,
-    settings: JSON.parse(localStorage.getItem('settings')) || appData.settings,
-    users: JSON.parse(localStorage.getItem('users')) || appData.users,
-    wallets: JSON.parse(localStorage.getItem('wallets')) || appData.wallets,
-    accounts: JSON.parse(localStorage.getItem('accounts')) || appData.accounts,
-    responses: JSON.parse(localStorage.getItem('responses')) || appData.responses,
-    success: JSON.parse(localStorage.getItem('success')) || appData.success
-  };
-  console.log(storage);
-  return storage;
-};
+const getAppStorage = () => ({
+  auth: JSON.parse(localStorage.getItem('auth')) || appData.auth,
+  settings: JSON.parse(localStorage.getItem('settings')) || appData.settings,
+  users: JSON.parse(localStorage.getItem('users')) || appData.users,
+  wallets: JSON.parse(localStorage.getItem('wallets')) || appData.wallets,
+  accounts: JSON.parse(localStorage.getItem('accounts')) || appData.accounts,
+  responses: JSON.parse(localStorage.getItem('responses')) || appData.responses,
+  success: JSON.parse(localStorage.getItem('success')) || appData.success
+});
 
 // Set app data
 const setAppStorage = (data) => ( // eslint-disable-next-line
@@ -68,22 +64,28 @@ Sila.enableSandbox();
 
 // Create a provider for components to consume and subscribe to changes
 const AppDataProvider = props => {
+  const activeUser = initAppData.users.find(u => u.active);
 
   // Initialize app state
   const [app, setApp] = useState({
     auth: initAppData.auth,
-    settings: initAppData.settings,
+    settings: { 
+      ...initAppData.settings,
+      kybHandle: activeUser && activeUser.business ? activeUser.handle : false,
+      kybAdminHandle: activeUser && activeUser.admin ? activeUser : activeUser && activeUser.business && !activeUser.certified && initAppData.users.some(u => u.admin && u.business_handle === activeUser.handle) ? initAppData.users.find(u => u.admin && u.business_handle === activeUser.handle).handle : false
+    },
     responses: initAppData.responses,
     wallets: initAppData.wallets,
     accounts: initAppData.accounts,
     users: initAppData.users,
     success: initAppData.success,
-    activeUser: initAppData.users.length ? initAppData.users.find(user => user.active) : false,
+    activeUser: activeUser || false,
     kyc: {},
     kyb: {},
     alert: {},
     transactions: false,
     loaded: false,
+    manageProcessorToken: false,
     manageLinkAccount: false,
     manageSettings: false,
     manageReset: false
@@ -171,7 +173,7 @@ const AppDataProvider = props => {
     });
   };
 
-  const checkAuth = async (handle, key) => {
+  const checkAuth = async (handle, key, callback) => {
     const newAuth = handle && key ? { handle, key } : app.auth;
     try {
       const res = await Sila.checkHandle('');
@@ -179,15 +181,18 @@ const AppDataProvider = props => {
         delete newAuth.failed;
         setAppData({ auth: newAuth }, () => {
           updateApp({ manageSettings: false });
+          if (callback) callback(true);
         });
       } else {
         setAppData({ auth: { ...newAuth, failed: true } }, () => {
           updateApp({ manageSettings: true });
+          if (callback) callback(false);
         });
       }
     } catch (err) {
       setAppData({ auth: {...newAuth, failed: true } }, () => {
         updateApp({ manageSettings: true });
+        if (callback) callback(false);
       });
     }
   };
@@ -205,7 +210,10 @@ const AppDataProvider = props => {
   const setNewUser = (callback) => {
     setAppData({
       users: app.users.map(({ active, ...u }) => u),
-      settings: appData.settings,
+      settings: {
+        ...appData.settings,
+        kybRoles: app.settings.kybRoles
+      },
     }, () => {
       updateApp({ activeUser: false, kyc: {}, kyb: {} });
       if (callback) callback();

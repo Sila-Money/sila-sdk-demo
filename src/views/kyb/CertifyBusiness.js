@@ -12,7 +12,7 @@ import { useAppContext } from '../../components/context/AppDataProvider';
 
 import * as confetti from '../../assets/vendor/confetti';
 
-const BusinessMembers = ({ page, previous, next, location, history, isActive }) => {
+const BusinessMembers = ({ page, previous, next, isActive }) => {
   const [loaded, setLoaded] = useState(false);
   const [members, setMembers] = useState(false);
   const [showCongrats, setShowCongrats] = useState(members && members.some(member => member.beneficial_owner_certification_status.includes('not_required')));
@@ -40,9 +40,15 @@ const BusinessMembers = ({ page, previous, next, location, history, isActive }) 
         api.checkKYC(businessUser.handle, businessUser.private_key)
       ]);
       if (entityResponse.statusCode === 200 && kycResponse.statusCode === 200) {
+        const certified = kycResponse.data.certification_history.some(history => !history.expires_after_epoch || history.expires_after_epoch > Date.now()) && kycResponse.data.certification_status.includes('certified');
         setMembers(entityResponse.data.members.map(member => ({ ...member, ...kycResponse.data.members.find(kyc => member.user_handle === kyc.user_handle && member.role === kyc.role) })));
-        setShowCongrats(kycResponse.data.certification_history.some(history => !history.expires_after_epoch || history.expires_after_epoch > Date.now()) && kycResponse.data.certification_status.includes('certified'));
-        setLoaded(true);
+        setShowCongrats(certified);
+        setAppData({
+          users: app.users.map(u => u.handle === businessUser.handle ? { ...u, certified } : u)
+        }, () => {
+          if (certified) updateApp({ activeUser: businessUser });
+          setLoaded(true);
+        });
       }
     } catch (err) {
       console.log('  ... looks like we ran into an issue!');
@@ -55,14 +61,16 @@ const BusinessMembers = ({ page, previous, next, location, history, isActive }) 
     let result = {};
     try {
       const res = await api.certifyBusiness(adminUser.handle, adminUser.private_key, businessUser.handle, businessUser.private_key);
-      if (res.data.status === 'SUCCESS') {
+      if (res.data.success) {
         result.alert = { message: res.data.message, type: 'success' };
+        result.activeUser = businessUser;
         setShowCongrats(true);
       } else {
         result.alert = { message: res.data.message, type: 'danger' };
       }
       setAppData({
-        success: res.data.success && showCongrats && !isActive ? [...app.success, { handle: businessUser.handle, page }] : app.success,
+        success: res.data.success && !isActive ? [...app.success, { handle: businessUser.handle, page }] : app.success,
+        users: res.data.success ? app.users.map(u => u.handle === businessUser.handle ? { ...u, certified: true } : u) : app.users,
         responses: [{
           endpoint: '/certify_business',
           result: JSON.stringify(res, null, '\t')
@@ -79,9 +87,6 @@ const BusinessMembers = ({ page, previous, next, location, history, isActive }) 
   useEffect(() => {
     getMembersAndCheckKyc();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-
-  
 
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
@@ -140,8 +145,8 @@ const BusinessMembers = ({ page, previous, next, location, history, isActive }) 
                             <td width="20%" className="px-3">
                               <Badge pill className="w-100 badge-outline py-2 px-3" variant={statusVariant}>{statusLabel}</Badge>
                             </td>
-                            <td width="1%" className="actions">
-                              {(member.beneficial_owner_certification_status.includes('pending')) ? <Button variant="link" className="p-0 important" as={NavLink} to={{ pathname: `/certify/${member.user_handle}`, state: { role: member.role, from: page } }}>Certify</Button> : <span className="text-meta">N/A</span>}
+                            <td width="1%" className="actions text-center">
+                              {(member.beneficial_owner_certification_status.includes('pending')) ? <Button size="sm" as={NavLink} to={{ pathname: `/certify/${member.user_handle}`, state: { role: member.role, from: page } }}>Certify</Button> : <span className="text-meta">N/A</span>}
                             </td>
                           </tr>
                         );
@@ -167,7 +172,7 @@ const BusinessMembers = ({ page, previous, next, location, history, isActive }) 
 
           <h1 className="mb-4">Congratulations!</h1>
 
-          <p className="text-meta text-lg mb-5">You’ve completed all steps and certifications, and your team is ready to link bank accounts, create wallets, and transact! Continue on to get started. </p>
+          <p className="text-meta text-lg mb-5">You’ve completed all verification steps. This business is now ready to link bank accounts, create wallets, and transact!</p>
 
           <p className="text-right"><Button as={NavLink} to={{ pathname: next, state: { from: page } }}>Go to Wallets</Button></p>
 

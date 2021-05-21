@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
 
 import { useAppContext } from '../context/AppDataProvider';
 
@@ -9,8 +8,7 @@ import AlertMessage from './AlertMessage';
 const SettingsModal = () => {
   const [validated, setValidated] = useState(false);
   const [errors, setErrors] = useState({});
-  const { app, updateApp, setAuth, checkAuth, resetApp } = useAppContext();
-  const history = useHistory();
+  const { app, updateApp, setAuth, checkAuth } = useAppContext();
   const invalidError = { ...errors, auth: 'App credentials are invalid!' };
 
   const handleAuth = (e) => {
@@ -24,16 +22,14 @@ const SettingsModal = () => {
         e.target.auth_key.value && !regex.test(e.target.auth_key.value) ? `This value does not match the required private key pattern: ${pattern}` : false
     });
     if (e.target.auth_key.value && e.target.auth_handle.value && !errors.auth_handle && !errors.auth_key && regex.test(e.target.auth_key.value)) {
-      e.preventDefault();
       setAuth(e.target.auth_handle.value, e.target.auth_key.value, () => {
-        checkAuth(e.target.auth_handle.value, e.target.auth_key.value);
-        if (!app.auth.failed) {
-          handleHide();
-          history.go();
-        } else {
-          setErrors(invalidError);
-          resetApp();
-        }
+        checkAuth(e.target.auth_handle.value, e.target.auth_key.value, (valid) => {
+          if (valid) {
+            window.location.reload();
+          } else {
+            setErrors(invalidError);
+          }
+        });
       });
     }
     setValidated(true);
@@ -53,6 +49,7 @@ const SettingsModal = () => {
     if (app.manageSettings && app.auth.failed) {
       checkAuth();
       setErrors(invalidError);
+      setValidated(true);
     }
   }, [app.manageSettings]); // eslint-disable-line react-hooks/exhaustive-deps
 

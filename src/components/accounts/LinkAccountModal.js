@@ -18,7 +18,7 @@ const LinkAccountModal = ({ show, onSuccess }) => {
       e.target.accountName.value).then(res => {
         let result = {};
         console.log('  ... completed!');
-        if (res.statusCode === 200) {
+        if (res.data.success) {
           result = {
             alert: { message: 'Bank account successfully linked!', type: 'success' },
             manageLinkAccount: false

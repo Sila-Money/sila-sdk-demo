@@ -8,7 +8,6 @@ import { useAppContext } from '../context/AppDataProvider';
 
 const RouteConfig = ({ routes, inFlow }) => {
   const { app } = useAppContext();
-  console.log(inFlow);
   return (
     <Switch>
       {routes.map((route, i) => <Route
@@ -18,8 +17,8 @@ const RouteConfig = ({ routes, inFlow }) => {
         strict={route.strict}
         routes={route.routes}
         render={(props) => {
-          if ((app.activeUser && route.restricted && inFlow) || (!app.activeUser && !route.restricted && inFlow) || route.all) {
-            return <CustomRoute route={route} app={app} inFlow={inFlow} {...props} />
+          if (route.all || (inFlow && ((app.activeUser && route.restricted) || (!app.activeUser && !route.restricted)))) {
+            return <CustomRoute route={route} inFlow={inFlow} {...props} />
           } else {
             return <Redirect to="/" />
           }

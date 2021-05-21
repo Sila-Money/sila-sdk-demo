@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Table, Button } from 'react-bootstrap';
+import { Container, Table, Button, Row, Col } from 'react-bootstrap';
 import { usePlaidLink } from 'react-plaid-link';
 
 import { useAppContext } from '../components/context/AppDataProvider';
@@ -8,23 +8,23 @@ import AlertMessage from '../components/common/AlertMessage';
 import Loader from '../components/common/Loader';
 import Pagination from '../components/common/Pagination';
 import LinkAccountModal from '../components/accounts/LinkAccountModal';
+import ProcessorTokenModal from '../components/accounts/ProcessorTokenModal';
 
 const Accounts = ({ page, previous, next, isActive }) => {
-  const [loaded, setLoaded] = useState(false);
-  const [plaidToken, setPlaidToken] = useState(false);
   const { app, api, setAppData, updateApp, handleError } = useAppContext();
   const activeUser = app.settings.flow === 'kyb' ? app.users.find(user => app.settings.kybHandle === user.handle) : app.activeUser;
+  const [loaded, setLoaded] = useState(false);
+  const [plaidToken, setPlaidToken] = useState(false);
+  const accounts = app.accounts.filter(account => account.handle === activeUser.handle)
+
   const { open, ready, error } = usePlaidLink({
     clientName: 'Plaid Walkthrough Demo',
     env: 'sandbox',
     product: ['auth'],
     publicKey: 'fa9dd19eb40982275785b09760ab79',
-    userLegalName: !app.settings.kybHandle ? `${activeUser.firstName} ${activeUser.lastName}` : null,
-    userEmailAddress: !app.settings.kybHandle ? activeUser.email : null,
     token: plaidToken ? plaidToken.token : null,
     onSuccess: (token, metadata) => linkAccount(token, metadata)
   });
-  const userAccounts = app.accounts.filter(account => account.handle === activeUser.handle);
 
   const getAccounts = async () => {
     console.log('Getting Accounts ...');
@@ -57,6 +57,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
 
   const linkAccount = async (token, metadata) => {
     console.log('Linking account ...');
+    updateApp({ alert: { message: 'Linking account ...', type: 'info', noIcon: true, loading: true } });
     try {
       const res = await api.linkAccount(activeUser.handle, activeUser.private_key, token, metadata.account.name, metadata.account_id);
       let result = {};
@@ -64,12 +65,11 @@ const Accounts = ({ page, previous, next, isActive }) => {
       if (res.statusCode === 200) {
         result.alert = { message: 'Bank account successfully linked!', type: 'success' };
         getAccounts();
-        if (plaidToken) setPlaidToken(false);
-      } else if (res.statusCode === 202 && res.data.message.includes('microdeposit_pending_automatic_verification')) {
-        setPlaidToken({ token });
-        setTimeout(open, 500);
-      } else if (res.statusCode === 202 && res.data.message.includes('microdeposit_pending_manual_verification')) {
-        result.alert = { message: 'Bank account requires manual verificaiton!', type: 'danger' };
+        setPlaidToken(false);
+      } else if (metadata.account.verification_status === 'pending_automatic_verification') {
+        setPlaidToken({ token, auto: true });
+      } else if (metadata.account.verification_status === 'pending_manual_verification') {
+        result.alert = { message: 'Bank account requires manual verification!', type: 'danger' };
         getAccounts();
       } else {
         result.alert = { message: res.data.message, type: 'danger' };
@@ -115,7 +115,11 @@ const Accounts = ({ page, previous, next, isActive }) => {
   };
 
   useEffect(() => {
-    if (error) updateApp({ alert: { message: error, type: 'danger' }});
+    if (plaidToken.token && plaidToken.auto && ready && open) open();
+  }, [plaidToken, open]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (error) updateApp({ alert: { message: error, type: 'danger' } });
   }, [error]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -123,7 +127,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
   }, [app.activeUser]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (userAccounts.length && !isActive) setAppData({ success: [...app.success, { handle: activeUser.handle, page }] });
+    if (accounts.length && !isActive) setAppData({ success: [...app.success, { handle: activeUser.handle, page }] });
   }, [loaded]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
@@ -135,7 +139,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
 
       <p className="text-muted text-lg">We also have the ability to connect bank accounts with just an account and routing number, if your product is dependent on receiving account information over the phone, on a form, or similar. This feature needs to be approved by Sila for use.</p>
 
-      <p className="text-muted mb-0 mb-5">This page represents <a href="https://docs.silamoney.com/docs/get_accounts" target="_blank" rel="noopener noreferrer">/get_accounts</a>, <a href="https://docs.silamoney.com/docs/link_account" target="_blank" rel="noopener noreferrer">/link_account</a>, and <a href="https://docs.silamoney.com/docs/plaid_sameday_auth" target="_blank" rel="noopener noreferrer">/plaid_sameday_auth</a> functionality.</p>
+      <p className="text-muted mb-0 mb-5">This page represents <a href="https://docs.silamoney.com/docs/get_accounts" target="_blank" rel="noopener noreferrer">/get_accounts</a>, <a href="https://docs.silamoney.com/docs/plaid_link_token" target="_blank" rel="noopener noreferrer">/plaid_link_token</a>, <a href="https://docs.silamoney.com/docs/link_account" target="_blank" rel="noopener noreferrer">/link_account</a>, and <a href="https://docs.silamoney.com/docs/plaid_sameday_auth" target="_blank" rel="noopener noreferrer">/plaid_sameday_auth</a> functionality.</p>
 
       <div className="accounts position-relative mb-5">
         {!loaded && <Loader overlay />}
@@ -149,22 +153,22 @@ const Accounts = ({ page, previous, next, isActive }) => {
             </tr>
           </thead>
           <tbody>
-            {loaded && userAccounts.length > 0 ?
-              userAccounts.map((acc, index) =>
+            {accounts.length > 0 ?
+              accounts.map((acc, index) =>
                 <tr className="loaded" key={index}>
                   <td>{acc.account_number}</td>
                   <td>{acc.account_name}</td>
                   <td>{acc.account_type}</td>
                   <td className="text-center">
-                    {(acc.account_link_status === 'instantly_verified' || acc.account_link_status === 'microdeposit_manually_verified' || acc.account_link_status === 'unverified_manual_input') && <span className="text-success">Active</span>}
-                    {acc.account_link_status === 'microdeposit_pending_automatic_verification' && <span className="text-danger">Failed</span>}
-                    {plaidToken && acc.account_name === plaidToken.account_name && <span className="text-primary font-italic">Currently verifying...</span>}
-                    {!plaidToken && acc.account_link_status === 'microdeposit_pending_manual_verification' && <Button size="sm" variant="secondary" disabled={plaidToken} onClick={() => plaidSamedayAuth(acc.account_name)}>Manually Approve</Button>}
+                    {(acc.account_link_status === 'instantly_verified' || acc.account_link_status === 'microdeposit_manually_verified' || acc.account_link_status === 'unverified_manual_input' || acc.account_link_status === 'processor_token') && <span className="text-success">Active</span>}
+                    {acc.account_link_status === 'microdeposit_pending_automatic_verification' && <span className="text-warning">Pending...</span>}
+                    {plaidToken && acc.account_link_status === 'microdeposit_pending_manual_verification' && plaidToken.account_name === acc.account_name && <Button size="sm" variant="secondary" onClick={() => open()}>Launch microdeposit verification in Plaid</Button>}
+                    {acc.account_link_status === 'microdeposit_pending_manual_verification' && (!plaidToken || plaidToken.account_name !== acc.account_name) && <Button size="sm" variant="secondary" disabled={plaidToken} onClick={() => plaidSamedayAuth(acc.account_name)}>Manually Approve</Button>}
                   </td>
                 </tr>
               ) :
               <tr className="loaded">
-                {loaded && userAccounts.length === 0 ? <td><em>No accounts linked</em></td> : <td>&nbsp;</td>}
+                {loaded && accounts.length === 0 ? <td><em>No accounts linked</em></td> : <td>&nbsp;</td>}
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
@@ -172,18 +176,21 @@ const Accounts = ({ page, previous, next, isActive }) => {
             }
           </tbody>
         </Table>
-        {userAccounts.find(acc => acc.account_link_status === 'microdeposit_pending_manual_verification' || acc.account_link_status === 'microdeposit_pending_automatic_verification') && <p className="text-muted mt-4">With Same Day Micro-deposits, Plaid verfies the deposit within 1 business days Within the Sandbox timeframe, it’s only takes a few minutes. To jump back into your session, we’ll need you to retrieve a public token from Plaid. From there, two microdeposits should appear in your account within minutes. We will need you to verify the amount of these depsoits in order to launch Phase 2.</p>}
+        {accounts.find(acc => acc.account_link_status === 'microdeposit_pending_manual_verification') && <p className="text-muted mt-4">With Same Day Micro-deposits, Plaid verfies the deposit within 1 business days Within the Sandbox timeframe, it’s only takes a few minutes. To jump back into your session, we’ll need you to retrieve a public token from Plaid. From there, two microdeposits should appear in your account within minutes. We will need you to verify the amount of these depsoits in order to launch Phase 2.</p>}
       </div>
 
-      <div className="d-flex mb-4">
-        {app.alert.message && <AlertMessage message={app.alert.message} type={app.alert.type} />}
+      <div className="d-block d-xl-flex align-items-center mb-4 loaded">
+        {app.alert.message && <div className="mb-4"><AlertMessage message={app.alert.message} type={app.alert.type} noIcon={app.alert.noIcon} loading={app.alert.loading} /></div>}
         <div className="ml-auto">
-          {!plaidToken && <Button className=" mr-4" onClick={() => updateApp({ manageLinkAccount: true })}>Enter Account/Routing</Button>}
-          <Button onClick={() => open()} disabled={!ready}>{plaidToken && plaidToken.account_name ? 'Launch microdeposit verification in Plaid' : 'Connect via Plaid'}</Button>
+          <Row>
+            <Col lg="12" xl="4"><Button block className="mb-4 text-nowrap" onClick={() => updateApp({ manageLinkAccount: true })}>Enter Account/Routing</Button></Col>
+            <Col lg="12" xl="4"><Button block className="mb-4 text-nowrap" onClick={() => updateApp({ manageProcessorToken: true })}>Enter Processor Token</Button></Col>
+            <Col lg="12" xl="4"><Button block className="mb-4 text-nowrap" onClick={() => open()} disabled={!ready || plaidToken}>Connect via Plaid Link</Button></Col>
+          </Row>
         </div>
       </div>
 
-      <p className="text-right"><Button variant="link" className="text-reset font-italic p-0 text-decoration-none" href="http://plaid.com/docs/#testing-auth" target="_blank" rel="noopener noreferrer"><span className="lnk">How do I login to Plaid?</span> <i className="sila-icon sila-icon-info text-primary ml-2"></i></Button></p>
+      <p className="text-right loaded"><Button variant="link" className="text-reset font-italic p-0 text-decoration-none" href="http://plaid.com/docs/#testing-auth" target="_blank" rel="noopener noreferrer"><span className="lnk">How do I login to Plaid?</span> <i className="sila-icon sila-icon-info text-primary ml-2"></i></Button></p>
 
       <Pagination
         previous={previous}
@@ -191,6 +198,8 @@ const Accounts = ({ page, previous, next, isActive }) => {
         currentPage={page} />
 
       <LinkAccountModal show={app.manageLinkAccount} onSuccess={getAccounts} />
+
+      <ProcessorTokenModal show={app.manageProcessorToken} onSuccess={getAccounts} />
 
     </Container>
   );

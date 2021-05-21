@@ -30,12 +30,13 @@ const RoleDescription = ({ role }) => {
   );
 };
 
-const BusinessMembers = ({ page, previous, next, history, location }) => {
+const BusinessMembers = ({ page, previous, next, isActive }) => {
   const [loaded, setLoaded] = useState(false);
   const [members, setMembers] = useState([]);
   const { api, app, setAppData, handleError, updateApp } = useAppContext();
   const businessUser = app.users.find(user => app.settings.kybHandle === user.handle);
   const rolesAndMembers = [...members, ...app.settings.kybRoles.filter(role => !members.length || members.every(member => member.role !== role.name))];
+  const allMembersAdded = rolesAndMembers.length && rolesAndMembers.filter(member => member.label && isRoleRequired(member)).length === 0;
 
   const getRolesAndMembers = async () => {
     console.log('Getting Roles, Business Members, and checking KYB ...');
@@ -73,14 +74,16 @@ const BusinessMembers = ({ page, previous, next, history, location }) => {
     let result = {};
     try {
       const res = await api.unlinkBusinessMember(activeUser.handle, activeUser.private_key, businessUser.handle, businessUser.private_key, role.name);
-      if (res.data.status === 'SUCCESS') {
+      if (res.data.success) {
         result.alert = { message: `Successfully unlinked ${activeUser.firstName} ${activeUser.lastName} as a ${role.label}!`, type: 'success' };
+        result.activeUser = role.name === 'administrator' ? businessUser : app.activeUser;
         setMembers(members.slice(0, deletedIndex).concat(members.slice(deletedIndex + 1, members.length)));
       } else {
         result.alert = { message: res.data.message, type: 'danger' };
       }
       setAppData({
         settings: role.name === 'administrator' ? { ...app.settings, kybAdminHandle: false } : app.settings,
+        users: role.name === 'administrator' ? app.users.map(u => u.handle === activeUser.handle ? { ...u, admin: false } : u) : app.users,
         responses: [{
           endpoint: '/unlink_business_member',
           result: JSON.stringify(res, null, '\t')
@@ -95,8 +98,12 @@ const BusinessMembers = ({ page, previous, next, history, location }) => {
   };
 
   useEffect(() => {
-    if (rolesAndMembers.length && rolesAndMembers.filter(member => member.label && isRoleRequired(member)).length === 0) {
-      updateApp({ alert: { message: 'Success! All required business members have now been registerd, you may now continue to the KYB process, or add more business members if necessary.', type: 'success' } });
+    if (allMembersAdded) {
+      setAppData({
+        success: !isActive ? [...app.success, { handle: businessUser.handle, page }] : app.success,
+      }, () => {
+        updateApp({ alert: { message: 'Success! All required business members have now been registered, you may now continue to the KYB process, or add more business members if necessary.', type: 'success' } });
+      });
     }
   }, [members]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -140,8 +147,20 @@ const BusinessMembers = ({ page, previous, next, history, location }) => {
                         <Badge pill className="badge-outline py-2 px-3 w-100" variant="success">Linked</Badge>
                       </td>
                       <td className="actions" width="1%">
-                        <Button variant="link" className="p-1 mr-3 text-decoration-none" title="Edit" as={NavLink} to={{ pathname: `/members/${member.user_handle}`, state: { role: member.role, from: page } }}><i className="sila-icon sila-icon-edit text-lg"></i></Button>
-                        <Button variant="link" className="p-1 mr-3 text-decoration-none" title="Unlink" onClick={() => unlinkMember(app.settings.kybRoles.find(role => role.name === member.role), member.user_handle)}><i className="sila-icon sila-icon-delete text-lg"></i></Button>
+                        <OverlayTrigger
+                          placement="top"
+                          delay={{ show: 250, hide: 400 }}
+                          overlay={(props) => <Tooltip id="edit-tooltip" {...props}>Edit</Tooltip>}
+                        >
+                          <Button variant="link" className="p-1 mr-2 text-decoration-none" as={NavLink} to={{ pathname: `/members/${member.user_handle}`, state: { role: member.role, from: page } }}><i className="sila-icon sila-icon-edit text-lg"></i></Button>
+                        </OverlayTrigger>
+                        <OverlayTrigger
+                          placement="top"
+                          delay={{ show: 250, hide: 400 }}
+                          overlay={(props) => <Tooltip id="unlink-tooltip" {...props}>Unlink</Tooltip>}
+                        >
+                          <Button variant="link" className="p-1 mr-2 text-decoration-none text-reset" title="" onClick={() => unlinkMember(app.settings.kybRoles.find(role => role.name === member.role), member.user_handle)}><i className="fas fa-unlink text-lg"></i></Button>
+                        </OverlayTrigger>
                       </td>
                     </tr>
                   ) : (
@@ -154,7 +173,7 @@ const BusinessMembers = ({ page, previous, next, history, location }) => {
                           <Badge pill className="badge-outline py-2 px-3 w-100" variant={isRoleRequired(member) ? 'warning' : 'primary'}>{isRoleRequired(member) ? 'Required' : 'Optional'}</Badge>
                         </td>
                         <td className="actions">
-                          <Button variant="link" className="p-0 important" as={NavLink} to={{ pathname: '/members/register', state: { role: member.name, from: page } }}>{members.some(member => member.user_handle) ? 'Add' : 'Add Business Member'} +</Button>
+                          <Button size="sm" as={NavLink} to={{ pathname: '/members/register', state: { role: member.name, from: page } }}>{members.some(member => member.user_handle) ? 'Add' : 'Add Business Member'}</Button>
                         </td>
                       </tr>
                     );
@@ -165,7 +184,7 @@ const BusinessMembers = ({ page, previous, next, history, location }) => {
 
           <div className="d-flex">
             <span className="text-primary font-italic">* Indicates the role is required</span>
-            <Button as={NavLink} to={{ pathname: '/members/register', state: { from: page } }} className="ml-auto">Add Additonal Business Members</Button>
+            <Button variant="link" className="p-0 important ml-auto" as={NavLink} to={{ pathname: '/members/register', state: { from: page } }}>Add Additonal Business Members +</Button>
           </div>
 
         </>

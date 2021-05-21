@@ -22,12 +22,11 @@ import businessIcon from '../assets/images/business.svg';
 
 export const flows = {
   kyc: {
-    name: 'Individual Onboarding',
+    name: 'Individual Onboarding (KYC)',
     icon: indvidualIcon,
-    home: '/request_kyc',
     permissions: (app) => 
       !app.activeUser || 
-      (app.activeUser && !app.activeUser.business),
+      (app.activeUser && !app.activeUser.business && !app.activeUser.business_handle),
     routes: [
       '/check_handle', 
       '/register_user', 
@@ -38,9 +37,8 @@ export const flows = {
     ]
   },
   kyb: {
-    name: 'Business Onboarding',
+    name: 'Business Onboarding (KYB)',
     icon: businessIcon,
-    home: '/members',
     permissions: (app) => 
       !app.activeUser || 
       (app.activeUser && app.activeUser.business) || 
@@ -69,6 +67,7 @@ export default [
     component: Home
   },
   {
+    all: true,
     restricted: false,
     title: 'Check Handle',
     path: '/check_handle',
@@ -83,6 +82,7 @@ export default [
   },
   {
     restricted: true,
+    admin: true,
     title: 'Request KYC',
     path: '/request_kyc',
     component: RequestKYC
@@ -131,6 +131,7 @@ export default [
   },
   {
     restricted: true,
+    admin: true,
     title: 'Business Members',
     path: '/members',
     component: BusinessMembers,
@@ -144,6 +145,7 @@ export default [
     {
       disabled: true,
       restricted: true,
+      admin: true,
       title: 'Business Member',
       path: '/members/:handle',
       component: MemberDetails
@@ -151,12 +153,14 @@ export default [
   },
   {
     restricted: true,
+    admin: true,
     title: 'Certify Business',
     path: '/certify',
     component: CertifyBusiness,
     routes: [{
       disabled: true,
       restricted: true,
+      admin: true,
       title: 'Certify Member',
       path: '/certify/:handle',
       component: MemberDetails

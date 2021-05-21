@@ -25,10 +25,9 @@ const formatNumber = (num) => {
 
 const Transact = ({ page, previous, next, isActive }) => {
   const { app, api, setAppData, updateApp, handleError } = useAppContext();
-  const activeUser = app.settings.flow === 'kyb' ? app.users.find(user => app.settings.kybHandle === user.handle) : app.activeUser;
-  const userWallets = app.wallets.filter(wallet => wallet.handle === activeUser.handle).sort((x, y) => x.default ? -1 : y.default ? 1 : x.private_key === activeUser.private_key ? -1 : y.private_key === activeUser.private_key ? 1 : 0);
-  const userAccounts = app.accounts.filter(account => account.handle === activeUser.handle && account.account_number);
-  const [wallet, setWallet] = useState(userWallets.find(wallet => wallet.default || wallet.private_key === activeUser.private_key));
+  const userWallets = app.wallets.filter(wallet => wallet.handle === app.activeUser.handle).sort((x, y) => x.default ? -1 : y.default ? 1 : x.private_key === app.activeUser.private_key ? -1 : y.private_key === app.activeUser.private_key ? 1 : 0);
+  const userAccounts = app.accounts.filter(account => account.handle === app.activeUser.handle && account.account_number);
+  const [wallet, setWallet] = useState(userWallets.find(wallet => wallet.private_key === app.activeUser.private_key));
   const [account, setAccount] = useState(userAccounts[0]);
   const [balance, setBalance] = useState('Checking Balance ...');
   const [forms, setForms] = useState(defaultForms);
@@ -40,7 +39,7 @@ const Transact = ({ page, previous, next, isActive }) => {
   const handleAccount = (index) => setAccount(userAccounts[index]);
   const handleWallet = (index) => {
     setWallet(userWallets[index]);
-    updateApp({ activeUser: { ...activeUser, private_key: userWallets[index].private_key, cryptoAddress: userWallets[index].blockchain_address } });
+    updateApp({ activeUser: { ...app.activeUser, private_key: userWallets[index].private_key, cryptoAddress: userWallets[index].blockchain_address } });
   };
 
   const refreshBalance = async () => {
@@ -57,7 +56,7 @@ const Transact = ({ page, previous, next, isActive }) => {
         result.alert = { message: res.data.message, type: 'danger' }
       }
       setAppData({
-        success: res.statusCode === 200 && !isActive ? [...app.success, { handle: activeUser.handle, page }] : app.success,
+        success: res.statusCode === 200 && !isActive ? [...app.success, { handle: app.activeUser.handle, page }] : app.success,
         responses: [{
           endpoint: '/get_sila_balance',
           result: JSON.stringify(res, null, '\t')
@@ -74,10 +73,10 @@ const Transact = ({ page, previous, next, isActive }) => {
   const issueSila = async (amount) => {
     console.log(`Issuing ${amount} Sila ...`);
     try {
-      const res = await api.issueSila(amount, activeUser.handle, activeUser.private_key, account.account_name);
+      const res = await api.issueSila(amount, app.activeUser.handle, app.activeUser.private_key, account.account_name);
       let result = {};
       console.log('  ... completed!');
-      if (res.data.status === 'SUCCESS') {
+      if (res.data.success) {
         result.alert = { message: res.data.message, type: 'wait' };
         refreshTransactions();
       } else {
@@ -100,10 +99,10 @@ const Transact = ({ page, previous, next, isActive }) => {
   const redeemSila = async (amount) => {
     console.log(`Redeeming ${amount} Sila ...`);
     try {
-      const res = await api.redeemSila(amount, activeUser.handle, activeUser.private_key, account.account_name);
+      const res = await api.redeemSila(amount, app.activeUser.handle, app.activeUser.private_key, account.account_name);
       let result = {};
       console.log('  ... completed!');
-      if (res.data.status === 'SUCCESS') {
+      if (res.data.success) {
         result.alert = { message: res.data.message, type: 'wait' };
         refreshTransactions();
       } else {
@@ -126,10 +125,10 @@ const Transact = ({ page, previous, next, isActive }) => {
   const transferSila = async (amount, destination) => {
     console.log(`Transferring ${amount} Sila to ${destination} ...`);
     try {
-      const res = await api.transferSila(amount, activeUser.handle, activeUser.private_key, destination);
+      const res = await api.transferSila(amount, app.activeUser.handle, app.activeUser.private_key, destination);
       let result = {};
       console.log('  ... completed!');
-      if (res.data.status === 'SUCCESS') {
+      if (res.data.success) {
         result.alert = { message: res.data.message, type: 'wait' };
         refreshTransactions();
       } else {
@@ -153,7 +152,7 @@ const Transact = ({ page, previous, next, isActive }) => {
     console.log('Refreshing transactions ...');
     updateApp({ transactions: false });
     try {
-      const res = await api.getTransactions(activeUser.handle, activeUser.private_key);
+      const res = await api.getTransactions(app.activeUser.handle, app.activeUser.private_key);
       let result = {};
       console.log('  ... completed!');
       if (res.data.success) {
@@ -173,6 +172,7 @@ const Transact = ({ page, previous, next, isActive }) => {
       } else {
         updateApp({ ...result });
       }
+      refreshBalance();
     } catch (err) {
       console.log('  ... looks like we ran into an issue!');
       handleError(err);
@@ -180,12 +180,12 @@ const Transact = ({ page, previous, next, isActive }) => {
   }
 
   useEffect(() => {
-    refreshBalance();
-  }, [wallet]); // eslint-disable-line react-hooks/exhaustive-deps
+    setWallet(userWallets.find(wallet => wallet.private_key === app.activeUser.private_key));
+  }, [app.activeUser]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     refreshBalance();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [wallet]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
@@ -220,7 +220,7 @@ const Transact = ({ page, previous, next, isActive }) => {
               <Form.Label className="m-0" htmlFor="wallet"><h3 className="m-0">Wallet</h3></Form.Label>
             </Card.Header>
             <Card.Body className="p-0">
-              <SelectMenu fullWidth id="wallet" className="border-0 py-3" onChange={handleWallet} options={userWallets.map((wallet, index) => ({ label: `${wallet.nickname ? wallet.nickname : (wallet.editing || wallet.isNew) ? 'Wallet Name' : 'Generated Wallet'}${wallet.default ? ' (Default)' : ''}`, value: index }))} />
+              <SelectMenu fullWidth id="wallet" className="border-0 py-3" onChange={handleWallet} title={`${wallet.nickname ? wallet.nickname : (wallet.editing || wallet.isNew) ? 'Wallet Name' : 'Generated Wallet'}${wallet.default ? ' (Default)' : ''}`} options={userWallets.map((wallet, index) => ({ label: `${wallet.nickname ? wallet.nickname : (wallet.editing || wallet.isNew) ? 'Wallet Name' : 'Generated Wallet'}${wallet.default ? ' (Default)' : ''}`, value: index }))} />
             </Card.Body>
           </Form.Group>
         </Card>
@@ -287,7 +287,7 @@ const Transact = ({ page, previous, next, isActive }) => {
                 </Form>
               </Tab.Pane>
               <Tab.Pane eventKey="transfer">
-                <p className="text-muted">Transfer Sila from your selected linked wallet to another user.{app.settings.flow === 'kyb' && <span className="ml-2">Destination suggestions are scoped to members of the business, but all Sila accounts can recieve Sila.</span>}</p>
+                <p className="text-muted">Transfer Sila from your selected linked wallet to another user.  Destination suggestions are scoped to entities created in this application, but all Sila accounts can recieve Sila.</p>
                 <Form noValidate validated={forms.transfer.validated} autoComplete="off" className="d-flex" onSubmit={(e) => {
                   e.preventDefault();
                   const amount = parseFloat(e.target.transfer.value);
@@ -320,9 +320,11 @@ const Transact = ({ page, previous, next, isActive }) => {
                         id="destination"
                         labelKey="destination"
                         onChange={(handle) => setForms({ ...forms, transfer: { ...forms.transfer, values: { ...forms.transfer.values, destination: handle } } })}
-                        options={app.settings.flow === 'kyb' ? app.users.filter(user => user.business_handle === app.settings.kybHandle).map(user => user.handle) : app.users.filter(user => user.handle !== app.activeUser).map(user => user.handle)}
+                        options={app.users.filter(u => (!u.business_handle && !app.settings.kybAdminHandle && u.handle !== app.activeUser.handle) || (u.handle !== app.activeUser.handle && app.settings.kybAdminHandle && app.settings.kybHandle !== u.handle)).map(u => u.handle)}
                         placeholder="Destination handle"
-                        selected={forms.transfer.values.destination || ''} />
+                        allowNew={true}
+                        newSelectionPrefix="New handle:"
+                        selected={forms.transfer.values.destination || ['']} />
                     </Col>
                   </Row>
                   <Button className="text-nowrap ml-2" variant="primary" type="submit" disabled={!forms.transfer.values.transfer || !forms.transfer.values.destination}>GO</Button>

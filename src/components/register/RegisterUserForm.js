@@ -6,7 +6,7 @@ import { useAppContext } from '../../components/context/AppDataProvider';
 
 import { STATES_ARRAY } from '../../constants';
 
-const RegisterUserForm = ({ className, handle, page, isActive, children, onError, onSuccess, description }) => {
+const RegisterUserForm = ({ className, handle, children, onError, onSuccess, description }) => {
   const [validated, setValidated] = useState(false);
   const [errors, setErrors] = useState({});
   const { app, api, refreshApp, handleError, updateApp, setAppData } = useAppContext();
@@ -29,22 +29,22 @@ const RegisterUserForm = ({ className, handle, page, isActive, children, onError
     entity.dateOfBirth = e.target.dateOfBirth.value;
     entity.ssn = e.target.ssn.value;
     entity.cryptoAddress = wallet.address;
+    entity.flow = app.settings.flow;
     try {
       const res = await api.register(entity);
       let result = {};
       let appData = {};
       console.log('  ... completed!');
-      if (res.data.status === 'SUCCESS') {
+      if (res.data.success) {
         refreshApp();
         entity.private_key = wallet.privateKey;
         entity.active = true;
         result = {
-          activeUser: entity,
           alert: { message: `Success! ${handle} is now registered.`, type: 'success' }
         };
         appData = {
           settings: { ...app.settings, kycHandle: false },
-          users: [...app.users.map(({ active, ...u }) => u), entity],
+          users: [...app.users, entity],
           wallets: [...app.wallets, {
             handle: entity.handle,
             blockchain_address: wallet.address,
@@ -54,20 +54,19 @@ const RegisterUserForm = ({ className, handle, page, isActive, children, onError
           }]
         };
         if (Object.keys(errors).length) setErrors({});
-        if (onSuccess) onSuccess(entity);
       } else if (res.data.validation_details) {
         setErrors(res.data.validation_details);
         if (onError) onError(res.data.validation_details);
       }
       setAppData({
         ...appData,
-        success: res.data.status === 'SUCCESS' && !isActive ? [...app.success, { handle: entity.handle, page }] : app.success,
         responses: [{
           endpoint: '/register',
           result: JSON.stringify(res, null, '\t')
         }, ...app.responses]
       }, () => {
         updateApp({ ...result });
+        if (res.data.success && onSuccess) onSuccess(entity);
       });
     } catch (err) {
       console.log('  ... looks like we ran into an issue!');
@@ -94,24 +93,24 @@ const RegisterUserForm = ({ className, handle, page, isActive, children, onError
           {errors.entity && errors.entity.last_name && <Form.Control.Feedback type="invalid">{errors.entity.last_name}</Form.Control.Feedback>}
         </Form.Group>
       </Form.Row>
-      <Form.Group controlId="registerAddress">
-        <Form.Control placeholder="Street Address" name="address" isInvalid={Boolean(errors.address && errors.address.street_address_1)} />
+      <Form.Group controlId="registerAddress" className="required">
+        <Form.Control required placeholder="Street Address" name="address" isInvalid={Boolean(errors.address && errors.address.street_address_1)} />
         {errors.address && errors.address.street_address_1 && <Form.Control.Feedback type="invalid">{errors.address.street_address_1}</Form.Control.Feedback>}
       </Form.Group>
       <Form.Row>
-        <Form.Group as={Col} md="4" controlId="registerCity">
-          <Form.Control placeholder="City" name="city" isInvalid={Boolean(errors.address && errors.address.city)} />
+        <Form.Group as={Col} md="4" controlId="registerCity" className="required">
+          <Form.Control required placeholder="City" name="city" isInvalid={Boolean(errors.address && errors.address.city)} />
           {errors.address && errors.address.city && <Form.Control.Feedback type="invalid">{errors.address.city}</Form.Control.Feedback>}
         </Form.Group>
-        <Form.Group as={Col} md="4" controlId="registerState" className="select">
-          <Form.Control as="select" name="state" isInvalid={Boolean(errors.address && errors.address.state)}>
+        <Form.Group as={Col} md="4" controlId="registerState" className="select required">
+          <Form.Control required as="select" name="state" isInvalid={Boolean(errors.address && errors.address.state)}>
             <option value="">State</option>
             {STATES_ARRAY.map((option, index) => <option key={index} value={option.value}>{option.label}</option>)}
           </Form.Control>
           {errors.address && errors.address.state && <Form.Control.Feedback type="invalid">{errors.address.state}</Form.Control.Feedback>}
         </Form.Group>
-        <Form.Group as={Col} md="4" controlId="registerZip">
-          <Form.Control placeholder="Zip" name="zip" isInvalid={Boolean(errors.address && errors.address.postal_code)} />
+        <Form.Group as={Col} md="4" controlId="registerZip" className="required">
+          <Form.Control required placeholder="Zip" name="zip" isInvalid={Boolean(errors.address && errors.address.postal_code)} />
           {errors.address && errors.address.postal_code && <Form.Control.Feedback type="invalid">{errors.address.postal_code}</Form.Control.Feedback>}
         </Form.Group>
       </Form.Row>
@@ -126,8 +125,8 @@ const RegisterUserForm = ({ className, handle, page, isActive, children, onError
         </Form.Group>
       </Form.Row>
       <Form.Row>
-        <Form.Group as={Col} md="6" controlId="registerEmail">
-          <Form.Control type="email" placeholder="Email" name="email" isInvalid={Boolean(errors.contact && errors.contact.email)} />
+        <Form.Group as={Col} md="6" controlId="registerEmail" className="required">
+          <Form.Control required type="email" placeholder="Email" name="email" isInvalid={Boolean(errors.contact && errors.contact.email)} />
           {errors.contact && errors.contact.email && <Form.Control.Feedback type="invalid">{errors.contact.email}</Form.Control.Feedback>}
         </Form.Group>
         <Form.Group as={Col} md="6" controlId="registerPhone" className="required">

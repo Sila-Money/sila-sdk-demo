@@ -9,6 +9,7 @@
     height: calc(100vh - #{$main-navbar-height} - #{$pagination-height} - 1px);
     width: $vertical-navbar-width;
     transition: width .2s, margin .2s;
+    overflow-x: hidden !important;
 
     +.mobile-menu+.main-content {
         margin-left: $vertical-navbar-width;

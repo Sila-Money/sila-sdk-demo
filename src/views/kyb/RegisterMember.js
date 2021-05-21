@@ -11,7 +11,7 @@ import Pagination from '../../components/common/Pagination';
 import SelectMenu from '../../components/common/SelectMenu';
 import Loader from '../../components/common/Loader';
 
-const RegisterMember = ({ page, isActive, location, history }) => {
+const RegisterMember = ({ page, location, history }) => {
   const [handle, setHandle] = useState(false);
   const [member, setMember] = useState(false);
   const [activeUser, setActiveUser] = useState(false);
@@ -37,12 +37,12 @@ const RegisterMember = ({ page, isActive, location, history }) => {
   };
 
   const handleActiveUser = (user) => {
+    if (currentRole === 'administrator' || selectedRoles.some(role => role === 'administrator')) user.admin = true;
+    if (app.settings.kybHandle) user.business_handle = app.settings.kybHandle;
     setActiveUser(user);
-    setAppData({
-      users: app.users.map(u => u.handle === user.handle ? { ...u, business_handle: app.settings.kybHandle } : u)
-    });
+    setAppData({ users: app.users.some(u => u.handle === user.handle) ? app.users.map(u => u.handle === user.handle ? { ...u, ...user } : u) : [...app.users, user] });
   };
-
+  
   useEffect(() => {
     if (activeUser) getEntity();
   }, [activeUser]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -73,9 +73,7 @@ const RegisterMember = ({ page, isActive, location, history }) => {
 
           <RegisterUserForm
             className="mt-4"
-            page={page}
             handle={handle}
-            isActive={isActive}
             description="Please fill out the below fields for this business member."
             onSuccess={handleActiveUser}>
 
@@ -97,7 +95,7 @@ const RegisterMember = ({ page, isActive, location, history }) => {
       {member && <div className="loaded">
 
         {member.loading ? <Loader /> : <div className="loaded">
-          <LinkMemberForm member={member} onLinked={() => getEntity()} onUnlinked={() => getEntity()} />
+          <LinkMemberForm member={{ ...activeUser, ...member }} onLinked={() => getEntity()} onUnlinked={() => getEntity()} />
           <p className="mt-5 mb-0 text-center"><Button variant="outline-light" className="text-muted text-uppercase" onClick={() => history.goBack()}>I'm Done</Button></p>
         </div>}
 

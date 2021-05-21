@@ -24,8 +24,8 @@ const Wallets = ({ page, previous, next, isActive }) => {
       console.log('  ... completed!');
       if (res.data.success) {
         newWallets = res.data.wallets
-          .filter(wallet => app.wallets.find(savedWallet => savedWallet.blockchain_address === wallet.blockchain_address))
-          .map(wallet => ({ ...wallet, ...app.wallets.find(savedWallet => savedWallet.blockchain_address === wallet.blockchain_address) }));
+          .filter(w => app.wallets.find(savedWallet => savedWallet.blockchain_address === w.blockchain_address))
+          .map(w => ({ ...w, ...app.wallets.find(savedWallet => savedWallet.blockchain_address === w.blockchain_address) }));
       } else {
         result.alert = { message: res.data.message, type: 'danger' };
       }

@@ -31,7 +31,7 @@
   margin-bottom: $pagination-height;
   @include animation(fadein, 0.5s, forwards);
   @include media-breakpoint-up(sm) {
-    min-height: calc(100vh - #{$main-navbar-height} - #{$pagination-height});
+    min-height: calc(100vh - #{$main-navbar-height} - #{$pagination-height} - 1px);
   }
 }
 
