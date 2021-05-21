@@ -35,7 +35,7 @@ ConfirmModal.propTypes = {
   /**
    * The confirm message
    */
-  message: PropTypes.string.isRequired
+  message: PropTypes.string
 };
 
 export default ConfirmModal;

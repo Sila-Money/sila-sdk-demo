@@ -25,10 +25,9 @@ const formatNumber = (num) => {
 
 const Transact = ({ page, previous, next, isActive }) => {
   const { app, api, setAppData, updateApp, handleError } = useAppContext();
-  const activeUser = app.settings.flow === 'kyb' ? app.users.find(user => app.settings.kybHandle === user.handle) : app.activeUser;
-  const userWallets = app.wallets.filter(wallet => wallet.handle === activeUser.handle).sort((x, y) => x.default ? -1 : y.default ? 1 : x.private_key === activeUser.private_key ? -1 : y.private_key === activeUser.private_key ? 1 : 0);
-  const userAccounts = app.accounts.filter(account => account.handle === activeUser.handle && account.account_number);
-  const [wallet, setWallet] = useState(userWallets.find(wallet => wallet.default || wallet.private_key === activeUser.private_key));
+  const userWallets = app.wallets.filter(wallet => wallet.handle === app.activeUser.handle).sort((x, y) => x.default ? -1 : y.default ? 1 : x.private_key === app.activeUser.private_key ? -1 : y.private_key === app.activeUser.private_key ? 1 : 0);
+  const userAccounts = app.accounts.filter(account => account.handle === app.activeUser.handle && account.account_number);
+  const [wallet, setWallet] = useState(userWallets.find(wallet => wallet.private_key === app.activeUser.private_key));
   const [account, setAccount] = useState(userAccounts[0]);
   const [balance, setBalance] = useState('Checking Balance ...');
   const [forms, setForms] = useState(defaultForms);
@@ -40,7 +39,7 @@ const Transact = ({ page, previous, next, isActive }) => {
   const handleAccount = (index) => setAccount(userAccounts[index]);
   const handleWallet = (index) => {
     setWallet(userWallets[index]);
-    updateApp({ activeUser: { ...activeUser, private_key: userWallets[index].private_key, cryptoAddress: userWallets[index].blockchain_address } });
+    updateApp({ activeUser: { ...app.activeUser, private_key: userWallets[index].private_key, cryptoAddress: userWallets[index].blockchain_address } });
   };
 
   const refreshBalance = async () => {
@@ -57,7 +56,7 @@ const Transact = ({ page, previous, next, isActive }) => {
         result.alert = { message: res.data.message, type: 'danger' }
       }
       setAppData({
-        success: res.statusCode === 200 && !isActive ? [...app.success, { handle: activeUser.handle, page }] : app.success,
+        success: res.statusCode === 200 && !isActive ? [...app.success, { handle: app.activeUser.handle, page }] : app.success,
         responses: [{
           endpoint: '/get_sila_balance',
           result: JSON.stringify(res, null, '\t')
@@ -74,7 +73,7 @@ const Transact = ({ page, previous, next, isActive }) => {
   const issueSila = async (amount) => {
     console.log(`Issuing ${amount} Sila ...`);
     try {
-      const res = await api.issueSila(amount, activeUser.handle, activeUser.private_key, account.account_name);
+      const res = await api.issueSila(amount, app.activeUser.handle, app.activeUser.private_key, account.account_name);
       let result = {};
       console.log('  ... completed!');
       if (res.data.success) {
@@ -100,7 +99,7 @@ const Transact = ({ page, previous, next, isActive }) => {
   const redeemSila = async (amount) => {
     console.log(`Redeeming ${amount} Sila ...`);
     try {
-      const res = await api.redeemSila(amount, activeUser.handle, activeUser.private_key, account.account_name);
+      const res = await api.redeemSila(amount, app.activeUser.handle, app.activeUser.private_key, account.account_name);
       let result = {};
       console.log('  ... completed!');
       if (res.data.success) {
@@ -126,7 +125,7 @@ const Transact = ({ page, previous, next, isActive }) => {
   const transferSila = async (amount, destination) => {
     console.log(`Transferring ${amount} Sila to ${destination} ...`);
     try {
-      const res = await api.transferSila(amount, activeUser.handle, activeUser.private_key, destination);
+      const res = await api.transferSila(amount, app.activeUser.handle, app.activeUser.private_key, destination);
       let result = {};
       console.log('  ... completed!');
       if (res.data.success) {
@@ -153,7 +152,7 @@ const Transact = ({ page, previous, next, isActive }) => {
     console.log('Refreshing transactions ...');
     updateApp({ transactions: false });
     try {
-      const res = await api.getTransactions(activeUser.handle, activeUser.private_key);
+      const res = await api.getTransactions(app.activeUser.handle, app.activeUser.private_key);
       let result = {};
       console.log('  ... completed!');
       if (res.data.success) {
@@ -173,11 +172,16 @@ const Transact = ({ page, previous, next, isActive }) => {
       } else {
         updateApp({ ...result });
       }
+      refreshBalance();
     } catch (err) {
       console.log('  ... looks like we ran into an issue!');
       handleError(err);
     }
   }
+
+  useEffect(() => {
+    setWallet(userWallets.find(wallet => wallet.private_key === app.activeUser.private_key));
+  }, [app.activeUser]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     refreshBalance();
@@ -216,7 +220,7 @@ const Transact = ({ page, previous, next, isActive }) => {
               <Form.Label className="m-0" htmlFor="wallet"><h3 className="m-0">Wallet</h3></Form.Label>
             </Card.Header>
             <Card.Body className="p-0">
-              <SelectMenu fullWidth id="wallet" className="border-0 py-3" onChange={handleWallet} options={userWallets.map((wallet, index) => ({ label: `${wallet.nickname ? wallet.nickname : (wallet.editing || wallet.isNew) ? 'Wallet Name' : 'Generated Wallet'}${wallet.default ? ' (Default)' : ''}`, value: index }))} />
+              <SelectMenu fullWidth id="wallet" className="border-0 py-3" onChange={handleWallet} title={`${wallet.nickname ? wallet.nickname : (wallet.editing || wallet.isNew) ? 'Wallet Name' : 'Generated Wallet'}${wallet.default ? ' (Default)' : ''}`} options={userWallets.map((wallet, index) => ({ label: `${wallet.nickname ? wallet.nickname : (wallet.editing || wallet.isNew) ? 'Wallet Name' : 'Generated Wallet'}${wallet.default ? ' (Default)' : ''}`, value: index }))} />
             </Card.Body>
           </Form.Group>
         </Card>
