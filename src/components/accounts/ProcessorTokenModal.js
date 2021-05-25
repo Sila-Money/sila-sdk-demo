@@ -24,6 +24,7 @@ const LinkAccountModal = ({ show, onSuccess }) => {
           }
           if (errors) setErrors(false);
           onSuccess();
+          resetForm();
         } else if (res.data.validation_details) {
           setErrors(res.data.validation_details);
         } else {
@@ -55,6 +56,8 @@ const LinkAccountModal = ({ show, onSuccess }) => {
     setAlert(false);
     setValidated(false);
   };
+
+  console.log(errors);
 
   return (
     <Modal centered
