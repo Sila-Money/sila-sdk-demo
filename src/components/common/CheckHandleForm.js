@@ -71,7 +71,7 @@ const CheckHandleForm = ({ className, defaultValue, onSuccess, disabled, page })
           isInvalid={error}
         />
         {error && <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>}
-        <Form.Text className="text-muted">Spaces, uppercase characters, and lowercase characters are not permitted.  Minimum of 3 characters.</Form.Text>
+        <Form.Text className="text-muted">Spaces, special characters, and uppercase characters are not permitted.  Minimum of 3 characters of input required.</Form.Text>
       </Form.Group>
 
       <div className="d-flex mt-4">
