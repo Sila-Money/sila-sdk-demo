@@ -57,8 +57,6 @@ const LinkAccountModal = ({ show, onSuccess }) => {
     setValidated(false);
   };
 
-  console.log(errors);
-
   return (
     <Modal centered
       show={show}
