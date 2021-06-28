@@ -21,6 +21,8 @@
   border-radius: .375rem;
   box-shadow: $box-shadow-heavy;
   white-space: nowrap;
+  max-height: 400px;
+  overflow-y: scroll;
   .select-menu & {
     min-width: 100%;
   }
