@@ -215,6 +215,7 @@ const RegisterBusiness = ({ page, previous, next, isActive }) => {
           <Form.Group as={Col} md="6" controlId="businessEIN" className="required">
             <Form.Control required placeholder="Employer ID Number (EIN)" name="ein" isInvalid={Boolean(errors.identity)} />
             <Form.Control.Feedback type="invalid">{errors.identity ? (errors.identity.identity_value || errors.identity) : 'This field may not be blank.'}</Form.Control.Feedback>
+            <Form.Text className="text-muted">EIN format: 11-2223333</Form.Text>
           </Form.Group>
         </Form.Row>
         <Form.Row>
