@@ -116,8 +116,9 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, des
       </Form.Row>
       <Form.Row>
         <Form.Group as={Col} md="6" controlId="registerSSN" className="required">
-          <Form.Control required placeholder="Social Security Number 111223333" name="ssn" isInvalid={errors.identity} />
+          <Form.Control required placeholder="Social Security Number 111-22-3333" name="ssn" isInvalid={errors.identity} />
           {errors.identity && <Form.Control.Feedback type="invalid">{errors.identity.identity_value || errors.identity}</Form.Control.Feedback>}
+          <Form.Text className="text-muted">SSN format: 111-22-3333</Form.Text>
         </Form.Group>
         <Form.Group as={Col} md="6" controlId="registerDateOfBirth" className="required">
           <Form.Control required type="date" placeholder="Date of Birth" name="dateOfBirth" isInvalid={Boolean(errors.entity && errors.entity.birthdate)} />
