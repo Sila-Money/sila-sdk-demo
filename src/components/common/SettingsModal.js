@@ -75,6 +75,7 @@ const SettingsModal = () => {
               placeholder={app.auth.handle || undefined}
               aria-label="App Handle"
               name="auth_handle"
+              value={app.auth.handle ? app.auth.handle : ''}
             />
             {errors.auth_handle && <Form.Control.Feedback type="invalid">{errors.auth_handle}</Form.Control.Feedback>}
           </Form.Group>
@@ -86,6 +87,7 @@ const SettingsModal = () => {
               placeholder={app.auth.key || undefined}
               aria-label="App Private Key"
               name="auth_key"
+              value={app.auth.key ? app.auth.key : ''}
             />
             {errors.auth_key && <Form.Control.Feedback type="invalid">{errors.auth_key}</Form.Control.Feedback>}
           </Form.Group>
