@@ -99,7 +99,7 @@ const RequestKYC = ({ page, previous, next }) => {
           delay={{ show: 250, hide: 400 }}
           overlay={(props) => <Tooltip id={`${app.settings.flow}-tooltip`} className="ml-2" {...props}>Checks {app.settings.flow.toUpperCase()}</Tooltip>}
         >
-          <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none loaded" onClick={checkKyc}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh Status</span></Button>
+          <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none loaded" onClick={checkKyc} disabled={certified.validated ? 1 : 0}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh Status</span></Button>
         </OverlayTrigger>}
       </div>
 
