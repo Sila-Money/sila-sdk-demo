@@ -56,6 +56,7 @@ const CheckHandleForm = ({ className, defaultValue, onSuccess, disabled, page })
 
   useEffect(() => {
     if (handle.length && handle.length < 3) setError('Minimum of 3 characters');
+    if (handle.length && handle.length > 100) setError('Maximum of 100 characters');
   }, [handle]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
@@ -71,7 +72,7 @@ const CheckHandleForm = ({ className, defaultValue, onSuccess, disabled, page })
           isInvalid={error}
         />
         {error && <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>}
-        <Form.Text className="text-muted">Spaces, special characters, and uppercase characters are not permitted.  Minimum of 3 characters of input required.</Form.Text>
+        <Form.Text className="text-muted">Spaces, special characters, and uppercase characters are not permitted. Minimum of 3 characters and Maximum of 100 characters of input required.</Form.Text>
       </Form.Group>
 
       <div className="d-flex mt-4">
