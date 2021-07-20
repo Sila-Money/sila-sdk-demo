@@ -139,7 +139,7 @@ const RegisterBusiness = ({ page, previous, next, isActive }) => {
         };
         if (Object.keys(errors).length) setErrors({});
       } else if (res.data.validation_details) {
-        if (res.data.validation_details.identity) res.data.validation_details.identity = 'EIN acceptable format like: 11-2223333';
+        if (res.data.validation_details.identity) res.data.validation_details.identity = 'EIN acceptable format: xx-xxxxxxx';
         setErrors(res.data.validation_details);
       }
       setAppData({
