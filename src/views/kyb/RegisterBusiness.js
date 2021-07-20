@@ -223,7 +223,7 @@ const RegisterBusiness = ({ page, previous, next, isActive }) => {
             <Form.Control.Feedback type="invalid">{errors.contact && errors.contact.email ? errors.contact.email : 'This field may not be blank.'}</Form.Control.Feedback>
           </Form.Group>
           <Form.Group as={Col} md="6" controlId="businessWebsite">
-            <Form.Control type="url" placeholder="Business Website" name="business_website" isInvalid={Boolean(errors.entity && errors.entity.business_website)} />
+            <Form.Control type="url" placeholder="Business Website - http://example.com" name="business_website" isInvalid={Boolean(errors.entity && errors.entity.business_website)} />
             {errors.entity && errors.entity.business_website && <Form.Control.Feedback type="invalid">{errors.entity.business_website}</Form.Control.Feedback>}
           </Form.Group>
         </Form.Row>
