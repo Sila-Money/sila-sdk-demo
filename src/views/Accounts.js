@@ -169,10 +169,10 @@ const Accounts = ({ page, previous, next, isActive }) => {
         <Table bordered responsive>
           <thead>
             <tr>
-              <th className="text-lg">Account  #</th>
-              <th className="text-lg">Name</th>
-              <th className="text-lg">Type</th>
-              <th className="text-lg">Status</th>
+              <th className="text-lg bg-secondary">Account  #</th>
+              <th className="text-lg bg-secondary">Name</th>
+              <th className="text-lg bg-secondary">Type</th>
+              <th className="text-lg bg-secondary">Status</th>
             </tr>
           </thead>
           <tbody>
