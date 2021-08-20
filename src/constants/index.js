@@ -119,6 +119,10 @@ export const STATES_ARRAY = [{
     label: 'Montana'
   },
   {
+    value: 'MI',
+    label: 'Midway Atoll'
+  },
+  {
     value: 'NE',
     label: 'Nebraska'
   },
