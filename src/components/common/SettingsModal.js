@@ -9,6 +9,8 @@ const SettingsModal = () => {
   const [validated, setValidated] = useState(false);
   const [errors, setErrors] = useState({});
   const { app, updateApp, setAuth, checkAuth } = useAppContext();
+  const [appAuthHandle, setAppAuthHandle] = useState(app.auth.handle ? app.auth.handle : '');
+  const [appAuthKey, setAppAuthKey] = useState(app.auth.key ? app.auth.key : '');
   const invalidError = { ...errors, auth: 'App credentials are invalid!' };
 
   const handleAuth = (e) => {
@@ -45,6 +47,14 @@ const SettingsModal = () => {
     setValidated(false);
   };
 
+  const appAuthHandleChange = (e) => {
+    setAppAuthHandle(e.target.value);
+  };
+
+  const appAuthKeyHandleChange = (e) => {
+    setAppAuthKey(e.target.value);
+  };
+
   useEffect(() => {
     if (app.manageSettings && app.auth.failed) {
       checkAuth();
@@ -75,7 +85,8 @@ const SettingsModal = () => {
               placeholder={app.auth.handle || undefined}
               aria-label="App Handle"
               name="auth_handle"
-              value={app.auth.handle ? app.auth.handle : ''}
+              onChange={appAuthHandleChange}
+              value={appAuthHandle}
             />
             {errors.auth_handle && <Form.Control.Feedback type="invalid">{errors.auth_handle}</Form.Control.Feedback>}
           </Form.Group>
@@ -87,7 +98,8 @@ const SettingsModal = () => {
               placeholder={app.auth.key || undefined}
               aria-label="App Private Key"
               name="auth_key"
-              value={app.auth.key ? app.auth.key : ''}
+              onChange={appAuthKeyHandleChange}
+              value={appAuthKey}
             />
             {errors.auth_key && <Form.Control.Feedback type="invalid">{errors.auth_key}</Form.Control.Feedback>}
           </Form.Group>
