@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import classNames from 'classnames';
-import { Col, Button, Collapse, Alert } from 'react-bootstrap';
+import { Col, Button, Collapse, Alert, Carousel } from 'react-bootstrap';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import stickybits from 'stickybits';
 
 import { useAppContext } from '../context/AppDataProvider';
+import { default as defaultRoutes } from '../../routes';
 
 import AlertMessage from '../common/AlertMessage';
 import Loader from '../common/Loader';
+import tipIcon from '../../assets/images/tip.svg';
 
 const syntaxTheme = {
   "code[class*=\"language-\"]": {
@@ -77,6 +80,33 @@ const Response = ({ response, index, onLoad, onLoaded }) => {
   );
 };
 
+const Tips = () => {
+  const location = useLocation();
+  const [tipsList, setTipsList] = useState([]);
+
+  useEffect(() => {
+    setTipsList([]);
+    defaultRoutes.map((RouteObj) => {
+      return (RouteObj.tips && RouteObj.path === location.pathname) ? setTipsList(RouteObj.tips) : '';
+    })
+  }, [location]);
+
+  return (
+    <>
+      {(tipsList.length > 0) ? <Carousel controls={true} indicators={false}>
+        {tipsList && tipsList.map((tipLabel, tipKey) => <Carousel.Item key={tipKey}>
+          <div className="tip-main">
+            <img className="p-0" src={tipIcon} alt={tipLabel} />
+            <Carousel.Caption className="p-0 position-relative">
+              <p className="m-0 pr-1">{tipLabel}</p>
+            </Carousel.Caption>
+          </div>
+        </Carousel.Item>)}
+      </Carousel> : <p className="text-muted mr-5">As you move through the demo, helpful tips will pop up in this space. Have feedback for us? Leave your questions and comments <a href="https://forms.gle/yMifytN38TcUDed3A" target="_blank" rel="noopener noreferrer">here!</a></p>}
+    </>
+  );
+};
+
 const MainSidebar = () => {
   const [loading, setLoading] = useState(false);
   const { app, setAppData } = useAppContext();
@@ -108,6 +138,10 @@ const MainSidebar = () => {
           <ul>
             {app.responses.map((response, index) => <Response response={response} index={index} onLoad={() => setLoading(true)} onLoaded={() => setLoading(false)} key={index} />)}
           </ul> : app.auth.handle ? <p>Submit a request to see the response.</p> : <AlertMessage noHide message="App Credentials are required before using this app." />}
+      </div>
+      <div className="response-results pb-4 px-4 border-top border-light tip-container">
+        <h1 >Tips:</h1>
+        <Tips></Tips>
       </div>
     </Col>
   );

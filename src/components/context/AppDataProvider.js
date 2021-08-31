@@ -59,7 +59,7 @@ let initAppData = getAppStorage();
 let auth = initAppData.auth;
 if (!auth) auth = { handle: false, key: false };
 Sila.configure(auth);
-Sila.setEnvironment('sandbox');
+Sila.setEnvironment('LOCAL'); //sandbox
 Sila.enableSandbox();
 // Sila.disableSandbox();
 
