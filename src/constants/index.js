@@ -1,3 +1,35 @@
+export const KYC_ARRAY = [{
+    value: 'DEFAULT',
+    label: 'Default KYC'
+  },
+  {
+    value: 'KYC-LITE',
+    label: 'KYC Lite'
+  },
+  {
+    value: 'RECEIVE_ONLY',
+    label: 'Receive Only'
+  },
+  {
+    value: 'INSTANT-ACH',
+    label: 'Instant ACH'
+  }
+];
+
+export const KYB_ARRAY = [{
+    value: 'KYB-STANDARD',
+    label: 'KYB Standard'
+  },
+  {
+    value: 'KYB-LITE',
+    label: 'KYC Lite'
+  },
+  {
+    value: 'RECEIVE_ONLY',
+    label: 'Receive Only'
+  }
+];
+
 export const STATES_ARRAY = [{
     value: 'AL',
     label: 'Alabama'

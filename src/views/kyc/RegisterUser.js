@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Container, Alert, Button } from 'react-bootstrap';
 
 import { useAppContext } from '../../components/context/AppDataProvider';
@@ -6,8 +6,10 @@ import { useAppContext } from '../../components/context/AppDataProvider';
 import Pagination from '../../components/common/Pagination';
 import AlertMessage from '../../components/common/AlertMessage';
 import RegisterUserForm from '../../components/register/RegisterUserForm';
+import KycModal from '../../components/home/KycModal';
 
 const RegisterUser = ({ page, previous, next, isActive }) => {
+  const [show, setShow] = useState(false);
   const { app, setAppData, updateApp } = useAppContext();
 
   const registerUser = (user) => {
@@ -28,14 +30,16 @@ const RegisterUser = ({ page, previous, next, isActive }) => {
 
       <p className="text-muted mb-5">This page represents <a href="https://docs.silamoney.com/docs/register" target="_blank" rel="noopener noreferrer">/register</a> functionality.</p>
 
-      <RegisterUserForm handle={app.settings.kycHandle} onSuccess={registerUser}>
+      <RegisterUserForm handle={app.settings.kycHandle} onSuccess={registerUser} onShowKycModal={(isShow) => setShow(isShow)}>
 
-        <Alert variant="info" className="mt-4 mb-5">A wallet is automatically generated for you using the generateWallet() function upon registration.</Alert>
+        {app.settings.preferredKycLevel && <>
+          <Alert variant="info" className="mt-4 mb-5">A wallet is automatically generated for you using the generateWallet() function upon registration.</Alert>
 
-        <div className="d-flex">
-          {app.alert.message && <AlertMessage message={app.alert.message} type={app.alert.type} />}
-          <Button type="submit" className="ml-auto" disabled={!app.settings.kycHandle || (app.activeUser && app.activeUser.handle === app.settings.kycHandle)}>Register user</Button>
-        </div>
+          <div className="d-flex">
+            {app.alert.message && <AlertMessage message={app.alert.message} type={app.alert.type} />}
+            <Button type="submit" className="ml-auto" disabled={!app.settings.kycHandle || (app.activeUser && app.activeUser.handle === app.settings.kycHandle)}>Register user</Button>
+          </div>
+        </>}
 
       </RegisterUserForm>
 
@@ -43,6 +47,9 @@ const RegisterUser = ({ page, previous, next, isActive }) => {
         previous={previous}
         next={isActive ? next : undefined}
         currentPage={page} />
+
+      <KycModal show={show} onHide={() => setShow(false)} />
+
     </Container>
   )
 };
