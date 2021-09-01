@@ -132,7 +132,7 @@ const MainSidebar = () => {
         <h1 className="m-0">Response</h1>
         {app.responses.length !== 0 && <Button variant="link" className="p-0" onClick={clearResponses}>Clear</Button>}
       </div>
-      <div className="response-results pb-4 px-4">
+      <div className="response-results pb-4 px-4 scroll">
         {app.responses.length > 39 && <Alert variant="warning" className="mb-4">API responses are stored in local storage and can slow down this application.  You can <Button variant="link" className="p-0 text-reset important" style={{ 'verticalAlign': 'inherit' }} onClick={clearResponses}>clear</Button> these responses to improve the experience.</Alert>}
         {app.responses.length ?
           <ul>

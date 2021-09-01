@@ -30,7 +30,7 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
     entity.zip = e.target.zip ? e.target.zip.value : '';
     entity.phone = e.target.phone ? e.target.phone.value : '';
     entity.email = e.target.email ? e.target.email.value : '';
-    entity.dateOfBirth = e.target.dateOfBirth ? e.target.dateOfBirth.value : '';
+    if(app.settings.preferredKycLevel !== RECEIVE_ONLY_KYC) entity.dateOfBirth = e.target.dateOfBirth ? e.target.dateOfBirth.value : '';
     entity.ssn = e.target.ssn ? e.target.ssn.value : '';
     entity.cryptoAddress = wallet.address;
     entity.flow = app.settings.flow;

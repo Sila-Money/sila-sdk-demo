@@ -44,9 +44,13 @@
       margin: 0;
       padding: 0;
     }
+    &.scroll{
+      height: 61vh;
+      overflow-y: auto;
+    }
   }
   .tip-container{
-    position: absolute ;
+    position: relative;
     height: 185px;
     bottom: 0px;
     left: 0px;
