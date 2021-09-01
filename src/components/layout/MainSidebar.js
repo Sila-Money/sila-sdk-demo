@@ -80,6 +80,10 @@ const Response = ({ response, index, onLoad, onLoaded }) => {
   );
 };
 
+const FeedbackTip = ({clsName}) => {
+  return (<p className={clsName}>As you move through the demo, helpful tips will pop up in this space. Have feedback for us? Leave your questions and comments <a href="https://forms.gle/yMifytN38TcUDed3A" target="_blank" rel="noopener noreferrer">here!</a></p>);
+};
+
 const Tips = () => {
   const location = useLocation();
   const [tipsList, setTipsList] = useState([]);
@@ -102,7 +106,14 @@ const Tips = () => {
             </Carousel.Caption>
           </div>
         </Carousel.Item>)}
-      </Carousel> : <p className="text-muted mr-5">As you move through the demo, helpful tips will pop up in this space. Have feedback for us? Leave your questions and comments <a href="https://forms.gle/yMifytN38TcUDed3A" target="_blank" rel="noopener noreferrer">here!</a></p>}
+        <Carousel.Item key={tipsList.length+1}>
+          <div className="tip-main">
+            <Carousel.Caption className="p-0 position-relative">
+              <FeedbackTip clsName="m-0 pr-1" />
+            </Carousel.Caption>
+          </div>
+        </Carousel.Item>
+      </Carousel> : <FeedbackTip clsName="text-muted mr-5" />}
     </>
   );
 };
