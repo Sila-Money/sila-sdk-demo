@@ -66,22 +66,22 @@ const Response = ({ response, index, onLoad, onLoaded }) => {
     <li className={classes}>
       {response.endpoint && <p onClick={() => setOpen(!open)} className="mb-1 endpoint font-weight-bold loaded">From endpoint {response.endpoint}:</p>}
       <Collapse in={open}>
-      {response.alert ? <AlertMessage noHide message={response.message} style={response.style} /> : response.result ?
-        <SyntaxHighlighter
-          className="result loaded"
-          language="json"
-          style={syntaxTheme}
-          customStyle={{ background: 'transparent', padding: 0, whiteSpace: 'pre-wrap' }}
-          wrapLines={true}>
-          {response.result}
-        </SyntaxHighlighter> : <span>{response}</span>}
+        {response.alert ? <AlertMessage noHide message={response.message} style={response.style} /> : response.result ?
+          <SyntaxHighlighter
+            className="result loaded"
+            language="json"
+            style={syntaxTheme}
+            customStyle={{ background: 'transparent', padding: 0, whiteSpace: 'pre-wrap' }}
+            wrapLines={true}>
+            {response.result}
+          </SyntaxHighlighter> : <span>{response}</span>}
       </Collapse>
     </li>
   );
 };
 
-const FeedbackTip = ({clsName}) => {
-  return (<p className={clsName}>As you move through the demo, helpful tips will pop up in this space. Have feedback for us? Leave your questions and comments <a href="https://forms.gle/yMifytN38TcUDed3A" target="_blank" rel="noopener noreferrer">here!</a></p>);
+const FeedbackTip = () => {
+  return (<p className="text-muted mb-0">As you move through the demo, helpful tips will pop up in this space. Have feedback for us? Leave your questions and comments <a href="https://forms.gle/yMifytN38TcUDed3A" target="_blank" rel="noopener noreferrer">here!</a></p>);
 };
 
 const Tips = () => {
@@ -97,23 +97,17 @@ const Tips = () => {
 
   return (
     <>
-      {(tipsList.length > 0) ? <Carousel controls={true} indicators={false}>
+      {(tipsList.length > 0) ? <Carousel className="px-4" controls={true} indicators={false}>
         {tipsList && tipsList.map((tipLabel, tipKey) => <Carousel.Item key={tipKey}>
-          <div className="tip-main">
-            <img className="p-0" src={tipIcon} alt={tipLabel} />
-            <Carousel.Caption className="p-0 position-relative">
-              <p className="m-0 pr-1">{tipLabel}</p>
-            </Carousel.Caption>
+          <div className="d-flex align-items-center pl-5">
+            <img className="ml-n5 mr-3 icon" src={tipIcon} alt={tipLabel} />
+            <p className="mb-0 text-muted">{tipLabel}</p>
           </div>
         </Carousel.Item>)}
-        <Carousel.Item key={tipsList.length+1}>
-          <div className="tip-main">
-            <Carousel.Caption className="p-0 position-relative">
-              <FeedbackTip clsName="m-0 pr-1" />
-            </Carousel.Caption>
-          </div>
+        <Carousel.Item key={tipsList.length + 1}>
+          <FeedbackTip />
         </Carousel.Item>
-      </Carousel> : <FeedbackTip clsName="text-muted mr-5" />}
+      </Carousel> : <FeedbackTip />}
     </>
   );
 };
@@ -132,29 +126,36 @@ const MainSidebar = () => {
   }, []);
 
   return (
-    <Col
-      as="aside"
-      className="main-sidebar col-12 d-none d-md-flex flex-column overflow-auto"
-      lg={{ span: 4 }}
-      md={{ span: 4 }}
-    >
-      {loading && <Loader />}
-      <div className="response-header d-flex justify-content-between align-items-top p-4">
-        <h1 className="m-0">Response</h1>
-        {app.responses.length !== 0 && <Button variant="link" className="p-0" onClick={clearResponses}>Clear</Button>}
-      </div>
-      <div className="response-results pb-4 px-4 scroll">
-        {app.responses.length > 39 && <Alert variant="warning" className="mb-4">API responses are stored in local storage and can slow down this application.  You can <Button variant="link" className="p-0 text-reset important" style={{ 'verticalAlign': 'inherit' }} onClick={clearResponses}>clear</Button> these responses to improve the experience.</Alert>}
-        {app.responses.length ?
-          <ul>
-            {app.responses.map((response, index) => <Response response={response} index={index} onLoad={() => setLoading(true)} onLoaded={() => setLoading(false)} key={index} />)}
-          </ul> : app.auth.handle ? <p>Submit a request to see the response.</p> : <AlertMessage noHide message="App Credentials are required before using this app." />}
-      </div>
-      <div className="response-results pb-4 px-4 border-top border-light tip-container">
-        <h1 >Tips:</h1>
-        <Tips></Tips>
-      </div>
-    </Col>
+    <>
+      <Col
+        as="section"
+        className="main-sidebar col-12 d-none d-md-flex flex-column overflow-auto"
+        lg={{ span: 4 }}
+        md={{ span: 4 }}
+      >
+        {loading && <Loader />}
+        <div className="response-header d-flex justify-content-between align-items-top p-4">
+          <h1 className="m-0">Response</h1>
+          {app.responses.length !== 0 && <Button variant="link" className="p-0" onClick={clearResponses}>Clear</Button>}
+        </div>
+        <div className="response-results pb-4 px-4">
+          {app.responses.length > 39 && <Alert variant="warning" className="mb-4">API responses are stored in local storage and can slow down this application.  You can <Button variant="link" className="p-0 text-reset important" style={{ 'verticalAlign': 'inherit' }} onClick={clearResponses}>clear</Button> these responses to improve the experience.</Alert>}
+          {app.responses.length ?
+            <ul>
+              {app.responses.map((response, index) => <Response response={response} index={index} onLoad={() => setLoading(true)} onLoaded={() => setLoading(false)} key={index} />)}
+            </ul> : app.auth.handle ? <p>Submit a request to see the response.</p> : <AlertMessage noHide message="App Credentials are required before using this app." />}
+        </div>
+      </Col>
+      <Col
+        as="aside"
+        className="tip-container d-none d-md-block px-4 border-top border-light"
+        lg={{ span: 4 }}
+        md={{ span: 4 }}
+      >
+        <h2 className="position-absolute mt-4 mb-0">Tips:</h2>
+        <Tips />
+      </Col>
+    </>
   );
 }
 
