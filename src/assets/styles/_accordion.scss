@@ -1,0 +1,42 @@
+$no-repeat:no-repeat;
+$borderNone: none;
+$backgroundTransparent: transparent;
+.accordion > .card:not(:last-of-type){
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+.btn-save{
+  color: $white !important;
+  padding: 5px 15px !important;
+}
+.registered-data{
+  th:first-child{
+    width: 35%;
+  }
+  th:last-child{
+    width: 15%;
+  }
+  .collapse{
+    .accordion-icon{
+      background-image: url(../images/accordion_plus.svg);
+      height: 26px;
+      width: 26px;
+      border: $borderNone;
+      background-color: $backgroundTransparent;
+      background-repeat:$no-repeat;
+    }
+  }
+.expand{
+    .accordion-icon{
+      background-image: url(../images/accordion_minus.svg);
+      background-repeat:$no-repeat;
+      height: 4px;
+      width: 26px;
+      border: $borderNone;
+      background-color: $backgroundTransparent;
+    }
+  }
+  .form-control{
+    padding: 8px 12px;
+    background-color: transparent;
+  }
+}

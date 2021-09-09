@@ -20,7 +20,7 @@ const KycModal = ({ show, onHide }) => {
             </Card.Header>
             <Card.Body>
               <Card.Text>
-                <p>This level contains full KYC, meaning information about the indivudal is reviewed, including full name, home address, SSN, phone number, birthdate, and email. With this level of KYC, an end-user can send up to $499.99 a day, and there are no limits on receiving.</p>
+                This level contains full KYC, meaning information about the indivudal is reviewed, including full name, home address, SSN, phone number, birthdate, and email. With this level of KYC, an end-user can send up to $499.99 a day, and there are no limits on receiving.
               </Card.Text>
             </Card.Body>
           </Card>
@@ -30,7 +30,7 @@ const KycModal = ({ show, onHide }) => {
             </Card.Header>
             <Card.Body>
               <Card.Text>
-                <p>This level allows you to skip third party verification and only provide the minimal amount of information (name, email, phone number, date of birth). These entities have limited transaction capabilities in regards to amounts, funds held, and funds flow. The transaction limit is $299.99 per end-user per week. This level is great for P2P and PFM apps who want to streamline onboarding.</p>
+                This level allows you to skip third party verification and only provide the minimal amount of information (name, email, phone number, date of birth). These entities have limited transaction capabilities in regards to amounts, funds held, and funds flow. The transaction limit is $299.99 per end-user per week. This level is great for P2P and PFM apps who want to streamline onboarding.
               </Card.Text>
             </Card.Body>
           </Card>
@@ -40,7 +40,7 @@ const KycModal = ({ show, onHide }) => {
             </Card.Header>
             <Card.Body>
               <Card.Text>
-                <p>Oftentimes customers need to onboard an entity that exists solely to receive payments. In this instance the individual does not need to pass KYC, as long as they are receiving payment from a fully KYC’d/KYB’d entity. This level allows you to skip third party verification and only provide the minimal amount of information. This entity is limited to receiving funds only from a full KYC/KYB source, they may not issue or transfer.</p>
+                Oftentimes customers need to onboard an entity that exists solely to receive payments. In this instance the individual does not need to pass KYC, as long as they are receiving payment from a fully KYC’d/KYB’d entity. This level allows you to skip third party verification and only provide the minimal amount of information. This entity is limited to receiving funds only from a full KYC/KYB source, they may not issue or transfer.
               </Card.Text>
             </Card.Body>
           </Card>
@@ -50,7 +50,7 @@ const KycModal = ({ show, onHide }) => {
             </Card.Header>
             <Card.Body>
               <Card.Text>
-                <p>This level allows for speedy ACH transactions to trusted end-users. It contains full KYC and requires an end-user to have a Plaid-linked bank account and undergo device registration and SMS opt-in and confirmation. Each transaction will also go through a risk assessment to estimate the risk of an ACH return. With this level, transactions have limits of $299.99.</p>
+                This level allows for speedy ACH transactions to trusted end-users. It contains full KYC and requires an end-user to have a Plaid-linked bank account and undergo device registration and SMS opt-in and confirmation. Each transaction will also go through a risk assessment to estimate the risk of an ACH return. With this level, transactions have limits of $299.99.
               </Card.Text>
             </Card.Body>
           </Card>
