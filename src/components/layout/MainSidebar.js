@@ -80,8 +80,8 @@ const Response = ({ response, index, onLoad, onLoaded }) => {
   );
 };
 
-const FeedbackTip = () => {
-  return (<p className="text-muted mb-0">As you move through the demo, helpful tips will pop up in this space. Have feedback for us? Leave your questions and comments <a href="https://forms.gle/yMifytN38TcUDed3A" target="_blank" rel="noopener noreferrer">here!</a></p>);
+const FeedbackTip = ({clsName}) => {
+  return (<p className={`${clsName} text-muted mb-0`}>As you move through the demo, helpful tips will pop up in this space. Have feedback for us? Leave your questions and comments <a href="https://forms.gle/yMifytN38TcUDed3A" target="_blank" rel="noopener noreferrer">here!</a></p>);
 };
 
 const Tips = () => {
@@ -107,7 +107,7 @@ const Tips = () => {
         <Carousel.Item key={tipsList.length + 1}>
           <FeedbackTip />
         </Carousel.Item>
-      </Carousel> : <FeedbackTip />}
+      </Carousel> : <FeedbackTip clsName="mt-4 pt-5" />}
     </>
   );
 };
