@@ -15,14 +15,6 @@ export const STATES_ARRAY = [{
     label: 'Arkansas'
   },
   {
-    value: 'AS',
-    label: 'American Samoa'
-  },
-  {
-    value: 'XB',
-    label: 'Baker Island'
-  },
-  {
     value: 'CA',
     label: 'California'
   },
@@ -49,10 +41,6 @@ export const STATES_ARRAY = [{
   {
     value: 'GA',
     label: 'Georgia'
-  },
-  {
-    value: 'GU',
-    label: 'Guam'
   },
   {
     value: 'HI',
@@ -119,10 +107,6 @@ export const STATES_ARRAY = [{
     label: 'Montana'
   },
   {
-    value: 'MI',
-    label: 'Midway Atoll'
-  },
-  {
     value: 'NE',
     label: 'Nebraska'
   },
@@ -155,10 +139,6 @@ export const STATES_ARRAY = [{
     label: 'North Dakota'
   },
   {
-    value: 'MP',
-    label: 'Northern Mariana Islands'
-  },
-  {
     value: 'OH',
     label: 'Ohio'
   },
@@ -177,10 +157,6 @@ export const STATES_ARRAY = [{
   {
     value: 'PR',
     label: 'Puerto Rico'
-  },
-  {
-    value: 'XL',
-    label: 'Palmyra Atoll'
   },
   {
     value: 'RI',
@@ -213,10 +189,6 @@ export const STATES_ARRAY = [{
   {
     value: 'VA',
     label: 'Virginia'
-  },
-  {
-    value: 'VI',
-    label: 'US Virgin Islands'
   },
   {
     value: 'WA',
