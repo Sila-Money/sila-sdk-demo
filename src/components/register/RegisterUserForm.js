@@ -3,7 +3,12 @@ import { Form, Button } from 'react-bootstrap';
 
 import { useAppContext } from '../../components/context/AppDataProvider';
 
-import { KYC_ARRAY } from '../../constants';
+import DefaultKYCForm from '../../components/register/DefaultKYCForm';
+import KYCLiteForm from '../../components/register/KYCLiteForm';
+import ReceiveOnlyKYCForm from '../../components/register/ReceiveOnlyKYCForm';
+import InstantAchKYCForm from '../../components/register/InstantAchKYCForm';
+
+import { DEFAULT_KYC, LITE_KYC, RECEIVE_ONLY_KYC, INSTANT_ACH_KYC, KYC_ARRAY } from '../../constants';
 
 const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onShowKycModal }) => {
   const { app, api, refreshApp, handleError, updateApp, setAppData } = useAppContext();
@@ -19,14 +24,14 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
     entity.handle = handle;
     entity.firstName = e.target.firstName.value;
     entity.lastName = e.target.lastName.value;
-    entity.address = e.target.address.value;
-    entity.city = e.target.city.value;
-    entity.state = e.target.state.value;
-    entity.zip = e.target.zip.value;
-    entity.phone = e.target.phone.value;
-    entity.email = e.target.email.value;
-    entity.dateOfBirth = e.target.dateOfBirth.value;
-    entity.ssn = e.target.ssn.value;
+    entity.address = e.target.address ? e.target.address.value : '';
+    entity.city = e.target.city ? e.target.city.value : '';
+    entity.state = e.target.state ? e.target.state.value : '';
+    entity.zip = e.target.zip ? e.target.zip.value : '';
+    entity.phone = e.target.phone ? e.target.phone.value : '';
+    entity.email = e.target.email ? e.target.email.value : '';
+    if(app.settings.preferredKycLevel !== RECEIVE_ONLY_KYC) entity.dateOfBirth = e.target.dateOfBirth ? e.target.dateOfBirth.value : '';
+    entity.ssn = e.target.ssn ? e.target.ssn.value : '';
     entity.cryptoAddress = wallet.address;
     entity.flow = app.settings.flow;
     try {
@@ -94,6 +99,10 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
       </Form.Group>
 
       {app.settings.preferredKycLevel || '' ? <p className="text-right text-lg text-warning">All fields are required for this KYC level.</p> : <p className="text-right text-muted"><Button variant="link" className="text-reset font-italic p-0 text-decoration-none" onClick={() => onShowKycModal(true)}><span className="lnk">What's the difference between these KYC levels?</span><i className="sila-icon sila-icon-info text-primary ml-2"></i></Button></p>}
+      {app.settings.preferredKycLevel === DEFAULT_KYC && <DefaultKYCForm errors={errors}></DefaultKYCForm>}
+      {app.settings.preferredKycLevel === LITE_KYC && <KYCLiteForm errors={errors}></KYCLiteForm>}
+      {app.settings.preferredKycLevel === RECEIVE_ONLY_KYC && <ReceiveOnlyKYCForm errors={errors}></ReceiveOnlyKYCForm>}
+      {app.settings.preferredKycLevel === INSTANT_ACH_KYC && <InstantAchKYCForm errors={errors}></InstantAchKYCForm>}
 
       {children}
     </Form>

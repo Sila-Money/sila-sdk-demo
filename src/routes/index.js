@@ -78,7 +78,10 @@ export default [
     restricted: false,
     title: 'Register User',
     path: '/register_user',
-    component: RegisterUser
+    component: RegisterUser,
+    tips: [
+      "Look for a text message to the number provided in order to opt-in for SMS notifications!"
+    ]
   },
   {
     restricted: true,

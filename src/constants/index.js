@@ -1,3 +1,15 @@
+export const DEFAULT_KYC = 'DEFAULT';
+
+export const LITE_KYC = 'KYC-LITE';
+
+export const RECEIVE_ONLY_KYC = 'RECEIVE_ONLY';
+
+export const INSTANT_ACH_KYC = 'INSTANT-ACH';
+
+export const KYB_STANDARD = 'KYB-STANDARD';
+
+export const KYB_LITE = 'KYB-LITE';
+
 export const KYC_ARRAY = [{
     value: 'DEFAULT',
     label: 'Default KYC'
