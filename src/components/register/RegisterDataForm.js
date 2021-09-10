@@ -27,7 +27,7 @@ const RegisterDataForm = ({ app }) => {
               if (app.activeUser && app.activeUser[fieldsOption.value]) {
                 return (<tr key={index}>
                   <td>{fieldsOption.label}</td>
-                  <td>{fieldsOption.label === 'State' ? STATES_ARRAY.map((u) => { return u.value === app.activeUser[fieldsOption.value] ? u.label : '' }) : app.activeUser[fieldsOption.value]}</td>
+                  <td>{fieldsOption.label === 'State' ? STATES_ARRAY.map((s) => { return s.value === app.activeUser[fieldsOption.value] ? s.label : '' }) : app.activeUser[fieldsOption.value]}</td>
                   <td>
                     <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none">
                       <i className="sila-icon sila-icon-edit text-lg"></i>

@@ -176,3 +176,15 @@ select.form-control option[value=""] {
 .was-validated .form-control:valid.is-invalid {
   border-color: $danger;
 }
+
+.was-validated .custom-control-input:valid ~ .custom-control-label::before,
+.was-validated .custom-control-input:valid:checked ~ .custom-control-label::before,
+.was-validated .custom-control-input:valid:focus ~ .custom-control-label::before {
+  border-color: $border-color;
+  background-color: transparent;
+  outline: none;
+  box-shadow: none;
+}
+.was-validated .custom-control-input:valid:focus:not(:checked) ~ .custom-control-label::before {
+  border-color:$primary;
+}
