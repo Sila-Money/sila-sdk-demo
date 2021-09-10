@@ -3,31 +3,6 @@
 .main-sidebar {
   background: $main-sidebar-background;
 
-  .tip-main{
-    display: flex;
-    align-items:flex-start;
-    justify-content:flex-start;
-    padding: 20px 40px 0 0px;
-    margin-right: 20px;
-    img{
-      position: relative;
-      left: 15px;
-    }
-  }
-  .carousel-control-prev{
-    left: -10px;
-    width: 9px;
-  }
-  .carousel-control-next{
-    right: -10px;
-    width: 9px;
-  }
-  .carousel-control-prev-icon {
-    background-image: url(../../images/arrow_left.svg);
-  }
-  .carousel-control-next-icon {
-    background-image: url(../../images/arrow_right.svg);
-  }
   .response-header {
     background: $main-sidebar-background;
     position: sticky;
@@ -39,55 +14,11 @@
   .response-results {
     position: relative;
     z-index: 1;
+
     ul {
       list-style: none;
       margin: 0;
       padding: 0;
-    }
-    &.scroll{
-      height: 61vh;
-      overflow-y: auto;
-    }
-  }
-  .tip-container{
-    position: relative;
-    height: 185px;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
-    overflow: hidden;
-    h1{
-      font-family: $font-family-base;
-      margin-top: 30px;
-      color: $gray-darker;
-      font-weight: bold;
-      font-size: 28px;
-      line-height: 34px;
-      letter-spacing: 0.03em;
-    }
-    .helpful-tips{
-      color:$gray-medium;
-      font-family: $font-family-base;
-      text-align: left;
-      font-weight: 500;
-      font-size: 14px;
-      line-height: 17px;
-      letter-spacing: 0.03em;
-      padding: 10px 40px 0 0px;
-    }
-    .carousel-caption{
-      bottom: 0px;
-      left: 20px;
-      p{
-        color:$gray-medium;
-        font-family: $font-family-base;
-        text-align: left;
-        font-weight: 500;
-        font-size: 14px;
-        line-height: 17px;
-        letter-spacing: 0.03em;
-        padding: 0 10px;
-      }
     }
   }
 
@@ -99,6 +30,7 @@
 
     .endpoint {
       cursor: pointer;
+
       &::before {
         content: "\f13a";
         @include fas-icon;
@@ -148,12 +80,63 @@
   }
 }
 
+.tip-container {
+  background: $main-sidebar-background;
+  overflow: hidden;
+
+  .carousel,
+  .carousel-inner,
+  .carousel-item {
+    height: 100%;
+  }
+
+  .carousel {
+    padding-top: 70px;
+  }
+
+  .carousel-control-prev,
+  .carousel-control-next {
+    width: 9px;
+  }
+
+  .carousel-control-prev {
+    left: -10px;
+  }
+
+  .carousel-control-next {
+    right: -10px;
+  }
+
+  .carousel-control-prev-icon {
+    background-image: url(../../images/arrow_left.svg);
+  }
+
+  .carousel-control-next-icon {
+    background-image: url(../../images/arrow_right.svg);
+  }
+}
+
 @include media-breakpoint-up(sm) {
   .main-sidebar {
     top: $main-navbar-height;
     right: 0;
     position: fixed;
     z-index: 2;
-    height: calc(100vh - #{$main-navbar-height} - 1px);
+    height: calc(100vh - #{$main-navbar-height} - #{$main-navbar-tip-height} - 1px);
+  }
+
+  .tip-container {
+    position: fixed;
+    height: $main-navbar-tip-height;
+    bottom: 0px;
+    right: 0px;
+  }
+}
+
+@include media-breakpoint-down(md) {
+  .tip-container {
+    p {
+      font-size: $font-size-sm
+    }
   }
 }
