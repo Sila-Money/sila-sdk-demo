@@ -25,6 +25,7 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
     console.log('Waking up the API service ...');
 
     setLoaded(false);
+    let ApiEndpoint;
     let updatedEntityData = {};
     let updatedResponses = [];
     let validationErrors = {};
@@ -72,7 +73,7 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
             emailUpdateData.email = e.target.email ? e.target.email.value : '';
             emailUpdateData.uuid = entityRes.data.emails[0] ? entityRes.data.emails[0]['uuid'] : '';
 
-            let ApiEndpoint = '/add/email';
+            ApiEndpoint = '/add/email';
             let emailRes = {};
             if (entityRes.data.emails.length) {
               emailRes = await api.updateEmail(app.activeUser.handle, app.activeUser.private_key, emailUpdateData);
@@ -103,7 +104,7 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
         if (preferredKyc === INSTANT_ACH_KYC && e.target.smsOptIn && e.target.smsOptIn.checked !== app.activeUser.smsOptIn) phoneUpdateData.smsOptIn = (e.target.smsOptIn && e.target.smsOptIn.checked) ? true : false
         if (Object.keys(phoneUpdateData).length) {
           try {
-            let ApiEndpoint = '/add/phone';
+            ApiEndpoint = '/add/phone';
             let phoneRes = {};
             if (entityRes.data.phones.length) {
               phoneUpdateData.phone = e.target.phone ? e.target.phone.value : '';
@@ -139,7 +140,7 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
           identityUpdateData.alias = 'SSN';
           identityUpdateData.value = e.target.ssn ? e.target.ssn.value : '';
           try {
-            let ApiEndpoint = '/add/identity';
+            ApiEndpoint = '/add/identity';
             let ssnRes = {};
             if (entityRes.data.identities.length) {
               identityUpdateData.uuid = entityRes.data.identities[0] ? entityRes.data.identities[0]['uuid'] : '';
@@ -172,7 +173,7 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
         if (e.target.zip.value !== app.activeUser.zip) addressUpdateData.postal_code = e.target.zip ? e.target.zip.value : '';
         if (Object.keys(addressUpdateData).length) {
           try {
-            let ApiEndpoint = '/add/address';
+            ApiEndpoint = '/add/address';
             let addressRes = {};
             if (entityRes.data.addresses.length) {
               addressUpdateData.uuid = entityRes.data.addresses[0] ? entityRes.data.addresses[0]['uuid'] : '';

@@ -23,23 +23,19 @@ const RegisterDataForm = ({ app }) => {
             </tr>
           </thead>
           <tbody>
-            {KYC_REGISTER_FIELDS_ARRAY.map((fieldsOption, index) => {
-              if (app.activeUser && app.activeUser[fieldsOption.value]) {
-                return (<tr key={index}>
-                  <td>{fieldsOption.label}</td>
-                  <td>{fieldsOption.label === 'State' ? STATES_ARRAY.map((s) => { return s.value === app.activeUser[fieldsOption.value] ? s.label : '' }) : app.activeUser[fieldsOption.value]}</td>
-                  <td>
-                    <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none">
-                      <i className="sila-icon sila-icon-edit text-lg"></i>
-                    </Button>
-                    <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none">
-                      <i className="sila-icon sila-icon-delete text-lg ml-3"></i>
-                    </Button>
-                  </td>
-                </tr>)
-              } else {
-                return (null)
-              }
+            {KYC_REGISTER_FIELDS_ARRAY.filter(fieldsOption => app.activeUser && app.activeUser[fieldsOption.value]).map((fieldsOption, index) => {
+              return (<tr key={index}>
+                <td>{fieldsOption.label}</td>
+                <td>{fieldsOption.label === 'State' ? STATES_ARRAY.map((s) => { return s.value === app.activeUser[fieldsOption.value] ? s.label : '' }) : app.activeUser[fieldsOption.value]}</td>
+                <td>
+                  <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none">
+                    <i className="sila-icon sila-icon-edit text-lg"></i>
+                  </Button>
+                  <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none">
+                    <i className="sila-icon sila-icon-delete text-lg ml-3"></i>
+                  </Button>
+                </td>
+              </tr>)
             })}
           </tbody>
         </Table>
@@ -47,7 +43,7 @@ const RegisterDataForm = ({ app }) => {
       <div className="mt-3">
         <div className="row mx-2">
           <div className="sms-notifications p-0 col-md-9 col-sm-12">
-            {(app.activeUser && app.activeUser.smsOptIn) && <div className="text-left">SMS Notifications: <span>Requested</span></div>}
+            {(app.activeUser && app.activeUser.smsOptIn) && <div className="text-left">SMS Notifications: <span className="text-primary">Requested</span></div>}
           </div>
           <div className="p-0 text-right col-md-3 col-sm-12">
             <Button variant="link" className="p-0 new-registration shadow-none">Add new registration data+</Button>
