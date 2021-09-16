@@ -7,9 +7,11 @@ import Pagination from '../../components/common/Pagination';
 import AlertMessage from '../../components/common/AlertMessage';
 import RegisterUserForm from '../../components/register/RegisterUserForm';
 import KycModal from '../../components/home/KycModal';
+import ConfirmModal from '../../components/common/ConfirmModal';
 
 const RegisterUser = ({ page, previous, next, isActive }) => {
   const [show, setShow] = useState(false);
+  const [confirm, setConfirm] = useState({ show: false, message: '', onSuccess: () => { }, onHide: () => { } });
   const { app, setAppData, updateApp } = useAppContext();
 
   const registerUser = (user) => {
@@ -32,7 +34,7 @@ const RegisterUser = ({ page, previous, next, isActive }) => {
 
       {!app.activeUser && <p className="text-muted mb-5">This page represents <a href="https://docs.silamoney.com/docs/register" target="_blank" rel="noopener noreferrer">/register</a> functionality.</p>}
 
-      <RegisterUserForm handle={app.settings.kycHandle} onSuccess={registerUser} onShowKycModal={(isShow) => setShow(isShow)}>
+      <RegisterUserForm handle={app.settings.kycHandle} onSuccess={registerUser} onShowKycModal={(isShow) => setShow(isShow)} onConfirm={setConfirm}>
 
         {app.settings.preferredKycLevel && !app.activeUser && <Alert variant="info" className="mt-4 mb-5">A wallet is automatically generated for you using the generateWallet() function upon registration.</Alert>}
 
@@ -49,6 +51,7 @@ const RegisterUser = ({ page, previous, next, isActive }) => {
         currentPage={page} />
 
       <KycModal show={show} onHide={() => setShow(false)} />
+      <ConfirmModal show={confirm.show} message={confirm.message} onHide={confirm.onHide} buttonLabel="Delete" onSuccess={confirm.onSuccess} />
 
     </Container>
   )
