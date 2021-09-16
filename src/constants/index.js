@@ -42,6 +42,48 @@ export const KYB_ARRAY = [{
   }
 ];
 
+export const KYC_REGISTER_FIELDS_ARRAY = [{
+    value: 'firstName',
+    label: 'First Name'
+  },
+  {
+    value: 'lastName',
+    label: 'Last Name'
+  },
+  {
+    value: 'email',
+    label: 'Email'
+  },
+  {
+    value: 'phone',
+    label: 'Phone Number'
+  },
+  {
+    value: 'dateOfBirth',
+    label: 'Date of Birth'
+  },
+  {
+    value: 'ssn',
+    label: 'Social Security Number'
+  },
+  {
+    value: 'address',
+    label: 'Street Address'
+  },
+  {
+    value: 'city',
+    label: 'City'
+  },
+  {
+    value: 'state',
+    label: 'State'
+  },
+  {
+    value: 'zip',
+    label: 'ZIP'
+  }
+];
+
 export const STATES_ARRAY = [{
     value: 'AL',
     label: 'Alabama'

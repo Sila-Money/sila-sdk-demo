@@ -9,10 +9,22 @@
   td {
     border-color: $border-color-light;
   }
+  td{
+    color: $gray-dark;
+    font-size: 16px;
+    line-height: 19px;
+    letter-spacing: 0.03em;
+    vertical-align: middle;
+  }
   thead {
     th {
       border: 0;
       font-weight: 400;
+      background-color: $thGray;
+      color: $thText;
+      font-size: 18px;
+      line-height: 22px;
+      letter-spacing: 0.03em;
     }
   }
 

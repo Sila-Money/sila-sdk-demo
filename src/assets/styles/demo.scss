@@ -26,6 +26,7 @@
 @import "popover";
 @import "tooltip";
 @import "utilities";
+@import "accordion";
 
 // Layout
 @import "layout/main-navbar";
@@ -42,4 +43,4 @@
 // Views
 @import "views/transact";
 @import "views/certify";
-
+@import "views/registeruser"
