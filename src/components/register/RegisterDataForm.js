@@ -9,10 +9,10 @@ import KYCFormFieldType from '../../components/register/KYCFormFieldType';
 import { KYC_REGISTER_FIELDS_ARRAY, STATES_ARRAY } from '../../constants';
 
 
-const RegisterDataForm = ({ errors, onLoaded, onErrors }) => {
+const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => {
   const [expanded, setExpanded] = useState(1);
   const [activeKey, setActiveKey] = useState(1);
-  const [activeRow, setActiveRow] = useState({isEditing: false, fldName: '', fldValue: '', entityuuid: {} });
+  const [activeRow, setActiveRow] = useState({isEditing: false, isDeleting: false, fldName: '', fldValue: '', entityuuid: {} });
   const tbodyRef = useRef()
   const registeredItemRef = useRef(null);
   const accordionItemProps = { expanded, onSetExpanded: setExpanded }
@@ -207,6 +207,88 @@ const RegisterDataForm = ({ errors, onLoaded, onErrors }) => {
     }
   }
 
+  const onDelete = async (fieldName, fieldLabel) => {
+    setActiveRow({...activeRow, isDeleting: true, fldName: fieldName });
+
+    onConfirm({ show: true, message: `Are you sure you want to delete the ${fieldLabel} data point from the registered data?`, onSuccess: async () => {
+      let ApiEndpoint;
+      let deleteSuccess = false;
+      let deleteRes = {};
+      onLoaded(false);
+      onConfirm({show: false, message: ''});
+      try {
+        if (emailFields.includes(fieldName)) {
+          ApiEndpoint = 'email';
+          deleteRes = await api.deleteEmail(app.activeUser.handle, app.activeUser.private_key, activeRow.entityuuid.email);
+        } else if (phoneFields.includes(fieldName)) {
+          ApiEndpoint = 'phone';
+          deleteRes = await api.deletePhone(app.activeUser.handle, app.activeUser.private_key, activeRow.entityuuid.phone);
+        } else if (identityFields.includes(fieldName)) {
+          ApiEndpoint = 'identity';
+          deleteRes = await api.deleteIdentity(app.activeUser.handle, app.activeUser.private_key, activeRow.entityuuid.identity);
+          console.info(deleteRes);
+        } else if (addressFields.includes(fieldName)) {
+          ApiEndpoint = 'address';
+          deleteRes = await api.deleteAddress(app.activeUser.handle, app.activeUser.private_key, activeRow.entityuuid.address);
+        } else {
+          validationErrors = Object.assign({error: "Required registration data can not be deleted!"}, validationErrors.error);
+        }
+
+        if (ApiEndpoint) updatedResponses = [ ...updatedResponses, { endpoint: `/delete/${ApiEndpoint}`, result: JSON.stringify(deleteRes, null, '\t') } ];
+
+        if (deleteRes.data && deleteRes.data.success) {
+          deleteSuccess = true;
+          if (emailFields.includes(fieldName)) updatedEntityData = { ...updatedEntityData, email: '' };
+          if (phoneFields.includes(fieldName)) updatedEntityData = { ...updatedEntityData, phone: '' };
+          if (identityFields.includes(fieldName)) updatedEntityData = { ...updatedEntityData, ssn: '' };
+          if (addressFields.includes(fieldName)) updatedEntityData = { ...updatedEntityData, address: '', city: '', state: '', zip: '' };
+        }  else if (deleteRes.data && deleteRes.data.validation_details) {
+          validationErrors = Object.assign({error: deleteRes.data.validation_details.uuid}, validationErrors.error);
+        } else {
+          console.log(`... delete entity ${fieldName} failed!`, deleteRes);
+        }
+      } catch (err) {
+        console.log(`  ... unable to delete entity ${fieldName}, looks like we ran into an issue!`);
+        handleError(err);
+      }
+
+      try {
+        if (deleteSuccess) {
+          console.log(`  ... delete ${fieldName} field completed!`);
+
+          refreshApp();
+          const activeUser = app.users.find(u => u.handle === app.activeUser.handle);
+          updatedEntityData = { ...activeUser, ...updatedEntityData, kycLevel: app.settings.preferredKycLevel }
+          result = {
+            activeUser: { ...activeUser, ...updatedEntityData } ,
+            alert: { message: 'Registration data was successfully deleted.', type: 'success' }
+          };
+          appData = {
+            users: app.users.map(({ active, ...u }) => u.handle === app.activeUser.handle ? { ...u, ...updatedEntityData } : u),
+          };
+
+          setAppData({
+            ...appData,
+            responses: [...app.responses, ...updatedResponses]
+          }, () => {
+            updateApp({ ...result });
+          });
+        } else if ( Object.keys(validationErrors).length ) {
+          updateApp({ ...app, alert: { message: validationErrors.error, type: 'danger' } });
+        }
+      } catch (err) {
+        console.log('  ... looks like we ran into an issue!');
+        handleError(err);
+      }
+
+      setActiveRow({...activeRow, isDeleting: false, fldName: '' });
+      onLoaded(true);
+    }, onHide: () => {
+      onConfirm({show: false, message: ''});
+      setActiveRow({...activeRow, isDeleting: false, fldName: '' });
+    } })
+  }
+
   useEffect(() => {
     async function fetchEntity() {
       try {
@@ -261,7 +343,7 @@ const RegisterDataForm = ({ errors, onLoaded, onErrors }) => {
                     <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none" onClick={() => onEditToggle(fieldsOption.value, app.activeUser[fieldsOption.value])}>
                       <i className={`sila-icon sila-icon-edit text-lg ${activeRow.isEditing && activeRow.fldName === fieldsOption.value ? 'text-primary' : ''}`}></i>
                     </Button>
-                    {(activeRow.isEditing && activeRow.fldName === fieldsOption.value) ? <Button className="p-1 text-decoration-none mx-3 px-3" onClick={(e) => onSave(fieldsOption.value)} disabled={(!activeRow.fldValue || activeRow.fldValue === app.activeUser[fieldsOption.value]) ? true : false }>Save</Button> : <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none mx-4 px-3"><i className="sila-icon sila-icon-delete text-lg"></i></Button>}
+                    {(activeRow.isEditing && activeRow.fldName === fieldsOption.value) ? <Button className="p-1 text-decoration-none mx-3 px-3" onClick={(e) => onSave(fieldsOption.value)} disabled={(!activeRow.fldValue || activeRow.fldValue === app.activeUser[fieldsOption.value]) ? true : false }>Save</Button> : <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none mx-4 px-3" onClick={(e) => onDelete(fieldsOption.value, fieldsOption.label)}><i className={`sila-icon sila-icon-delete text-lg ${(activeRow.isDeleting && activeRow.fldName === fieldsOption.value) ? 'text-primary' : undefined }`}></i></Button>}
                   </div>
                 </td>
               </tr>)
