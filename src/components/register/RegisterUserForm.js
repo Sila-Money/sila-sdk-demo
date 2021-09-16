@@ -12,7 +12,7 @@ import RegisterDataForm from '../../components/register/RegisterDataForm';
 
 import { DEFAULT_KYC, LITE_KYC, RECEIVE_ONLY_KYC, INSTANT_ACH_KYC, KYC_ARRAY } from '../../constants';
 
-const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onShowKycModal, onConfirm }) => {
+const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onShowKycModal }) => {
   const { app, api, refreshApp, handleError, updateApp, setAppData } = useAppContext();
   const [validated, setValidated] = useState(false);
   const [errors, setErrors] = useState({});
@@ -343,7 +343,7 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
       {preferredKyc === RECEIVE_ONLY_KYC && <ReceiveOnlyKYCForm errors={errors} app={app} isHide={(app.activeUser && app.activeUser.kycLevel === RECEIVE_ONLY_KYC)} />}
       {preferredKyc === INSTANT_ACH_KYC && <InstantAchKYCForm errors={errors} app={app} isHide={(app.activeUser && app.activeUser.kycLevel === INSTANT_ACH_KYC)} />}
       {preferredKyc && (app.activeUser && app.activeUser.kycLevel !== preferredKyc) && <div className="d-flex mb-md-5"><Button type="submit" className="ml-auto" disabled={!(app.activeUser && app.activeUser.kycLevel !== app.settings.preferredKycLevel)}>Add data</Button></div>}
-      {app.activeUser && app.activeUser.handle && <RegisterDataForm errors={errors} onConfirm={onConfirm} onLoaded={(isLoaded) => setLoaded(isLoaded)} onErrors={(errorsObj) => { setErrors(errorsObj); setValidated(true); } } />}
+      {app.activeUser && app.activeUser.handle && <RegisterDataForm errors={errors} onLoaded={(isLoaded) => setLoaded(isLoaded)} onErrors={(errorsObj) => { setErrors(errorsObj); setValidated(true); } } />}
 
       {children}
     </Form>
