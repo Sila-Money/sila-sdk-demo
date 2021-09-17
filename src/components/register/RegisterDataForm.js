@@ -233,10 +233,10 @@ const RegisterDataForm = ({ errors, onLoaded, onErrors }) => {
       }
     }
 
-    document.addEventListener("mousedown", checkIfClickedOutside)
+    document.addEventListener('mousedown', checkIfClickedOutside)
 
     return () => {
-      document.removeEventListener("mousedown", checkIfClickedOutside)
+      document.removeEventListener('mousedown', checkIfClickedOutside)
     }
   }, [activeRow, api, app.activeUser.handle, app.activeUser.private_key])
 
@@ -257,7 +257,7 @@ const RegisterDataForm = ({ errors, onLoaded, onErrors }) => {
                 <td>{fieldsOption.label}</td>
                 <td>{activeRow.isEditing && activeRow.fldName === fieldsOption.value  ? <KYCFormFieldType fieldType={fieldsOption.value} errors={errors} app={app} onEditing={onEditing} onSave={onSave} /> : (fieldsOption.label === 'State') ? STATES_ARRAY.map((s) => { return s.value === app.activeUser[fieldsOption.value] ? s.label : '' }) : app.activeUser[fieldsOption.value]}</td>
                 <td>
-                  <div className="d-flex">
+                  <div className="d-flex py-2">
                     <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none" onClick={() => onEditToggle(fieldsOption.value, app.activeUser[fieldsOption.value])}>
                       <i className={`sila-icon sila-icon-edit text-lg ${activeRow.isEditing && activeRow.fldName === fieldsOption.value ? 'text-primary' : ''}`}></i>
                     </Button>
