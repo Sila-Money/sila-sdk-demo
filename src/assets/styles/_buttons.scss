@@ -106,3 +106,26 @@
     }
   }
 }
+
+.add-data{
+  &:not(:disabled) {
+    .btn-secondary{
+      background-color: $white;
+      border-color: $gray-light;
+      color: $gray-light;
+      &:hover{
+        text-decoration: none;
+      }
+    }
+  }
+
+  .btn{
+    &:disabled {
+      background: $disabled-gray !important;
+      color: $text-light-color !important;
+      &:not(.btn-link) {
+        border-color: transparent !important;
+      }
+    }
+  }
+}

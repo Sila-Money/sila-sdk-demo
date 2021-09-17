@@ -412,7 +412,7 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => {
           </div>
         </div>
 
-        {!activeRow.isEditing && !activeRow.isDeleting && activeRow.isAdding && <>
+        {!activeRow.isEditing && !activeRow.isDeleting && activeRow.isAdding && <div className="add-data">
           <h2 className="mb-4 mt-4">Add Data</h2>
           {!activeRow.fldName && <Form.Group controlId="chooseData" className="select">
             <Form.Control placeholder="Choose a data point to add" as="select" name="choose_data" onChange={onChooseAddDataToggle}>
@@ -421,16 +421,16 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => {
             </Form.Control>
           </Form.Group>}
 
-          {activeRow.fldName && <Form.Group controlId="addData" className="required mb-0">
+          {activeRow.fldName && <Form.Group controlId="addData" className="required">
             <KYCFormFieldType fieldType={activeRow.fldName} errors={errors} app={app} onEditing={onEditing} onSave={onSave} />
           </Form.Group>}
 
           <div className="text-right">
-            {activeRow.fldName && <Button variant="link" className="ml-auto" onClick={onChooseAddDataToggle}>Done</Button>}
-            {activeRow.fldName && <Button className="p-1 text-decoration-none mx-3 px-3 ml-3" disabled={!Boolean(activeRow.fldValue)} onClick={(e) => onSave(activeRow.fldName)}>Add Data</Button>}
-            {!activeRow.fldName && <Button variant="link" className="ml-3" onClick={onAddDataToggle}>Cancel</Button>}
+            {activeRow.fldName && <Button variant="link" className="ml-auto p-2 px-4 btn-secondary" onClick={onChooseAddDataToggle}>Done</Button>}
+            {activeRow.fldName && <Button className="text-decoration-none ml-3 p-2  px-4" disabled={!Boolean(activeRow.fldValue)} onClick={(e) => onSave(activeRow.fldName)}>Add Data</Button>}
+            {!activeRow.fldName && <Button variant="link" className="p-2 px-4 btn-secondary background-transparent" onClick={onAddDataToggle}>Cancel</Button>}
           </div>
-        </>}
+        </div>}
 
       </div>
     </Accordion>
