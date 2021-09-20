@@ -12,7 +12,7 @@ import { KYC_REGISTER_FIELDS_ARRAY, STATES_ARRAY } from '../../constants';
 const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => {
   const [expanded, setExpanded] = useState(1);
   const [activeKey, setActiveKey] = useState(1);
-  const [activeRow, setActiveRow] = useState({ isEditing: false, isDeleting: false, isAdding: false, fldName: '', fldValue: '', entityuuid: {} });
+  const [activeRow, setActiveRow] = useState({ isEditing: false, isDeleting: false, isAdding: false, fldName: '', fldValue: '', isFetchedUUID: false, entityuuid: {} });
   const tbodyRef = useRef()
   const registeredItemRef = useRef(null);
   const accordionItemProps = { expanded, onSetExpanded: setExpanded }
@@ -234,7 +234,7 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => {
             users: app.users.map(({ active, ...u }) => u.handle === app.activeUser.handle ? { ...u, ...updatedEntityData } : u),
           };
           if (Object.keys(errors).length || Object.keys(validationErrors).length) onErrors({});
-          setActiveRow({...activeRow, isEditing: activeRow.isEditing ? false : activeRow.isEditing, isDeleting: false, fldName: '', fldValue: '' });
+          setActiveRow({...activeRow, isEditing: activeRow.isEditing ? false : activeRow.isEditing, isDeleting: false, fldName: '', fldValue: '', isFetchedUUID: activeRow.isAdding ? false :  activeRow.isFetchedUUID });
         } else if ( Object.keys(validationErrors).length ) {
           onErrors(validationErrors);
         }
@@ -254,7 +254,7 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => {
   }
 
   const onDelete = async (fieldName, fieldLabel) => {
-    setActiveRow({...activeRow, isDeleting: true, fldName: fieldName });
+    setActiveRow({...activeRow, isDeleting: true, fldName: fieldName, isAdding: false });
 
     onConfirm({ show: true, message: `Are you sure you want to delete the ${fieldLabel} data point from the registered data?`, onSuccess: async () => {
       let deleteSuccess = false;
@@ -343,20 +343,22 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => {
   useEffect(() => {
     async function fetchEntity() {
       try {
+        onLoaded(false);
         const entityRes = await api.getEntity(app.activeUser.handle, app.activeUser.private_key);
         if (entityRes.data.success) {
-          setActiveRow({...activeRow, entityuuid: {
+          setActiveRow({...activeRow, isFetchedUUID: true, entityuuid: {
             email: entityRes.data.emails[0] ? entityRes.data.emails[0]['uuid'] : '',
             phone: entityRes.data.phones[0] ? entityRes.data.phones[0]['uuid'] : '',
             identity: entityRes.data.identities[0] ? entityRes.data.identities[0]['uuid'] : '',
             address: entityRes.data.addresses[0] ? entityRes.data.addresses[0]['uuid'] : ''
           } })
+          onLoaded(true);
         }
       } catch (err) {
         console.log('  ... unable to get entity info, looks like we ran into an issue!');
       }
     }
-    if (!Object.keys(activeRow.entityuuid).length) {
+    if (!Object.keys(activeRow.entityuuid).length || !activeRow.isFetchedUUID) {
       fetchEntity();
     }
 
