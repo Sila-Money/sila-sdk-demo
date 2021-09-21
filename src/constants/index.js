@@ -10,6 +10,8 @@ export const KYB_STANDARD = 'KYB-STANDARD';
 
 export const KYB_LITE = 'KYB-LITE';
 
+export const KYB_RECEIVE_ONLY = 'RECEIVE_ONLY';
+
 export const KYC_ARRAY = [{
     value: 'DEFAULT',
     label: 'Default KYC'
@@ -34,7 +36,7 @@ export const KYB_ARRAY = [{
   },
   {
     value: 'KYB-LITE',
-    label: 'KYC Lite'
+    label: 'KYB Lite'
   },
   {
     value: 'RECEIVE_ONLY',
