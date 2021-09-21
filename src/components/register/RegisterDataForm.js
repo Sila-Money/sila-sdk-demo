@@ -252,7 +252,6 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => {
       onLoaded(true);
     }
   }
-
   const onDelete = async (fieldName, fieldLabel) => {
     setActiveRow({...activeRow, isDeleting: true, fldName: fieldName, isAdding: false });
 
@@ -332,7 +331,6 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => {
       setActiveRow({...activeRow, isDeleting: false, fldName: '' });
     } })
   }
-
   const onAddDataToggle = (e) => {
     setActiveRow({...activeRow, isAdding: !activeRow.isAdding ? true : false, isEditing: false, isDeleting: false, fldName: '', fldValue: '' })
   }
@@ -373,7 +371,7 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => {
     return () => {
       document.removeEventListener("mousedown", checkIfClickedOutside)
     }
-  }, [activeRow, api, app.activeUser.handle, app.activeUser.private_key])
+  }, [activeRow, api, app.activeUser.handle, app.activeUser.private_key, onLoaded])
 
   return (
     <Accordion className="mb-3 mb-md-5" defaultActiveKey={expanded ? expanded : undefined} onSelect={e => setActiveKey(e)}>
