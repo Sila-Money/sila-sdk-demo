@@ -274,7 +274,7 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => {
           ApiEndpoint = 'address';
           deleteRes = await api.deleteAddress(app.activeUser.handle, app.activeUser.private_key, activeRow.entityuuid.address);
         } else {
-          validationErrors = Object.assign({error: "Required registration data can not be deleted!"}, validationErrors.error);
+          validationErrors = Object.assign({error: "Registration data can not be deleted because it is required for this KYC level."}, validationErrors.error);
         }
 
         if (ApiEndpoint) updatedResponses = [ ...updatedResponses, { endpoint: `/delete/${ApiEndpoint}`, result: JSON.stringify(deleteRes, null, '\t') } ];
@@ -426,9 +426,9 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => {
           </Form.Group>}
 
           <div className="text-right">
-            {activeRow.fldName && <Button variant="link" className="ml-auto p-2 px-4 btn-secondary" onClick={onChooseAddDataToggle}>Done</Button>}
+            {activeRow.fldName && <Button variant="outline-light" className="ml-auto p-2 px-4" onClick={onChooseAddDataToggle}>Done</Button>}
             {activeRow.fldName && <Button className="text-decoration-none ml-3 p-2  px-4" disabled={!Boolean(activeRow.fldValue)} onClick={(e) => onSave(activeRow.fldName)}>Add Data</Button>}
-            {!activeRow.fldName && <Button variant="link" className="p-2 px-4 btn-secondary background-transparent" onClick={onAddDataToggle}>Cancel</Button>}
+            {!activeRow.fldName && <Button variant="outline-light" className="p-2 px-4" onClick={onAddDataToggle}>Cancel</Button>}
           </div>
         </div>}
 
