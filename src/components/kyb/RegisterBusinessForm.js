@@ -35,7 +35,7 @@ const RegisterBusinessForm = ({ className, children, onShowKybModal }) => {
 
       <Form.Label className="text-muted mr-5">Please choose your preferred KYB level:</Form.Label>
       <SelectMenu fullWidth
-        title={preferredKyb ? KYB_ARRAY.find(option => option.value === preferredKyb).value : 'Choose KYB level'}
+        title={preferredKyb ? KYB_ARRAY.find(option => option.value === preferredKyb).label : 'Choose KYB level'}
         onChange={(value) => onKybLevelChange(value)}
         className="types mb-4"
         value={preferredKyb}
