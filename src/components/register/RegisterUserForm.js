@@ -12,7 +12,7 @@ import RegisterDataForm from '../../components/register/RegisterDataForm';
 
 import { DEFAULT_KYC, LITE_KYC, RECEIVE_ONLY_KYC, INSTANT_ACH_KYC, KYC_ARRAY } from '../../constants';
 
-const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onShowKycModal }) => {
+const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onShowKycModal, onConfirm }) => {
   const { app, api, refreshApp, handleError, updateApp, setAppData } = useAppContext();
   const [validated, setValidated] = useState(false);
   const [errors, setErrors] = useState({});
@@ -24,11 +24,58 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
     e.preventDefault();
     console.log('Waking up the API service ...');
 
+    let isValidated = true;
+    let validationErrors = {};
+    if (e.target.firstName && !e.target.firstName.value) {
+      isValidated = false;
+      validationErrors.entity = Object.assign({first_name: "This field may not be blank."}, validationErrors.entity);
+    }
+    if (e.target.lastName && !e.target.lastName.value) {
+      isValidated = false;
+      validationErrors.entity = Object.assign({last_name: "This field may not be blank."}, validationErrors.entity);
+    }
+    if (e.target.email && !e.target.email.value) {
+      isValidated = false;
+      validationErrors.contact = Object.assign({email: "This field may not be blank."}, validationErrors.contact);
+    }
+    if (e.target.phone && !e.target.phone.value) {
+      isValidated = false;
+      validationErrors.contact = Object.assign({phone: "This field may not be blank."}, validationErrors.contact);
+    }
+    if (e.target.dateOfBirth && !e.target.dateOfBirth.value) {
+      isValidated = false;
+      validationErrors.entity = Object.assign({birthdate: "This field may not be blank."}, validationErrors.entity);
+    }
+    if (e.target.ssn && !e.target.ssn.value) {
+      isValidated = false;
+      validationErrors.identity = "This field may not be blank.";
+    }
+    if (e.target.address && !e.target.address.value) {
+      isValidated = false;
+      validationErrors.address = Object.assign({street_address_1: "This field may not be blank."}, validationErrors.address);
+    }
+    if (e.target.city && !e.target.city.value) {
+      isValidated = false;
+      validationErrors.address = Object.assign({city: "This field may not be blank."}, validationErrors.address);
+    }
+    if (e.target.state && !e.target.state.value) {
+      isValidated = false;
+      validationErrors.address = Object.assign({state: "This field may not be blank."}, validationErrors.address);
+    }
+    if (e.target.zip && !e.target.zip.value) {
+      isValidated = false;
+      validationErrors.address = Object.assign({postal_code: "This field may not be blank."}, validationErrors.address);
+    }
+    if (!isValidated) {
+      setErrors(validationErrors);
+      setValidated(true);
+      return;
+    }
+
     setLoaded(false);
     let ApiEndpoint;
     let updatedEntityData = {};
     let updatedResponses = [];
-    let validationErrors = {};
     let successStatus = { entity: true, email: true, phone: true, identity: true, address: true };
     if (app.activeUser && app.activeUser.handle) {
       let entityRes = {};
@@ -343,7 +390,7 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
       {preferredKyc === RECEIVE_ONLY_KYC && <ReceiveOnlyKYCForm errors={errors} app={app} isHide={(app.activeUser && app.activeUser.kycLevel === RECEIVE_ONLY_KYC)} />}
       {preferredKyc === INSTANT_ACH_KYC && <InstantAchKYCForm errors={errors} app={app} isHide={(app.activeUser && app.activeUser.kycLevel === INSTANT_ACH_KYC)} />}
       {preferredKyc && (app.activeUser && app.activeUser.kycLevel !== preferredKyc) && <div className="d-flex mb-md-5"><Button type="submit" className="ml-auto" disabled={!(app.activeUser && app.activeUser.kycLevel !== app.settings.preferredKycLevel)}>Add data</Button></div>}
-      {app.activeUser && app.activeUser.handle && <RegisterDataForm errors={errors} onLoaded={(isLoaded) => setLoaded(isLoaded)} onErrors={(errorsObj) => { setErrors(errorsObj); setValidated(true); } } />}
+      {app.activeUser && app.activeUser.handle && <RegisterDataForm errors={errors} onConfirm={onConfirm} onLoaded={(isLoaded) => setLoaded(isLoaded)} onErrors={(errorsObj) => { setErrors(errorsObj); setValidated(true); } } />}
 
       {children}
     </Form>
