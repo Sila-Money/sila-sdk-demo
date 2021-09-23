@@ -80,7 +80,7 @@ export default [
     path: '/register_user',
     component: RegisterUser,
     tips: [
-      "Look for a text message to the number provided in order to opt-in for SMS notifications!",
+      "If registering with Instant ACH, look for a text message to the number provided in order to opt-in for SMS notifications!",
       "Editing registered data is great for when a KYC fails as a result of a potential mis-key."
     ]
   },
