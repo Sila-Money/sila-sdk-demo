@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Button, Modal, Card, CardGroup } from 'react-bootstrap';
+import { Container, Alert, Button, Modal, Card, CardGroup } from 'react-bootstrap';
 
 import { useAppContext } from '../../components/context/AppDataProvider';
 
@@ -85,7 +85,16 @@ const RegisterBusinessModal = ({ show, onHide }) => {
 const RegisterBusiness = ({ page, previous, next, isActive }) => {
   const [showKybModal, setShowKybModal] = useState(false);
   const [show, setShow] = useState(false);
-  const { app } = useAppContext();
+  const { app, setAppData, updateApp } = useAppContext();
+
+  const registerUser = (user) => {
+    setAppData({
+      success: !isActive ? [...app.success, { handle: user.handle, page }] : app.success,
+      users: [...app.users, user]
+    }, () => {
+      updateApp({ activeUser: user });
+    });
+  };
 
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
@@ -100,11 +109,13 @@ const RegisterBusiness = ({ page, previous, next, isActive }) => {
 
       <p className="text-right"><Button variant="link" className="text-muted font-italic p-0 text-decoration-none" onClick={() => setShow(true)}><span className="lnk">What’s the difference between registering an individual and a business?</span> <i className="sila-icon sila-icon-info text-primary ml-2"></i></Button></p>
 
-      <RegisterBusinessForm handle={app.settings.kybHandle} onShowKybModal={(showKybModal) => setShowKybModal(showKybModal)}>
+      <RegisterBusinessForm handle={app.settings.kybHandle} onSuccess={registerUser} onShowKybModal={(showKybModal) => setShowKybModal(showKybModal)}>
+
+        {app.settings.preferredKybLevel && !app.activeUser && <Alert variant="info" className="mt-4 mb-5">A wallet is automatically generated for you using the generateWallet() function upon registration.</Alert>}
 
         <div className="d-flex">
           {app.alert.message && <AlertMessage message={app.alert.message} type={app.alert.type} />}
-          {app.settings.preferredKybLevel && !app.activeUser && <Button type="submit" className="ml-auto" disabled={!app.settings.kybHandle}>Register Business</Button>}
+          {app.settings.preferredKybLevel && !app.activeUser && <Button type="submit" className="ml-auto" disabled={!app.settings.kybHandle || (app.activeUser && app.activeUser.handle === app.settings.kybHandle)}>Register Business</Button>}
         </div>
 
       </RegisterBusinessForm>
