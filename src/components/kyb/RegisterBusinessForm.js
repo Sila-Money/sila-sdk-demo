@@ -8,10 +8,11 @@ import SelectMenu from '../../components/common/SelectMenu';
 import StandardKYBForm from '../../components/kyb/StandardKYBForm';
 import LiteKYBForm from '../../components/kyb/LiteKYBForm';
 import ReceiveOnlyKYBForm from '../../components/kyb/ReceiveOnlyKYBForm';
+import RegisterBusinessDataForm from '../../components/kyb/RegisterBusinessDataForm';
 
 import { KYB_STANDARD, KYB_LITE, KYB_RECEIVE_ONLY, KYB_ARRAY } from '../../constants';
 
-const RegisterBusinessForm = ({ className, children, onError, onSuccess, onShowKybModal }) => {
+const RegisterBusinessForm = ({ className, children, onError, onSuccess, onShowKybModal, onConfirm }) => {
   const { app, api, refreshApp, handleError, updateApp, setAppData } = useAppContext();
   const [validated, setValidated] = useState(false);
   const [errors, setErrors] = useState({});
@@ -376,6 +377,7 @@ const RegisterBusinessForm = ({ className, children, onError, onSuccess, onShowK
       {preferredKyb === KYB_LITE && <LiteKYBForm businessTypes={businessTypes} errors={errors} app={app} isHide={(app.activeUser && app.activeUser.kybLevel === KYB_LITE)} />}
       {preferredKyb === KYB_RECEIVE_ONLY && <ReceiveOnlyKYBForm errors={errors} app={app} isHide={(app.activeUser && app.activeUser.kybLevel === KYB_RECEIVE_ONLY)} />}
       {preferredKyb && (app.activeUser && app.activeUser.kybLevel !== preferredKyb) && <div className="d-flex mb-md-5"><Button type="submit" className="ml-auto" disabled={!(app.activeUser && app.activeUser.kybLevel !== app.settings.preferredKybLevel)}>Add data</Button></div>}
+      {app.activeUser && app.activeUser.handle && <RegisterBusinessDataForm errors={errors} onConfirm={onConfirm} onLoaded={(isLoaded) => setLoaded(isLoaded)} onErrors={(errorsObj) => { setErrors(errorsObj); setValidated(true); } } />}
 
       {children}
     </Form>
