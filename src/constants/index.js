@@ -86,6 +86,48 @@ export const KYC_REGISTER_FIELDS_ARRAY = [{
   }
 ];
 
+export const KYB_REGISTER_FIELDS_ARRAY = [{
+    value: 'entity_name',
+    label: 'Legal Company Name'
+  },
+  {
+    value: 'doing_business_as',
+    label: 'DBA (If Applicable)'
+  },
+  {
+    value: 'address',
+    label: 'Street Address'
+  },
+  {
+    value: 'city',
+    label: 'City'
+  },
+  {
+    value: 'state',
+    label: 'State'
+  },
+  {
+    value: 'zip',
+    label: 'Zip Code'
+  },
+  {
+    value: 'phone',
+    label: 'Phone Number'
+  },
+  {
+    value: 'ein',
+    label: 'Employer ID Number'
+  },
+  {
+    value: 'email',
+    label: 'Business Email'
+  },
+  {
+    value: 'business_website',
+    label: 'Business Website'
+  }
+];
+
 export const STATES_ARRAY = [{
     value: 'AL',
     label: 'Alabama'

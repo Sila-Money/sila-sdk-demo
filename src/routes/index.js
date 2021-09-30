@@ -130,7 +130,10 @@ export default [
       all: true,
       title: 'Business Info',
       path: '/business/register',
-      component: RegisterBusiness
+      component: RegisterBusiness,
+      tips: [
+        "Editing registered data is great for when a KYB fails as a result of a potential mis-key."
+      ]
     }]
   },
   {

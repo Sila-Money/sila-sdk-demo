@@ -91,7 +91,13 @@ const Tips = () => {
   useEffect(() => {
     setTipsList([]);
     defaultRoutes.map((RouteObj) => {
-      return (RouteObj.tips && RouteObj.path === location.pathname) ? setTipsList(RouteObj.tips) : '';
+      if (RouteObj.routes) {
+        return RouteObj.routes.map((RouteObj) => {
+          return (RouteObj.tips && RouteObj.path === location.pathname) ? setTipsList(RouteObj.tips) : '';
+        })
+      } else {
+        return (RouteObj.tips && RouteObj.path === location.pathname) ? setTipsList(RouteObj.tips) : '';
+      }
     })
   }, [location]);
 
