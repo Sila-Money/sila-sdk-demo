@@ -155,6 +155,10 @@ export const STATES_ARRAY = [{
     label: 'Pennsylvania'
   },
   {
+    value: 'PR',
+    label: 'Puerto Rico'
+  },
+  {
     value: 'RI',
     label: 'Rhode Island'
   },

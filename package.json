@@ -1,6 +1,6 @@
 {
   "name": "sila-sdk-demo",
-  "version": "0.2.0",
+  "version": "3.3.0",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.34",

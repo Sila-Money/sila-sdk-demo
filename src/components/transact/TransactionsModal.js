@@ -35,13 +35,13 @@ const TransactionsModal = ({ show, onHide, transactions, onRefresh, formatNumber
         </OverlayTrigger>
         </p>
         {!transactions && <Loader overlay />}
-        <Table style={{ marginRight: '1px' }} bordered responsive>
+        <Table bordered responsive>
           <thead>
             <tr>
-              <th className="text-lg">Type</th>
-              <th className="text-lg">Amount</th>
-              <th className="text-lg">Status</th>
-              <th className="text-lg">Created At</th>
+              <th className="text-lg bg-secondary">Type</th>
+              <th className="text-lg bg-secondary">Amount</th>
+              <th className="text-lg bg-secondary">Status</th>
+              <th className="text-lg bg-secondary">Created At</th>
             </tr>
           </thead>
           <tbody>
