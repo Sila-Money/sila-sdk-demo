@@ -176,7 +176,7 @@ const AppDataProvider = props => {
   const checkAuth = async (handle, key, callback) => {
     const newAuth = handle && key ? { handle, key } : app.auth;
     try {
-      const res = await Sila.checkHandle('');
+      const res = await Sila.checkHandle('sila-sdk-demo');
       if (res.statusCode === 200) {
         delete newAuth.failed;
         setAppData({ auth: newAuth }, () => {
