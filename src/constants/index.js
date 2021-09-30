@@ -91,6 +91,10 @@ export const KYB_REGISTER_FIELDS_ARRAY = [{
     label: 'Legal Company Name'
   },
   {
+    value: 'doing_business_as',
+    label: 'DBA (If Applicable)'
+  },
+  {
     value: 'address',
     label: 'Street Address'
   },
@@ -104,7 +108,7 @@ export const KYB_REGISTER_FIELDS_ARRAY = [{
   },
   {
     value: 'zip',
-    label: 'ZIP'
+    label: 'Zip Code'
   },
   {
     value: 'phone',
@@ -112,11 +116,15 @@ export const KYB_REGISTER_FIELDS_ARRAY = [{
   },
   {
     value: 'ein',
-    label: 'EIN'
+    label: 'Employer ID Number'
   },
   {
     value: 'email',
     label: 'Business Email'
+  },
+  {
+    value: 'business_website',
+    label: 'Business Website'
   }
 ];
 
