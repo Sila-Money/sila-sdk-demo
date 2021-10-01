@@ -92,7 +92,7 @@ export const KYB_REGISTER_FIELDS_ARRAY = [{
   },
   {
     value: 'doing_business_as',
-    label: 'DBA (If Applicable)'
+    label: 'DBA',
   },
   {
     value: 'address',

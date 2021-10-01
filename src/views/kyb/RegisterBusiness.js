@@ -5,6 +5,7 @@ import { useAppContext } from '../../components/context/AppDataProvider';
 
 import RegisterBusinessForm from '../../components/kyb/RegisterBusinessForm';
 import KybModal from '../../components/home/KybModal';
+import ConfirmModal from '../../components/common/ConfirmModal';
 import AlertMessage from '../../components/common/AlertMessage';
 import Pagination from '../../components/common/Pagination';
 
@@ -85,6 +86,7 @@ const RegisterBusinessModal = ({ show, onHide }) => {
 const RegisterBusiness = ({ page, previous, next, isActive }) => {
   const [showKybModal, setShowKybModal] = useState(false);
   const [show, setShow] = useState(false);
+  const [confirm, setConfirm] = useState({ show: false, message: '', onSuccess: () => { }, onHide: () => { } });
   const { app, setAppData, updateApp } = useAppContext();
 
   const registerUser = (user) => {
@@ -111,7 +113,7 @@ const RegisterBusiness = ({ page, previous, next, isActive }) => {
 
       {!app.activeUser && <p className="text-right"><Button variant="link" className="text-muted font-italic p-0 text-decoration-none" onClick={() => setShow(true)}><span className="lnk">What's the difference between registering an individual and a business?</span> <i className="sila-icon sila-icon-info text-primary ml-2"></i></Button></p>}
 
-      <RegisterBusinessForm handle={app.settings.kybHandle} onSuccess={registerUser} onShowKybModal={(showKybModal) => setShowKybModal(showKybModal)}>
+      <RegisterBusinessForm handle={app.settings.kybHandle} onSuccess={registerUser} onShowKybModal={(showKybModal) => setShowKybModal(showKybModal)} onConfirm={setConfirm}>
 
         {app.settings.preferredKybLevel && !app.activeUser && <Alert variant="info" className="mt-4 mb-5">A wallet is automatically generated for you using the generateWallet() function upon registration.</Alert>}
 
@@ -129,6 +131,7 @@ const RegisterBusiness = ({ page, previous, next, isActive }) => {
 
       <KybModal show={showKybModal} onHide={() => setShowKybModal(false)} />
       <RegisterBusinessModal show={show} onHide={() => setShow(false)} />
+      <ConfirmModal show={confirm.show} message={confirm.message} onHide={confirm.onHide} buttonLabel="Delete" onSuccess={confirm.onSuccess} />
 
     </Container>
   );
