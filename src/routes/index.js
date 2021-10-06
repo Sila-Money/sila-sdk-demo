@@ -142,12 +142,18 @@ export default [
     title: 'Business Members',
     path: '/members',
     component: BusinessMembers,
+    tips: [
+      "One business member can be linked to more than one role in the business."
+    ],
     routes: [{
       disabled: true,
       restricted: true,
       title: 'Register Business Member',
       path: '/members/register',
-      component: RegisterMember
+      component: RegisterMember,
+      tips: [
+        "One business member can be linked to more than one role in the business."
+      ],
     },
     {
       disabled: true,
