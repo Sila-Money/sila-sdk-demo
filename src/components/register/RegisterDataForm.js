@@ -9,7 +9,7 @@ import KYCFormFieldType from '../../components/register/KYCFormFieldType';
 import { KYC_REGISTER_FIELDS_ARRAY, STATES_ARRAY } from '../../constants';
 
 
-const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => {
+const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember }) => {
   const [expanded, setExpanded] = useState(1);
   const [activeKey, setActiveKey] = useState(1);
   const [activeRow, setActiveRow] = useState({ isEditing: false, isDeleting: false, isAdding: false, fldName: '', fldValue: '', isFetchedUUID: false, entityuuid: {} });
@@ -23,6 +23,7 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => {
   const addressFields = ['address', 'city', 'state', 'zip']
 
   const { app, api, refreshApp, handleError, updateApp, setAppData } = useAppContext();
+  const activeUser = activeMember ? app.users.find(u => u.handle === activeMember.user_handle) : app.activeUser;
 
   let updatedEntityData = {};
   let updatedResponses = [];
@@ -43,11 +44,11 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => {
     setActiveRow({...activeRow, fldValue: e.target.value || undefined});
   }
   const onSave = async (fieldName) => {
-    if (activeRow.isEditing && (!activeRow.fldValue || activeRow.fldValue === app.activeUser[fieldName])) return;
+    if (activeRow.isEditing && (!activeRow.fldValue || activeRow.fldValue === activeUser[fieldName])) return;
     if (activeRow.isAdding && !activeRow.fldValue) return;
 
-    if (app.activeUser && app.activeUser.handle) {
-      onLoaded(false);
+    if (activeUser && activeUser.handle) {
+      if (onLoaded) onLoaded(false);
       let updateSuccess = false;
       if (entityFields.includes(fieldName)) {
         try {
@@ -56,7 +57,7 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => {
           if (fieldName === 'lastName') entityUpdateData.last_name = activeRow.fldValue;
           if (fieldName === 'dateOfBirth') entityUpdateData.birthdate = activeRow.fldValue;
 
-          const entityUpdateRes = await api.updateEntity(app.activeUser.handle, app.activeUser.private_key, entityUpdateData);
+          const entityUpdateRes = await api.updateEntity(activeUser.handle, activeUser.private_key, entityUpdateData);
           updatedResponses = [ ...updatedResponses, { endpoint: '/update/entity', result: JSON.stringify(entityUpdateRes, null, '\t') } ];
 
           if (entityUpdateRes.data.success) {
@@ -80,10 +81,10 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => {
           let phoneRes = {}
           if (activeRow.isAdding) {
             ApiEndpoint = '/add/phone';
-            phoneRes = await api.addPhone(app.activeUser.handle, app.activeUser.private_key, activeRow.fldValue, {});
+            phoneRes = await api.addPhone(activeUser.handle, activeUser.private_key, activeRow.fldValue, {});
           } else {
             ApiEndpoint = '/update/phone';
-            phoneRes = await api.updatePhone(app.activeUser.handle, app.activeUser.private_key, {
+            phoneRes = await api.updatePhone(activeUser.handle, activeUser.private_key, {
               phone: activeRow.fldValue,
               uuid: activeRow.entityuuid.phone
             });
@@ -110,10 +111,10 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => {
           let emailRes = {}
           if (activeRow.isAdding) {
             ApiEndpoint = '/add/email';
-            emailRes = await api.addEmail(app.activeUser.handle, app.activeUser.private_key, activeRow.fldValue);
+            emailRes = await api.addEmail(activeUser.handle, activeUser.private_key, activeRow.fldValue);
           } else {
             ApiEndpoint = '/update/email';
-            emailRes = await api.updateEmail(app.activeUser.handle, app.activeUser.private_key, {
+            emailRes = await api.updateEmail(activeUser.handle, activeUser.private_key, {
               email: activeRow.fldValue,
               uuid: activeRow.entityuuid.email
             });
@@ -145,11 +146,11 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => {
 
           if (activeRow.isAdding) {
             ApiEndpoint = '/add/identity';
-            ssnRes = await api.addIdentity(app.activeUser.handle, app.activeUser.private_key, identityUpdateData);
+            ssnRes = await api.addIdentity(activeUser.handle, activeUser.private_key, identityUpdateData);
           } else {
             ApiEndpoint = '/update/identity';
             identityUpdateData.uuid = activeRow.entityuuid.identity;
-            ssnRes = await api.updateIdentity(app.activeUser.handle, app.activeUser.private_key, identityUpdateData);
+            ssnRes = await api.updateIdentity(activeUser.handle, activeUser.private_key, identityUpdateData);
           }
 
           updatedResponses = [ ...updatedResponses, { endpoint: ApiEndpoint, result: JSON.stringify(ssnRes, null, '\t') } ];
@@ -179,12 +180,12 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => {
           let addressRes = {};
           if (activeRow.isAdding) {
             ApiEndpoint = '/add/address';
-            if (app.activeUser.address) addressUpdateData.street_address_1 = app.activeUser.address;
-            addressRes = await api.addAddress(app.activeUser.handle, app.activeUser.private_key, addressUpdateData);
+            if (activeUser.address) addressUpdateData.street_address_1 = activeUser.address;
+            addressRes = await api.addAddress(activeUser.handle, activeUser.private_key, addressUpdateData);
           } else {
             ApiEndpoint = '/update/address';
             addressUpdateData.uuid = activeRow.entityuuid.address;
-            addressRes = await api.updateAddress(app.activeUser.handle, app.activeUser.private_key, addressUpdateData);
+            addressRes = await api.updateAddress(activeUser.handle, activeUser.private_key, addressUpdateData);
           }
 
           updatedResponses = [ ...updatedResponses, { endpoint: ApiEndpoint, result: JSON.stringify(addressRes, null, '\t') } ];
@@ -199,9 +200,9 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => {
             if (addressRes.data.validation_details.address instanceof Object) {
               validationErrors = { address: addressRes.data.validation_details.address }
             } else {
-              if (!app.activeUser.address && fieldName === 'address') {
+              if (!activeUser.address && fieldName === 'address') {
                 validationErrors.address = Object.assign({street_address_1: addressRes.data.validation_details.street_address_1}, validationErrors.address);
-              } else if (!app.activeUser.address && fieldName !== 'address') {
+              } else if (!activeUser.address && fieldName !== 'address') {
                 if (fieldName === 'city') validationErrors.address = Object.assign({city: "Please add address first!"}, validationErrors.address);
                 if (fieldName === 'state') validationErrors.address = Object.assign({state: "Please add address first!"}, validationErrors.address);
                 if (fieldName === 'zip') validationErrors.address = Object.assign({postal_code: "Please add address first!"}, validationErrors.address);
@@ -224,14 +225,14 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => {
         console.log(`  ... update ${fieldName} field completed!`);
         if (updateSuccess) {
           refreshApp();
-          const activeUser = app.users.find(u => u.handle === app.activeUser.handle);
-          updatedEntityData = { ...activeUser, ...updatedEntityData, kycLevel: app.settings.preferredKycLevel }
+          const appUser = app.users.find(u => u.handle === activeUser.handle);
+          updatedEntityData = { ...appUser, ...updatedEntityData, kycLevel: app.settings.preferredKycLevel }
           result = {
-            activeUser: { ...activeUser, ...updatedEntityData } ,
+            activeUser: { ...appUser, ...updatedEntityData } ,
             alert: { message: activeRow.isAdding ? 'Registration data was successfully added.' : 'Registration data was successfully updated and saved.', type: 'success' }
           };
           appData = {
-            users: app.users.map(({ active, ...u }) => u.handle === app.activeUser.handle ? { ...u, ...updatedEntityData } : u),
+            users: app.users.map(({ active, ...u }) => u.handle === activeUser.handle ? { ...u, ...updatedEntityData } : u),
           };
           if (Object.keys(errors).length || Object.keys(validationErrors).length) onErrors({});
           setActiveRow({...activeRow, isEditing: activeRow.isEditing ? false : activeRow.isEditing, isDeleting: false, fldName: '', fldValue: '', isFetchedUUID: activeRow.isAdding ? false :  activeRow.isFetchedUUID });
@@ -249,7 +250,7 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => {
         console.log('  ... looks like we ran into an issue!');
         handleError(err);
       }
-      onLoaded(true);
+      if (onLoaded) onLoaded(true);
     }
   }
   const onDelete = async (fieldName, fieldLabel) => {
@@ -263,16 +264,16 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => {
       try {
         if (emailFields.includes(fieldName)) {
           ApiEndpoint = 'email';
-          deleteRes = await api.deleteEmail(app.activeUser.handle, app.activeUser.private_key, activeRow.entityuuid.email);
+          deleteRes = await api.deleteEmail(activeUser.handle, activeUser.private_key, activeRow.entityuuid.email);
         } else if (phoneFields.includes(fieldName)) {
           ApiEndpoint = 'phone';
-          deleteRes = await api.deletePhone(app.activeUser.handle, app.activeUser.private_key, activeRow.entityuuid.phone);
+          deleteRes = await api.deletePhone(activeUser.handle, activeUser.private_key, activeRow.entityuuid.phone);
         } else if (identityFields.includes(fieldName)) {
           ApiEndpoint = 'identity';
-          deleteRes = await api.deleteIdentity(app.activeUser.handle, app.activeUser.private_key, activeRow.entityuuid.identity);
+          deleteRes = await api.deleteIdentity(activeUser.handle, activeUser.private_key, activeRow.entityuuid.identity);
         } else if (addressFields.includes(fieldName)) {
           ApiEndpoint = 'address';
-          deleteRes = await api.deleteAddress(app.activeUser.handle, app.activeUser.private_key, activeRow.entityuuid.address);
+          deleteRes = await api.deleteAddress(activeUser.handle, activeUser.private_key, activeRow.entityuuid.address);
         } else {
           validationErrors = Object.assign({error: "Registration data can not be deleted because it is required for this KYC level."}, validationErrors.error);
         }
@@ -300,14 +301,14 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => {
           console.log(`  ... delete ${fieldName} field completed!`);
 
           refreshApp();
-          const activeUser = app.users.find(u => u.handle === app.activeUser.handle);
-          updatedEntityData = { ...activeUser, ...updatedEntityData, kycLevel: app.settings.preferredKycLevel }
+          const appUser = app.users.find(u => u.handle === activeUser.handle);
+          updatedEntityData = { ...appUser, ...updatedEntityData, kycLevel: app.settings.preferredKycLevel }
           result = {
-            activeUser: { ...activeUser, ...updatedEntityData } ,
+            activeUser: { ...appUser, ...updatedEntityData },
             alert: { message: 'Registration data was successfully deleted.', type: 'success' }
           };
           appData = {
-            users: app.users.map(({ active, ...u }) => u.handle === app.activeUser.handle ? { ...u, ...updatedEntityData } : u),
+            users: app.users.map(({ active, ...u }) => u.handle === activeUser.handle ? { ...u, ...updatedEntityData } : u),
           };
 
           setAppData({
@@ -341,8 +342,8 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => {
   useEffect(() => {
     async function fetchEntity() {
       try {
-        onLoaded(false);
-        const entityRes = await api.getEntity(app.activeUser.handle, app.activeUser.private_key);
+        if (onLoaded) onLoaded(false);
+        const entityRes = await api.getEntity(activeUser.handle, activeUser.private_key);
         if (entityRes.data.success) {
           setActiveRow({...activeRow, isFetchedUUID: true, entityuuid: {
             email: entityRes.data.emails[0] ? entityRes.data.emails[0]['uuid'] : '',
@@ -350,7 +351,7 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => {
             identity: entityRes.data.identities[0] ? entityRes.data.identities[0]['uuid'] : '',
             address: entityRes.data.addresses[0] ? entityRes.data.addresses[0]['uuid'] : ''
           } })
-          onLoaded(true);
+          if (onLoaded) onLoaded(true);
         }
       } catch (err) {
         console.log('  ... unable to get entity info, looks like we ran into an issue!');
@@ -371,7 +372,7 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => {
     return () => {
       document.removeEventListener('mousedown', checkIfClickedOutside)
     }
-  }, [activeRow, api, app.activeUser.handle, app.activeUser.private_key, onLoaded])
+  }, [activeRow, api, activeUser, onLoaded, activeMember])
 
   return (
     <Accordion className="mb-3 mb-md-5" defaultActiveKey={expanded ? expanded : undefined} onSelect={e => setActiveKey(e)}>
@@ -385,16 +386,16 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => {
             </tr>
           </thead>
           <tbody ref={tbodyRef}>
-            {KYC_REGISTER_FIELDS_ARRAY.filter(fieldsOption => app.activeUser && app.activeUser[fieldsOption.value]).map((fieldsOption, index) => {
+            {KYC_REGISTER_FIELDS_ARRAY.filter(fieldsOption => activeUser && activeUser[fieldsOption.value]).map((fieldsOption, index) => {
               return (<tr key={index}>
                 <td>{fieldsOption.label}</td>
-                <td>{activeRow.isEditing && activeRow.fldName === fieldsOption.value  ? <KYCFormFieldType fieldType={fieldsOption.value} errors={errors} app={app} onEditing={onEditing} onSave={onSave} /> : (fieldsOption.label === 'State') ? STATES_ARRAY.map((s) => { return s.value === app.activeUser[fieldsOption.value] ? s.label : '' }) : app.activeUser[fieldsOption.value]}</td>
+                <td>{activeRow.isEditing && activeRow.fldName === fieldsOption.value  ? <KYCFormFieldType fieldType={fieldsOption.value} errors={errors} activeUser={activeUser} onEditing={onEditing} onSave={onSave} /> : (fieldsOption.label === 'State') ? STATES_ARRAY.map((s) => { return s.value === activeUser[fieldsOption.value] ? s.label : '' }) : (fieldsOption.label === 'Social Security Number') ? `*****${activeUser[fieldsOption.value].substr(activeUser[fieldsOption.value].length - 4)}` : activeUser[fieldsOption.value]}</td>
                 <td>
                   <div className="d-flex py-2">
-                    <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none" onClick={() => onEditToggle(fieldsOption.value, app.activeUser[fieldsOption.value])}>
+                    <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none" onClick={() => onEditToggle(fieldsOption.value, activeUser[fieldsOption.value])}>
                       <i className={`sila-icon sila-icon-edit text-lg ${activeRow.isEditing && activeRow.fldName === fieldsOption.value ? 'text-primary' : ''}`}></i>
                     </Button>
-                    {(activeRow.isEditing && activeRow.fldName === fieldsOption.value) ? <Button className="p-1 text-decoration-none mx-3 px-3" onClick={(e) => onSave(fieldsOption.value)} disabled={(activeRow.isEditing && (!activeRow.fldValue || activeRow.fldValue === app.activeUser[fieldsOption.value])) ? true : false }>Save</Button> : <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none mx-4 px-3" onClick={(e) => onDelete(fieldsOption.value, fieldsOption.label)}><i className={`sila-icon sila-icon-delete text-lg ${(activeRow.isDeleting && activeRow.fldName === fieldsOption.value) ? 'text-primary' : undefined }`}></i></Button>}
+                    {(activeRow.isEditing && activeRow.fldName === fieldsOption.value) ? <Button className="p-1 text-decoration-none mx-3 px-3" onClick={(e) => onSave(fieldsOption.value)} disabled={(activeRow.isEditing && (!activeRow.fldValue || activeRow.fldValue === activeUser[fieldsOption.value])) ? true : false }>Save</Button> : <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none mx-4 px-3" onClick={(e) => onDelete(fieldsOption.value, fieldsOption.label)}><i className={`sila-icon sila-icon-delete text-lg ${(activeRow.isDeleting && activeRow.fldName === fieldsOption.value) ? 'text-primary' : undefined }`}></i></Button>}
                   </div>
                 </td>
               </tr>)
@@ -405,10 +406,10 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => {
       <div className="mt-3">
         <div className="row mx-2">
           <div className="sms-notifications p-0 col-md-9 col-sm-12">
-            {(app.activeUser && app.activeUser.smsOptIn) && <div className="text-left">SMS Notifications: <span className="text-primary">Requested</span></div>}
+            {(activeUser && activeUser.smsOptIn) && <div className="text-left">SMS Notifications: <span className="text-primary">Requested</span></div>}
           </div>
           <div className="p-0 text-right col-md-3 col-sm-12">
-            {(!activeRow.isAdding && Object.keys(KYC_REGISTER_FIELDS_ARRAY.filter(option => app.activeUser && !app.activeUser[option.value])).length) ? <Button variant="link" className="p-0 new-registration shadow-none" onClick={onAddDataToggle}>Add new registration data+</Button> : null}
+            {(!activeRow.isAdding && Object.keys(KYC_REGISTER_FIELDS_ARRAY.filter(option => activeUser && !activeUser[option.value])).length) ? <Button variant="link" className="p-0 new-registration shadow-none" onClick={onAddDataToggle}>Add new registration data+</Button> : null}
           </div>
         </div>
 
@@ -417,12 +418,12 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => {
           {!activeRow.fldName && <Form.Group controlId="chooseData" className="select">
             <Form.Control placeholder="Choose a data point to add" as="select" name="choose_data" onChange={onChooseAddDataToggle}>
               <option value="">Choose a data point to add</option>
-              {KYC_REGISTER_FIELDS_ARRAY.filter(option => app.activeUser && !app.activeUser[option.value]).map((option, index) => <option key={index} value={option.value}>{option.label}</option>)}
+              {KYC_REGISTER_FIELDS_ARRAY.filter(option => activeUser && !activeUser[option.value]).map((option, index) => <option key={index} value={option.value}>{option.label}</option>)}
             </Form.Control>
           </Form.Group>}
 
           {activeRow.fldName && <Form.Group controlId="addData" className="required">
-            <KYCFormFieldType fieldType={activeRow.fldName} errors={errors} app={app} onEditing={onEditing} onSave={onSave} />
+            <KYCFormFieldType fieldType={activeRow.fldName} errors={errors} activeUser={activeUser} onEditing={onEditing} onSave={onSave} />
           </Form.Group>}
 
           <div className="text-right">
