@@ -4,6 +4,7 @@ import { Form, Button } from 'react-bootstrap';
 import { useAppContext } from '../../components/context/AppDataProvider';
 
 import Loader from '../../components/common/Loader';
+import SelectMenu from '../../components/common/SelectMenu';
 import DefaultKYCForm from '../../components/register/DefaultKYCForm';
 import KYCLiteForm from '../../components/register/KYCLiteForm';
 import ReceiveOnlyKYCForm from '../../components/register/ReceiveOnlyKYCForm';
@@ -364,10 +365,10 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
     setLoaded(true);
   }
 
-  const onKycLevelChange = (e) => {
-    setPreferredKyc(e.target.value || undefined)
+  const onKycLevelChange = (value) => {
+    setPreferredKyc(value || undefined)
     setAppData({
-      settings: { ...app.settings, preferredKycLevel: e.target.value || undefined }
+      settings: { ...app.settings, preferredKycLevel: value || undefined }
     });
   }
 
@@ -375,14 +376,13 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
     <Form noValidate className={className} validated={validated} autoComplete="off" onSubmit={register}>
       {!loaded && <Loader overlay />}
 
-      <p className="text-muted mr-5">Please choose your preferred KYC level:</p>
-
-      <Form.Group controlId="preferredKyc" className="select required">
-        <Form.Control placeholder="Choose KYC" required as="select" name="preferred_kyc" onChange={onKycLevelChange} defaultValue={preferredKyc}>
-          <option value="">Choose KYC</option>
-          {KYC_ARRAY.map((option, index) => <option key={index} value={option.value}>{option.label}</option>)}
-        </Form.Control>
-      </Form.Group>
+      <Form.Label className="text-muted mr-5">Please choose your preferred KYC level:</Form.Label>
+      <SelectMenu fullWidth
+        title={preferredKyc ? KYC_ARRAY.find(option => option.value === preferredKyc).label : 'Choose KYC'}
+        onChange={(value) => onKycLevelChange(value)}
+        className="types mb-4"
+        value={preferredKyc}
+        options={KYC_ARRAY} />
 
       {!preferredKyc ? <p className="text-right text-muted"><Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none" onClick={() => onShowKycModal(true)}><span className="lnk">What's the difference between these KYC levels?</span><i className="sila-icon sila-icon-info text-primary ml-2"></i></Button></p> : ''}
       {preferredKyc === DEFAULT_KYC && <DefaultKYCForm errors={errors} app={app} isHide={(app.activeUser && app.activeUser.kycLevel === DEFAULT_KYC)} />}

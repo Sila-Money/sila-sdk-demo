@@ -380,8 +380,8 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember 
         <Table responsive hover>
           <thead>
             <tr>
-              <th className="font-weight-bold">Registration Field</th>
-              <th className="font-weight-bold">Data</th>
+              <th className="font-weight-bold">Description</th>
+              <th className="font-weight-bold">Value</th>
               <th className="font-weight-bold">Action</th>
             </tr>
           </thead>
@@ -428,7 +428,7 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember 
 
           <div className="text-right">
             {activeRow.fldName && <Button variant="outline-light" className="ml-auto p-2 px-4" onClick={onChooseAddDataToggle}>Done</Button>}
-            {activeRow.fldName && <Button className="text-decoration-none ml-3 p-2  px-4" disabled={!Boolean(activeRow.fldValue)} onClick={(e) => onSave(activeRow.fldName)}>Add Data</Button>}
+            {activeRow.fldName && <Button className="text-decoration-none ml-3 p-2  px-4" disabled={!Boolean(activeRow.fldValue)} onClick={(e) => onSave(activeRow.fldName)}>Add</Button>}
             {!activeRow.fldName && <Button variant="outline-light" className="p-2 px-4" onClick={onAddDataToggle}>Cancel</Button>}
           </div>
         </div>}
