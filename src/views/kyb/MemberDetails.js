@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, ListGroup, Button } from 'react-bootstrap';
+import { Container, Form, Row, Col, Card, ListGroup, Button } from 'react-bootstrap';
 
 import { useAppContext } from '../../components/context/AppDataProvider';
 
@@ -7,10 +7,16 @@ import Loader from '../../components/common/Loader';
 import Pagination from '../../components/common/Pagination';
 import AlertMessage from '../../components/common/AlertMessage';
 import LinkMemberForm from '../../components/kyb/LinkMemberForm';
+import RegisterDataForm from '../../components/register/RegisterDataForm';
+import ConfirmModal from '../../components/common/ConfirmModal';
 
 const MemberDetails = ({ page, match, history, location }) => {
   const [member, setMember] = useState(false);
   const [alert, setAlert] = useState(false);
+  const [validated, setValidated] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [loaded, setLoaded] = useState(true);
+  const [confirm, setConfirm] = useState({ show: false, message: '', onSuccess: () => { }, onHide: () => { } });
   const { app, api, handleError, setAppData } = useAppContext();
   const beneficialOwner = member && member.memberships.find(membership => membership.role === 'beneficial_owner');
   const canCertify = member && member.memberships.some(membership => location.state.role && location.state.role === membership.role && membership.certification_token !== null);
@@ -22,7 +28,6 @@ const MemberDetails = ({ page, match, history, location }) => {
       const res = await api.getEntity(activeUser.handle, activeUser.private_key);
       console.log('  ... completed!');
       if (res.data.success) {
-        console.log(res);
         delete res.data.success;
         setMember(res.data);
       }
@@ -130,6 +135,13 @@ const MemberDetails = ({ page, match, history, location }) => {
       </>}
 
       {!location.pathname.includes('certify') && <>
+        <h1 className="mb-4">Registered Business Member</h1>
+        <p className="text-muted text-lg mb-4">We've gathered some information to see if this business member meet KYC guidelines. If you'd like to add, update or delete information, you can do so here.</p>
+        <Form noValidate className="mt-4" validated={validated} autoComplete="off" onSubmit={(e) => e.preventDefault()}>
+          {!loaded && <Loader overlay />}
+          <RegisterDataForm activeMember={member} errors={errors} onConfirm={setConfirm} onLoaded={(isLoaded) => setLoaded(isLoaded)} onErrors={(errorsObj) => { setErrors(errorsObj); setValidated(true); } } />
+        </Form>
+
         <LinkMemberForm member={member} onLinked={() => { setMember(false); getEntity(); }} onUnlinked={() => { setMember(false); getEntity(); }} />
         <p className="mt-5 mb-0 text-center"><Button variant="outline-light" className="text-muted text-uppercase" onClick={() => history.goBack()} disabled={member.memberships.length === 0}>I'm Done</Button></p>
       </>}
@@ -143,6 +155,7 @@ const MemberDetails = ({ page, match, history, location }) => {
       <Pagination hideNext
         previousOnClick={() => history.goBack()}
         currentPage={page} />
+      <ConfirmModal show={confirm.show} message={confirm.message} onHide={confirm.onHide} buttonLabel="Delete" onSuccess={confirm.onSuccess} />
 
     </Container>
   );
