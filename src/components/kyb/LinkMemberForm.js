@@ -18,7 +18,7 @@ const LinkMemberForm = ({ member, onLinked, onUnlinked, onShowImDone }) => {
 
   const hasRole = (role) => member.memberships && member.memberships.some(membership => membership.role === role && membership.business_handle === app.settings.kybHandle);
 
-  const linkMember = async (role) => {
+  const linkMember = async (role, user) => {
     console.log('Linking Business Member ...');
     const activeUser = app.users.find(u => member.user_handle === u.handle);
     const businessUser = app.users.find(u => app.settings.kybHandle === u.handle);
@@ -28,7 +28,7 @@ const LinkMemberForm = ({ member, onLinked, onUnlinked, onShowImDone }) => {
       const res = await api.linkBusinessMember(activeUser.handle, activeUser.private_key, businessUser.handle, businessUser.private_key, role.name, undefined, details, ownership_stake);
       if (res.data.success) {
         result.alert = { message: `Successfully linked as a ${role.label}!`, type: 'success' };
-        result.activeUser = role.name === 'administrator' ? activeUser : app.activeUser;
+        result.activeUser = role.name === 'administrator' ? activeUser : role.name === 'beneficial_owner' ? user : app.activeUser;
         if (onLinked) onLinked({ handle: activeUser.handle, role: role.name });
         if (ownershipStake) setOwnershipStake(0);
       } else {
@@ -36,7 +36,7 @@ const LinkMemberForm = ({ member, onLinked, onUnlinked, onShowImDone }) => {
       }
       setAppData({
         settings: role.name === 'administrator' ? { ...app.settings, kybAdminHandle: activeUser.handle } : app.settings,
-        users: app.users.map(u => u.handle === activeUser.handle ? { ...u, admin: true } : u),
+        users: role.name === 'beneficial_owner' ? app.users.map(u => u.handle === activeUser.handle ? { ...u, ...user, admin: true } : u) : app.users.map(u => u.handle === activeUser.handle ? { ...u, admin: true } : u),
         responses: [{
           endpoint: '/link_business_member',
           result: JSON.stringify(res, null, '\t')
@@ -81,18 +81,21 @@ const LinkMemberForm = ({ member, onLinked, onUnlinked, onShowImDone }) => {
     };
   };
 
-  const getMoreInfoPage = (e) => {
+  const getMoreInfoPage = (e, role) => {
     if (e) e.preventDefault();
-    if (onShowImDone) onShowImDone(false);
-    setLinkBeneficialOwner(true);
-    updateApp({ ...app, alert: { message: '', type: '' } });
+    if (role && role.name === 'beneficial_owner') {
+      if (onShowImDone) onShowImDone(false);
+      setLinkBeneficialOwner(true);
+      updateApp({ ...app, alert: { message: '', type: '' } });
+    } else {
+      hasRole(role.name) ? unlinkMember(role) : linkMember(role)
+    }
   };
 
   const updateActiveUser = (user) => {
     if (onShowImDone) onShowImDone(true);
     setLinkBeneficialOwner(false);
-    setAppData({ users: app.users.some(u => u.handle === user.handle) ? app.users.map(u => u.handle === user.handle ? { ...u, ...user } : u) : [...app.users, user] });
-    hasRole(currentRole.name) ? unlinkMember(currentRole) : linkMember(currentRole);
+    hasRole(currentRole.name) ? unlinkMember(currentRole) : linkMember(currentRole, user);
   };
 
   useEffect(() => {
@@ -129,7 +132,7 @@ const LinkMemberForm = ({ member, onLinked, onUnlinked, onShowImDone }) => {
                 {!ownershipStake && <Form.Text className="text-muted mt-2 text-nowrap loaded">Ownership Percentage is required before you can link to this business.</Form.Text>}
               </Form.Group>}
             </div>
-            <Button block size="sm" key={index} style={{ width: '260px' }} className="ml-auto text-center text-nowrap" disabled={role.name === 'beneficial_owner' && !ownershipStake && !hasRole(role.name)} onClick={getMoreInfoPage}>{hasRole(role.name) ? 'Unlink' : 'Link'} as a {role.label}</Button>
+            <Button block size="sm" key={index} style={{ width: '260px' }} className="ml-auto text-center text-nowrap" disabled={role.name === 'beneficial_owner' && !ownershipStake && !hasRole(role.name)} onClick={(e) => getMoreInfoPage(e, role)}>{hasRole(role.name) ? 'Unlink' : 'Link'} as a {role.label}</Button>
           </div>
           ))}
         </div>
@@ -142,7 +145,7 @@ const LinkMemberForm = ({ member, onLinked, onUnlinked, onShowImDone }) => {
               <RangeSlider value={ownershipStake} onChange={e => setOwnershipStake(parseInt(e.target.value))} tooltipLabel={(label) => `${label}%`} name="ownership_stake" />
               {!ownershipStake && <Form.Text className="text-muted mt-2 loaded">Ownership Percentage is required before you can link to this business.</Form.Text>}
             </Form.Group>}
-            <Button key={index} className="w-100 text-center text-nowrap" disabled={role.name === 'beneficial_owner' && !ownershipStake && !hasRole(role.name)} onClick={getMoreInfoPage}>{hasRole ? 'Unlink' : 'Link'} as a {role.label}</Button>
+            <Button key={index} className="w-100 text-center text-nowrap" disabled={role.name === 'beneficial_owner' && !ownershipStake && !hasRole(role.name)} onClick={(e) => getMoreInfoPage(e, role)}>{hasRole ? 'Unlink' : 'Link'} as a {role.label}</Button>
           </div>
           ))}
         </div>

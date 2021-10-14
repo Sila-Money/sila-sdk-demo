@@ -13,6 +13,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, linkBeneficialOwner,
   const [validated, setValidated] = useState(false);
   const [errors, setErrors] = useState({});
   const [loaded, setLoaded] = useState(true);
+  activeMember = activeMember ? app.users.find(u => u.handle === activeMember.user_handle) : undefined;
 
   const register = async (e) => {
     console.log('\n*** BEGIN REGISTER USER ***');
@@ -193,10 +194,10 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, linkBeneficialOwner,
         
         if (updateSuccess) {
           refreshApp();
-          const activeUser = app.users.find(u => u.handle === activeMember.user_handle);
-          updatedEntityData = { ...activeUser, ...updatedEntityData, kycLevel: false }
+          const appUser = app.users.find(u => u.handle === activeMember.user_handle);
+          updatedEntityData = { ...appUser, ...updatedEntityData, kycLevel: false }
           result = {
-            activeUser: { ...activeUser, ...updatedEntityData },
+            activeUser: { ...appUser, ...updatedEntityData },
             alert: { message: 'Registration data was successfully added.', type: 'success' }
           };
           appData = {

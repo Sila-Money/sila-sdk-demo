@@ -107,7 +107,7 @@ const Tips = () => {
 
   return (
     <>
-      {(tipsList.length > 0) ? <Carousel className="px-4" controls={true} indicators={false}>
+      {(tipsList.length > 0) ? <Carousel className="px-4" controls={true} indicators={false} interval={null}>
         {tipsList && tipsList.map((tipLabel, tipKey) => <Carousel.Item key={tipKey}>
           <div className="d-flex align-items-center pl-5">
             <img className="ml-n5 mr-3 icon" src={tipIcon} alt={tipLabel} />
