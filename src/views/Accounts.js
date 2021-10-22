@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Table, Button, Row, Col } from 'react-bootstrap';
+import React, { useState, useEffect, useRef } from 'react';
+import { Container, Table, Button, Row, Col, Form } from 'react-bootstrap';
 import { usePlaidLink } from 'react-plaid-link';
 
 import { useAppContext } from '../components/context/AppDataProvider';
@@ -40,7 +40,32 @@ const Accounts = ({ page, previous, next, isActive }) => {
   const [plaidToken, setPlaidToken] = useState(false);
   const [loaded, setLoaded] = useState(plaidToken);
   const activeUser = app.settings.flow === 'kyb' ? app.users.find(user => app.settings.kybHandle === user.handle) : app.activeUser;
-  const accounts = app.accounts.filter(account => account.handle === activeUser.handle);
+  const [accounts, setAccounts] = useState(app.accounts.filter(account => account.handle === activeUser.handle));
+  const [activeRow, setActiveRow] = useState({ isEditing: false, isDeleting: false, rowNumber: '', account_name: '', new_account_name: '', status: '' });
+  const [isChecked, setIsChecked] = useState(false);
+  const [error, setError] = useState(undefined);
+  const tbodyRef = useRef()
+
+  const getAccountBalance = async (newAccounts) => {
+    console.log('Checking Account Balance ...');
+    let counter = 0;
+    let accountsWithBalance = [];
+    newAccounts.map( async (acc, i) => {
+      const resAccountBalance = await api.getAccountBalance(activeUser.handle, activeUser.private_key, acc.account_name);
+      let account;
+      if (resAccountBalance.statusCode === 200) {
+        counter++;
+        account = { ...acc, current_balance: resAccountBalance.data.current_balance };
+      } else {
+        counter++;
+        account = { ...acc, current_balance: resAccountBalance.data.message };
+      }
+      accountsWithBalance = [...accountsWithBalance, account];
+      if(newAccounts.length === counter) {
+        setAccounts(accountsWithBalance);
+      }
+    });
+  };
 
   const getAccounts = async () => {
     console.log('Getting Accounts ...');
@@ -64,6 +89,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
       }, () => {
         updateApp({ ...result });
       });
+      if (newAccounts.length > 0) getAccountBalance(newAccounts);
     } catch (err) {
       console.log('  ... looks like we ran into an issue!');
       handleError(err);
@@ -141,6 +167,37 @@ const Accounts = ({ page, previous, next, isActive }) => {
     }
   };
 
+  const onEditToggle = (rowIndex, accountName, accountStatus) => {
+    // TODOS...
+    console.log("onEditing...");
+  }
+
+  const onEditing = (e) => {
+    // TODOS...
+    console.log("onEditing...");
+  }
+
+  const onStatusToggle = async (isChecked) => {
+    // TODOS...
+    console.log("onStatusToggle...");
+  };
+
+  const handleKeypress = (e) => {
+    if (e.keyCode === 13) {
+      onSave(activeRow.rowNumber);
+    }
+  }
+
+  const onSave = async (rowIndex) => {
+    // TODOS...
+    console.log("onSave...");
+  }
+
+  const onDelete = async (rowIndex) => {
+    // TODOS...
+    console.log("onDelete...");
+  }
+
   useEffect(() => {
     getAccounts();
   }, [app.activeUser]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -153,6 +210,20 @@ const Accounts = ({ page, previous, next, isActive }) => {
     getPlaidLinkToken();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => {
+    const checkIfClickedOutside = (e) => {
+      if (activeRow.isEditing && tbodyRef.current && !tbodyRef.current.contains(e.target)) {
+        setActiveRow({...activeRow, isEditing: false, rowNumber: '', account_name: '', new_account_name: '', status: ''});
+      }
+    }
+
+    document.addEventListener('mousedown', checkIfClickedOutside)
+
+    return () => {
+      document.removeEventListener('mousedown', checkIfClickedOutside)
+    }
+  }, [activeRow])
+
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 
@@ -164,6 +235,10 @@ const Accounts = ({ page, previous, next, isActive }) => {
 
       <p className="text-muted mb-0 mb-5">This page represents <a href="https://docs.silamoney.com/docs/get_accounts" target="_blank" rel="noopener noreferrer">/get_accounts</a>, <a href="https://docs.silamoney.com/docs/plaid_link_token" target="_blank" rel="noopener noreferrer">/plaid_link_token</a>, <a href="https://docs.silamoney.com/docs/link_account" target="_blank" rel="noopener noreferrer">/link_account</a>, and <a href="https://docs.silamoney.com/docs/plaid_sameday_auth" target="_blank" rel="noopener noreferrer">/plaid_sameday_auth</a> functionality.</p>
 
+      <div className="d-flex mb-3">
+        <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none loaded" onClick={getAccounts}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
+      </div>
+
       <div className="accounts position-relative mb-5">
         {(!loaded || !plaidToken) && <Loader overlay />}
         <Table bordered responsive>
@@ -172,26 +247,47 @@ const Accounts = ({ page, previous, next, isActive }) => {
               <th className="text-lg bg-secondary">Account  #</th>
               <th className="text-lg bg-secondary">Name</th>
               <th className="text-lg bg-secondary">Type</th>
+              <th className="text-lg bg-secondary">Balance</th>
               <th className="text-lg bg-secondary">Status</th>
+              <th className="text-lg bg-secondary text-center">Action</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody ref={tbodyRef}>
             {loaded && plaidToken && accounts.length > 0 ?
               accounts.map((acc, index) =>
                 <tr className="loaded" key={index}>
                   <td>{acc.account_number}</td>
-                  <td>{acc.account_name}</td>
+                  <td className="text-break">{activeRow.isEditing && activeRow.rowNumber === index ? <Form.Group controlId="accountNumber" className="required mb-0">
+                    <Form.Control required placeholder="Account Name" name="account_number" className="p-2" autoFocus onChange={onEditing} onKeyDown={handleKeypress} defaultValue={acc.account_name ? acc.account_name : undefined} isInvalid={Boolean(error)} />
+                    {error && <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>}
+                    </Form.Group> : acc.account_name}</td>
                   <td>{acc.account_type}</td>
+                  <td>{ acc.current_balance ? typeof(acc.current_balance) !== 'string' ? `$${acc.current_balance}` : acc.current_balance : 'Checking Balance ...'}</td>
+                  <td className="text-left">
+                    {activeRow.isEditing && activeRow.rowNumber === index ? <span id="acc-status-toggle" className="d-flex">
+                        <Form.Check type="switch" id="acc-status-switch" onChange={(e) => onStatusToggle(e.target.checked)} checked={isChecked} />
+                        <Form.Label className="text-nowrap" htmlFor="acc-status-switch">{isChecked ? 'Active' : 'Inactive'}</Form.Label>
+                      </span> : <>
+                        {(acc.account_link_status === 'instantly_verified' || acc.account_link_status === 'microdeposit_manually_verified' || acc.account_link_status === 'unverified_manual_input' || acc.account_link_status === 'processor_token') && <span className="text-success">Active</span>}
+                        {acc.account_link_status === 'microdeposit_pending_automatic_verification' && <span className="text-warning">Pending...</span>}
+                        {plaidToken && acc.account_link_status === 'microdeposit_pending_manual_verification' && plaidToken.account_name === acc.account_name && <PlaidButton plaidToken={plaidToken} onSuccess={linkAccount} />}
+                        {acc.account_link_status === 'microdeposit_pending_manual_verification' && (!plaidToken || plaidToken.account_name !== acc.account_name) && <Button size="sm" variant="secondary" disabled={plaidToken} onClick={() => plaidSamedayAuth(acc.account_name)}>Manually Approve</Button>}
+                    </>}
+                  </td>
                   <td className="text-center">
-                    {(acc.account_link_status === 'instantly_verified' || acc.account_link_status === 'microdeposit_manually_verified' || acc.account_link_status === 'unverified_manual_input' || acc.account_link_status === 'processor_token') && <span className="text-success">Active</span>}
-                    {acc.account_link_status === 'microdeposit_pending_automatic_verification' && <span className="text-warning">Pending...</span>}
-                    {plaidToken && acc.account_link_status === 'microdeposit_pending_manual_verification' && plaidToken.account_name === acc.account_name && <PlaidButton plaidToken={plaidToken} onSuccess={linkAccount} />}
-                    {acc.account_link_status === 'microdeposit_pending_manual_verification' && (!plaidToken || plaidToken.account_name !== acc.account_name) && <Button size="sm" variant="secondary" disabled={plaidToken} onClick={() => plaidSamedayAuth(acc.account_name)}>Manually Approve</Button>}
+                    <div className="d-flex py-2 justify-content-center">
+                      <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none mx-1 px-1" onClick={() => onEditToggle(index, acc.account_name, acc.active)}>
+                        <i className={`sila-icon sila-icon-edit text-lg ${activeRow.isEditing && activeRow.rowNumber === index ? 'text-primary' : ''}`}></i>
+                      </Button>
+                      {(activeRow.isEditing && activeRow.rowNumber === index) ? <Button className="p-1 text-decoration-none mx-1 px-1" onClick={(e) => onSave(index)} disabled={(activeRow.isEditing && activeRow.new_account_name === activeRow.account_name && activeRow.status === isChecked) ? true : false }>Save</Button> : <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none mx-2 px-2" onClick={(e) => onDelete(index)}><i className={`sila-icon sila-icon-delete text-lg ${(activeRow.isDeleting && activeRow.rowNumber === index) ? 'text-primary' : undefined }`}></i></Button>}
+                    </div>
                   </td>
                 </tr>
               ) :
               <tr className="loaded">
-                {loaded && plaidToken && accounts.length === 0 ? <td><em>No accounts linked</em></td> : <td>&nbsp;</td>}
+                {loaded && plaidToken && accounts.length === 0 ? <td><em>No account linked</em></td> : <td>&nbsp;</td>}
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
