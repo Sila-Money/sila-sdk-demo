@@ -168,18 +168,24 @@ const Accounts = ({ page, previous, next, isActive }) => {
   };
 
   const onEditToggle = (rowIndex, accountName, accountStatus) => {
-    // TODOS...
-    console.log("onEditing...");
+    setError(undefined);
+    setIsChecked(accountStatus);
+    setActiveRow({
+      ...activeRow,
+      isEditing: (activeRow.isEditing && activeRow.rowNumber === rowIndex) ? false : true,
+      rowNumber: (activeRow.isEditing && activeRow.rowNumber === rowIndex) ? '' : rowIndex,
+      account_name: (activeRow.isEditing && activeRow.rowNumber === rowIndex) ? '' : accountName,
+      new_account_name: (activeRow.isEditing && activeRow.rowNumber === rowIndex) ? '' : accountName,
+      status: (activeRow.isEditing && activeRow.rowNumber === rowIndex) ? '' : accountStatus,
+    });
   }
 
   const onEditing = (e) => {
-    // TODOS...
-    console.log("onEditing...");
+    setActiveRow({...activeRow, new_account_name: e.target.value || undefined});
   }
 
   const onStatusToggle = async (isChecked) => {
-    // TODOS...
-    console.log("onStatusToggle...");
+    setIsChecked(isChecked);
   };
 
   const handleKeypress = (e) => {
@@ -189,13 +195,57 @@ const Accounts = ({ page, previous, next, isActive }) => {
   }
 
   const onSave = async (rowIndex) => {
-    // TODOS...
-    console.log("onSave...");
-  }
+    if (!activeRow.new_account_name) setError("This field may not be blank.");
+    if (activeRow.isEditing && (!activeRow.account_name || !activeRow.new_account_name)) return;
 
-  const onDelete = async (rowIndex) => {
-    // TODOS...
-    console.log("onDelete...");
+    if (activeUser && activeUser.handle) {
+      setError(undefined);
+      setLoaded(false);
+      const accountPayloadData = {};
+      if (activeRow.new_account_name && activeRow.account_name !== activeRow.new_account_name) accountPayloadData.new_account_name = activeRow.new_account_name;
+      if (activeRow.status !== isChecked) accountPayloadData.active = isChecked;
+
+      if (Object.keys(accountPayloadData).length) {
+        accountPayloadData.account_name = activeRow.account_name;
+        let result = {};
+        let appData = {};
+        let error_message;
+        let bankAccounts = accounts;
+        const res = await api.updateAccount(accountPayloadData, activeUser.handle, activeUser.private_key);
+        if (res.statusCode === 200 && res.data.success) {
+          let updatedAccount = { ...accounts[rowIndex], account_name: activeRow.new_account_name, active: res.data.account.active, account_status: res.data.account.account_status, account_link_status: res.data.account.account_link_status };
+          delete accounts[rowIndex];
+          let accountsList = [...accounts, ...[updatedAccount]];
+          bankAccounts = accountsList.filter(acc => acc !== undefined);
+          setAccounts(bankAccounts);
+          setActiveRow({...activeRow, isEditing: false, isDeleting: false, rowNumber: '', account_name: '', new_account_name: '', status: '' });
+
+          appData = {
+            accounts: [...app.accounts.filter(acc => acc.handle !== activeUser.handle), ...bankAccounts]
+          };
+          result.alert = { message: 'Account was successfully updated and saved.', type: 'success' };
+        } else {
+          if (res.data && res.data.validation_details) {
+            if (res.data.validation_details.account_name) error_message = res.data.validation_details.account_name;
+            if (res.data.validation_details.new_account_name) error_message = res.data.validation_details.new_account_name;
+          }
+          if (!error_message) error_message = res.data.message;
+          setError(error_message);
+          result.alert = { message: res.data.message, type: 'danger' };
+        }
+
+        setAppData({
+          ...appData,
+          responses: [{
+            endpoint: '/update_account',
+            result: JSON.stringify(res, null, '\t')
+          }, ...app.responses]
+        }, () => {
+          updateApp({ ...result });
+        });
+      }
+      setLoaded(true);
+    }
   }
 
   useEffect(() => {
@@ -279,7 +329,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
                       <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none mx-1 px-1" onClick={() => onEditToggle(index, acc.account_name, acc.active)}>
                         <i className={`sila-icon sila-icon-edit text-lg ${activeRow.isEditing && activeRow.rowNumber === index ? 'text-primary' : ''}`}></i>
                       </Button>
-                      {(activeRow.isEditing && activeRow.rowNumber === index) ? <Button className="p-1 text-decoration-none mx-1 px-1" onClick={(e) => onSave(index)} disabled={(activeRow.isEditing && activeRow.new_account_name === activeRow.account_name && activeRow.status === isChecked) ? true : false }>Save</Button> : <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none mx-2 px-2" onClick={(e) => onDelete(index)}><i className={`sila-icon sila-icon-delete text-lg ${(activeRow.isDeleting && activeRow.rowNumber === index) ? 'text-primary' : undefined }`}></i></Button>}
+                      {(activeRow.isEditing && activeRow.rowNumber === index) ? <Button className="p-1 text-decoration-none mx-1 px-1" onClick={(e) => onSave(index)} disabled={(activeRow.isEditing && activeRow.new_account_name === activeRow.account_name && activeRow.status === isChecked) ? true : false }>Save</Button> : <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none mx-2 px-2"><i className="sila-icon sila-icon-delete text-lg"></i></Button>}
                     </div>
                   </td>
                 </tr>
