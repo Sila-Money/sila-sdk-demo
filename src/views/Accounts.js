@@ -294,12 +294,12 @@ const Accounts = ({ page, previous, next, isActive }) => {
         <Table bordered responsive>
           <thead>
             <tr>
-              <th className="text-lg bg-secondary">Account  #</th>
-              <th className="text-lg bg-secondary">Name</th>
-              <th className="text-lg bg-secondary">Type</th>
-              <th className="text-lg bg-secondary">Balance</th>
-              <th className="text-lg bg-secondary">Status</th>
-              <th className="text-lg bg-secondary text-center">Action</th>
+              <th className="text-lg bg-secondary text-dark font-weight-bold text-nowrap">Account  #</th>
+              <th className="text-lg bg-secondary text-dark font-weight-bold">Name</th>
+              <th className="text-lg bg-secondary text-dark font-weight-bold">Type</th>
+              <th className="text-lg bg-secondary text-dark font-weight-bold">Balance</th>
+              <th className="text-lg bg-secondary text-dark font-weight-bold">Status</th>
+              <th className="text-lg bg-secondary text-dark font-weight-bold text-center">Action</th>
             </tr>
           </thead>
           <tbody ref={tbodyRef}>
