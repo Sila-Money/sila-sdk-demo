@@ -32,23 +32,3 @@ $backgroundTransparent: transparent;
     }
   }
 }
-.accounts{
-  .table thead th{
-    color: $gray-dark;
-    font-weight: 600;
-    letter-spacing: 0.005em;
-  }
-  th:first-child, td:first-child{
-    width: 12%;
-  }
-  th:nth-last-child(2){
-    width: 15%;
-  }
-  th:nth-child(2), td:nth-child(2){
-    width: 25%;
-    min-width: 180px;
-  }
-  th:last-child{
-    width: 15%;
-  }
-}
