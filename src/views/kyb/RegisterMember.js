@@ -3,10 +3,9 @@ import { Container, Form, Button } from 'react-bootstrap';
 
 import { useAppContext } from '../../components/context/AppDataProvider';
 
-import RegisterUserForm from '../../components/register/RegisterUserForm';
 import LinkMemberForm from '../../components/kyb/LinkMemberForm';
+import MemberKYBForm from '../../components/kyb/MemberKYBForm';
 import CheckHandleForm from '../../components/common/CheckHandleForm';
-import AlertMessage from '../../components/common/AlertMessage';
 import Pagination from '../../components/common/Pagination';
 import SelectMenu from '../../components/common/SelectMenu';
 import Loader from '../../components/common/Loader';
@@ -16,6 +15,7 @@ const RegisterMember = ({ page, location, history }) => {
   const [member, setMember] = useState(false);
   const [activeUser, setActiveUser] = useState(false);
   const [existing, setExisting] = useState(false);
+  const [showImDoneButton, setShowImDoneButton] = useState(true);
   const [selectedRoles, setSelectedRoles] = useState(location.state.role ? [location.state.role] : []);
   const { app, api, handleError, setAppData } = useAppContext();
   const currentRole = app.settings.kybRoles.find(role => role.name === location.state.role);
@@ -42,7 +42,6 @@ const RegisterMember = ({ page, location, history }) => {
     setActiveUser(user);
     setAppData({ users: app.users.some(u => u.handle === user.handle) ? app.users.map(u => u.handle === user.handle ? { ...u, ...user } : u) : [...app.users, user] });
   };
-  
   useEffect(() => {
     if (activeUser) getEntity();
   }, [activeUser]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -54,7 +53,6 @@ const RegisterMember = ({ page, location, history }) => {
 
         <div className="mb-4 d-flex">
           <h1 className="mb-0">{location.state.role === 'administrator' ? 'Business Administration' : location.state.role ? app.settings.kybRoles.find(role => role.name === location.state.role).label : 'Add a Business Member'}</h1>
-          <Button variant="outline-light" className="text-muted text-uppercase ml-auto" onClick={() => history.goBack()}>Back</Button>
         </div>
 
         {!handle && app.users.filter(user => !user.business).length !== 0 && <div className="loaded"><Form.Check custom id="register-user" className="mb-4 ml-n2" type="radio">
@@ -67,22 +65,13 @@ const RegisterMember = ({ page, location, history }) => {
           </Form.Check></div>}
 
         {!existing ? <div className="loaded">
-          <p className="mb-4 text-muted text-lg">As {currentRole ? `the ${currentRole.label}` : 'a business member'}, personal information is required before we can move on with the business registration (KYB) process.</p>
+          {currentRole && currentRole.name === 'controlling_officer' && <p className="mb-4 text-muted text-lg">As a {currentRole.label}, personal information is required before we can move on with the business registration (KYB) process.</p>}
+          {currentRole && currentRole.name === 'administrator' && <p className="mb-4 text-muted text-lg">As the {currentRole.label}, personal information is required before we can move on with the business registration (KYB) process.</p>}
+          {currentRole && currentRole.name === 'beneficial_owner' && <p className="mb-4 text-muted text-lg">To link this business member to the Beneficial Owner role, we will need to gather more personal informaton before we can move on with the business registration (KYB) process.</p>}
 
           <CheckHandleForm page={page} disabled={activeUser} onSuccess={(handle) => setHandle(handle)} />
 
-          <RegisterUserForm
-            className="mt-4"
-            handle={handle}
-            description="Please fill out the below fields for this business member."
-            onSuccess={handleActiveUser}>
-
-            <div className="d-flex mt-4">
-              {app.alert.message && <AlertMessage message={app.alert.message} type={app.alert.type} />}
-              <Button type="submit" className="ml-auto" disabled={!handle || activeUser}>Register</Button>
-            </div>
-
-          </RegisterUserForm>
+          <MemberKYBForm handle={handle} currentRole={currentRole} onSuccess={handleActiveUser} />
         </div>
           :
           <div className="mb-5 loaded position-relative" style={{ zIndex: 4 }}>
@@ -95,8 +84,8 @@ const RegisterMember = ({ page, location, history }) => {
       {member && <div className="loaded">
 
         {member.loading ? <Loader /> : <div className="loaded">
-          <LinkMemberForm member={{ ...activeUser, ...member }} onLinked={() => getEntity()} onUnlinked={() => getEntity()} />
-          <p className="mt-5 mb-0 text-center"><Button variant="outline-light" className="text-muted text-uppercase" onClick={() => history.goBack()}>I'm Done</Button></p>
+          <LinkMemberForm member={{ ...activeUser, ...member }} onLinked={() => getEntity()} onUnlinked={() => getEntity()} onShowImDone={(status) => setShowImDoneButton(status)} />
+          {showImDoneButton && <p className="mt-5 mb-0 text-center"><Button variant="outline-light" className="text-muted text-uppercase" onClick={() => history.goBack()}>I'm Done</Button></p>}
         </div>}
 
       </div>}

@@ -8,6 +8,10 @@
     transition: color $transition-duration $ease-in-out-circ;
     color: $white !important;
   }
+  &.disabled,
+  &:disabled {
+    color: $gray-lightest !important;
+  }
 }
 
 .dropdown-menu {

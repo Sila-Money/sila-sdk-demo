@@ -14,6 +14,7 @@
   .response-results {
     position: relative;
     z-index: 1;
+
     ul {
       list-style: none;
       margin: 0;
@@ -29,6 +30,7 @@
 
     .endpoint {
       cursor: pointer;
+
       &::before {
         content: "\f13a";
         @include fas-icon;
@@ -78,12 +80,63 @@
   }
 }
 
+.tip-container {
+  background: $main-sidebar-background;
+  overflow: hidden;
+
+  .carousel,
+  .carousel-inner,
+  .carousel-item {
+    height: 100%;
+  }
+
+  .carousel {
+    padding-top: 70px;
+  }
+
+  .carousel-control-prev,
+  .carousel-control-next {
+    width: 9px;
+  }
+
+  .carousel-control-prev {
+    left: -10px;
+  }
+
+  .carousel-control-next {
+    right: -10px;
+  }
+
+  .carousel-control-prev-icon {
+    background-image: url(../../images/arrow_left.svg);
+  }
+
+  .carousel-control-next-icon {
+    background-image: url(../../images/arrow_right.svg);
+  }
+}
+
 @include media-breakpoint-up(sm) {
   .main-sidebar {
     top: $main-navbar-height;
     right: 0;
     position: fixed;
     z-index: 2;
-    height: calc(100vh - #{$main-navbar-height} - 1px);
+    height: calc(100vh - #{$main-navbar-height} - #{$main-navbar-tip-height} - 1px);
+  }
+
+  .tip-container {
+    position: fixed;
+    height: $main-navbar-tip-height;
+    bottom: 0px;
+    right: 0px;
+  }
+}
+
+@include media-breakpoint-down(md) {
+  .tip-container {
+    p {
+      font-size: $font-size-sm
+    }
   }
 }

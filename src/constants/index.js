@@ -1,3 +1,133 @@
+export const DEFAULT_KYC = 'DEFAULT';
+
+export const LITE_KYC = 'KYC-LITE';
+
+export const RECEIVE_ONLY_KYC = 'RECEIVE_ONLY';
+
+export const INSTANT_ACH_KYC = 'INSTANT-ACH';
+
+export const KYB_STANDARD = 'KYB-STANDARD';
+
+export const KYB_LITE = 'KYB-LITE';
+
+export const KYB_RECEIVE_ONLY = 'RECEIVE_ONLY';
+
+export const KYC_ARRAY = [{
+    value: 'DEFAULT',
+    label: 'Default KYC'
+  },
+  {
+    value: 'KYC-LITE',
+    label: 'KYC Lite'
+  },
+  {
+    value: 'RECEIVE_ONLY',
+    label: 'Receive Only'
+  },
+  {
+    value: 'INSTANT-ACH',
+    label: 'Instant ACH'
+  }
+];
+
+export const KYB_ARRAY = [{
+    value: 'KYB-STANDARD',
+    label: 'KYB Standard'
+  },
+  {
+    value: 'KYB-LITE',
+    label: 'KYB Lite'
+  },
+  {
+    value: 'RECEIVE_ONLY',
+    label: 'Receive Only'
+  }
+];
+
+export const KYC_REGISTER_FIELDS_ARRAY = [{
+    value: 'firstName',
+    label: 'First Name'
+  },
+  {
+    value: 'lastName',
+    label: 'Last Name'
+  },
+  {
+    value: 'email',
+    label: 'Email'
+  },
+  {
+    value: 'phone',
+    label: 'Phone Number'
+  },
+  {
+    value: 'dateOfBirth',
+    label: 'Date of Birth'
+  },
+  {
+    value: 'ssn',
+    label: 'Social Security Number'
+  },
+  {
+    value: 'address',
+    label: 'Street Address'
+  },
+  {
+    value: 'city',
+    label: 'City'
+  },
+  {
+    value: 'state',
+    label: 'State'
+  },
+  {
+    value: 'zip',
+    label: 'ZIP'
+  }
+];
+
+export const KYB_REGISTER_FIELDS_ARRAY = [{
+    value: 'entity_name',
+    label: 'Legal Company Name'
+  },
+  {
+    value: 'doing_business_as',
+    label: 'DBA',
+  },
+  {
+    value: 'address',
+    label: 'Street Address'
+  },
+  {
+    value: 'city',
+    label: 'City'
+  },
+  {
+    value: 'state',
+    label: 'State'
+  },
+  {
+    value: 'zip',
+    label: 'Zip Code'
+  },
+  {
+    value: 'phone',
+    label: 'Phone Number'
+  },
+  {
+    value: 'ein',
+    label: 'Employer ID Number'
+  },
+  {
+    value: 'email',
+    label: 'Business Email'
+  },
+  {
+    value: 'business_website',
+    label: 'Business Website'
+  }
+];
+
 export const STATES_ARRAY = [{
     value: 'AL',
     label: 'Alabama'
