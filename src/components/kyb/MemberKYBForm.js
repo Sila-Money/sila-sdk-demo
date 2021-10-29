@@ -80,7 +80,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, linkBeneficialOwner,
       if (e.target.dateOfBirth && e.target.dateOfBirth.value !== activeMember.dateOfBirth) entityUpdateData.birthdate = e.target.dateOfBirth ? e.target.dateOfBirth.value : '';
       if (Object.keys(entityUpdateData).length) {
         try {
-          const entityUpdateRes = await api.updateEntity(activeMember.user_handle, activeMember.private_key, entityUpdateData);
+          const entityUpdateRes = await api.updateEntity(activeMember.handle, activeMember.private_key, entityUpdateData);
           updatedResponses = [ ...updatedResponses, { endpoint: '/update/entity', result: JSON.stringify(entityUpdateRes, null, '\t') } ];
 
           if (entityUpdateRes.data.success) {
@@ -100,7 +100,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, linkBeneficialOwner,
       validationErrors = { ...validationErrors, contact: {} }
       if (e.target.email && e.target.email.value !== activeMember.email) {
         try {
-          const emailRes = await api.addEmail(activeMember.user_handle, activeMember.private_key, e.target.email.value);
+          const emailRes = await api.addEmail(activeMember.handle, activeMember.private_key, e.target.email.value);
           updatedResponses = [ ...updatedResponses, { endpoint: '/add/email', result: JSON.stringify(emailRes, null, '\t') } ];
 
           if (emailRes.data.success) {
@@ -119,7 +119,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, linkBeneficialOwner,
 
       if (e.target.phone && e.target.phone.value !== activeMember.phone) {
         try {
-          const phoneRes = await api.addPhone(activeMember.user_handle, activeMember.private_key, e.target.phone.value);
+          const phoneRes = await api.addPhone(activeMember.handle, activeMember.private_key, e.target.phone.value);
           updatedResponses = [ ...updatedResponses, { endpoint: '/add/phone', result: JSON.stringify(phoneRes, null, '\t') } ];
 
           if (phoneRes.data.success) {
@@ -138,7 +138,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, linkBeneficialOwner,
       
       if (e.target.ssn && e.target.ssn.value !== activeMember.ssn) {
         try {
-          const ssnRes = await api.addIdentity(activeMember.user_handle, activeMember.private_key, {
+          const ssnRes = await api.addIdentity(activeMember.handle, activeMember.private_key, {
             alias: 'SSN',
             value: e.target.ssn.value
           });
@@ -165,7 +165,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, linkBeneficialOwner,
       if (e.target.zip && e.target.zip.value !== activeMember.zip) addressUpdateData.postal_code = e.target.zip ? e.target.zip.value : '';
       if (Object.keys(addressUpdateData).length) {
         try {
-          const addressRes = await api.addAddress(activeMember.user_handle, activeMember.private_key, addressUpdateData);
+          const addressRes = await api.addAddress(activeMember.handle, activeMember.private_key, addressUpdateData);
           updatedResponses = [ ...updatedResponses, { endpoint: '/add/address', result: JSON.stringify(addressRes, null, '\t') } ];
 
           if (addressRes.data.success) {
@@ -194,14 +194,14 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, linkBeneficialOwner,
         
         if (updateSuccess) {
           refreshApp();
-          const appUser = app.users.find(u => u.handle === activeMember.user_handle);
+          const appUser = app.users.find(u => u.handle === activeMember.handle);
           updatedEntityData = { ...appUser, ...updatedEntityData, kycLevel: false }
           result = {
             activeUser: { ...appUser, ...updatedEntityData },
             alert: { message: 'Registration data was successfully added.', type: 'success' }
           };
           appData = {
-            users: app.users.map(({ active, ...u }) => u.handle === activeMember.user_handle ? { ...u, ...updatedEntityData } : u),
+            users: app.users.map(({ active, ...u }) => u.handle === activeMember.handle ? { ...u, ...updatedEntityData } : u),
           };
           if (Object.keys(errors).length) setErrors({});
         } else if ( Object.keys(validationErrors).length ) {
