@@ -177,7 +177,7 @@ const RegisterBusinessDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => 
           if (fieldName === 'zip') addressUpdateData.postal_code = activeRow.fldValue;
 
           let addressRes = {};
-          if (activeRow.isAdding) {
+          if (activeRow.isAdding && !app.activeUser.address) {
             ApiEndpoint = '/add/address';
             if (app.activeUser.address) addressUpdateData.street_address_1 = app.activeUser.address;
             addressRes = await api.addAddress(app.activeUser.handle, app.activeUser.private_key, addressUpdateData);
@@ -195,6 +195,15 @@ const RegisterBusinessDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => 
             if (fieldName === 'city') updatedEntityData = { ...updatedEntityData, city: activeRow.fldValue };
             if (fieldName === 'state') updatedEntityData = { ...updatedEntityData, state: activeRow.fldValue };
             if (fieldName === 'zip') updatedEntityData = { ...updatedEntityData, zip: activeRow.fldValue };
+
+            if (activeRow.isAdding && fieldName === 'address' ) {
+              setActiveRow({...activeRow, entityuuid: {
+                email: activeRow.entityuuid.email ? activeRow.entityuuid.email : '',
+                phone: activeRow.entityuuid.phone ? activeRow.entityuuid.phone : '',
+                identity: activeRow.entityuuid.identity ? activeRow.entityuuid.identity : '',
+                address: addressRes.data.address.uuid
+              } })
+            }
           } else if (addressRes.data.validation_details) {
             if (addressRes.data.validation_details.address instanceof Object) {
               validationErrors = { address: addressRes.data.validation_details.address }
@@ -206,9 +215,10 @@ const RegisterBusinessDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => 
                 if (fieldName === 'state') validationErrors.address = Object.assign({state: "Please add address first!"}, validationErrors.address);
                 if (fieldName === 'zip') validationErrors.address = Object.assign({postal_code: "Please add address first!"}, validationErrors.address);
               } else {
+                if (fieldName === 'address') validationErrors.address = Object.assign({street_address_1: addressRes.data.validation_details.street_address_1}, validationErrors.address);
                 if (fieldName === 'city') validationErrors.address = Object.assign({city: addressRes.data.validation_details.city}, validationErrors.address);
                 if (fieldName === 'state') validationErrors.address = Object.assign({state: addressRes.data.validation_details.state}, validationErrors.address);
-                if (fieldName === 'zip') validationErrors.address = Object.assign({postal_code: addressRes.data.validation_details.zip}, validationErrors.address);
+                if (fieldName === 'zip') validationErrors.address = Object.assign({postal_code: addressRes.data.validation_details.postal_code}, validationErrors.address);
               }
             }
           } else {

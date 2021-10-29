@@ -27,6 +27,13 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
 
     let isValidated = true;
     let validationErrors = {};
+    if (e.target.firstName && e.target.firstName.value) e.target.firstName.value = e.target.firstName.value.trim();
+    if (e.target.lastName && e.target.lastName.value) e.target.lastName.value = e.target.lastName.value.trim();
+    if (e.target.ssn && e.target.ssn.value) e.target.ssn.value = e.target.ssn.value.trim();
+    if (e.target.address && e.target.address.value) e.target.address.value = e.target.address.value.trim();
+    if (e.target.city && e.target.city.value) e.target.city.value = e.target.city.value.trim();
+    if (e.target.zip && e.target.zip.value) e.target.zip.value = e.target.zip.value.trim();
+
     if (e.target.firstName && !e.target.firstName.value) {
       isValidated = false;
       validationErrors.entity = Object.assign({first_name: "This field may not be blank."}, validationErrors.entity);

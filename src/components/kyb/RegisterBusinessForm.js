@@ -26,6 +26,12 @@ const RegisterBusinessForm = ({ className, children, onError, onSuccess, onShowK
 
     let isValidated = true;
     let validationErrors = {};
+    if (e.target.entity_name && e.target.entity_name.value) e.target.entity_name.value = e.target.entity_name.value.trim();
+    if (e.target.address && e.target.address.value) e.target.address.value = e.target.address.value.trim();
+    if (e.target.city && e.target.city.value) e.target.city.value = e.target.city.value.trim();
+    if (e.target.zip && e.target.zip.value) e.target.zip.value = e.target.zip.value.trim();
+    if (e.target.ein && e.target.ein.value) e.target.ein.value = e.target.ein.value.trim();
+
     if (e.target.entity_name && !e.target.entity_name.value) {
       isValidated = false;
       validationErrors.entity = Object.assign({entity_name: "This field may not be blank."}, validationErrors.entity);
