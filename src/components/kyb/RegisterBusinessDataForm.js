@@ -40,7 +40,7 @@ const RegisterBusinessDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => 
     });
   }
   const onEditing = (e) => {
-    setActiveRow({...activeRow, fldValue: e.target.value || undefined});
+    setActiveRow({...activeRow, fldValue: e.target.value.trim() || undefined});
   }
   const onSave = async (fieldName) => {
     if (activeRow.isEditing && (!activeRow.fldValue || activeRow.fldValue === app.activeUser[fieldName])) return;

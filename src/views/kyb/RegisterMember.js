@@ -74,7 +74,7 @@ const RegisterMember = ({ page, location, history }) => {
           <MemberKYBForm handle={handle} currentRole={currentRole} onSuccess={handleActiveUser} />
         </div>
           :
-          <div className="mb-5 loaded position-relative" style={{ zIndex: 4 }}>
+          <div className="mb-5 loaded position-relative existing-user" style={{ zIndex: 4 }}>
             <p className="text-lg text-muted mb-4 loaded">Select the user you wish to link to the business.</p>
             <SelectMenu fullWidth title="Choose a user..." options={app.users.filter(user => !user.business).map(user => ({ label: `${user.firstName} ${user.lastName} (${user.handle})`, value: user.handle }))} onChange={(handle) => handleActiveUser(app.users.find(user => user.handle === handle))} />
           </div>}
