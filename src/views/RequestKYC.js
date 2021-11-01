@@ -18,7 +18,7 @@ const RequestKYC = ({ page, previous, next }) => {
   const requestKyc = async () => {
     console.log(`Requesting ${app.settings.flow.toUpperCase()} ...`);
     try {
-      const res = await api.requestKYC(activeUser.handle, activeUser.private_key)
+      const res = await api.requestKYC(activeUser.handle, activeUser.private_key, app.settings.preferredKycLevel)
       let result = { kyc: {}, kyb: {} };
       console.log('  ... completed!');
       if (res.data.status === 'SUCCESS') {
