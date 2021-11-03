@@ -41,7 +41,7 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember 
     });
   }
   const onEditing = (e) => {
-    setActiveRow({...activeRow, fldValue: e.target.value || undefined});
+    setActiveRow({...activeRow, fldValue: e.target.value.trim() || undefined});
   }
   const onSave = async (fieldName) => {
     if (activeRow.isEditing && (!activeRow.fldValue || activeRow.fldValue === activeUser[fieldName])) return;
@@ -415,10 +415,10 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember 
       </AccordionItem>
       <div className="mt-3">
         <div className="row mx-2">
-          <div className="sms-notifications p-0 col-md-9 col-sm-12">
+          <div className="sms-notifications p-0 col-md-6 col-sm-12">
             {(activeUser && activeUser.smsOptIn) && <div className="text-left">SMS Notifications: <span className="text-primary">Requested</span></div>}
           </div>
-          <div className="p-0 text-right col-md-3 col-sm-12">
+          <div className="p-0 text-right col-md-6 col-sm-12">
             {(!activeRow.isAdding && Object.keys(KYC_REGISTER_FIELDS_ARRAY.filter(option => activeUser && !activeUser[option.value])).length) ? <Button variant="link" className="p-0 new-registration shadow-none" onClick={onAddDataToggle}>Add new registration data+</Button> : null}
           </div>
         </div>
