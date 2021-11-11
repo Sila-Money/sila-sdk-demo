@@ -8,7 +8,7 @@ import { useAppContext } from '../../components/context/AppDataProvider';
 
 import Loader from '../../components/common/Loader';
 
-const MemberKYBForm = ({ handle, activeMember, currentRole, linkBeneficialOwner, onError, onSuccess }) => {
+const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, onError, onSuccess }) => {
   const { app, api, refreshApp, handleError, updateApp, setAppData } = useAppContext();
   const [validated, setValidated] = useState(false);
   const [errors, setErrors] = useState({});
@@ -80,7 +80,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, linkBeneficialOwner,
     let updatedResponses = [];
     let successStatus = { entity: true, email: true, phone: true, identity: true, address: true };
 
-    if (linkBeneficialOwner && activeMember) {
+    if (moreInfoNeeded && activeMember) {
       const entityUpdateData = {};
       if (e.target.firstName && e.target.firstName.value !== activeMember.firstName) entityUpdateData.first_name = e.target.firstName.value;
       if (e.target.lastName && e.target.lastName.value !== activeMember.lastName) entityUpdateData.last_name = e.target.lastName.value;
@@ -221,7 +221,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, linkBeneficialOwner,
           responses: [...app.responses, ...updatedResponses]
         }, () => {
           updateApp({ ...result });
-          if (updateSuccess) onSuccess(updatedEntityData);
+          if (updateSuccess) onSuccess(currentRole, updatedEntityData);
         });
       } catch (err) {
         console.log('  ... looks like we ran into an issue!');
@@ -357,7 +357,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, linkBeneficialOwner,
       </Form.Row>
 
       <div className="d-flex mt-4">
-        <Button type="submit" className="ml-auto" disabled={!handle}>{linkBeneficialOwner ? 'Link as Beneficial Owner' : 'Register'}</Button>
+        <Button type="submit" className="ml-auto" disabled={!handle}>{currentRole && currentRole.name === 'controlling_officer' ? 'Link as Controlling Officer' : currentRole && currentRole.name === 'beneficial_owner' ? 'Link as Beneficial Owner' : 'Register'}</Button>
       </div>
 
     </Form>
