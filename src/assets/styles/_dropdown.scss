@@ -76,10 +76,10 @@
 
 }
 
-.existing-user{
-  .select-menu{
-    .dropdown-menu{
-      height: 260px;
+.select-menu-height {
+  .select-menu {
+    .dropdown-menu {
+      max-height: 260px;
     }
   }
 }
