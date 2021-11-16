@@ -65,7 +65,7 @@ const Wallets = ({ page, previous, next, isActive }) => {
       delete newWallet.editing;
       setAppData({
         wallets: app.wallets.map(w => {
-          if (w.default) delete w.default;
+          if (w.default && newWallet.default) delete w.default;
           return w.blockchain_address === newWallet.blockchain_address ? newWallet : w
         }),
         users: app.users.map(u => result.activeUser && u.handle === activeUser.handle ? result.activeUser : u),
@@ -76,7 +76,7 @@ const Wallets = ({ page, previous, next, isActive }) => {
       }, () => {
         updateApp({ ...result });
         setWallets(wallets.map(w => {
-          if (w.default) delete w.default;
+          if (w.default && newWallet.default) delete w.default;
           return w.blockchain_address === newWallet.blockchain_address ? newWallet : w
         }));
       });
