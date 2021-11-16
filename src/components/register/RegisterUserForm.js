@@ -19,6 +19,7 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
   const [errors, setErrors] = useState({});
   const [loaded, setLoaded] = useState(true);
   const [preferredKyc, setPreferredKyc] = useState(app.activeUser.kycLevel || app.settings.preferredKycLevel);
+  const [reloadUUID, setReloadUUID] = useState(false);
 
   const register = async (e) => {
     console.log('\n*** BEGIN REGISTER USER ***');
@@ -286,6 +287,7 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
           appData = {
             users: app.users.map(({ active, ...u }) => u.handle === app.activeUser.handle ? { ...u, ...updatedEntityData } : u),
           };
+          setReloadUUID(true);
           if (Object.keys(errors).length) setErrors({});
         } else if ( Object.keys(validationErrors).length ) {
           setErrors(validationErrors);
@@ -294,7 +296,7 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
         }
         setAppData({
           ...appData,
-          responses: [...app.responses, ...updatedResponses],
+          responses: [...updatedResponses, ...app.responses],
           settings: { ...app.settings, preferredKycLevel: preferredKyc }
         }, () => {
           updateApp({ ...result });
@@ -397,7 +399,7 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
       {preferredKyc === RECEIVE_ONLY_KYC && <ReceiveOnlyKYCForm errors={errors} app={app} isHide={(app.activeUser && app.activeUser.kycLevel === RECEIVE_ONLY_KYC)} />}
       {preferredKyc === INSTANT_ACH_KYC && <InstantAchKYCForm errors={errors} app={app} isHide={(app.activeUser && app.activeUser.kycLevel === INSTANT_ACH_KYC)} />}
       {preferredKyc && (app.activeUser && app.activeUser.kycLevel !== preferredKyc) && <div className="d-flex mb-md-5"><Button type="submit" className="ml-auto" disabled={!(app.activeUser && app.activeUser.kycLevel !== app.settings.preferredKycLevel)}>Add data</Button></div>}
-      {app.activeUser && app.activeUser.handle && <RegisterDataForm errors={errors} onConfirm={onConfirm} onLoaded={(isLoaded) => setLoaded(isLoaded)} onErrors={(errorsObj) => { setErrors(errorsObj); setValidated(true); } } />}
+      {app.activeUser && app.activeUser.handle && <RegisterDataForm errors={errors} onConfirm={onConfirm} onLoaded={(isLoaded) => setLoaded(isLoaded)} onErrors={(errorsObj) => { setErrors(errorsObj); setValidated(true); } } reloadUUID={reloadUUID} onReloadedUUID={(isReloaded) => setReloadUUID(isReloaded)} />}
 
       {children}
     </Form>

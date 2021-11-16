@@ -218,7 +218,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, onEr
         }
         setAppData({
           ...appData,
-          responses: [...app.responses, ...updatedResponses]
+          responses: [...updatedResponses, ...app.responses]
         }, () => {
           updateApp({ ...result });
           if (updateSuccess) onSuccess(currentRole, updatedEntityData);
@@ -282,7 +282,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, onEr
           }, ...app.responses]
         }, () => {
           updateApp({ ...result });
-          if (res.data.success && onSuccess) onSuccess(entity);
+          if (res.data.success && onSuccess) onSuccess(currentRole, entity);
         });
       } catch (err) {
         console.log('  ... looks like we ran into an issue!');
