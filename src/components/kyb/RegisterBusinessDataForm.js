@@ -9,7 +9,7 @@ import KYBFormFieldType from '../../components/kyb/KYBFormFieldType';
 import { KYB_REGISTER_FIELDS_ARRAY, STATES_ARRAY } from '../../constants';
 
 
-const RegisterBusinessDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => {
+const RegisterBusinessDataForm = ({ errors, onConfirm, onLoaded, onErrors, reloadUUID, onReloadedUUID }) => {
   const [expanded, setExpanded] = useState(1);
   const [activeKey, setActiveKey] = useState(1);
   const [activeRow, setActiveRow] = useState({ isEditing: false, isDeleting: false, isAdding: false, fldName: '', fldValue: '', isFetchedUUID: false, entityuuid: {} });
@@ -24,6 +24,7 @@ const RegisterBusinessDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => 
 
   const { app, api, refreshApp, handleError, updateApp, setAppData } = useAppContext();
 
+  let isLoading = useRef(false);
   let updatedEntityData = {};
   let updatedResponses = [];
   let validationErrors = {};
@@ -251,7 +252,7 @@ const RegisterBusinessDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => 
 
         setAppData({
           ...appData,
-          responses: [...app.responses, ...updatedResponses]
+          responses: [...updatedResponses, ...app.responses]
         }, () => {
           updateApp({ ...result });
         });
@@ -295,8 +296,8 @@ const RegisterBusinessDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => 
           if (phoneFields.includes(fieldName)) updatedEntityData = { ...updatedEntityData, phone: '' };
           if (identityFields.includes(fieldName)) updatedEntityData = { ...updatedEntityData, ein: '' };
           if (addressFields.includes(fieldName)) updatedEntityData = { ...updatedEntityData, address: '', city: '', state: '', zip: '' };
-        }  else if (deleteRes.data && deleteRes.data.validation_details) {
-          validationErrors = Object.assign({error: deleteRes.data.validation_details.uuid}, validationErrors.error);
+        }  else if (deleteRes.data && !deleteRes.data.success) {
+          validationErrors = Object.assign({error: deleteRes.data.validation_details ? deleteRes.data.validation_details.uuid : deleteRes.data.message }, validationErrors.error);
         } else {
           console.log(`... delete entity ${fieldName} failed!`, deleteRes);
         }
@@ -322,7 +323,7 @@ const RegisterBusinessDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => 
 
           setAppData({
             ...appData,
-            responses: [...app.responses, ...updatedResponses]
+            responses: [...updatedResponses, ...app.responses]
           }, () => {
             updateApp({ ...result });
           });
@@ -349,8 +350,11 @@ const RegisterBusinessDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => 
   }
 
   useEffect(() => {
+    if (reloadUUID && !isLoading.current) setActiveRow({...activeRow, isFetchedUUID: false });
     async function fetchEntity() {
       try {
+        if (isLoading.current) return;
+        isLoading.current = true;
         onLoaded(false);
         const entityRes = await api.getEntity(app.activeUser.handle, app.activeUser.private_key);
         if (entityRes.data.success) {
@@ -360,14 +364,15 @@ const RegisterBusinessDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => 
             identity: entityRes.data.identities[0] ? entityRes.data.identities[0]['uuid'] : '',
             address: entityRes.data.addresses[0] ? entityRes.data.addresses[0]['uuid'] : ''
           } })
+          if (onReloadedUUID) onReloadedUUID(false);
           onLoaded(true);
+          isLoading.current = false;
         }
       } catch (err) {
         console.log('  ... unable to get entity info, looks like we ran into an issue!');
       }
     }
     if (!Object.keys(activeRow.entityuuid).length || !activeRow.isFetchedUUID) {
-      console.info('fetchEntity calling...');
       fetchEntity();
     }
 
@@ -382,7 +387,7 @@ const RegisterBusinessDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => 
     return () => {
       document.removeEventListener('mousedown', checkIfClickedOutside)
     }
-  }, [activeRow, api, app.activeUser.handle, app.activeUser.private_key, onLoaded])
+  }, [activeRow, api, app.activeUser.handle, app.activeUser.private_key, onLoaded, reloadUUID, onReloadedUUID])
 
   return (
     <Accordion className="mb-3 mb-md-5" defaultActiveKey={expanded ? expanded : undefined} onSelect={e => setActiveKey(e)}>

@@ -27,7 +27,7 @@ const LinkMemberForm = ({ member, onLinked, onUnlinked, onShowImDone }) => {
       const res = await api.linkBusinessMember(activeUser.handle, activeUser.private_key, businessUser.handle, businessUser.private_key, role.name, undefined, details, ownership_stake);
       if (res.data.success) {
         result.alert = { message: `Successfully linked as a ${role.label}!`, type: 'success' };
-        result.activeUser = role.name === 'administrator' ? activeUser : (role.name === 'controlling_officer' || role.name === 'beneficial_owner') ? user : app.activeUser;
+        result.activeUser = role.name === 'administrator' ? user ? user : activeUser : app.activeUser;
         if (onLinked) onLinked({ handle: activeUser.handle, role: role.name });
         if (ownershipStake) setOwnershipStake(0);
       } else {
@@ -35,7 +35,7 @@ const LinkMemberForm = ({ member, onLinked, onUnlinked, onShowImDone }) => {
       }
       setAppData({
         settings: role.name === 'administrator' ? { ...app.settings, kybAdminHandle: activeUser.handle } : app.settings,
-        users: (role.name === 'controlling_officer' || role.name === 'beneficial_owner') ? app.users.map(u => u.handle === activeUser.handle ? { ...u, ...user, admin: true } : u) : app.users.map(u => u.handle === activeUser.handle ? { ...u, admin: true } : u),
+        users: user ? app.users.map(u => u.handle === activeUser.handle ? { ...u, ...user, admin: true } : u) : app.users.map(u => u.handle === activeUser.handle ? { ...u, admin: true } : u),
         responses: [{
           endpoint: '/link_business_member',
           result: JSON.stringify(res, null, '\t')
@@ -92,6 +92,7 @@ const LinkMemberForm = ({ member, onLinked, onUnlinked, onShowImDone }) => {
   };
 
   const updateActiveUser = (role, user) => {
+    if (user && role && role.name === 'administrator') user.admin = true;
     if (onShowImDone) onShowImDone(true);
     setMoreInfoNeeded(false);
     hasRole(role.name) ? unlinkMember(role) : linkMember(role, user);

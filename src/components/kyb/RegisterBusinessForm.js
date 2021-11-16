@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Button } from 'react-bootstrap';
 
 import { useAppContext } from '../../components/context/AppDataProvider';
@@ -18,6 +18,7 @@ const RegisterBusinessForm = ({ className, children, onError, onSuccess, onShowK
   const [errors, setErrors] = useState({});
   const [loaded, setLoaded] = useState(true);
   const [preferredKyb, setPreferredKyb] = useState(app.activeUser.kybLevel || app.settings.preferredKybLevel);
+  const [reloadUUID, setReloadUUID] = useState(false);
   const businessTypes = ['sole_proprietorship', 'trust', 'unincorporated_association'];
 
   const register = async (e) => {
@@ -267,6 +268,7 @@ const RegisterBusinessForm = ({ className, children, onError, onSuccess, onShowK
           appData = {
             users: app.users.map(({ active, ...u }) => u.handle === app.activeUser.handle ? { ...u, ...updatedEntityData } : u),
           };
+          setReloadUUID(true);
           if (Object.keys(errors).length) setErrors({});
         } else if ( Object.keys(validationErrors).length ) {
           if (validationErrors.identity) validationErrors.identity = 'EIN acceptable format: xx-xxxxxxx';
@@ -276,7 +278,7 @@ const RegisterBusinessForm = ({ className, children, onError, onSuccess, onShowK
         }
         setAppData({
           ...appData,
-          responses: [...app.responses, ...updatedResponses],
+          responses: [...updatedResponses, ...app.responses],
           settings: { ...app.settings, preferredKybLevel: preferredKyb }
         }, () => {
           updateApp({ ...result });
@@ -365,6 +367,12 @@ const RegisterBusinessForm = ({ className, children, onError, onSuccess, onShowK
     });
   }
 
+  useEffect(() => {
+    if (app.activeUser && app.activeUser.business_handle) {
+      updateApp({ activeUser: app.users.find(user => app.activeUser.business_handle === user.handle) });
+    }
+  }, [app, updateApp])
+
   return (
     <Form noValidate className={className} validated={validated} autoComplete="off" onSubmit={register}>
       {!loaded && <Loader overlay />}
@@ -383,7 +391,7 @@ const RegisterBusinessForm = ({ className, children, onError, onSuccess, onShowK
       {preferredKyb === KYB_LITE && <LiteKYBForm businessTypes={businessTypes} errors={errors} app={app} isHide={(app.activeUser && app.activeUser.kybLevel === KYB_LITE)} />}
       {preferredKyb === KYB_RECEIVE_ONLY && <ReceiveOnlyKYBForm errors={errors} app={app} isHide={(app.activeUser && app.activeUser.kybLevel === KYB_RECEIVE_ONLY)} />}
       {preferredKyb && (app.activeUser && app.activeUser.kybLevel !== preferredKyb) && <div className="d-flex mb-md-5"><Button type="submit" className="ml-auto" disabled={!(app.activeUser && app.activeUser.kybLevel !== app.settings.preferredKybLevel)}>Add data</Button></div>}
-      {app.activeUser && app.activeUser.handle && <RegisterBusinessDataForm errors={errors} onConfirm={onConfirm} onLoaded={(isLoaded) => setLoaded(isLoaded)} onErrors={(errorsObj) => { setErrors(errorsObj); setValidated(true); } } />}
+      {app.activeUser && app.activeUser.handle && <RegisterBusinessDataForm errors={errors} onConfirm={onConfirm} onLoaded={(isLoaded) => setLoaded(isLoaded)} onErrors={(errorsObj) => { setErrors(errorsObj); setValidated(true); } } reloadUUID={reloadUUID} onReloadedUUID={(isReloaded) => setReloadUUID(isReloaded)} />}
 
       {children}
     </Form>

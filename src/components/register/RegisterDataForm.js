@@ -9,7 +9,7 @@ import KYCFormFieldType from '../../components/register/KYCFormFieldType';
 import { KYC_REGISTER_FIELDS_ARRAY, STATES_ARRAY } from '../../constants';
 
 
-const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember }) => {
+const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember, reloadUUID, onReloadedUUID }) => {
   const [expanded, setExpanded] = useState(1);
   const [activeKey, setActiveKey] = useState(1);
   const [activeRow, setActiveRow] = useState({ isEditing: false, isDeleting: false, isAdding: false, fldName: '', fldValue: '', isFetchedUUID: false, entityuuid: {} });
@@ -25,6 +25,7 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember 
   const { app, api, refreshApp, handleError, updateApp, setAppData } = useAppContext();
   const activeUser = activeMember ? app.users.find(u => u.handle === activeMember.user_handle) : app.activeUser;
 
+  let isLoading = useRef(false);
   let updatedEntityData = {};
   let updatedResponses = [];
   let validationErrors = {};
@@ -252,7 +253,7 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember 
 
         setAppData({
           ...appData,
-          responses: [...app.responses, ...updatedResponses]
+          responses: [...updatedResponses, ...app.responses]
         }, () => {
           updateApp({ ...result });
         });
@@ -296,8 +297,8 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember 
           if (phoneFields.includes(fieldName)) updatedEntityData = { ...updatedEntityData, phone: '' };
           if (identityFields.includes(fieldName)) updatedEntityData = { ...updatedEntityData, ssn: '' };
           if (addressFields.includes(fieldName)) updatedEntityData = { ...updatedEntityData, address: '', city: '', state: '', zip: '' };
-        }  else if (deleteRes.data && deleteRes.data.validation_details) {
-          validationErrors = Object.assign({error: deleteRes.data.validation_details.uuid}, validationErrors.error);
+        }  else if (deleteRes.data && !deleteRes.data.success) {
+          validationErrors = Object.assign({error: deleteRes.data.validation_details.uuid ? deleteRes.data.validation_details.uuid : deleteRes.data.message }, validationErrors.error);
         } else {
           console.log(`... delete entity ${fieldName} failed!`, deleteRes);
         }
@@ -323,7 +324,7 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember 
 
           setAppData({
             ...appData,
-            responses: [...app.responses, ...updatedResponses]
+            responses: [...updatedResponses, ...app.responses]
           }, () => {
             updateApp({ ...result });
           });
@@ -350,8 +351,11 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember 
   }
 
   useEffect(() => {
+    if (reloadUUID && !isLoading.current) setActiveRow({...activeRow, isFetchedUUID: false });
     async function fetchEntity() {
       try {
+        if (isLoading.current) return;
+        isLoading.current = true;
         if (onLoaded) onLoaded(false);
         const entityRes = await api.getEntity(activeUser.handle, activeUser.private_key);
         if (entityRes.data.success) {
@@ -361,7 +365,9 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember 
             identity: entityRes.data.identities[0] ? entityRes.data.identities[0]['uuid'] : '',
             address: entityRes.data.addresses[0] ? entityRes.data.addresses[0]['uuid'] : ''
           } })
+          if (onReloadedUUID) onReloadedUUID(false);
           if (onLoaded) onLoaded(true);
+          isLoading.current = false;
         }
       } catch (err) {
         console.log('  ... unable to get entity info, looks like we ran into an issue!');
@@ -382,7 +388,7 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember 
     return () => {
       document.removeEventListener('mousedown', checkIfClickedOutside)
     }
-  }, [activeRow, api, activeUser, onLoaded, activeMember])
+  }, [activeRow, api, activeUser, onLoaded, activeMember, reloadUUID, onReloadedUUID])
 
   return (
     <Accordion className="mb-3 mb-md-5" defaultActiveKey={expanded ? expanded : undefined} onSelect={e => setActiveKey(e)}>

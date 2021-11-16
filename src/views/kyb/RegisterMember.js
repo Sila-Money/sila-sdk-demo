@@ -36,9 +36,9 @@ const RegisterMember = ({ page, location, history }) => {
     }
   };
 
-  const handleActiveUser = (user) => {
-    if (currentRole === 'administrator' || selectedRoles.some(role => role === 'administrator')) user.admin = true;
-    if (app.settings.kybHandle) user.business_handle = app.settings.kybHandle;
+  const handleActiveUser = (r, user) => {
+    if (user && (currentRole === 'administrator' || selectedRoles.some(role => role === 'administrator'))) user.admin = true;
+    if (user && app.settings.kybHandle) user.business_handle = app.settings.kybHandle;
     setActiveUser(user);
     setAppData({ users: app.users.some(u => u.handle === user.handle) ? app.users.map(u => u.handle === user.handle ? { ...u, ...user } : u) : [...app.users, user] });
   };
@@ -76,7 +76,7 @@ const RegisterMember = ({ page, location, history }) => {
           :
           <div className="mb-5 loaded position-relative select-menu-height" style={{ zIndex: 4 }}>
             <p className="text-lg text-muted mb-4 loaded">Select the user you wish to link to the business.</p>
-            <SelectMenu fullWidth title="Choose a user..." options={app.users.filter(user => !user.business).map(user => ({ label: `${user.firstName} ${user.lastName} (${user.handle})`, value: user.handle }))} onChange={(handle) => handleActiveUser(app.users.find(user => user.handle === handle))} />
+            <SelectMenu fullWidth title="Choose a user..." options={app.users.filter(user => !user.business).map(user => ({ label: `${user.firstName} ${user.lastName} (${user.handle})`, value: user.handle }))} onChange={(handle) => handleActiveUser(undefined, app.users.find(user => user.handle === handle))} />
           </div>}
 
       </div>}
