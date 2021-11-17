@@ -182,7 +182,7 @@ const BusinessMembers = ({ page, previous, next, isActive }) => {
 
       <Pagination
         previous={previous}
-        next={showCongrats ? next : undefined}
+        next={app.settings.preferredKybLevel === 'RECEIVE_ONLY' ? next : showCongrats ? next : undefined}
         currentPage={page} />
 
     </Container>

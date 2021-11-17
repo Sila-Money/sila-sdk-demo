@@ -12,8 +12,7 @@ const LinkMemberForm = ({ member, onLinked, onUnlinked, onShowImDone }) => {
   const { app, api, setAppData, updateApp, handleError } = useAppContext();
   const [ownershipStake, setOwnershipStake] = useState(0);
   const [details, setDetails] = useState('');
-  const [linkBeneficialOwner, setLinkBeneficialOwner] = useState(false);
-  const currentRole = app.settings.kybRoles.find(role => role.name === 'beneficial_owner');
+  const [moreInfoNeeded, setMoreInfoNeeded] = useState(false);
   const location = useLocation();
 
   const hasRole = (role) => member.memberships && member.memberships.some(membership => membership.role === role && membership.business_handle === app.settings.kybHandle);
@@ -28,7 +27,7 @@ const LinkMemberForm = ({ member, onLinked, onUnlinked, onShowImDone }) => {
       const res = await api.linkBusinessMember(activeUser.handle, activeUser.private_key, businessUser.handle, businessUser.private_key, role.name, undefined, details, ownership_stake);
       if (res.data.success) {
         result.alert = { message: `Successfully linked as a ${role.label}!`, type: 'success' };
-        result.activeUser = role.name === 'administrator' ? activeUser : role.name === 'beneficial_owner' ? user : app.activeUser;
+        result.activeUser = role.name === 'administrator' ? user ? user : activeUser : app.activeUser;
         if (onLinked) onLinked({ handle: activeUser.handle, role: role.name });
         if (ownershipStake) setOwnershipStake(0);
       } else {
@@ -36,7 +35,7 @@ const LinkMemberForm = ({ member, onLinked, onUnlinked, onShowImDone }) => {
       }
       setAppData({
         settings: role.name === 'administrator' ? { ...app.settings, kybAdminHandle: activeUser.handle } : app.settings,
-        users: role.name === 'beneficial_owner' ? app.users.map(u => u.handle === activeUser.handle ? { ...u, ...user, admin: true } : u) : app.users.map(u => u.handle === activeUser.handle ? { ...u, admin: true } : u),
+        users: user ? app.users.map(u => u.handle === activeUser.handle ? { ...u, ...user, admin: true } : u) : app.users.map(u => u.handle === activeUser.handle ? { ...u, admin: true } : u),
         responses: [{
           endpoint: '/link_business_member',
           result: JSON.stringify(res, null, '\t')
@@ -83,19 +82,20 @@ const LinkMemberForm = ({ member, onLinked, onUnlinked, onShowImDone }) => {
 
   const getMoreInfoPage = (e, role) => {
     if (e) e.preventDefault();
-    if (role && role.name === 'beneficial_owner') {
+    if (role && !hasRole(role.name) && (role.name === 'controlling_officer' || role.name === 'beneficial_owner')) {
       if (onShowImDone) onShowImDone(false);
-      setLinkBeneficialOwner(true);
+      setMoreInfoNeeded(role);
       updateApp({ ...app, alert: { message: '', type: '' } });
     } else {
       hasRole(role.name) ? unlinkMember(role) : linkMember(role)
     }
   };
 
-  const updateActiveUser = (user) => {
+  const updateActiveUser = (role, user) => {
+    if (user && role && role.name === 'administrator') user.admin = true;
     if (onShowImDone) onShowImDone(true);
-    setLinkBeneficialOwner(false);
-    hasRole(currentRole.name) ? unlinkMember(currentRole) : linkMember(currentRole, user);
+    setMoreInfoNeeded(false);
+    hasRole(role.name) ? unlinkMember(role) : linkMember(role, user);
   };
 
   useEffect(() => {
@@ -106,14 +106,14 @@ const LinkMemberForm = ({ member, onLinked, onUnlinked, onShowImDone }) => {
 
   return (
     <>
-      {linkBeneficialOwner && <>
+      {moreInfoNeeded && <>
         <h1 className="mb-4">More Information Needed</h1>
-        <p className="text-muted text-lg mb-4">To link this business member to the Beneficial Owner role, we will need to gather more personal informaton before we can move on with the business registration (KYB) process.</p>
+        <p className="text-muted text-lg mb-4">To link this business member to the {moreInfoNeeded.label} role, we will need to gather more personal informaton before we can move on with the business registration (KYB) process.</p>
 
-        <MemberKYBForm handle={member.user_handle} activeMember={member} currentRole={currentRole} linkBeneficialOwner={linkBeneficialOwner} onSuccess={updateActiveUser} />
+        <MemberKYBForm handle={member.user_handle} activeMember={member} currentRole={moreInfoNeeded} moreInfoNeeded={moreInfoNeeded} onSuccess={updateActiveUser} />
       </>}
 
-      {!linkBeneficialOwner && <>
+      {!moreInfoNeeded && <>
         <h1 className="mb-4">Link or unlink  {member.entity.entity_name} to this Business</h1>
 
         <p className="text-muted text-lg mb-4">Link or unlink your individual business member account to your role in this business. It is possible for one individual account to be linked as more than one role. You may provide an optional title to your account (such as CEO, CTO, etc,) as well as provide us with your ownership stake, if applicable. </p>

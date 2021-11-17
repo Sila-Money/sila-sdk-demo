@@ -75,3 +75,11 @@
   }
 
 }
+
+.select-menu-height {
+  .select-menu {
+    .dropdown-menu {
+      max-height: 260px;
+    }
+  }
+}
