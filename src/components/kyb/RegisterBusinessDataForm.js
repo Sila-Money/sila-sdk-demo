@@ -9,7 +9,7 @@ import KYBFormFieldType from '../../components/kyb/KYBFormFieldType';
 import { KYB_REGISTER_FIELDS_ARRAY, STATES_ARRAY } from '../../constants';
 
 
-const RegisterBusinessDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => {
+const RegisterBusinessDataForm = ({ errors, onConfirm, onLoaded, onErrors, reloadUUID, onReloadedUUID }) => {
   const [expanded, setExpanded] = useState(1);
   const [activeKey, setActiveKey] = useState(1);
   const [activeRow, setActiveRow] = useState({ isEditing: false, isDeleting: false, isAdding: false, fldName: '', fldValue: '', isFetchedUUID: false, entityuuid: {} });
@@ -24,6 +24,7 @@ const RegisterBusinessDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => 
 
   const { app, api, refreshApp, handleError, updateApp, setAppData } = useAppContext();
 
+  let isLoading = useRef(false);
   let updatedEntityData = {};
   let updatedResponses = [];
   let validationErrors = {};
@@ -40,7 +41,7 @@ const RegisterBusinessDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => 
     });
   }
   const onEditing = (e) => {
-    setActiveRow({...activeRow, fldValue: e.target.value || undefined});
+    setActiveRow({...activeRow, fldValue: e.target.value.trim() || undefined});
   }
   const onSave = async (fieldName) => {
     if (activeRow.isEditing && (!activeRow.fldValue || activeRow.fldValue === app.activeUser[fieldName])) return;
@@ -177,7 +178,7 @@ const RegisterBusinessDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => 
           if (fieldName === 'zip') addressUpdateData.postal_code = activeRow.fldValue;
 
           let addressRes = {};
-          if (activeRow.isAdding) {
+          if (activeRow.isAdding && !app.activeUser.address) {
             ApiEndpoint = '/add/address';
             if (app.activeUser.address) addressUpdateData.street_address_1 = app.activeUser.address;
             addressRes = await api.addAddress(app.activeUser.handle, app.activeUser.private_key, addressUpdateData);
@@ -195,6 +196,15 @@ const RegisterBusinessDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => 
             if (fieldName === 'city') updatedEntityData = { ...updatedEntityData, city: activeRow.fldValue };
             if (fieldName === 'state') updatedEntityData = { ...updatedEntityData, state: activeRow.fldValue };
             if (fieldName === 'zip') updatedEntityData = { ...updatedEntityData, zip: activeRow.fldValue };
+
+            if (activeRow.isAdding && fieldName === 'address' ) {
+              setActiveRow({...activeRow, entityuuid: {
+                email: activeRow.entityuuid.email ? activeRow.entityuuid.email : '',
+                phone: activeRow.entityuuid.phone ? activeRow.entityuuid.phone : '',
+                identity: activeRow.entityuuid.identity ? activeRow.entityuuid.identity : '',
+                address: addressRes.data.address.uuid
+              } })
+            }
           } else if (addressRes.data.validation_details) {
             if (addressRes.data.validation_details.address instanceof Object) {
               validationErrors = { address: addressRes.data.validation_details.address }
@@ -206,9 +216,10 @@ const RegisterBusinessDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => 
                 if (fieldName === 'state') validationErrors.address = Object.assign({state: "Please add address first!"}, validationErrors.address);
                 if (fieldName === 'zip') validationErrors.address = Object.assign({postal_code: "Please add address first!"}, validationErrors.address);
               } else {
+                if (fieldName === 'address') validationErrors.address = Object.assign({street_address_1: addressRes.data.validation_details.street_address_1}, validationErrors.address);
                 if (fieldName === 'city') validationErrors.address = Object.assign({city: addressRes.data.validation_details.city}, validationErrors.address);
                 if (fieldName === 'state') validationErrors.address = Object.assign({state: addressRes.data.validation_details.state}, validationErrors.address);
-                if (fieldName === 'zip') validationErrors.address = Object.assign({postal_code: addressRes.data.validation_details.zip}, validationErrors.address);
+                if (fieldName === 'zip') validationErrors.address = Object.assign({postal_code: addressRes.data.validation_details.postal_code}, validationErrors.address);
               }
             }
           } else {
@@ -241,7 +252,7 @@ const RegisterBusinessDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => 
 
         setAppData({
           ...appData,
-          responses: [...app.responses, ...updatedResponses]
+          responses: [...updatedResponses, ...app.responses]
         }, () => {
           updateApp({ ...result });
         });
@@ -285,8 +296,8 @@ const RegisterBusinessDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => 
           if (phoneFields.includes(fieldName)) updatedEntityData = { ...updatedEntityData, phone: '' };
           if (identityFields.includes(fieldName)) updatedEntityData = { ...updatedEntityData, ein: '' };
           if (addressFields.includes(fieldName)) updatedEntityData = { ...updatedEntityData, address: '', city: '', state: '', zip: '' };
-        }  else if (deleteRes.data && deleteRes.data.validation_details) {
-          validationErrors = Object.assign({error: deleteRes.data.validation_details.uuid}, validationErrors.error);
+        }  else if (deleteRes.data && !deleteRes.data.success) {
+          validationErrors = Object.assign({error: deleteRes.data.validation_details ? deleteRes.data.validation_details.uuid : deleteRes.data.message }, validationErrors.error);
         } else {
           console.log(`... delete entity ${fieldName} failed!`, deleteRes);
         }
@@ -312,7 +323,7 @@ const RegisterBusinessDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => 
 
           setAppData({
             ...appData,
-            responses: [...app.responses, ...updatedResponses]
+            responses: [...updatedResponses, ...app.responses]
           }, () => {
             updateApp({ ...result });
           });
@@ -339,8 +350,11 @@ const RegisterBusinessDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => 
   }
 
   useEffect(() => {
+    if (reloadUUID && !isLoading.current) setActiveRow({...activeRow, isFetchedUUID: false });
     async function fetchEntity() {
       try {
+        if (isLoading.current) return;
+        isLoading.current = true;
         onLoaded(false);
         const entityRes = await api.getEntity(app.activeUser.handle, app.activeUser.private_key);
         if (entityRes.data.success) {
@@ -350,14 +364,15 @@ const RegisterBusinessDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => 
             identity: entityRes.data.identities[0] ? entityRes.data.identities[0]['uuid'] : '',
             address: entityRes.data.addresses[0] ? entityRes.data.addresses[0]['uuid'] : ''
           } })
+          if (onReloadedUUID) onReloadedUUID(false);
           onLoaded(true);
+          isLoading.current = false;
         }
       } catch (err) {
         console.log('  ... unable to get entity info, looks like we ran into an issue!');
       }
     }
     if (!Object.keys(activeRow.entityuuid).length || !activeRow.isFetchedUUID) {
-      console.info('fetchEntity calling...');
       fetchEntity();
     }
 
@@ -372,7 +387,7 @@ const RegisterBusinessDataForm = ({ errors, onConfirm, onLoaded, onErrors }) => 
     return () => {
       document.removeEventListener('mousedown', checkIfClickedOutside)
     }
-  }, [activeRow, api, app.activeUser.handle, app.activeUser.private_key, onLoaded])
+  }, [activeRow, api, app.activeUser.handle, app.activeUser.private_key, onLoaded, reloadUUID, onReloadedUUID])
 
   return (
     <Accordion className="mb-3 mb-md-5" defaultActiveKey={expanded ? expanded : undefined} onSelect={e => setActiveKey(e)}>

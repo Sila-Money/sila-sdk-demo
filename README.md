@@ -49,6 +49,9 @@ Then, enter into the project folder:
 Next, install all the dependencies necessary to run the Sila SDK Demo with the following command:
 ### `npm install`
 
+Run the following command if there are dependency issues:
+### `npm install --legacy-peer-deps`
+
 Now, you can run the Sila SDK Demo:
 
 ### `npm start`
