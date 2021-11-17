@@ -58,32 +58,34 @@ const BusinessType = ({ page, previous, next }) => {
 
       {(!types || !categories) && <Loader />}
 
-      {types && <>
-      <Form.Label>Business Type:</Form.Label>
-      <SelectMenu fullWidth
-        title={app.settings.kybBusinessType ? types.find(type => type.value === app.settings.kybBusinessType).label : 'Please choose a business type...'}
-        onChange={(value) => setAppData({ settings: { ...app.settings, kybBusinessType: value } })}
-        className="types mb-4"
-        value={app.settings.kybBusinessType}
-        options={types.map(type => ({ label: type.label, value: type.value }))} /></>}
+      <div className="select-menu-height">
+        {types && <>
+        <Form.Label>Business Type:</Form.Label>
+        <SelectMenu fullWidth
+          title={app.settings.kybBusinessType ? types.find(type => type.value === app.settings.kybBusinessType).label : 'Please choose a business type...'}
+          onChange={(value) => setAppData({ settings: { ...app.settings, kybBusinessType: value } })}
+          className="types mb-4 select-menu-height"
+          value={app.settings.kybBusinessType}
+          options={types.map(type => ({ label: type.label, value: type.value }))} /></>}
 
-      {categories && <>
-      <Form.Label>NAICS Category:</Form.Label>
-      <SelectMenu fullWidth
-        title={app.settings.kybNaicsCategory ? Object.keys(categories)[app.settings.kybNaicsCategory] : 'Please choose a NAICS category...'}
-        onChange={(value) => setAppData({ settings: { ...app.settings, kybNaicsCategory: value, kybNaicsCode: false } })}
-        className="categories mb-4"
-        value={app.settings.kybNaicsCategory}
-        options={Object.keys(categories).map((category, index) => ({ label: category, value: index }))} /></>}
+        {categories && <>
+        <Form.Label>NAICS Category:</Form.Label>
+        <SelectMenu fullWidth
+          title={app.settings.kybNaicsCategory ? Object.keys(categories)[app.settings.kybNaicsCategory] : 'Please choose a NAICS category...'}
+          onChange={(value) => setAppData({ settings: { ...app.settings, kybNaicsCategory: value, kybNaicsCode: false } })}
+          className="categories mb-4 select-menu-height"
+          value={app.settings.kybNaicsCategory}
+          options={Object.keys(categories).map((category, index) => ({ label: category, value: index }))} /></>}
 
-      {(app.settings.kybNaicsCategory === 0 || app.settings.kybNaicsCategory) && categories && <>
-      <Form.Label>NAICS Sub-Category:</Form.Label>
-      <SelectMenu fullWidth
-        title={app.settings.kybNaicsCode && Object.values(categories)[app.settings.kybNaicsCategory].find(category => app.settings.kybNaicsCode === category.code) ? Object.values(categories)[app.settings.kybNaicsCategory].find(category => app.settings.kybNaicsCode === category.code).subcategory : 'Please choose a NAICS subcategory...'}
-        onChange={(value) => setAppData({ settings: { ...app.settings, kybNaicsCode: value } })}
-        className="categories mb-4"
-        value={app.settings.kybNaicsCode}
-        options={Object.values(categories)[app.settings.kybNaicsCategory].map(category => ({ label: category.subcategory, value: category.code }))} /></>}
+        {(app.settings.kybNaicsCategory === 0 || app.settings.kybNaicsCategory) && categories && <>
+        <Form.Label>NAICS Sub-Category:</Form.Label>
+        <SelectMenu fullWidth
+          title={app.settings.kybNaicsCode && Object.values(categories)[app.settings.kybNaicsCategory].find(category => app.settings.kybNaicsCode === category.code) ? Object.values(categories)[app.settings.kybNaicsCategory].find(category => app.settings.kybNaicsCode === category.code).subcategory : 'Please choose a NAICS subcategory...'}
+          onChange={(value) => setAppData({ settings: { ...app.settings, kybNaicsCode: value } })}
+          className="categories mb-4 select-menu-height"
+          value={app.settings.kybNaicsCode}
+          options={Object.values(categories)[app.settings.kybNaicsCategory].map(category => ({ label: category.subcategory, value: category.code }))} /></>}
+        </div>
 
       <Pagination
         previous={previous}

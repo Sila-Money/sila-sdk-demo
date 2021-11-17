@@ -195,7 +195,7 @@ const BusinessMembers = ({ page, previous, next, isActive }) => {
 
       <Pagination
         previous={previous}
-        next={members.length && rolesAndMembers.filter(member => member.label && isRoleRequired(member)).length === 0 ? next : undefined}
+        next={app.settings.preferredKybLevel === 'RECEIVE_ONLY' ? next : members.length && rolesAndMembers.filter(member => member.label && isRoleRequired(member)).length === 0 ? next : undefined}
         currentPage={page} />
 
     </Container>

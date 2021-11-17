@@ -8,7 +8,7 @@ import { useAppContext } from '../../components/context/AppDataProvider';
 
 import Loader from '../../components/common/Loader';
 
-const MemberKYBForm = ({ handle, activeMember, currentRole, linkBeneficialOwner, onError, onSuccess }) => {
+const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, onError, onSuccess }) => {
   const { app, api, refreshApp, handleError, updateApp, setAppData } = useAppContext();
   const [validated, setValidated] = useState(false);
   const [errors, setErrors] = useState({});
@@ -22,6 +22,13 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, linkBeneficialOwner,
 
     let isValidated = true;
     let validationErrors = {};
+    if (e.target.firstName && e.target.firstName.value) e.target.firstName.value = e.target.firstName.value.trim();
+    if (e.target.lastName && e.target.lastName.value) e.target.lastName.value = e.target.lastName.value.trim();
+    if (e.target.ssn && e.target.ssn.value) e.target.ssn.value = e.target.ssn.value.trim();
+    if (e.target.address && e.target.address.value) e.target.address.value = e.target.address.value.trim();
+    if (e.target.city && e.target.city.value) e.target.city.value = e.target.city.value.trim();
+    if (e.target.zip && e.target.zip.value) e.target.zip.value = e.target.zip.value.trim();
+
     if (e.target.firstName && !e.target.firstName.value) {
       isValidated = false;
       validationErrors.entity = Object.assign({first_name: "This field may not be blank."}, validationErrors.entity);
@@ -73,14 +80,14 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, linkBeneficialOwner,
     let updatedResponses = [];
     let successStatus = { entity: true, email: true, phone: true, identity: true, address: true };
 
-    if (linkBeneficialOwner && activeMember) {
+    if (moreInfoNeeded && activeMember) {
       const entityUpdateData = {};
       if (e.target.firstName && e.target.firstName.value !== activeMember.firstName) entityUpdateData.first_name = e.target.firstName.value;
       if (e.target.lastName && e.target.lastName.value !== activeMember.lastName) entityUpdateData.last_name = e.target.lastName.value;
       if (e.target.dateOfBirth && e.target.dateOfBirth.value !== activeMember.dateOfBirth) entityUpdateData.birthdate = e.target.dateOfBirth ? e.target.dateOfBirth.value : '';
       if (Object.keys(entityUpdateData).length) {
         try {
-          const entityUpdateRes = await api.updateEntity(activeMember.user_handle, activeMember.private_key, entityUpdateData);
+          const entityUpdateRes = await api.updateEntity(activeMember.handle, activeMember.private_key, entityUpdateData);
           updatedResponses = [ ...updatedResponses, { endpoint: '/update/entity', result: JSON.stringify(entityUpdateRes, null, '\t') } ];
 
           if (entityUpdateRes.data.success) {
@@ -100,7 +107,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, linkBeneficialOwner,
       validationErrors = { ...validationErrors, contact: {} }
       if (e.target.email && e.target.email.value !== activeMember.email) {
         try {
-          const emailRes = await api.addEmail(activeMember.user_handle, activeMember.private_key, e.target.email.value);
+          const emailRes = await api.addEmail(activeMember.handle, activeMember.private_key, e.target.email.value);
           updatedResponses = [ ...updatedResponses, { endpoint: '/add/email', result: JSON.stringify(emailRes, null, '\t') } ];
 
           if (emailRes.data.success) {
@@ -119,7 +126,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, linkBeneficialOwner,
 
       if (e.target.phone && e.target.phone.value !== activeMember.phone) {
         try {
-          const phoneRes = await api.addPhone(activeMember.user_handle, activeMember.private_key, e.target.phone.value);
+          const phoneRes = await api.addPhone(activeMember.handle, activeMember.private_key, e.target.phone.value);
           updatedResponses = [ ...updatedResponses, { endpoint: '/add/phone', result: JSON.stringify(phoneRes, null, '\t') } ];
 
           if (phoneRes.data.success) {
@@ -138,7 +145,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, linkBeneficialOwner,
       
       if (e.target.ssn && e.target.ssn.value !== activeMember.ssn) {
         try {
-          const ssnRes = await api.addIdentity(activeMember.user_handle, activeMember.private_key, {
+          const ssnRes = await api.addIdentity(activeMember.handle, activeMember.private_key, {
             alias: 'SSN',
             value: e.target.ssn.value
           });
@@ -165,7 +172,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, linkBeneficialOwner,
       if (e.target.zip && e.target.zip.value !== activeMember.zip) addressUpdateData.postal_code = e.target.zip ? e.target.zip.value : '';
       if (Object.keys(addressUpdateData).length) {
         try {
-          const addressRes = await api.addAddress(activeMember.user_handle, activeMember.private_key, addressUpdateData);
+          const addressRes = await api.addAddress(activeMember.handle, activeMember.private_key, addressUpdateData);
           updatedResponses = [ ...updatedResponses, { endpoint: '/add/address', result: JSON.stringify(addressRes, null, '\t') } ];
 
           if (addressRes.data.success) {
@@ -194,14 +201,14 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, linkBeneficialOwner,
         
         if (updateSuccess) {
           refreshApp();
-          const appUser = app.users.find(u => u.handle === activeMember.user_handle);
+          const appUser = app.users.find(u => u.handle === activeMember.handle);
           updatedEntityData = { ...appUser, ...updatedEntityData, kycLevel: false }
           result = {
             activeUser: { ...appUser, ...updatedEntityData },
             alert: { message: 'Registration data was successfully added.', type: 'success' }
           };
           appData = {
-            users: app.users.map(({ active, ...u }) => u.handle === activeMember.user_handle ? { ...u, ...updatedEntityData } : u),
+            users: app.users.map(({ active, ...u }) => u.handle === activeMember.handle ? { ...u, ...updatedEntityData } : u),
           };
           if (Object.keys(errors).length) setErrors({});
         } else if ( Object.keys(validationErrors).length ) {
@@ -211,10 +218,10 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, linkBeneficialOwner,
         }
         setAppData({
           ...appData,
-          responses: [...app.responses, ...updatedResponses]
+          responses: [...updatedResponses, ...app.responses]
         }, () => {
           updateApp({ ...result });
-          if (updateSuccess) onSuccess(updatedEntityData);
+          if (updateSuccess) onSuccess(currentRole, updatedEntityData);
         });
       } catch (err) {
         console.log('  ... looks like we ran into an issue!');
@@ -275,7 +282,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, linkBeneficialOwner,
           }, ...app.responses]
         }, () => {
           updateApp({ ...result });
-          if (res.data.success && onSuccess) onSuccess(entity);
+          if (res.data.success && onSuccess) onSuccess(currentRole, entity);
         });
       } catch (err) {
         console.log('  ... looks like we ran into an issue!');
@@ -350,7 +357,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, linkBeneficialOwner,
       </Form.Row>
 
       <div className="d-flex mt-4">
-        <Button type="submit" className="ml-auto" disabled={!handle}>{linkBeneficialOwner ? 'Link as Beneficial Owner' : 'Register'}</Button>
+        <Button type="submit" className="ml-auto" disabled={!handle}>{currentRole && currentRole.name === 'controlling_officer' ? 'Link as Controlling Officer' : currentRole && currentRole.name === 'beneficial_owner' ? 'Link as Beneficial Owner' : 'Register'}</Button>
       </div>
 
     </Form>
