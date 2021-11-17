@@ -60,7 +60,7 @@ const Wallets = ({ page, previous, next, isActive }) => {
         result.alert = { message: 'Wallet saved!', type: 'success' };
         if (newWallet.default || wallets.length === 1) result.activeUser = { ...activeUser, private_key: newWallet.private_key, cryptoAddress: newWallet.blockchain_address }
       } else {
-        result.alert = { message: res.data.message, type: 'danger' };
+        result.alert = { message: res.data && res.data.validation_details ? res.data.validation_details.nickname : res.data.message , type: 'danger' };
       }
       delete newWallet.editing;
       setAppData({
@@ -95,14 +95,17 @@ const Wallets = ({ page, previous, next, isActive }) => {
       }, wallet.nickname);
       let result = {};
       console.log('  ... completed!');
+      let registerWallets = [...app.wallets];
       if (res.data.success) {
+        delete wallet.isNew;
+        registerWallets = [...app.wallets, { ...wallet }];
         result.alert = { message: 'Wallet saved!', type: 'success' };
       } else {
-        result.alert = { message: res.data.message, type: 'danger' };
+        result.alert = { message: res.data && res.data.validation_details ? res.data.validation_details.wallet.nickname : res.data.message, type: 'danger' };
       }
-      delete wallet.isNew;
+
       setAppData({
-        wallets: [...app.wallets, { ...wallet }],
+        wallets: registerWallets,
         responses: [{
           endpoint: '/register_wallet',
           result: JSON.stringify(res, null, '\t')

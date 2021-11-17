@@ -23,11 +23,12 @@ export const KYC_ARRAY = [{
   {
     value: 'RECEIVE_ONLY',
     label: 'Receive Only'
-  },
-  {
-    value: 'INSTANT-ACH',
-    label: 'Instant ACH'
   }
+  // DO NOT remove below lines, it will be release in next future version.
+  // {
+  //   value: 'INSTANT-ACH',
+  //   label: 'Instant ACH'
+  // }
 ];
 
 export const KYB_ARRAY = [{

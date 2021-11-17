@@ -9,7 +9,7 @@ import KYCFormFieldType from '../../components/register/KYCFormFieldType';
 import { KYC_REGISTER_FIELDS_ARRAY, STATES_ARRAY } from '../../constants';
 
 
-const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember }) => {
+const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember, reloadUUID, onReloadedUUID }) => {
   const [expanded, setExpanded] = useState(1);
   const [activeKey, setActiveKey] = useState(1);
   const [activeRow, setActiveRow] = useState({ isEditing: false, isDeleting: false, isAdding: false, fldName: '', fldValue: '', isFetchedUUID: false, entityuuid: {} });
@@ -25,6 +25,7 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember 
   const { app, api, refreshApp, handleError, updateApp, setAppData } = useAppContext();
   const activeUser = activeMember ? app.users.find(u => u.handle === activeMember.user_handle) : app.activeUser;
 
+  let isLoading = useRef(false);
   let updatedEntityData = {};
   let updatedResponses = [];
   let validationErrors = {};
@@ -41,7 +42,7 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember 
     });
   }
   const onEditing = (e) => {
-    setActiveRow({...activeRow, fldValue: e.target.value || undefined});
+    setActiveRow({...activeRow, fldValue: e.target.value.trim() || undefined});
   }
   const onSave = async (fieldName) => {
     if (activeRow.isEditing && (!activeRow.fldValue || activeRow.fldValue === activeUser[fieldName])) return;
@@ -178,7 +179,7 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember 
           if (fieldName === 'zip') addressUpdateData.postal_code = activeRow.fldValue;
 
           let addressRes = {};
-          if (activeRow.isAdding) {
+          if (activeRow.isAdding && !activeUser.address) {
             ApiEndpoint = '/add/address';
             if (activeUser.address) addressUpdateData.street_address_1 = activeUser.address;
             addressRes = await api.addAddress(activeUser.handle, activeUser.private_key, addressUpdateData);
@@ -196,6 +197,15 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember 
             if (fieldName === 'city') updatedEntityData = { ...updatedEntityData, city: activeRow.fldValue };
             if (fieldName === 'state') updatedEntityData = { ...updatedEntityData, state: activeRow.fldValue };
             if (fieldName === 'zip') updatedEntityData = { ...updatedEntityData, zip: activeRow.fldValue };
+
+            if (activeRow.isAdding && fieldName === 'address' ) {
+              setActiveRow({...activeRow, entityuuid: {
+                email: activeRow.entityuuid.email ? activeRow.entityuuid.email : '',
+                phone: activeRow.entityuuid.phone ? activeRow.entityuuid.phone : '',
+                identity: activeRow.entityuuid.identity ? activeRow.entityuuid.identity : '',
+                address: addressRes.data.address.uuid
+              } })
+            }
           }  else if (addressRes.data.validation_details) {
             if (addressRes.data.validation_details.address instanceof Object) {
               validationErrors = { address: addressRes.data.validation_details.address }
@@ -207,9 +217,10 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember 
                 if (fieldName === 'state') validationErrors.address = Object.assign({state: "Please add address first!"}, validationErrors.address);
                 if (fieldName === 'zip') validationErrors.address = Object.assign({postal_code: "Please add address first!"}, validationErrors.address);
               } else {
+                if (fieldName === 'address') validationErrors.address = Object.assign({street_address_1: addressRes.data.validation_details.street_address_1}, validationErrors.address);
                 if (fieldName === 'city') validationErrors.address = Object.assign({city: addressRes.data.validation_details.city}, validationErrors.address);
                 if (fieldName === 'state') validationErrors.address = Object.assign({state: addressRes.data.validation_details.state}, validationErrors.address);
-                if (fieldName === 'zip') validationErrors.address = Object.assign({postal_code: addressRes.data.validation_details.zip}, validationErrors.address);
+                if (fieldName === 'zip') validationErrors.address = Object.assign({postal_code: addressRes.data.validation_details.postal_code}, validationErrors.address);
               }
             }
           } else {
@@ -242,7 +253,7 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember 
 
         setAppData({
           ...appData,
-          responses: [...app.responses, ...updatedResponses]
+          responses: [...updatedResponses, ...app.responses]
         }, () => {
           updateApp({ ...result });
         });
@@ -286,8 +297,8 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember 
           if (phoneFields.includes(fieldName)) updatedEntityData = { ...updatedEntityData, phone: '' };
           if (identityFields.includes(fieldName)) updatedEntityData = { ...updatedEntityData, ssn: '' };
           if (addressFields.includes(fieldName)) updatedEntityData = { ...updatedEntityData, address: '', city: '', state: '', zip: '' };
-        }  else if (deleteRes.data && deleteRes.data.validation_details) {
-          validationErrors = Object.assign({error: deleteRes.data.validation_details.uuid}, validationErrors.error);
+        }  else if (deleteRes.data && !deleteRes.data.success) {
+          validationErrors = Object.assign({error: deleteRes.data.validation_details.uuid ? deleteRes.data.validation_details.uuid : deleteRes.data.message }, validationErrors.error);
         } else {
           console.log(`... delete entity ${fieldName} failed!`, deleteRes);
         }
@@ -313,7 +324,7 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember 
 
           setAppData({
             ...appData,
-            responses: [...app.responses, ...updatedResponses]
+            responses: [...updatedResponses, ...app.responses]
           }, () => {
             updateApp({ ...result });
           });
@@ -340,8 +351,11 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember 
   }
 
   useEffect(() => {
+    if (reloadUUID && !isLoading.current) setActiveRow({...activeRow, isFetchedUUID: false });
     async function fetchEntity() {
       try {
+        if (isLoading.current) return;
+        isLoading.current = true;
         if (onLoaded) onLoaded(false);
         const entityRes = await api.getEntity(activeUser.handle, activeUser.private_key);
         if (entityRes.data.success) {
@@ -351,7 +365,9 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember 
             identity: entityRes.data.identities[0] ? entityRes.data.identities[0]['uuid'] : '',
             address: entityRes.data.addresses[0] ? entityRes.data.addresses[0]['uuid'] : ''
           } })
+          if (onReloadedUUID) onReloadedUUID(false);
           if (onLoaded) onLoaded(true);
+          isLoading.current = false;
         }
       } catch (err) {
         console.log('  ... unable to get entity info, looks like we ran into an issue!');
@@ -372,7 +388,7 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember 
     return () => {
       document.removeEventListener('mousedown', checkIfClickedOutside)
     }
-  }, [activeRow, api, activeUser, onLoaded, activeMember])
+  }, [activeRow, api, activeUser, onLoaded, activeMember, reloadUUID, onReloadedUUID])
 
   return (
     <Accordion className="mb-3 mb-md-5" defaultActiveKey={expanded ? expanded : undefined} onSelect={e => setActiveKey(e)}>
@@ -405,10 +421,10 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember 
       </AccordionItem>
       <div className="mt-3">
         <div className="row mx-2">
-          <div className="sms-notifications p-0 col-md-9 col-sm-12">
+          <div className="sms-notifications p-0 col-md-6 col-sm-12">
             {(activeUser && activeUser.smsOptIn) && <div className="text-left">SMS Notifications: <span className="text-primary">Requested</span></div>}
           </div>
-          <div className="p-0 text-right col-md-3 col-sm-12">
+          <div className="p-0 text-right col-md-6 col-sm-12">
             {(!activeRow.isAdding && Object.keys(KYC_REGISTER_FIELDS_ARRAY.filter(option => activeUser && !activeUser[option.value])).length) ? <Button variant="link" className="p-0 new-registration shadow-none" onClick={onAddDataToggle}>Add new registration data+</Button> : null}
           </div>
         </div>

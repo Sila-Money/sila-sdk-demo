@@ -23,7 +23,9 @@ const NavbarUsers = () => {
       settings: { ...app.settings, 
         flow: activeUser.flow,
         kybHandle: activeUser && activeUser.business ? activeUser.handle : false,
-        kybAdminHandle: activeUser && activeUser.admin ? activeUser : activeUser && activeUser.business && !activeUser.certified && app.users.some(u => u.admin && u.business_handle === activeUser.handle) ? app.users.find(u => u.admin && u.business_handle === activeUser.handle).handle : false
+        kybAdminHandle: activeUser && activeUser.admin ? activeUser : activeUser && activeUser.business && !activeUser.certified && app.users.some(u => u.admin && u.business_handle === activeUser.handle) ? app.users.find(u => u.admin && u.business_handle === activeUser.handle).handle : false,
+        preferredKycLevel: activeUser.kycLevel ? activeUser.kycLevel : false,
+        preferredKybLevel: activeUser.kybLevel ? activeUser.kybLevel : false
       },
       users: app.users.map(({ active, ...u }) => u.handle === handle ? { ...u, active: true } : u)
     }, () => {
