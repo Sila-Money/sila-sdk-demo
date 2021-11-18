@@ -75,6 +75,10 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
       isValidated = false;
       validationErrors.address = Object.assign({postal_code: "This field may not be blank."}, validationErrors.address);
     }
+    if (preferredKyc === INSTANT_ACH_KYC && e.target.deviceFingerprint && !e.target.deviceFingerprint.value) {
+      isValidated = false;
+      validationErrors.device = Object.assign({deviceFingerprint: "This field should contain a valid Iovation device fingerprint string."}, validationErrors.device);
+    }
     if (!isValidated) {
       setErrors(validationErrors);
       setValidated(true);
@@ -85,7 +89,7 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
     let ApiEndpoint;
     let updatedEntityData = {};
     let updatedResponses = [];
-    let successStatus = { entity: true, email: true, phone: true, identity: true, address: true };
+    let successStatus = { entity: true, email: true, phone: true, identity: true, address: true, device: true };
     if (app.activeUser && app.activeUser.handle) {
       let entityRes = {};
       try {
@@ -176,7 +180,7 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
             updatedResponses = [ ...updatedResponses, { endpoint: ApiEndpoint, result: JSON.stringify(phoneRes, null, '\t') } ];
 
             if (phoneRes.data.success) {
-              updatedEntityData = { ...updatedEntityData, phone: e.target.phone.value, smsOptIn: (e.target.smsOptIn && e.target.smsOptIn.checked) ? true : false }
+              updatedEntityData = { ...updatedEntityData, phone: e.target.phone.value, smsOptIn: (preferredKyc === INSTANT_ACH_KYC) ? e.target.smsOptIn.checked : app.activeUser.smsOptIn ? app.activeUser.smsOptIn : false }
             } else if (phoneRes.data.validation_details) {
               successStatus = {...successStatus, phone: false};
               validationErrors.contact = Object.assign({phone: phoneRes.data.validation_details.phone}, validationErrors.contact);
@@ -254,6 +258,28 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
             handleError(err);
           }
         }
+
+        if (e.target.deviceFingerprint && e.target.deviceFingerprint.value && !app.activeUser.deviceFingerprint) {
+          try {
+            const deviceRes = await api.addDevice(app.activeUser.handle, app.activeUser.private_key, {
+              deviceFingerprint: e.target.deviceFingerprint.value
+            });
+
+            updatedResponses = [ ...updatedResponses, { endpoint: '/add/device', result: JSON.stringify(deviceRes, null, '\t') } ];
+
+            if (deviceRes.data.success) {
+              updatedEntityData = { ...updatedEntityData, deviceFingerprint: e.target.deviceFingerprint.value }
+            } else if (deviceRes.data.validation_details) {
+              successStatus = {...successStatus, device: false};
+              validationErrors = { ...validationErrors, device: deviceRes.data.validation_details }
+            } else {
+              console.log('... add device failed!', deviceRes);
+            }
+          } catch (err) {
+            console.log('  ... unable to add device, looks like we ran into an issue!');
+            handleError(err);
+          }
+        }
       }
 
       try {
@@ -262,7 +288,11 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
         let appData = {};
         let updateSuccess = false;
 
-        if (preferredKyc === DEFAULT_KYC || preferredKyc === INSTANT_ACH_KYC) {
+        if (preferredKyc === INSTANT_ACH_KYC) {
+          if (successStatus.entity && successStatus.email && successStatus.phone && successStatus.identity && successStatus.address && successStatus.device) {
+            updateSuccess = true;
+          }
+        } else if (preferredKyc === DEFAULT_KYC) {
           if (successStatus.entity && successStatus.email && successStatus.phone && successStatus.identity && successStatus.address) {
             updateSuccess = true;
           }

@@ -1,7 +1,7 @@
 // RegisterUser view
 
 //SMS Notifications
-.sms-notifications{
+.sms-notifications {
   margin-top: 10px;
   font-weight: 500;
   font-size: 1.125rem;
@@ -10,9 +10,16 @@
 }
 
 //new-registration
-.new-registration{
+.new-registration {
   font-size: 1rem;
   line-height: 19px;
   letter-spacing: 0.03em;
   text-decoration-line: underline;
+}
+
+.registerSms {
+  .custom-control-input ~ .custom-control-label::before, .custom-control-input:focus:not(:checked) ~ .custom-control-label::before {
+    border-color: $border-color;
+    background-color: transparent;
+  }
 }

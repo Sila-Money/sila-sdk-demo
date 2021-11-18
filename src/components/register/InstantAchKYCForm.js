@@ -1,14 +1,51 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Col } from 'react-bootstrap';
 import NumberFormat from 'react-number-format';
 
 import { STATES_ARRAY } from '../../constants';
 
 const InstantAchKYCForm = ({ errors, isHide, app, children }) => {
-  const [receiveSMS, setReceiveSMS] = useState(false);
+  const [receiveSMS, setReceiveSMS] = useState(app.activeUser ? app.activeUser.smsOptIn : false);
+  const [deviceFingerprint, setDeviceFingerprint] = useState(undefined);
   const onSMSChange = (e) => {
     setReceiveSMS(e.target.checked);
   }
+
+  useEffect(() => {
+    try {
+      console.log('  ... loading device-fingerprint');
+      window.IGLOO = window.IGLOO || {
+        "enable_rip" : true,
+        "enable_flash" : false,
+        "install_flash" : false,
+        "loader" : {
+          "version" : "general5",
+          "fp_static" : false
+        }
+      };
+
+      const scriptElem = document.getElementById('iovation');
+      if (scriptElem) scriptElem.remove();
+      const script = document.createElement('script');
+      script.src = "/iovation.js";
+      script.id = 'iovation';
+      script.async = true;
+      document.body.appendChild(script);
+
+      let timeoutId;
+      function useBlackboxString(intervalCount) {
+        if (typeof window.IGLOO.getBlackbox !== 'function') {return;}
+        const bbData = window.IGLOO.getBlackbox();
+        if (bbData.finished) {
+          clearTimeout(timeoutId);
+          setDeviceFingerprint(bbData.blackbox);
+        }
+      }
+      timeoutId = setInterval(useBlackboxString, 500);
+    } catch (err) {
+      console.log('  ... device-fingerprint looks like we ran into an issue!', err);
+    }
+  }, []);
   
   return (
     <div className={isHide ? 'd-none' : undefined}>
@@ -72,9 +109,10 @@ const InstantAchKYCForm = ({ errors, isHide, app, children }) => {
       <p className="text-muted mb-3">Your device fingerprint is a unique string of numbers used to identify your desktop or mobile device. You must opt-in to accept SMS notifications about all instant-ACH transactions.</p>
 
       <Form.Group controlId="registerDeviceFingerprint" className="readonly">
-        <Form.Control required name="deviceFingerprint" readOnly={true}/>
+        <Form.Control required placeholder="Loading..." name="deviceFingerprint" defaultValue={app.activeUser.deviceFingerprint ? app.activeUser.deviceFingerprint : deviceFingerprint} readOnly={true} isInvalid={Boolean(errors.device && errors.device.deviceFingerprint)} />
+        {errors.device && errors.device.deviceFingerprint && <Form.Control.Feedback type="invalid">{errors.device.deviceFingerprint}</Form.Control.Feedback>}
       </Form.Group>
-      <Form.Group controlId="registerSms" className="mb-5">
+      <Form.Group controlId="registerSms" className="mb-5 registerSms">
         <Form.Check custom id="registerSms" className="mb-5 ml-n2" type="checkbox">
           <Form.Check.Input name="smsOptIn" defaultChecked={receiveSMS} onChange={onSMSChange} type="checkbox" />
           <Form.Check.Label className="text-muted ml-2">Yes, opt-in to receive SMS notifications about all instant ACH transactions.</Form.Check.Label>
