@@ -9,6 +9,7 @@ import Loader from '../components/common/Loader';
 import Pagination from '../components/common/Pagination';
 import LinkAccountModal from '../components/accounts/LinkAccountModal';
 import ProcessorTokenModal from '../components/accounts/ProcessorTokenModal';
+import ConfirmModal from '../components/common/ConfirmModal';
 
 const PlaidButton = ({ plaidToken, onSuccess }) => {
   const { app, updateApp } = useAppContext();
@@ -44,7 +45,10 @@ const Accounts = ({ page, previous, next, isActive }) => {
   const [activeRow, setActiveRow] = useState({ isEditing: false, isDeleting: false, rowNumber: '', account_name: '', new_account_name: '', status: '' });
   const [isChecked, setIsChecked] = useState(false);
   const [error, setError] = useState(undefined);
+  const [confirm, setConfirm] = useState({ show: false, message: '', onSuccess: () => { }, onHide: () => { } });
   const tbodyRef = useRef()
+  let result = {};
+  let appData = {};
 
   const getAccountBalance = async (newAccounts) => {
     console.log('Checking Account Balance ...');
@@ -207,8 +211,6 @@ const Accounts = ({ page, previous, next, isActive }) => {
 
       if (Object.keys(accountPayloadData).length) {
         accountPayloadData.account_name = activeRow.account_name;
-        let result = {};
-        let appData = {};
         let error_message;
         let bankAccounts = accounts;
         const res = await api.updateAccount(accountPayloadData, activeUser.handle, activeUser.private_key);
@@ -245,6 +247,52 @@ const Accounts = ({ page, previous, next, isActive }) => {
         });
       }
       setLoaded(true);
+    }
+  }
+
+  const onDelete = async (rowIndex, account_name) => {
+    setActiveRow({...activeRow, isDeleting: true, rowNumber: rowIndex });
+
+    if (activeUser && account_name) {
+      setConfirm({ show: true, message: `Are you sure you want to delete the linked bank account named "${account_name}"?`, onSuccess: async () => {
+        setLoaded(false);
+        setConfirm({show: false, message: ''});
+        try {
+          const res = await api.deleteAccount(activeUser.handle, account_name, activeUser.private_key);
+          if (res.statusCode === 200 && res.data.success) {
+            delete accounts[rowIndex];
+            let bankAccounts = accounts.filter(acc => acc !== undefined);
+            setAccounts(bankAccounts);
+
+            appData = {
+              accounts: [...app.accounts.filter(acc => acc.handle !== activeUser.handle), ...bankAccounts]
+            };
+            result.alert = { message: res.data.message, type: 'success' };
+          } else {
+            result.alert = { message: res.data.message, type: 'danger' };
+          }
+
+          setAppData({
+            ...appData,
+            responses: [{
+              endpoint: '/delete_account',
+              result: JSON.stringify(res, null, '\t')
+            }, ...app.responses]
+          }, () => {
+            updateApp({ ...result });
+          });
+
+        } catch (err) {
+          console.log(`  ... unable to delete bank account ${account_name}, looks like we ran into an issue!`);
+          handleError(err);
+        }
+
+        setActiveRow({...activeRow, isEditing: false, isDeleting: false, rowNumber: '', account_name: '', new_account_name: '', status: '' });
+        setLoaded(true);
+      }, onHide: () => {
+        setConfirm({show: false, message: ''});
+        setActiveRow({...activeRow, isEditing: false, isDeleting: false, rowNumber: '', account_name: '', new_account_name: '', status: '' });
+      } })
     }
   }
 
@@ -329,7 +377,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
                       <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none mx-1 px-1" onClick={() => onEditToggle(index, acc.account_name, acc.active)}>
                         <i className={`sila-icon sila-icon-edit text-lg ${activeRow.isEditing && activeRow.rowNumber === index ? 'text-primary' : ''}`}></i>
                       </Button>
-                      {(activeRow.isEditing && activeRow.rowNumber === index) ? <Button className="p-1 text-decoration-none mx-1 px-1" onClick={(e) => onSave(index)} disabled={(activeRow.isEditing && activeRow.new_account_name === activeRow.account_name && activeRow.status === isChecked) ? true : false }>Save</Button> : <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none mx-2 px-2"><i className="sila-icon sila-icon-delete text-lg"></i></Button>}
+                      {(activeRow.isEditing && activeRow.rowNumber === index) ? <Button className="p-1 text-decoration-none mx-1 px-1" onClick={(e) => onSave(index)} disabled={(activeRow.isEditing && activeRow.new_account_name === activeRow.account_name && activeRow.status === isChecked) ? true : false }>Save</Button> : <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none mx-2 px-2" onClick={(e) => onDelete(index, acc.account_name)}><i className={`sila-icon sila-icon-delete text-lg ${(activeRow.isDeleting && activeRow.rowNumber === index) ? 'text-primary' : undefined }`}></i></Button>}
                     </div>
                   </td>
                 </tr>
@@ -358,7 +406,11 @@ const Accounts = ({ page, previous, next, isActive }) => {
         </div>
       </div>}
 
-      <p className="text-right loaded"><Button variant="link" className="text-reset font-italic p-0 text-decoration-none" href="http://plaid.com/docs/#testing-auth" target="_blank" rel="noopener noreferrer"><span className="lnk">How do I login to Plaid?</span> <i className="sila-icon sila-icon-info text-primary ml-2"></i></Button></p>
+      <p className="text-right loaded mb-2"><Button variant="link" className="text-reset font-italic p-0 text-decoration-none" href="http://plaid.com/docs/#testing-auth" target="_blank" rel="noopener noreferrer"><span className="lnk">How do I login to Plaid?</span> <i className="sila-icon sila-icon-info text-primary ml-2"></i></Button></p>
+
+      {plaidToken && <div className="d-block d-xl-flex align-items-center mb-4 loaded">
+        {app.alert.message && <AlertMessage message={app.alert.message} type={app.alert.type} noIcon={app.alert.noIcon} loading={app.alert.loading} />}
+      </div>}
 
       {app.alert.message && <div className="mb-4"><AlertMessage message={app.alert.message} type={app.alert.type} noIcon={app.alert.noIcon} loading={app.alert.loading} /></div>}
 
@@ -370,6 +422,8 @@ const Accounts = ({ page, previous, next, isActive }) => {
       <LinkAccountModal show={app.manageLinkAccount} onSuccess={getAccounts} />
 
       <ProcessorTokenModal show={app.manageProcessorToken} onSuccess={getAccounts} />
+
+      <ConfirmModal show={confirm.show} message={confirm.message} onHide={confirm.onHide} buttonLabel="Delete" onSuccess={confirm.onSuccess} />
 
     </Container>
   );
