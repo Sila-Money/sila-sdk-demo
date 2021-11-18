@@ -114,7 +114,7 @@ const BusinessMembers = ({ page, previous, next, isActive }) => {
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 
-      <h1 className="mb-4">Register Business Members</h1>
+      <h1 className="mb-4">Business Information</h1>
 
       <p className="text-muted text-lg mb-4">We need to collect information on the following individuals. Each business type requires different roles to be registered, below you will see which ones are required for your business and which are optional. Add the required business members to get started with the process, and add any additional business members as necessary.</p>
 
@@ -195,7 +195,7 @@ const BusinessMembers = ({ page, previous, next, isActive }) => {
 
       <Pagination
         previous={previous}
-        next={members.length && rolesAndMembers.filter(member => member.label && isRoleRequired(member)).length === 0 ? next : undefined}
+        next={app.settings.preferredKybLevel === 'RECEIVE_ONLY' ? next : members.length && rolesAndMembers.filter(member => member.label && isRoleRequired(member)).length === 0 ? next : undefined}
         currentPage={page} />
 
     </Container>

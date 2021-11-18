@@ -78,7 +78,11 @@ export default [
     restricted: false,
     title: 'Register User',
     path: '/register_user',
-    component: RegisterUser
+    component: RegisterUser,
+    tips: [
+      //"If registering with Instant ACH, look for a text message to the number provided in order to opt-in for SMS notifications!",
+      "Editing registered data is great for when a KYC fails as a result of a potential mis-key."
+    ]
   },
   {
     restricted: true,
@@ -126,7 +130,10 @@ export default [
       all: true,
       title: 'Business Info',
       path: '/business/register',
-      component: RegisterBusiness
+      component: RegisterBusiness,
+      tips: [
+        "Editing registered data is great for when a KYB fails as a result of a potential mis-key."
+      ]
     }]
   },
   {
@@ -135,12 +142,18 @@ export default [
     title: 'Business Members',
     path: '/members',
     component: BusinessMembers,
+    tips: [
+      "One business member can be linked to more than one role in the business."
+    ],
     routes: [{
       disabled: true,
       restricted: true,
       title: 'Register Business Member',
       path: '/members/register',
-      component: RegisterMember
+      component: RegisterMember,
+      tips: [
+        "One business member can be linked to more than one role in the business."
+      ],
     },
     {
       disabled: true,

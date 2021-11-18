@@ -16,7 +16,9 @@ let appData = {
     kybAdminHandle: false,
     kycHandle: false, 
     kybMembersStatus: false,
-    kybRoles: []
+    kybRoles: [],
+    preferredKycLevel: false,
+    preferredKybLevel: false
   },
   users: [],
   wallets: [],

@@ -10,12 +10,14 @@ const CheckHandleForm = ({ className, defaultValue, onSuccess, disabled, page })
   const [handle, setHandle] = useState(defaultValue || '');
   const [error, setError] = useState(false);
   const [alert, setAlert] = useState(false);
+  const [isSending, setIsSending] = useState(false);
   const { app, api, handleError, setAppData } = useAppContext();
 
   const checkHandle = async (e) => {
     e.preventDefault();
     console.log('\n*** CHECK HANDLE:');
     console.log('  Waking up the API service ...');
+    setIsSending(true);
     try {
       const res = await api.checkHandle(handle);
       console.log('  ... completed!');
@@ -42,6 +44,7 @@ const CheckHandleForm = ({ className, defaultValue, onSuccess, disabled, page })
       handleError(err);
     }
     setValidated(true);
+    setIsSending(false);
   };
 
   const handleChange = (e) => {
@@ -76,7 +79,7 @@ const CheckHandleForm = ({ className, defaultValue, onSuccess, disabled, page })
 
       <div className="d-flex mt-4">
         {alert && <AlertMessage message={alert.message} type={alert.type} onHide={() => setAlert(false)} />}
-        <Button type="submit" className="ml-auto" disabled={disabled || !handle || error}>Check handle</Button>
+        <Button type="submit" className="ml-auto" disabled={disabled || !handle || error}>{isSending ? 'Sending...' : 'Check handle'}</Button>
       </div>
     </Form>
   );

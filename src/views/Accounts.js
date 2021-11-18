@@ -169,7 +169,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
         <Table bordered responsive>
           <thead>
             <tr>
-              <th className="text-lg bg-secondary">Account  #</th>
+              <th className="text-lg bg-secondary text-nowrap">Account #</th>
               <th className="text-lg bg-secondary">Name</th>
               <th className="text-lg bg-secondary">Type</th>
               <th className="text-lg bg-secondary">Status</th>
@@ -203,7 +203,6 @@ const Accounts = ({ page, previous, next, isActive }) => {
       </div>
 
       {plaidToken && <div className="d-block d-xl-flex align-items-center mb-4 loaded">
-        {app.alert.message && <div className="mb-4"><AlertMessage message={app.alert.message} type={app.alert.type} noIcon={app.alert.noIcon} loading={app.alert.loading} /></div>}
         <div className="ml-auto">
           <Row>
             <Col lg="12" xl="4"><Button block className="mb-4 text-nowrap" onClick={() => updateApp({ manageLinkAccount: true })}>Enter Account/Routing</Button></Col>
@@ -214,6 +213,8 @@ const Accounts = ({ page, previous, next, isActive }) => {
       </div>}
 
       <p className="text-right loaded"><Button variant="link" className="text-reset font-italic p-0 text-decoration-none" href="http://plaid.com/docs/#testing-auth" target="_blank" rel="noopener noreferrer"><span className="lnk">How do I login to Plaid?</span> <i className="sila-icon sila-icon-info text-primary ml-2"></i></Button></p>
+
+      {app.alert.message && <div className="mb-4"><AlertMessage message={app.alert.message} type={app.alert.type} noIcon={app.alert.noIcon} loading={app.alert.loading} /></div>}
 
       <Pagination
         previous={previous}
