@@ -21,7 +21,7 @@ const KybVsKycModal = ({ show, onHide }) => {
             <Card.Body>
               <Card.Text>
                 <ul>
-                  <li>Information about the indivudal is reviewed, including full name, home address, SSN, phone number, birthdate, and email.</li>
+                  <li>Information about the individual is reviewed, including full name, home address, SSN, phone number, birthdate, and email.</li>
                   <li>We and our banking partner need this information to perform legally-required checks against federal fraud and terrorism databases. Any financial application that connects with US bank accounts or uses the US ACH networks will be subject to these compliance requirements.</li>
                 </ul>
               </Card.Text>

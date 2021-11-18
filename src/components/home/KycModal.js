@@ -20,7 +20,7 @@ const KycModal = ({ show, onHide }) => {
             </Card.Header>
             <Card.Body>
               <Card.Text>
-                This level contains full KYC, meaning information about the indivudal is reviewed, including full name, home address, SSN, phone number, birthdate, and email. With this level of KYC, an end-user can send up to $499.99 a day, and there are no limits on receiving.
+                This level contains full KYC, meaning information about the individual is reviewed, including full name, home address, SSN, phone number, birthdate, and email. With this level of KYC, an end-user can send up to $499.99 a day, and there are no limits on receiving.
               </Card.Text>
             </Card.Body>
           </Card>
