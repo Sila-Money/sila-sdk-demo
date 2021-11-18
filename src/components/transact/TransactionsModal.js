@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Button, Table, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import Loader from '../common/Loader';
+import { useAppContext } from '../../components/context/AppDataProvider';
 
 const TransactionsModal = ({ show, onHide, transactions, onRefresh, formatNumber }) => {
   const [tempData, setTempData] = useState(transactions);
   const transactionsData = transactions || tempData;
+
+  const { app } = useAppContext();
 
   useEffect(() => {
     if (transactions) setTempData(transactions);
@@ -46,7 +49,10 @@ const TransactionsModal = ({ show, onHide, transactions, onRefresh, formatNumber
           </thead>
           <tbody>
             {transactionsData && transactionsData.length > 0 && transactionsData.map((transaction, index) => <tr key={index}>
-              <td>{transaction.transaction_type}{transaction.destination_handle && <em className="text-muted d-block">{`to ${transaction.destination_handle}`}</em>}</td>
+              <td>{transaction.transaction_type}{transaction.destination_handle && app.activeUser.handle !== transaction.destination_handle && <em className="text-muted d-block">{`to ${transaction.destination_handle}`}</em>}
+              {transaction.destination_handle && app.activeUser.handle === transaction.destination_handle && <em className="text-muted d-block">{`from ${transaction.user_handle}`}</em>}
+              </td>
+
               <td><i className="sila-icon sila-icon-sila"></i> {formatNumber(transaction.sila_amount)}</td>
               <td className={transaction.status === 'success' ? 'text-success' : transaction.status === 'pending' ? 'text-warning' : transaction.status === 'failed' ? 'text-danger' : 'text-primary'}>{transaction.status}</td>
               <td>{(new Date(transaction.created)).toISOString().split('T')[0]}</td>
