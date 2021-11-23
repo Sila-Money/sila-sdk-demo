@@ -1,15 +1,10 @@
-import React, {useState} from 'react';
+import React from 'react';
 import { Form, Col } from 'react-bootstrap';
 import NumberFormat from 'react-number-format';
 
 import { STATES_ARRAY } from '../../constants';
 
 const InstantAchKYCForm = ({ errors, isHide, app, children }) => {
-  const [receiveSMS, setReceiveSMS] = useState(false);
-  const onSMSChange = (e) => {
-    setReceiveSMS(e.target.checked);
-  }
-  
   return (
     <div className={isHide ? 'd-none' : undefined}>
       <p className="text-muted">This KYC Level requires us to gather more information from you. Please fill out the required fields below.</p>
@@ -66,20 +61,6 @@ const InstantAchKYCForm = ({ errors, isHide, app, children }) => {
           {errors.address && errors.address.postal_code && <Form.Control.Feedback type="invalid">{errors.address.postal_code}</Form.Control.Feedback>}
         </Form.Group>
       </Form.Row>
-
-      <h2 className="mb-4">Device Fingerprint</h2>
-
-      <p className="text-muted mb-3">Your device fingerprint is a unique string of numbers used to identify your desktop or mobile device. You must opt-in to accept SMS notifications about all instant-ACH transactions.</p>
-
-      <Form.Group controlId="registerDeviceFingerprint" className="readonly">
-        <Form.Control required name="deviceFingerprint" readOnly={true}/>
-      </Form.Group>
-      <Form.Group controlId="registerSms" className="mb-5">
-        <Form.Check custom id="registerSms" className="mb-5 ml-n2" type="checkbox">
-          <Form.Check.Input name="smsOptIn" defaultChecked={receiveSMS} onChange={onSMSChange} type="checkbox" />
-          <Form.Check.Label className="text-muted ml-2">Yes, opt-in to receive SMS notifications about all instant ACH transactions.</Form.Check.Label>
-        </Form.Check>
-      </Form.Group>
       
       {children}
     </div>
