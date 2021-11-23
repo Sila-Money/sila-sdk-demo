@@ -176,7 +176,7 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
             updatedResponses = [ ...updatedResponses, { endpoint: ApiEndpoint, result: JSON.stringify(phoneRes, null, '\t') } ];
 
             if (phoneRes.data.success) {
-              updatedEntityData = { ...updatedEntityData, phone: e.target.phone.value, smsOptIn: (e.target.smsOptIn && e.target.smsOptIn.checked) ? true : false }
+              updatedEntityData = { ...updatedEntityData, phone: e.target.phone.value }
             } else if (phoneRes.data.validation_details) {
               successStatus = {...successStatus, phone: false};
               validationErrors.contact = Object.assign({phone: phoneRes.data.validation_details.phone}, validationErrors.contact);
@@ -321,10 +321,10 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
       entity.ssn = e.target.ssn ? e.target.ssn.value : '';
       entity.cryptoAddress = wallet.address;
       entity.flow = app.settings.flow;
-      if(preferredKyc === INSTANT_ACH_KYC) {
-        entity.smsOptIn = e.target.smsOptIn.checked ? true : false;
-        entity.deviceFingerprint = e.target.deviceFingerprint ? e.target.deviceFingerprint.value : '';
-      }
+      // if(preferredKyc === INSTANT_ACH_KYC) {
+      //   entity.smsOptIn = e.target.smsOptIn.checked ? true : false;
+      //   entity.deviceFingerprint = e.target.deviceFingerprint ? e.target.deviceFingerprint.value : '';
+      // }
 
       try {
         const res = await api.register(entity);

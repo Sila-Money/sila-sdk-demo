@@ -188,3 +188,17 @@ select.form-control option[value=""] {
 .was-validated .custom-control-input:valid:focus:not(:checked) ~ .custom-control-label::before {
   border-color:$primary;
 }
+
+.custom-control-input:checked ~ .custom-control-label::before {
+  border-color: $success;
+  background-color: $success;
+  box-shadow: $box-shadow-heavy;
+}
+.custom-control-input ~ .custom-control-label::before, .custom-control-input:focus:not(:checked) ~ .custom-control-label::before {
+  border-color: $warning;
+  background-color: $warning;
+  box-shadow: $box-shadow-heavy;
+}
+.custom-switch .custom-control-label::after {
+  background-color: $white;
+}
