@@ -391,7 +391,7 @@ const RegisterBusinessDataForm = ({ errors, onConfirm, onLoaded, onErrors, reloa
 
   return (
     <Accordion className="mb-3 mb-md-5" defaultActiveKey={expanded ? expanded : undefined} onSelect={e => setActiveKey(e)}>
-      <AccordionItem className="registered-data" eventKey={1} label="Registered Data" activeKey={activeKey} itemRef={registeredItemRef} {...accordionItemProps}>
+      <AccordionItem className="registered-data" eventKey={1} label="Business Information" activeKey={activeKey} itemRef={registeredItemRef} {...accordionItemProps}>
         <Table responsive hover>
           <thead>
             <tr>
