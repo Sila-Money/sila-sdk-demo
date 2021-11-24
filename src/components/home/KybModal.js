@@ -20,7 +20,7 @@ const KybModal = ({ show, onHide }) => {
             </Card.Header>
             <Card.Body>
               <Card.Text>
-                With KYB Standard, information about the business is reviewed, including business address, EIN, business category, and more. Depending on the business type, various individuals holding key roles within the business (i.e., Controlling Officer, Beneficial Owner) are required to pass individual KYC. This must be certified by an Administrator of the business. With this level of KYB, a business can send up to $499.99 a day, and there are no limits on receiving.
+                With KYB Standard, information about the business is reviewed, including business address, EIN, business category, and more. Depending on the business type, various individuals holding key roles within the business (i.e., Controlling Officer, Beneficial Owner) are required to pass individual KYC. This must be certified by an Administrator of the business.
               </Card.Text>
             </Card.Body>
           </Card>
@@ -30,7 +30,7 @@ const KybModal = ({ show, onHide }) => {
             </Card.Header>
             <Card.Body>
               <Card.Text>
-                With this KYB level, EINs and certification are not required (but can still be provided) for the following business types: sole proprietorships, trusts, unincorporated associations. If the business is one of these types, it will go through the KYB-LITE flow. The transaction limit is $299.99 per end-user per week. 
+                With this KYB level, EINs and certification are not required (but can still be provided) for the following business types: sole proprietorships, trusts, unincorporated associations. If the business is one of these types, it will go through the KYB-LITE flow. 
               </Card.Text>
             </Card.Body>
           </Card>
