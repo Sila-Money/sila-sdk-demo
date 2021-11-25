@@ -79,10 +79,15 @@ const Transact = ({ page, previous, next, isActive }) => {
       if (res.data.success) {
         result.alert = { message: res.data.message, type: 'wait' };
         refreshTransactions();
+        updateApp({ ...result });
       } else {
-        result.alert = { message: res.data.message, type: 'danger' };
+        result.alert = { message: res.data.validation_details ? res.data.validation_details.amount : res.data.message, type: 'danger' };
+        setAppData({
+          responses: [...updatedResponses, ...app.responses]
+        }, () => {
+          updateApp({ ...result });
+        });
       }
-      updateApp({ ...result });
     } catch (err) {
       console.log('  ... looks like we ran into an issue!');
       handleError(err);
@@ -99,10 +104,15 @@ const Transact = ({ page, previous, next, isActive }) => {
       if (res.data.success) {
         result.alert = { message: res.data.message, type: 'wait' };
         refreshTransactions();
+        updateApp({ ...result });
       } else {
-        result.alert = { message: res.data.message, type: 'danger' };
+        result.alert = { message: res.data.validation_details ? res.data.validation_details.amount : res.data.message, type: 'danger' };
+        setAppData({
+          responses: [...updatedResponses, ...app.responses]
+        }, () => {
+          updateApp({ ...result });
+        });
       }
-      updateApp({ ...result });
     } catch (err) {
       console.log('  ... looks like we ran into an issue!');
       handleError(err);
@@ -119,10 +129,15 @@ const Transact = ({ page, previous, next, isActive }) => {
       if (res.data.success) {
         result.alert = { message: res.data.message, type: 'wait' };
         refreshTransactions();
+        updateApp({ ...result });
       } else {
-        result.alert = { message: res.data.message, type: 'danger' };
+        result.alert = { message: res.data.validation_details ? res.data.validation_details.amount : res.data.message, type: 'danger' };
+        setAppData({
+          responses: [...updatedResponses, ...app.responses]
+        }, () => {
+          updateApp({ ...result });
+        });
       }
-      updateApp({ ...result });
     } catch (err) {
       console.log('  ... looks like we ran into an issue!');
       handleError(err);
