@@ -133,7 +133,9 @@ const Transact = ({ page, previous, next, isActive }) => {
     console.log('Refreshing transactions ...');
     updateApp({ transactions: false });
     try {
-      const res = await api.getTransactions(app.activeUser.handle, app.activeUser.private_key);
+      const res = await api.getTransactions(app.activeUser.handle, app.activeUser.private_key, {
+        per_page: 50
+      });
       let result = {};
       console.log('  ... completed!');
       if (res.data.success) {
