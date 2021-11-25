@@ -41,12 +41,14 @@ const Transact = ({ page, previous, next, isActive }) => {
     setWallet(userWallets[index]);
     updateApp({ activeUser: { ...app.activeUser, private_key: userWallets[index].private_key, cryptoAddress: userWallets[index].blockchain_address } });
   };
+  let updatedResponses = [];
 
   const refreshBalance = async () => {
     console.log('Checking Balance ...');
     setBalance('Checking Balance ...');
     try {
       const res = await api.getSilaBalance(wallet.blockchain_address);
+      updatedResponses = [{ endpoint: '/get_sila_balance', result: JSON.stringify(res, null, '\t') }, ...updatedResponses];
       let result = {};
       console.log('  ... completed!');
       if (res.statusCode === 200) {
@@ -57,10 +59,7 @@ const Transact = ({ page, previous, next, isActive }) => {
       }
       setAppData({
         success: res.statusCode === 200 && !isActive ? [...app.success, { handle: app.activeUser.handle, page }] : app.success,
-        responses: [{
-          endpoint: '/get_sila_balance',
-          result: JSON.stringify(res, null, '\t')
-        }, ...app.responses]
+        responses: [...updatedResponses, ...app.responses]
       }, () => {
         updateApp({ ...result });
       });
@@ -74,6 +73,7 @@ const Transact = ({ page, previous, next, isActive }) => {
     console.log(`Issuing ${amount} Sila ...`);
     try {
       const res = await api.issueSila(amount, app.activeUser.handle, app.activeUser.private_key, account.account_name);
+      updatedResponses = [{ endpoint: '/issue_sila', result: JSON.stringify(res, null, '\t') }, ...updatedResponses];
       let result = {};
       console.log('  ... completed!');
       if (res.data.success) {
@@ -82,14 +82,7 @@ const Transact = ({ page, previous, next, isActive }) => {
       } else {
         result.alert = { message: res.data.message, type: 'danger' };
       }
-      setAppData({
-        responses: [{
-          endpoint: '/issue_sila',
-          result: JSON.stringify(res, null, '\t')
-        }, ...app.responses]
-      }, () => {
-        updateApp({ ...result });
-      });
+      updateApp({ ...result });
     } catch (err) {
       console.log('  ... looks like we ran into an issue!');
       handleError(err);
@@ -100,6 +93,7 @@ const Transact = ({ page, previous, next, isActive }) => {
     console.log(`Redeeming ${amount} Sila ...`);
     try {
       const res = await api.redeemSila(amount, app.activeUser.handle, app.activeUser.private_key, account.account_name);
+      updatedResponses = [{ endpoint: '/redeem_sila', result: JSON.stringify(res, null, '\t') }, ...updatedResponses];
       let result = {};
       console.log('  ... completed!');
       if (res.data.success) {
@@ -108,14 +102,7 @@ const Transact = ({ page, previous, next, isActive }) => {
       } else {
         result.alert = { message: res.data.message, type: 'danger' };
       }
-      setAppData({
-        responses: [{
-          endpoint: '/redeem_sila',
-          result: JSON.stringify(res, null, '\t')
-        }, ...app.responses]
-      }, () => {
-        updateApp({ ...result });
-      });
+      updateApp({ ...result });
     } catch (err) {
       console.log('  ... looks like we ran into an issue!');
       handleError(err);
@@ -126,6 +113,7 @@ const Transact = ({ page, previous, next, isActive }) => {
     console.log(`Transferring ${amount} Sila to ${destination} ...`);
     try {
       const res = await api.transferSila(amount, app.activeUser.handle, app.activeUser.private_key, destination);
+      updatedResponses = [{ endpoint: '/transfer_sila', result: JSON.stringify(res, null, '\t') }, ...updatedResponses];
       let result = {};
       console.log('  ... completed!');
       if (res.data.success) {
@@ -134,14 +122,7 @@ const Transact = ({ page, previous, next, isActive }) => {
       } else {
         result.alert = { message: res.data.message, type: 'danger' };
       }
-      setAppData({
-        responses: [{
-          endpoint: '/transfer_sila',
-          result: JSON.stringify(res, null, '\t')
-        }, ...app.responses]
-      }, () => {
-        updateApp({ ...result });
-      });
+      updateApp({ ...result });
     } catch (err) {
       console.log('  ... looks like we ran into an issue!');
       handleError(err);
@@ -161,17 +142,9 @@ const Transact = ({ page, previous, next, isActive }) => {
         result.alert = { message: res.data.message, type: 'danger' };
       }
       if (showResponse) {
-        setAppData({
-          responses: [{
-            endpoint: '/get_transactions',
-            result: JSON.stringify(res, null, '\t')
-          }, ...app.responses]
-        }, () => {
-          updateApp({ ...result });
-        });
-      } else {
-        updateApp({ ...result });
+        updatedResponses = [{ endpoint: '/get_transactions', result: JSON.stringify(res, null, '\t') }, ...updatedResponses];
       }
+      updateApp({ ...result });
       refreshBalance();
     } catch (err) {
       console.log('  ... looks like we ran into an issue!');
