@@ -408,10 +408,6 @@ const Accounts = ({ page, previous, next, isActive }) => {
 
       <p className="text-right loaded mb-2"><Button variant="link" className="text-reset font-italic p-0 text-decoration-none" href="http://plaid.com/docs/#testing-auth" target="_blank" rel="noopener noreferrer"><span className="lnk">How do I login to Plaid?</span> <i className="sila-icon sila-icon-info text-primary ml-2"></i></Button></p>
 
-      {plaidToken && <div className="d-block d-xl-flex align-items-center mb-4 loaded">
-        {app.alert.message && <AlertMessage message={app.alert.message} type={app.alert.type} noIcon={app.alert.noIcon} loading={app.alert.loading} />}
-      </div>}
-
       {app.alert.message && <div className="mb-4"><AlertMessage message={app.alert.message} type={app.alert.type} noIcon={app.alert.noIcon} loading={app.alert.loading} /></div>}
 
       <Pagination

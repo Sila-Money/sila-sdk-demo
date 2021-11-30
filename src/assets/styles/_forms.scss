@@ -202,3 +202,12 @@ select.form-control option[value=""] {
 .custom-switch .custom-control-label::after {
   background-color: $white;
 }
+
+.custom-control-input[type=radio]:checked ~ .custom-control-label::before {
+  border-color: $primary;
+  background-color: $primary;
+}
+.custom-control-input[type=radio]:not(:checked) ~ .custom-control-label::after, .custom-control-input[type=radio]:not(:checked) ~ .custom-control-label::before {
+  border-color: $primary;
+  background-color: transparent;
+}
