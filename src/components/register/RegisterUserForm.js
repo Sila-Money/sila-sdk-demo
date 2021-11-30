@@ -383,7 +383,7 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
 
   return (
     <Form noValidate className={className} validated={validated} autoComplete="off" onSubmit={register}>
-      {!loaded && <Loader overlay />}
+      {!loaded && <Loader overlay fixed />}
 
       <Form.Label className="text-muted mr-5">Please choose your preferred KYC level:</Form.Label>
       <SelectMenu fullWidth
