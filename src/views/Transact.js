@@ -42,7 +42,7 @@ const Transact = ({ page, previous, next, isActive }) => {
     updateApp({ activeUser: { ...app.activeUser, private_key: userWallets[index].private_key, cryptoAddress: userWallets[index].blockchain_address } });
   };
 
-  const refreshBalance = async () => {
+  const refreshBalance = async (showResponse) => {
     console.log('Checking Balance ...');
     setBalance('Checking Balance ...');
     try {
@@ -55,15 +55,19 @@ const Transact = ({ page, previous, next, isActive }) => {
       } else {
         result.alert = { message: res.data.message, type: 'danger' }
       }
-      setAppData({
-        success: res.statusCode === 200 && !isActive ? [...app.success, { handle: app.activeUser.handle, page }] : app.success,
-        responses: [{
-          endpoint: '/get_sila_balance',
-          result: JSON.stringify(res, null, '\t')
-        }, ...app.responses]
-      }, () => {
+      if (showResponse) {
+        setAppData({
+          success: res.statusCode === 200 && !isActive ? [...app.success, { handle: app.activeUser.handle, page }] : app.success,
+          responses: [{
+            endpoint: '/get_sila_balance',
+            result: JSON.stringify(res, null, '\t')
+          }, ...app.responses]
+        }, () => {
+          updateApp({ ...result });
+        });
+      }else{
         updateApp({ ...result });
-      });
+      }
     } catch (err) {
       console.log('  ... looks like we ran into an issue!');
       handleError(err);
@@ -209,7 +213,7 @@ const Transact = ({ page, previous, next, isActive }) => {
           delay={{ show: 250, hide: 400 }}
           overlay={(props) => <Tooltip id="balance-tooltip" className="ml-2" {...props}>Gets Sila Balance</Tooltip>}
         >
-          <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none" onClick={refreshBalance}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
+          <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none" onClick={() =>refreshBalance(true)}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
         </OverlayTrigger>
       </div>
 
