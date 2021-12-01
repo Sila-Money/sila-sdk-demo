@@ -27,7 +27,7 @@ const LinkMemberForm = ({ member, onLinked, onUnlinked, onShowImDone }) => {
       const res = await api.linkBusinessMember(activeUser.handle, activeUser.private_key, businessUser.handle, businessUser.private_key, role.name, undefined, details, ownership_stake);
       if (res.data.success) {
         result.alert = { message: `Successfully linked as a ${role.label}!`, type: 'success' };
-        result.activeUser = role.name === 'administrator' ? user ? user : activeUser : app.activeUser;
+        result.activeUser = role.name === 'administrator' ? user ? user : { ...activeUser, admin: true } : app.activeUser;
         if (onLinked) onLinked({ handle: activeUser.handle, role: role.name });
         if (ownershipStake) setOwnershipStake(0);
       } else {
