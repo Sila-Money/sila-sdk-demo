@@ -342,8 +342,6 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember,
 
         if (ApiEndpoint) updatedResponses = [ ...updatedResponses, { endpoint: `/delete/${ApiEndpoint}`, result: JSON.stringify(deleteRes, null, '\t') } ];
 
-        console.info(deleteRes);
-
         if (deleteRes.data && deleteRes.data.success) {
           deleteSuccess = true;
           if (emailFields.includes(fieldName)) updatedEntityData = { ...updatedEntityData, email: '' };
