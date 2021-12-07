@@ -349,7 +349,7 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember,
           if (identityFields.includes(fieldName)) updatedEntityData = { ...updatedEntityData, ssn: '' };
           if (addressFields.includes(fieldName)) updatedEntityData = { ...updatedEntityData, address: '', city: '', state: '', zip: '' };
         }  else if (deleteRes.data && !deleteRes.data.success) {
-          validationErrors = Object.assign({error: deleteRes.data.validation_details.uuid ? deleteRes.data.validation_details.uuid : deleteRes.data.message }, validationErrors.error);
+          validationErrors = Object.assign({error: deleteRes.data.validation_details ? deleteRes.data.validation_details.uuid : deleteRes.data.message }, validationErrors.error);
         } else {
           console.log(`... delete entity ${fieldName} failed!`, deleteRes);
         }

@@ -4,6 +4,7 @@ import { Modal, Row, Col, Button, Table, OverlayTrigger, Tooltip } from 'react-b
 import Loader from '../common/Loader';
 import AlertMessage from '../../components/common/AlertMessage';
 
+import { capitalize } from '../../utils';
 import { useAppContext } from '../../components/context/AppDataProvider';
 
 const TransactionsModal = ({ show, onHide, transactions, onRefresh, formatNumber }) => {
@@ -92,7 +93,7 @@ const TransactionsModal = ({ show, onHide, transactions, onRefresh, formatNumber
             {transactionsData && transactionsData.length > 0 && transactionsData.map((transaction, index) => <tr key={index}>
               <td>{(new Date(transaction.created)).toISOString().split('T')[0]}</td>
               <td>
-                {transaction.transaction_type}{transaction.destination_handle && app.activeUser.handle !== transaction.destination_handle && <em className="text-muted d-block">{`to ${transaction.destination_handle}`}</em>}
+                {capitalize(transaction.transaction_type)}{transaction.destination_handle && app.activeUser.handle !== transaction.destination_handle && <em className="text-muted d-block">{`to ${transaction.destination_handle}`}</em>}
                 {transaction.destination_handle && app.activeUser.handle === transaction.destination_handle && <em className="text-muted d-block">{`from ${transaction.user_handle}`}</em>}
               </td>
               <td><i className="sila-icon sila-icon-sila"></i> {formatNumber(transaction.sila_amount)}</td>
