@@ -366,7 +366,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
                         <Form.Check type="switch" id="acc-status-switch" onChange={(e) => onStatusToggle(e.target.checked)} checked={isChecked} />
                         <Form.Label className="text-nowrap" htmlFor="acc-status-switch">{isChecked ? 'Active' : 'Inactive'}</Form.Label>
                       </span> : <>
-                        {(acc.account_link_status === 'instantly_verified' || acc.account_link_status === 'microdeposit_manually_verified' || acc.account_link_status === 'unverified_manual_input' || acc.account_link_status === 'processor_token') && <span className="text-success">Active</span>}
+                        {(acc.account_link_status === 'instantly_verified' || acc.account_link_status === 'microdeposit_manually_verified' || acc.account_link_status === 'unverified_manual_input' || acc.account_link_status === 'processor_token') && <span className={acc.active ? 'text-success' : 'text-danger'}>{acc.active ? 'Active' : 'Inactive'}</span>}
                         {acc.account_link_status === 'microdeposit_pending_automatic_verification' && <span className="text-warning">Pending...</span>}
                         {plaidToken && acc.account_link_status === 'microdeposit_pending_manual_verification' && plaidToken.account_name === acc.account_name && <PlaidButton plaidToken={plaidToken} onSuccess={linkAccount} />}
                         {acc.account_link_status === 'microdeposit_pending_manual_verification' && (!plaidToken || plaidToken.account_name !== acc.account_name) && <Button size="sm" variant="secondary" disabled={plaidToken} onClick={() => plaidSamedayAuth(acc.account_name)}>Manually Approve</Button>}
@@ -412,7 +412,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
 
       <Pagination
         previous={previous}
-        next={isActive ? next : undefined}
+        next={(isActive || accounts.length) ? next : undefined}
         currentPage={page} />
 
       <LinkAccountModal show={app.manageLinkAccount} onSuccess={getAccounts} />

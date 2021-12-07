@@ -43,7 +43,7 @@ const Transact = ({ page, previous, next, isActive }) => {
   };
   let updatedResponses = [];
 
-  const refreshBalance = async () => {
+  const refreshBalance = async (showResponse) => {
     console.log('Checking Balance ...');
     setBalance('Checking Balance ...');
     try {
@@ -201,7 +201,7 @@ const Transact = ({ page, previous, next, isActive }) => {
           delay={{ show: 250, hide: 400 }}
           overlay={(props) => <Tooltip id="balance-tooltip" className="ml-2" {...props}>Gets Sila Balance</Tooltip>}
         >
-          <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none" onClick={refreshBalance}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
+          <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none" onClick={() =>refreshBalance(true)}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
         </OverlayTrigger>
       </div>
 
