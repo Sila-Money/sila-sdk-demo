@@ -400,6 +400,27 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember,
   const onChooseAddDataToggle = (e) => {
     setActiveRow({...activeRow, fldName: e.target.value ? e.target.value : '', fldValue: '', isEditing: false, isDeleting: false })
   }
+  const getRefreshSMSstatus = async () => {
+    onLoaded(false);
+    try {
+      const entitySmsRes = await api.getEntity(activeUser.handle, activeUser.private_key);
+      if (entitySmsRes.data.success && entitySmsRes.data.phones && entitySmsRes.data.phones[0]) {
+        setAppData({
+          users: app.users.map(({ active, ...u }) => u.handle === activeUser.handle ? { ...u, smsConfirmed: entitySmsRes.data.phones[0]['sms_confirmed'] } : u),
+          responses: [{
+            endpoint: '/get_entity',
+            result: JSON.stringify(entitySmsRes, null, '\t')
+          }, ...app.responses]
+        }, () => {
+          updateApp({ activeUser: { ...activeUser, smsConfirmed: entitySmsRes.data.phones[0]['sms_confirmed'] } });
+        });
+      }
+    } catch (err) {
+      console.log('  ... looks like we ran into an issue!, unable to refresh SMS status');
+      handleError(err);
+    }
+    onLoaded(true);
+  };
 
   useEffect(() => {
     if (reloadUUID && !isLoading.current) setActiveRow({...activeRow, isFetchedUUID: false });
@@ -508,7 +529,10 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember,
       <div className="mt-3">
         <div className="row mx-2">
           <div className="sms-notifications p-0 col-md-6 col-sm-12">
-            {(activeUser && activeUser.smsOptIn) && <div className="text-left">SMS Notifications: <span className="text-primary">Requested</span></div>}
+            {(activeUser && activeUser.smsOptIn) && <div className="text-left">
+              SMS Notifications: <span className="text-primary">{activeUser.smsConfirmed ? 'Confirmed' : 'Requested'}</span>
+              <Button variant="link" disabled={activeUser.smsConfirmed} className="ml-3 p-0 text-reset text-decoration-none loaded" onClick={getRefreshSMSstatus}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
+            </div>}
           </div>
           <div className="p-0 text-right col-md-6 col-sm-12">
             {(!activeRow.isAdding && Object.keys(KYC_REGISTER_FIELDS_ARRAY.filter(option => activeUser && !activeUser[option.value])).length) ? <Button variant="link" className="p-0 new-registration shadow-none" onClick={onAddDataToggle}>Add new registration data+</Button> : null}
