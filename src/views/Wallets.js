@@ -183,7 +183,6 @@ const Wallets = ({ page, previous, next, isActive }) => {
   }
 
   const handleKeypress = (e, wallet, index) => {
-    console.info("handleKeypress...");
     if (e.key === 'Enter') {
       if(activeRow.isEditing && wallet && typeof(index) !== undefined && activeRow.value && activeRow.value !== wallet.nickname) updateWallet(wallet, index);
       if(activeRow.isNew) registerWallet();
