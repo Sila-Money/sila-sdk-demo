@@ -47,7 +47,7 @@ const RegisterUser = ({ page, previous, next, isActive }) => {
 
       <Pagination
         previous={previous}
-        next={isActive ? next : undefined}
+        next={isActive ? (app.settings.preferredKycLevel === 'INSTANT-ACH' && !app.activeUser.smsConfirmed) ? undefined : next : undefined}
         currentPage={page} />
 
       <KycModal show={show} onHide={() => setShow(false)} />
