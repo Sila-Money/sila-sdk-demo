@@ -321,10 +321,6 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
       entity.ssn = e.target.ssn ? e.target.ssn.value : '';
       entity.cryptoAddress = wallet.address;
       entity.flow = app.settings.flow;
-      // if(preferredKyc === INSTANT_ACH_KYC) {
-      //   entity.smsOptIn = e.target.smsOptIn.checked ? true : false;
-      //   entity.deviceFingerprint = e.target.deviceFingerprint ? e.target.deviceFingerprint.value : '';
-      // }
 
       try {
         const res = await api.register(entity);
@@ -336,6 +332,7 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
           entity.private_key = wallet.privateKey;
           entity.active = true;
           entity.kycLevel = preferredKyc;
+          entity.smsConfirmed = false;
           result = {
             alert: { message: `Success! ${handle} is now registered.`, type: 'success' }
           };
