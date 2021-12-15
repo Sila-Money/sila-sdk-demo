@@ -14,7 +14,7 @@ export const KYB_RECEIVE_ONLY = 'RECEIVE_ONLY';
 
 export const KYC_ARRAY = [{
     value: 'DEFAULT',
-    label: 'Default KYC'
+    label: 'DOC KYC'
   },
   {
     value: 'KYC-LITE',
