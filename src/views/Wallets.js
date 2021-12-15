@@ -100,21 +100,21 @@ const Wallets = ({ page, previous, next, isActive }) => {
     setLoaded(false);
     try {
       const newWallet = await api.generateWallet();
-      const newWalletData = {
-        blockchain_address: newWallet.address,
-        private_key: newWallet.privateKey,
-        handle: activeUser.handle,
-        nickname: activeRow.value
-      }
-
       const res = await api.registerWallet(activeUser.handle, activeUser.private_key, {
-        address: newWalletData.blockchain_address,
-        privateKey: newWalletData.private_key
-      }, newWalletData.nickname);
+        address: newWallet.address,
+        privateKey: newWallet.privateKey
+      }, activeRow.value);
+
       let result = {};
       console.log('  ... completed!');
       let registerWallets = [...app.wallets];
       if (res.data.success) {
+        const newWalletData = {
+          blockchain_address: newWallet.address,
+          private_key: newWallet.privateKey,
+          handle: activeUser.handle,
+          nickname: res.data.wallet_nickname
+        }
         setWallets([...wallets, newWalletData]);
         setActiveRow({...activeRow, isNew: false, error: undefined, value: undefined});
         registerWallets = [...app.wallets, { ...newWalletData }];
