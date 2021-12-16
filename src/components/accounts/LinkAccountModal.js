@@ -82,12 +82,13 @@ const LinkAccountModal = ({ show, onSuccess }) => {
 
           <Form.Group className="mb-3">
             <Form.Label htmlFor="accountName">Account Name</Form.Label>
-            <Form.Control
+            <Form.Control isInvalid={errors.account_name}
               id="accountName"
               placeholder="Checking"
               aria-label="Account Name"
               name="accountName"
             />
+            {errors.account_name && <Form.Control.Feedback type="invalid">{errors.account_name}</Form.Control.Feedback>}
           </Form.Group>
 
         </Modal.Body>

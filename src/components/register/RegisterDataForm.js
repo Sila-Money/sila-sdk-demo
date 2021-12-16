@@ -6,14 +6,17 @@ import { useAppContext } from '../../components/context/AppDataProvider';
 import AccordionItem from '../../components/common/AccordionItem';
 import KYCFormFieldType from '../../components/register/KYCFormFieldType';
 
-import { KYC_REGISTER_FIELDS_ARRAY, STATES_ARRAY } from '../../constants';
+import { KYC_REGISTER_FIELDS_ARRAY, STATES_ARRAY, INSTANT_ACH_KYC } from '../../constants';
 
 
 const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember, reloadUUID, onReloadedUUID }) => {
+  const { app, api, refreshApp, handleError, updateApp, setAppData } = useAppContext();
+  const activeUser = activeMember ? app.users.find(u => u.handle === activeMember.user_handle) : app.activeUser;
   const [expanded, setExpanded] = useState(1);
   const [activeKey, setActiveKey] = useState(1);
-  const [activeRow, setActiveRow] = useState({ isEditing: false, isDeleting: false, isAdding: false, fldName: '', fldValue: '', isFetchedUUID: false, entityuuid: {} });
-  const tbodyRef = useRef()
+  const [activeRow, setActiveRow] = useState({ isEditing: false, isDeleting: false, isAdding: false, fldName: '', fldValue: '', smsOptInCheck: activeUser.smsOptIn ? true : false, isFetchedUUID: false, entityuuid: {} });
+  const [deviceFingerprint, setDeviceFingerprint] = useState(undefined);
+  const tbodyRef = useRef();
   const registeredItemRef = useRef(null);
   const accordionItemProps = { expanded, onSetExpanded: setExpanded }
   const entityFields = ['firstName', 'lastName', 'dateOfBirth']
@@ -21,9 +24,6 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember,
   const emailFields = ['email']
   const identityFields = ['ssn']
   const addressFields = ['address', 'city', 'state', 'zip']
-
-  const { app, api, refreshApp, handleError, updateApp, setAppData } = useAppContext();
-  const activeUser = activeMember ? app.users.find(u => u.handle === activeMember.user_handle) : app.activeUser;
 
   let isLoading = useRef(false);
   let updatedEntityData = {};
@@ -33,12 +33,16 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember,
   let appData = {};
   let ApiEndpoint;
 
+  const onSMSChange = (e) => {
+    setActiveRow({...activeRow, fldName: 'smsOptIn', fldValue: e.target.checked ? true : false, smsOptInCheck : e.target.checked ? true : false });
+  }
   const onEditToggle = (fieldName, fieldValue) => {
     setActiveRow({
       ...activeRow,
       isEditing: (activeRow.isEditing && activeRow.fldName === fieldName) ? false : true,
       fldName: (activeRow.isEditing && activeRow.fldName === fieldName) ? '' : fieldName,
-      fldValue: (activeRow.isEditing && activeRow.fldName === fieldName) ? '' : fieldValue
+      fldValue: (activeRow.isEditing && activeRow.fldName === fieldName) ? '' : fieldValue,
+      smsOptInCheck: false
     });
   }
   const onEditing = (e) => {
@@ -232,6 +236,53 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember,
         }
       }
 
+      if (fieldName === 'smsOptIn' && activeRow.fldValue) {
+        if (!activeUser.phone || !deviceFingerprint) {
+          validationErrors.device = Object.assign({device_fingerprint: !activeUser.phone ? "Please add phone number first!" : !deviceFingerprint ? "This field should contain a valid Iovation device fingerprint string." : '' }, validationErrors.device);
+        }
+
+        if (!Object.keys(validationErrors).length) {
+          try {
+            const phoneRes = await api.updatePhone(activeUser.handle, activeUser.private_key, {
+              smsOptIn: activeRow.fldValue ? true : false,
+              phone: activeUser.phone,
+              uuid: activeRow.entityuuid.phone
+            });
+
+            updatedResponses = [ ...updatedResponses, { endpoint: '/update/phone', result: JSON.stringify(phoneRes, null, '\t') } ];
+
+            if (phoneRes.data.success) {
+              updateSuccess = true;
+              updatedEntityData = { ...updatedEntityData, smsOptIn: activeRow.fldValue ? true : false };
+            } else if (phoneRes.data.validation_details) {
+              validationErrors.device = Object.assign({device_fingerprint: phoneRes.data.validation_details.phone}, validationErrors.device);
+            } else {
+              console.log(`... update entity ${fieldName} failed!`, phoneRes);
+            }
+          } catch (err) {
+            console.log(`  ... unable to update entity ${fieldName}, looks like we ran into an issue!`);
+            handleError(err);
+          }
+
+          try {
+            const deviceRes = await api.addDevice(activeUser.handle, activeUser.private_key, { deviceFingerprint: deviceFingerprint });
+            updatedResponses = [ ...updatedResponses, { endpoint: '/add/device', result: JSON.stringify(deviceRes, null, '\t') } ];
+
+            if (deviceRes.data.success) {
+              updateSuccess = true;
+              updatedEntityData = { ...updatedEntityData, deviceFingerprint: deviceFingerprint };
+            }  else if (deviceRes.data.validation_details) {
+              validationErrors = { device: deviceRes.data.validation_details }
+            } else {
+              console.log(`... add device failed failed!`, deviceRes);
+            }
+          } catch (err) {
+            console.log('  ... unable to add device, looks like we ran into an issue!');
+            handleError(err);
+          }
+        }
+      }
+
       try {
         console.log(`  ... update ${fieldName} field completed!`);
         if (updateSuccess) {
@@ -265,7 +316,7 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember,
     }
   }
   const onDelete = async (fieldName, fieldLabel) => {
-    setActiveRow({...activeRow, isDeleting: true, fldName: fieldName, isAdding: false });
+    setActiveRow({...activeRow, isDeleting: true, fldName: fieldName, isAdding: false, smsOptInCheck: false });
 
     onConfirm({ show: true, message: `Are you sure you want to delete the ${fieldLabel} data point from the registered data?`, onSuccess: async () => {
       let deleteSuccess = false;
@@ -298,7 +349,7 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember,
           if (identityFields.includes(fieldName)) updatedEntityData = { ...updatedEntityData, ssn: '' };
           if (addressFields.includes(fieldName)) updatedEntityData = { ...updatedEntityData, address: '', city: '', state: '', zip: '' };
         }  else if (deleteRes.data && !deleteRes.data.success) {
-          validationErrors = Object.assign({error: deleteRes.data.validation_details.uuid ? deleteRes.data.validation_details.uuid : deleteRes.data.message }, validationErrors.error);
+          validationErrors = Object.assign({error: deleteRes.data.validation_details ? deleteRes.data.validation_details.uuid : deleteRes.data.message }, validationErrors.error);
         } else {
           console.log(`... delete entity ${fieldName} failed!`, deleteRes);
         }
@@ -336,19 +387,40 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember,
         handleError(err);
       }
 
-      setActiveRow({...activeRow, isDeleting: false, fldName: '' });
+      setActiveRow({...activeRow, isDeleting: false, fldName: '', smsOptInCheck: false });
       onLoaded(true);
     }, onHide: () => {
       onConfirm({show: false, message: ''});
-      setActiveRow({...activeRow, isDeleting: false, fldName: '' });
+      setActiveRow({...activeRow, isDeleting: false, fldName: '', smsOptInCheck: false });
     } })
   }
   const onAddDataToggle = (e) => {
-    setActiveRow({...activeRow, isAdding: !activeRow.isAdding ? true : false, isEditing: false, isDeleting: false, fldName: '', fldValue: '' })
+    setActiveRow({...activeRow, isAdding: !activeRow.isAdding ? true : false, isEditing: false, isDeleting: false, fldName: '', fldValue: '', smsOptInCheck: false })
   }
   const onChooseAddDataToggle = (e) => {
     setActiveRow({...activeRow, fldName: e.target.value ? e.target.value : '', fldValue: '', isEditing: false, isDeleting: false })
   }
+  const getRefreshSMSstatus = async () => {
+    onLoaded(false);
+    try {
+      const entitySmsRes = await api.getEntity(activeUser.handle, activeUser.private_key);
+      if (entitySmsRes.data.success && entitySmsRes.data.phones && entitySmsRes.data.phones[0]) {
+        setAppData({
+          users: app.users.map(({ active, ...u }) => u.handle === activeUser.handle ? { ...u, smsConfirmed: entitySmsRes.data.phones[0]['sms_confirmed'] } : u),
+          responses: [{
+            endpoint: '/get_entity',
+            result: JSON.stringify(entitySmsRes, null, '\t')
+          }, ...app.responses]
+        }, () => {
+          updateApp({ activeUser: { ...activeUser, smsConfirmed: entitySmsRes.data.phones[0]['sms_confirmed'] } });
+        });
+      }
+    } catch (err) {
+      console.log('  ... looks like we ran into an issue!, unable to refresh SMS status');
+      handleError(err);
+    }
+    onLoaded(true);
+  };
 
   useEffect(() => {
     if (reloadUUID && !isLoading.current) setActiveRow({...activeRow, isFetchedUUID: false });
@@ -377,6 +449,41 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember,
       fetchEntity();
     }
 
+    if (app.settings.preferredKycLevel === INSTANT_ACH_KYC && !activeUser.deviceFingerprint) {
+      try {
+        window.IGLOO = window.IGLOO || {
+          "enable_rip" : true,
+          "enable_flash" : false,
+          "install_flash" : false,
+          "loader" : {
+            "version" : "general5",
+            "fp_static" : false
+          }
+        };
+
+        const scriptElem = document.getElementById('iovation');
+        if (scriptElem) scriptElem.remove();
+        const script = document.createElement('script');
+        script.src = "/iovation.js";
+        script.id = 'iovation';
+        script.async = true;
+        document.body.appendChild(script);
+
+        let timeoutId;
+        function useBlackboxString(intervalCount) {
+          if (typeof window.IGLOO.getBlackbox !== 'function') {return;}
+          const bbData = window.IGLOO.getBlackbox();
+          if (bbData.finished) {
+            clearTimeout(timeoutId);
+            setDeviceFingerprint(bbData.blackbox);
+          }
+        }
+        timeoutId = setInterval(useBlackboxString, 500);
+      } catch (err) {
+        console.log('  ... device-fingerprint looks like we ran into an issue!', err);
+      }
+    }
+
     const checkIfClickedOutside = (e) => {
       if (activeRow.isEditing && tbodyRef.current && !tbodyRef.current.contains(e.target)) {
         setActiveRow({...activeRow, isEditing: false, fldName: '', fldValue: ''});
@@ -388,11 +495,11 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember,
     return () => {
       document.removeEventListener('mousedown', checkIfClickedOutside)
     }
-  }, [activeRow, api, activeUser, onLoaded, activeMember, reloadUUID, onReloadedUUID])
+  }, [activeRow, api, app, activeUser, onLoaded, activeMember, reloadUUID, onReloadedUUID])
 
   return (
     <Accordion className="mb-3 mb-md-5" defaultActiveKey={expanded ? expanded : undefined} onSelect={e => setActiveKey(e)}>
-      <AccordionItem className="registered-data" eventKey={1} label="Registered Data" activeKey={activeKey} itemRef={registeredItemRef} {...accordionItemProps}>
+      <AccordionItem className="registered-data" eventKey={1} label="Personal Information" activeKey={activeKey} itemRef={registeredItemRef} {...accordionItemProps}>
         <Table responsive hover>
           <thead>
             <tr>
@@ -411,7 +518,7 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember,
                     <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none" onClick={() => onEditToggle(fieldsOption.value, activeUser[fieldsOption.value])}>
                       <i className={`sila-icon sila-icon-edit text-lg ${activeRow.isEditing && activeRow.fldName === fieldsOption.value ? 'text-primary' : ''}`}></i>
                     </Button>
-                    {(activeRow.isEditing && activeRow.fldName === fieldsOption.value) ? <Button className="p-1 text-decoration-none mx-3 px-3" onClick={(e) => onSave(fieldsOption.value)} disabled={(activeRow.isEditing && (!activeRow.fldValue || activeRow.fldValue === activeUser[fieldsOption.value])) ? true : false }>Save</Button> : <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none mx-4 px-3" onClick={(e) => onDelete(fieldsOption.value, fieldsOption.label)}><i className={`sila-icon sila-icon-delete text-lg ${(activeRow.isDeleting && activeRow.fldName === fieldsOption.value) ? 'text-primary' : undefined }`}></i></Button>}
+                    {(activeRow.isEditing && activeRow.fldName === fieldsOption.value) ? <Button className="p-1 text-decoration-none mx-3 px-3" onClick={(e) => onSave(fieldsOption.value)} disabled={(activeRow.isEditing && (!activeRow.fldValue || activeRow.fldValue === activeUser[fieldsOption.value])) ? true : false }>Save</Button> : <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none mx-4 px-3" disabled={entityFields.includes(fieldsOption.value)} onClick={(e) => onDelete(fieldsOption.value, fieldsOption.label)}><i className={`sila-icon sila-icon-delete text-lg ${(activeRow.isDeleting && activeRow.fldName === fieldsOption.value) ? 'text-primary' : undefined }`}></i></Button>}
                   </div>
                 </td>
               </tr>)
@@ -422,7 +529,10 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember,
       <div className="mt-3">
         <div className="row mx-2">
           <div className="sms-notifications p-0 col-md-6 col-sm-12">
-            {(activeUser && activeUser.smsOptIn) && <div className="text-left">SMS Notifications: <span className="text-primary">Requested</span></div>}
+            {(activeUser && activeUser.smsOptIn) && <div className="text-left">
+              SMS Notifications: <span className="text-primary">{activeUser.smsConfirmed ? 'Confirmed' : 'Requested'}</span>
+              <Button variant="link" disabled={activeUser.smsConfirmed} className="ml-3 p-0 text-reset text-decoration-none loaded" onClick={getRefreshSMSstatus}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
+            </div>}
           </div>
           <div className="p-0 text-right col-md-6 col-sm-12">
             {(!activeRow.isAdding && Object.keys(KYC_REGISTER_FIELDS_ARRAY.filter(option => activeUser && !activeUser[option.value])).length) ? <Button variant="link" className="p-0 new-registration shadow-none" onClick={onAddDataToggle}>Add new registration data+</Button> : null}
@@ -448,6 +558,24 @@ const RegisterDataForm = ({ errors, onConfirm, onLoaded, onErrors, activeMember,
             {!activeRow.fldName && <Button variant="outline-light" className="p-2 px-4" onClick={onAddDataToggle}>Cancel</Button>}
           </div>
         </div>}
+
+        {app.settings.preferredKycLevel === INSTANT_ACH_KYC && !activeUser.deviceFingerprint && <>
+          <h2 className="mb-4 mt-4">Device Fingerprint</h2>
+          <p className="text-muted mb-3">Your device fingerprint is a unique string of numbers used to identify your desktop or mobile device. You must opt-in to accept SMS notifications about all instant-ACH transactions. SMS notifications will be sent to the registered phone number of the user.</p>
+          <Form.Group controlId="registerDeviceFingerprint" className="readonly">
+            <Form.Control required placeholder="Loading..." name="deviceFingerprint" defaultValue={activeUser.deviceFingerprint ? activeUser.deviceFingerprint : deviceFingerprint} readOnly={true} isInvalid={Boolean(errors.device && errors.device.device_fingerprint)} />
+            {errors.device && errors.device.device_fingerprint && <Form.Control.Feedback type="invalid">{errors.device.device_fingerprint}</Form.Control.Feedback>}
+          </Form.Group>
+          <Form.Group controlId="registerSms" className="mb-5 registerSms">
+            <Form.Check custom id="registerSms" className="mb-5 ml-n2" type="checkbox">
+              <Form.Check.Input type="checkbox" name="smsOptIn" onChange={onSMSChange} checked={activeRow.smsOptInCheck} />
+              <Form.Check.Label className="text-muted ml-2">Yes, opt-in to receive SMS notifications about all instant ACH transactions.</Form.Check.Label>
+            </Form.Check>
+          </Form.Group>
+          <div className="text-right">
+            <Button className="text-decoration-none ml-3 p-2 px-4" disabled={!activeRow.smsOptInCheck} onClick={(e) => onSave('smsOptIn')}>Add Device</Button>
+          </div>
+        </>}
 
       </div>
     </Accordion>

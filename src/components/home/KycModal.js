@@ -16,7 +16,7 @@ const KycModal = ({ show, onHide }) => {
         <CardGroup>
           <Card>
             <Card.Header className="text-center bg-light">
-              <Card.Title className="text-primary mb-0">Default KYC</Card.Title>
+              <Card.Title className="text-primary mb-0">DOC KYC</Card.Title>
             </Card.Header>
             <Card.Body>
               <Card.Text>

@@ -102,7 +102,7 @@ const BusinessMembers = ({ page, previous, next, isActive }) => {
           <p className="text-meta mb-0 mb-5">This page represents <a href="https://docs.silamoney.com/docs/certify_business" target="_blank" rel="noopener noreferrer">/certify_business</a> functionality.</p>
 
           {!app.settings.kybAdminHandle && <DisabledOverlay>
-            <p className="mb-0"><i className="fas fa-lock mr-2"></i> You must be an administrator to cerify the business and it's members. {!app.settings.kybAdminHandle && <Button variant="link" as={NavLink} className="p-0 text-white important ml-2" to={{ pathname: '/members/register', state: { role: 'administrator', from: page } }}>Add an Administator</Button>}</p>
+            <p className="mb-0"><i className="fas fa-lock mr-2"></i> You must be an administrator to certify the business and it's members. {!app.settings.kybAdminHandle && <Button variant="link" as={NavLink} className="p-0 text-white important ml-2" to={{ pathname: '/members/register', state: { role: 'administrator', from: page } }}>Add an Administator</Button>}</p>
           </DisabledOverlay>}
 
           <div className="members position-relative">
