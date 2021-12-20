@@ -7,7 +7,7 @@ import Loader from '../../components/common/Loader';
 import Pagination from '../../components/common/Pagination';
 import AlertMessage from '../../components/common/AlertMessage';
 import LinkMemberForm from '../../components/kyb/LinkMemberForm';
-import RegisterDataForm from '../../components/register/RegisterDataForm';
+//import RegisterDataForm from '../../components/register/RegisterDataForm';
 import ConfirmModal from '../../components/common/ConfirmModal';
 
 const MemberDetails = ({ page, match, history, location }) => {
@@ -139,7 +139,7 @@ const MemberDetails = ({ page, match, history, location }) => {
         <p className="text-muted text-lg mb-4">We've gathered some information to see if this business member meet KYC guidelines. If you'd like to add, update or delete information, you can do so here.</p>
         <Form noValidate className="mt-4" validated={validated} autoComplete="off" onSubmit={(e) => e.preventDefault()}>
           {!loaded && <Loader overlay />}
-          <RegisterDataForm activeMember={member} errors={errors} onConfirm={setConfirm} onLoaded={(isLoaded) => setLoaded(isLoaded)} onErrors={(errorsObj) => { setErrors(errorsObj); setValidated(true); } } />
+          {/* <RegisterDataForm activeMember={member} errors={errors} onConfirm={setConfirm} onLoaded={(isLoaded) => setLoaded(isLoaded)} onErrors={(errorsObj) => { setErrors(errorsObj); setValidated(true); } } /> */}
         </Form>
 
         <LinkMemberForm member={member} onLinked={() => { setMember(false); getEntity(); }} onUnlinked={() => { setMember(false); getEntity(); }} />

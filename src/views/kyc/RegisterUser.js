@@ -30,9 +30,9 @@ const RegisterUser = ({ page, previous, next, isActive }) => {
 
       <p className="mb-4 text-muted text-lg">{app.activeUser ? "We've gathered some information to see if you meet KYC guidelines. If you'd like to add, update or delete information, you can do so here." : "We need to gather some information to see if you meet KYC guidelines."}</p>
 
-      {app.activeUser && <p className="text-muted mb-5">This page represents <a href="https://docs.silamoney.com/docs/addregistration-data" target="_blank" rel="noopener noreferrer">/add</a>, <a href="https://docs.silamoney.com/docs/updateregistration-data" target="_blank" rel="noopener noreferrer">/update,</a> and <a href="https://docs.silamoney.com/docs/deleteregistration-data" target="_blank" rel="noopener noreferrer">/delete</a> functionality.</p>}
+      {app.activeUser && <p className="text-muted mb-3">This page represents <a href="https://docs.silamoney.com/docs/addregistration-data" target="_blank" rel="noopener noreferrer">/add</a>, <a href="https://docs.silamoney.com/docs/updateregistration-data" target="_blank" rel="noopener noreferrer">/update,</a> and <a href="https://docs.silamoney.com/docs/deleteregistration-data" target="_blank" rel="noopener noreferrer">/delete</a> functionality.</p>}
 
-      {!app.activeUser && <p className="text-muted mb-5">This page represents <a href="https://docs.silamoney.com/docs/register" target="_blank" rel="noopener noreferrer">/register</a> functionality.</p>}
+      {!app.activeUser && <p className="text-muted mb-3">This page represents <a href="https://docs.silamoney.com/docs/register" target="_blank" rel="noopener noreferrer">/register</a> functionality.</p>}
 
       <RegisterUserForm handle={app.settings.kycHandle} onSuccess={registerUser} onShowKycModal={(isShow) => setShow(isShow)} onConfirm={setConfirm}>
 
