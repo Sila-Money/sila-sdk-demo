@@ -1,4 +1,4 @@
-export const DEFAULT_KYC = 'DEFAULT';
+export const DEFAULT_KYC = 'DOC_KYC';
 
 export const LITE_KYC = 'KYC-LITE';
 
@@ -13,7 +13,7 @@ export const KYB_LITE = 'KYB-LITE';
 export const KYB_RECEIVE_ONLY = 'RECEIVE_ONLY';
 
 export const KYC_ARRAY = [{
-    value: 'DEFAULT',
+    value: 'DOC_KYC',
     label: 'DOC KYC'
   },
   {
