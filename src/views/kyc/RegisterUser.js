@@ -4,7 +4,6 @@ import { Container, Alert, Button } from 'react-bootstrap';
 import { useAppContext } from '../../components/context/AppDataProvider';
 
 import Pagination from '../../components/common/Pagination';
-import AlertMessage from '../../components/common/AlertMessage';
 import RegisterUserForm from '../../components/register/RegisterUserForm';
 import KycModal from '../../components/home/KycModal';
 import ConfirmModal from '../../components/common/ConfirmModal';
@@ -36,12 +35,9 @@ const RegisterUser = ({ page, previous, next, isActive }) => {
 
       <RegisterUserForm handle={app.settings.kycHandle} onSuccess={registerUser} onShowKycModal={(isShow) => setShow(isShow)} onConfirm={setConfirm}>
 
-        {app.settings.preferredKycLevel && !app.activeUser && <Alert variant="info" className="mt-4 mb-5">A wallet is automatically generated for you using the generateWallet() function upon registration.</Alert>}
+        {app.settings.preferredKycLevel && !app.activeUser && <Alert variant="info" className="mb-3">A wallet is automatically generated for you using the generateWallet() function upon registration.</Alert>}
 
-        <div className="d-flex">
-          {app.alert.message && <AlertMessage message={app.alert.message} type={app.alert.type} />}
-          {app.settings.preferredKycLevel && !app.activeUser && <Button type="submit" className="ml-auto" disabled={!app.settings.kycHandle || (app.activeUser && app.activeUser.handle === app.settings.kycHandle)}>Register user</Button>}
-        </div>
+        {app.settings.preferredKycLevel && !app.activeUser && <Button type="submit" className="ml-auto float-right" disabled={!app.settings.kycHandle || (app.activeUser && app.activeUser.handle === app.settings.kycHandle)}>Register user</Button>}
 
       </RegisterUserForm>
 

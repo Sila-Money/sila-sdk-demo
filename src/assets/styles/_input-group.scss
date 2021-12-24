@@ -74,7 +74,7 @@
 }
 
 .form-control:focus ~ .input-group-append,
-.form-control:focus ~ .input-group-prepend {
+.form-control:focus ~ .input-group-prepend, .form-control:focus:invalid ~ .input-group-append {
   border-color: $primary;
 }
 
@@ -83,6 +83,11 @@
 .form-control:invalid input:focus ~ .input-group-append,
 .form-control:invalid input:focus ~ .input-group-prepend {
   border-color: $danger;
+}
+
+.form-control:not(:focus):invalid ~ .input-group-append,
+.form-control:not(:focus):invalid ~ .input-group-prepend{
+  border-color: $border-color;
 }
 
 // Textual addons

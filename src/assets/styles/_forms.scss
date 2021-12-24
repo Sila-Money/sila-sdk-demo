@@ -169,8 +169,16 @@ select.form-control option[value=""] {
   border-color: $border-color;
 }
 
+.was-validated .form-control:focus:valid:not(.is-invalid),
+.form-control.is-valid,
+.was-validated .form-control:focus:valid:not(.is-invalid):focus,
+.form-control.is-valid:focus {
+  border-color: $primary;
+}
+
 .was-validated .form-control:invalid,
 .was-validated .form-control.is-invalid,
+.form-control:focus.is-invalid,
 .form-control.is-invalid,
 .form-control.is-invalid:focus,
 .was-validated .form-control:valid.is-invalid {

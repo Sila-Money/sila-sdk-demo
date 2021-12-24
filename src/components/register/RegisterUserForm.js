@@ -3,6 +3,7 @@ import { Form, Button } from 'react-bootstrap';
 
 import { useAppContext } from '../../components/context/AppDataProvider';
 
+import AlertMessage from '../../components/common/AlertMessage';
 import Loader from '../../components/common/Loader';
 import SelectMenu from '../../components/common/SelectMenu';
 import DefaultKYCForm from '../../components/register/DefaultKYCForm';
@@ -14,12 +15,12 @@ import AddDataForm from '../../components/register/AddDataForm';
 
 import { DEFAULT_KYC, LITE_KYC, RECEIVE_ONLY_KYC, INSTANT_ACH_KYC, KYC_ARRAY } from '../../constants';
 
-const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onShowKycModal, onConfirm }) => {
+const RegisterUserForm = ({ className, handle, onSuccess, onShowKycModal, onConfirm, children }) => {
   const { app, api, refreshApp, handleError, updateApp, setAppData } = useAppContext();
   const [validated, setValidated] = useState(false);
   const [errors, setErrors] = useState({});
   const [loaded, setLoaded] = useState(true);
-  const [preferredKyc, setPreferredKyc] = useState(app.activeUser.kycLevel || app.settings.preferredKycLevel);
+  const [preferredKyc, setPreferredKyc] = useState(app.settings.preferredKycLevel || app.activeUser.kycLevel);
   const [showUpdateBtn, setShowUpdateBtn] = useState(false);
   const [entityuuid, setEntityuuid] = useState({ isFetchedUUID: false, uuid: {} });
 
@@ -45,7 +46,6 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
       isValidated = false;
       validationErrors.entity = Object.assign({last_name: "This field may not be blank."}, validationErrors.entity);
     }
-
     if (preferredKyc !== RECEIVE_ONLY_KYC && e.target.email && !e.target.email.value) {
       isValidated = false;
       validationErrors.contact = Object.assign({email: "This field may not be blank."}, validationErrors.contact);
@@ -89,7 +89,9 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
     let updatedEntityData = {};
     let updatedResponses = [];
     let updateSuccess = false;
+    let result = {};
     if (app.activeUser && app.activeUser.handle) {
+      setShowUpdateBtn(false);
       let entityRes = {};
       try {
         entityRes = await api.getEntity(app.activeUser.handle, app.activeUser.private_key);
@@ -113,10 +115,9 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
           if (entityUpdateRes.data.success) {
             updateSuccess = true;
             updatedEntityData = { ...updatedEntityData, firstName: e.target.firstName.value, lastName: e.target.lastName.value, dateOfBirth: e.target.dateOfBirth.value};
-          }  else if (entityUpdateRes.data.validation_details) {
-            validationErrors = { ...validationErrors, entity: entityUpdateRes.data.validation_details }
           } else {
-            console.log('... update entity failed!', entityUpdateRes);
+            if(entityUpdateRes.data && entityUpdateRes.data.message) result.alert = { message: entityUpdateRes.data.message, type: 'danger' };
+            validationErrors = { ...validationErrors, entity: entityUpdateRes.data.validation_details ? entityUpdateRes.data.validation_details : entityUpdateRes.data.message }
           }
         } catch (err) {
           console.log('  ... unable to update entity, looks like we ran into an issue!');
@@ -124,7 +125,6 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
         }
       }
 
-      validationErrors = { ...validationErrors, contact: {} }
       if (e.target.email && e.target.email.value && e.target.email.value !== app.activeUser.email) {
         try {
           const emailUpdateData = {};
@@ -146,10 +146,9 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
             delete emailUpdateData.uuid;
             updateSuccess = true;
             updatedEntityData = { ...updatedEntityData, ...emailUpdateData }
-          } else if (emailRes.data.validation_details) {
-            validationErrors.contact = Object.assign({email: emailRes.data.validation_details.email}, validationErrors.contact);
           } else {
-            console.log('... update email failed!', emailRes);
+            validationErrors = { ...validationErrors, contact: {} }
+            validationErrors.contact = Object.assign({email: emailRes.data.validation_details ? emailRes.data.validation_details.email : emailRes.data.message}, validationErrors.contact);
           }
         } catch (err) {
           console.log('  ... unable to update email, looks like we ran into an issue!');
@@ -180,10 +179,9 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
           if (phoneRes.data.success) {
             updateSuccess = true;
             updatedEntityData = { ...updatedEntityData, phone: e.target.phone.value }
-          } else if (phoneRes.data.validation_details) {
-            validationErrors.contact = Object.assign({phone: phoneRes.data.validation_details.phone}, validationErrors.contact);
           } else {
-            console.log('... update phone failed!', phoneRes);
+            if (!validationErrors.contact) validationErrors = { ...validationErrors, contact: {} }
+            validationErrors.contact = Object.assign({phone: phoneRes.data.validation_details.phone ? phoneRes.data.validation_details.phone : phoneRes.data.message}, validationErrors.contact);
           }
         } catch (err) {
           console.log('  ... unable to update phone, looks like we ran into an issue!');
@@ -211,10 +209,9 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
           if (ssnRes.data.success) {
             updateSuccess = true;
             updatedEntityData = { ...updatedEntityData, ssn: identityUpdateData.value }
-          } else if (ssnRes.data.validation_details) {
-            validationErrors = { ...validationErrors, identity: ssnRes.data.validation_details }
           } else {
-            console.log('... update identity failed!', ssnRes);
+            if(ssnRes.data && ssnRes.data.message) result.alert = { message: ssnRes.data.message, type: 'danger' };
+            validationErrors = { ...validationErrors, identity: ssnRes.data.validation_details ? ssnRes.data.validation_details : ssnRes.data.message }
           }
         } catch (err) {
           console.log('  ... unable to update identity, looks like we ran into an issue!');
@@ -244,10 +241,8 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
           if (addressRes.data.success) {
             updateSuccess = true;
             updatedEntityData = { ...updatedEntityData, address: e.target.address.value, city: e.target.city.value, state: e.target.state.value, zip: e.target.zip.value }
-          } else if (addressRes.data.validation_details) {
-            validationErrors = { ...validationErrors, address: addressRes.data.validation_details.address }
           } else {
-            console.log('... update address failed!', addressRes);
+            validationErrors = { ...validationErrors, address: addressRes.data.validation_details ? addressRes.data.validation_details.address : addressRes.data.message }
           }
         } catch (err) {
           console.log('  ... unable to update address, looks like we ran into an issue!');
@@ -257,7 +252,6 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
 
       try {
         console.log('  ... update completed!');
-        let result = {};
         let appData = {};
         if (updateSuccess) {
           refreshApp();
@@ -271,11 +265,11 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
             users: app.users.map(({ active, ...u }) => u.handle === app.activeUser.handle ? { ...u, ...updatedEntityData } : u),
           };
           if (Object.keys(errors).length) setErrors({});
-          setShowUpdateBtn(false)
-        } else if ( Object.keys(validationErrors).length ) {
+        }
+        if (Object.keys(validationErrors).length) {
+          setShowUpdateBtn(true);
           setErrors(validationErrors);
           setValidated(true);
-          if (onError) onError(validationErrors);
         }
         setAppData({
           ...appData,
@@ -333,7 +327,6 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
           if (Object.keys(errors).length) setErrors({});
         } else if (res.data.validation_details) {
           setErrors(res.data.validation_details);
-          if (onError) onError(res.data.validation_details);
         }
         setAppData({
           ...appData,
@@ -393,8 +386,9 @@ const RegisterUserForm = ({ className, handle, children, onError, onSuccess, onS
       {preferredKyc === RECEIVE_ONLY_KYC && !app.activeUser && <ReceiveOnlyKYCForm errors={errors} app={app} />}
       {preferredKyc === INSTANT_ACH_KYC && !app.activeUser && <InstantAchKYCForm errors={errors} app={app} />}
       {app.activeUser && app.activeUser.handle && <UpdateKYCForm errors={errors} preferredKyc={preferredKyc} entityuuid={entityuuid} onLoaded={(isLoaded) => setLoaded(isLoaded)} onConfirm={onConfirm} onShowUpdate={(isUpdated) => setShowUpdateBtn(isUpdated)} />}
+      {preferredKyc && app.activeUser && showUpdateBtn && <Button type="submit" className="ml-auto d-flex mt-3">Update data</Button>}
       {app.activeUser && app.activeUser.handle && <AddDataForm errors={errors} entityuuid={entityuuid} onLoaded={(isLoaded) => setLoaded(isLoaded)} onErrors={(errorsObj) => { setErrors(errorsObj); setValidated(true); } } onUpdateUuid={(uuidObj) => updateUuid(uuidObj)} />}
-      {preferredKyc && app.activeUser && (app.activeUser.kycLevel !== preferredKyc || showUpdateBtn) && <div className="d-flex mt-3 mb-md-3"><Button type="submit" className="ml-auto">Update data</Button></div>}
+      {app.alert.message && <div className="d-flex mt-3"><AlertMessage message={app.alert.message} type={app.alert.type} /></div>}
 
       {children}
     </Form>

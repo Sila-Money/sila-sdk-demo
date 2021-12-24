@@ -25,7 +25,6 @@ const UpdateKYCForm = ({ errors, preferredKyc, entityuuid, onLoaded, onConfirm, 
   const onChange = (e) => {
     if (activeUser[e.target.name] !== e.target.value) onShowUpdate(true);
   }
-
   const onDelete = async (fieldName, fieldLabel) => {
     setActiveDeleteField(fieldName);
     onConfirm({ show: true, message: `Are you sure you want to delete the ${fieldLabel} data point from the registered data?`, onSuccess: async () => {
@@ -120,7 +119,7 @@ const UpdateKYCForm = ({ errors, preferredKyc, entityuuid, onLoaded, onConfirm, 
         </Form.Group>}
 
         {activeUser && activeUser.email && <Form.Group as={Col} md="6" controlId="registerEmail" className={preferredKyc !== RECEIVE_ONLY_KYC ? 'required' : ''}>
-          <InputGroup className="mb-3">
+          <InputGroup className="mb-0">
             <Form.Control 
               required={preferredKyc !== RECEIVE_ONLY_KYC}
               type="email" 
@@ -129,7 +128,7 @@ const UpdateKYCForm = ({ errors, preferredKyc, entityuuid, onLoaded, onConfirm, 
               name="email" 
               defaultValue={activeUser.email} 
               onChange={onChange}
-              isInvalid={preferredKyc !== RECEIVE_ONLY_KYC ? Boolean(errors.contact && errors.contact.email) : false} />
+              isInvalid={Boolean(errors.contact && errors.contact.email)} />
             {preferredKyc === RECEIVE_ONLY_KYC && <InputGroup.Append className="d-flex justify-content-between align-items-center">
               <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('email', 'Email')}><i className={`sila-icon sila-icon-delete text-lg ${activeDeleteField === 'email' ? 'text-primary' : undefined }`}></i></Button>
             </InputGroup.Append>}
@@ -137,8 +136,8 @@ const UpdateKYCForm = ({ errors, preferredKyc, entityuuid, onLoaded, onConfirm, 
           </InputGroup>
         </Form.Group>}
 
-        {activeUser && activeUser.phone && <Form.Group as={Col} md="6" controlId="registerPhone" className={preferredKyc !== RECEIVE_ONLY_KYC ? 'required' : ''}>
-          <InputGroup className="mb-3">
+        {activeUser && activeUser.phone && <Form.Group as={Col} md="6" controlId="registerPhone" className={preferredKyc !== RECEIVE_ONLY_KYC ? 'required' : 'mb-0'}>
+          <InputGroup className="mb-0">
             <Form.Control 
               required={preferredKyc !== RECEIVE_ONLY_KYC}
               name="phone" 
@@ -149,7 +148,7 @@ const UpdateKYCForm = ({ errors, preferredKyc, entityuuid, onLoaded, onConfirm, 
               placeholder="Phone Number (___) ___-____" 
               format="(###) ###-####" 
               mask="_" 
-              isInvalid={preferredKyc !== RECEIVE_ONLY_KYC ? Boolean(errors.contact && errors.contact.phone) : false} />
+              isInvalid={Boolean(errors.contact && errors.contact.phone)} />
             {preferredKyc === RECEIVE_ONLY_KYC && <InputGroup.Append className="d-flex justify-content-between align-items-center">
               <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('phone', 'Phone Number')}><i className={`sila-icon sila-icon-delete text-lg ${activeDeleteField === 'phone' ? 'text-primary' : undefined }`}></i></Button>
             </InputGroup.Append>}
@@ -163,19 +162,19 @@ const UpdateKYCForm = ({ errors, preferredKyc, entityuuid, onLoaded, onConfirm, 
             type="date" defaultValue={activeUser.dateOfBirth} 
             onChange={onChange} placeholder="Date of Birth" 
             name="dateOfBirth" 
-            isInvalid={preferredKyc !== RECEIVE_ONLY_KYC ? Boolean(errors.entity && errors.entity.birthdate) : false} />
+            isInvalid={Boolean(errors.entity && errors.entity.birthdate)} />
           {errors.entity && errors.entity.birthdate && <Form.Control.Feedback type="invalid">{errors.entity.birthdate}</Form.Control.Feedback>}
         </Form.Group>}
 
         {activeUser && activeUser.ssn && <Form.Group as={Col} md="6" controlId="registerSSN" className={preferredKyc !== RECEIVE_ONLY_KYC && preferredKyc !== LITE_KYC ? 'required' : ''}>
-          <InputGroup className="mb-3">
+          <InputGroup className="mb-0">
             <Form.Control 
               required={preferredKyc !== RECEIVE_ONLY_KYC && preferredKyc !== LITE_KYC}
               placeholder="Social Security Number 123-34-5678" 
               name="ssn" 
               defaultValue={activeUser.ssn} 
               onChange={onChange}
-              isInvalid={preferredKyc !== RECEIVE_ONLY_KYC && preferredKyc !== LITE_KYC ? errors.identity : false} />
+              isInvalid={Boolean(errors.identity)} />
             {(preferredKyc === RECEIVE_ONLY_KYC || preferredKyc === LITE_KYC) && <InputGroup.Append className="d-flex justify-content-between align-items-center">
               <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('ssn', 'Social Security Number')}><i className={`sila-icon sila-icon-delete text-lg ${activeDeleteField === 'ssn' ? 'text-primary' : undefined }`}></i></Button>
             </InputGroup.Append>}
@@ -185,14 +184,14 @@ const UpdateKYCForm = ({ errors, preferredKyc, entityuuid, onLoaded, onConfirm, 
       </Form.Row>
 
       {activeUser && activeUser.address && <Form.Group controlId="registerAddress" className={preferredKyc !== RECEIVE_ONLY_KYC && preferredKyc !== LITE_KYC ? 'required' : ''}>
-        <InputGroup className="mb-3">
+        <InputGroup className="mb-0">
           <Form.Control 
             required={preferredKyc !== RECEIVE_ONLY_KYC && preferredKyc !== LITE_KYC}
             placeholder="Street Address" 
             name="address" 
             defaultValue={activeUser.address} 
             onChange={onChange}
-            isInvalid={preferredKyc !== RECEIVE_ONLY_KYC && preferredKyc !== LITE_KYC ? Boolean(errors.address && errors.address.street_address_1) : false} />
+            isInvalid={Boolean(errors.address && errors.address.street_address_1)} />
           {(preferredKyc === RECEIVE_ONLY_KYC || preferredKyc === LITE_KYC) && <InputGroup.Append className="d-flex justify-content-between align-items-center">
             <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('address', 'Street Address')}><i className={`sila-icon sila-icon-delete text-lg ${activeDeleteField === 'address' ? 'text-primary' : undefined }`}></i></Button>
           </InputGroup.Append>}
@@ -200,16 +199,16 @@ const UpdateKYCForm = ({ errors, preferredKyc, entityuuid, onLoaded, onConfirm, 
         </InputGroup>
       </Form.Group>}
       
-      {activeUser && (activeUser.city || activeUser.state || activeUser.zip) && <Form.Row className="mb-3">
-        {activeUser.city && <Form.Group as={Col} md="4" controlId="registerCity" className={preferredKyc !== RECEIVE_ONLY_KYC && preferredKyc !== LITE_KYC ? 'required' : ''}>
-          <InputGroup className="mb-3">
+      {activeUser && (activeUser.city || activeUser.state || activeUser.zip) && <Form.Row className="mb-0">
+        {activeUser.city && <Form.Group as={Col} md="4" controlId="registerCity" className={preferredKyc !== RECEIVE_ONLY_KYC && preferredKyc !== LITE_KYC ? 'required' : 'mb-0'}>
+          <InputGroup className="mb-0">
             <Form.Control 
               required={preferredKyc !== RECEIVE_ONLY_KYC && preferredKyc !== LITE_KYC}
               placeholder="City" 
               name="city" 
               defaultValue={activeUser.city} 
               onChange={onChange}
-              isInvalid={preferredKyc !== RECEIVE_ONLY_KYC && preferredKyc !== LITE_KYC ? Boolean(errors.address && errors.address.city) : false} />
+              isInvalid={Boolean(errors.address && errors.address.city)} />
             {(preferredKyc === RECEIVE_ONLY_KYC || preferredKyc === LITE_KYC) && <InputGroup.Append className="d-flex justify-content-between align-items-center">
               <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('city', 'City')}><i className={`sila-icon sila-icon-delete text-lg ${activeDeleteField === 'city' ? 'text-primary' : undefined }`}></i></Button>
             </InputGroup.Append>}
@@ -217,15 +216,15 @@ const UpdateKYCForm = ({ errors, preferredKyc, entityuuid, onLoaded, onConfirm, 
           </InputGroup>
         </Form.Group>}
 
-        {activeUser.state && <Form.Group as={Col} md="4" controlId="registerState" className={`select ${preferredKyc !== RECEIVE_ONLY_KYC && preferredKyc !== LITE_KYC ? 'required' : ''}`}>
-          <InputGroup className="mb-3">
+        {activeUser.state && <Form.Group as={Col} md="4" controlId="registerState" className={`select ${preferredKyc !== RECEIVE_ONLY_KYC && preferredKyc !== LITE_KYC ? 'required' : 'mb-0'}`}>
+          <InputGroup className="mb-0">
             <Form.Control 
               required={preferredKyc !== RECEIVE_ONLY_KYC && preferredKyc !== LITE_KYC}
               as="select" 
               name="state" 
               defaultValue={activeUser.state} 
               onChange={onChange}
-              isInvalid={preferredKyc !== RECEIVE_ONLY_KYC && preferredKyc !== LITE_KYC ? Boolean(errors.address && errors.address.state) : false}>
+              isInvalid={Boolean(errors.address && errors.address.state)}>
               <option value="">State</option>
               {STATES_ARRAY.map((option, index) => <option key={index} value={option.value}>{option.label}</option>)}
             </Form.Control>
@@ -236,15 +235,15 @@ const UpdateKYCForm = ({ errors, preferredKyc, entityuuid, onLoaded, onConfirm, 
           </InputGroup>
         </Form.Group>}
 
-        {activeUser.zip && <Form.Group as={Col} md="4" controlId="registerZip" className={preferredKyc !== RECEIVE_ONLY_KYC && preferredKyc !== LITE_KYC ? 'required' : ''}>
-          <InputGroup className="mb-3">
+        {activeUser.zip && <Form.Group as={Col} md="4" controlId="registerZip" className={preferredKyc !== RECEIVE_ONLY_KYC && preferredKyc !== LITE_KYC ? 'required' : 'mb-0'}>
+          <InputGroup className="mb-0">
             <Form.Control 
               required={preferredKyc !== RECEIVE_ONLY_KYC && preferredKyc !== LITE_KYC}
               placeholder="Zip" 
               name="zip" 
               defaultValue={activeUser.zip} 
               onChange={onChange}
-              isInvalid={preferredKyc !== RECEIVE_ONLY_KYC && preferredKyc !== LITE_KYC ? Boolean(errors.address && errors.address.postal_code) : false} />
+              isInvalid={Boolean(errors.address && errors.address.postal_code)} />
             {(preferredKyc === RECEIVE_ONLY_KYC || preferredKyc === LITE_KYC) && <InputGroup.Append className="d-flex justify-content-between align-items-center">
               <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('zip', 'Zip')}><i className={`sila-icon sila-icon-delete text-lg ${activeDeleteField === 'zip' ? 'text-primary' : undefined }`}></i></Button>
             </InputGroup.Append>}

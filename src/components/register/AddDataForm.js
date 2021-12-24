@@ -8,18 +8,18 @@ import KYCFormFieldType from '../../components/register/KYCFormFieldType';
 import { KYC_REGISTER_FIELDS_ARRAY, INSTANT_ACH_KYC } from '../../constants';
 
 
-const AddDataForm = ({ errors, entityuuid, onLoaded, onErrors, onUpdateUuid, activeMember }) => {
+const AddDataForm = ({ errors, entityuuid, onLoaded, onErrors, onUpdateUuid, activeMember, action }) => {
   const { app, api, refreshApp, handleError, updateApp, setAppData } = useAppContext();
-  const activeUser = activeMember ? app.users.find(u => u.handle === activeMember.user_handle) : app.activeUser;
-  const [activeRow, setActiveRow] = useState({ isAdding: false, fldName: '', fldValue: '', smsOptInCheck: activeUser.smsOptIn ? true : false });
+  const activeUser = activeMember ? app.users.find(u => u.handle === activeMember.handle) : app.activeUser;
+  const [activeRow, setActiveRow] = useState({ isAdding: false, fldName: '', fldValue: '', smsOptInCheck: activeUser && activeUser.smsOptIn ? true : false });
   const [deviceFingerprint, setDeviceFingerprint] = useState(undefined);
-  let isLoading = useRef(false);
   const entityFields = ['firstName', 'lastName', 'dateOfBirth']
   const phoneFields = ['phone']
   const emailFields = ['email']
   const identityFields = ['ssn']
   const addressFields = ['address', 'city', 'state', 'zip']
-
+  
+  let isLoading = useRef(false);
   let updatedEntityData = {};
   let updatedResponses = [];
   let validationErrors = {};
@@ -28,7 +28,7 @@ const AddDataForm = ({ errors, entityuuid, onLoaded, onErrors, onUpdateUuid, act
   let ApiEndpoint;
 
   const onSMSChange = (e) => {
-    setActiveRow({...activeRow, fldName: 'smsOptIn', fldValue: e.target.checked ? true : false, smsOptInCheck : e.target.checked ? true : false });
+    setActiveRow({...activeRow, isAdding: false, fldName: 'smsOptIn', fldValue: e.target.checked ? true : false, smsOptInCheck : e.target.checked ? true : false });
   }
   const onEditing = (e) => {
     setActiveRow({...activeRow, fldValue: e.target.value.trim() || undefined});
@@ -53,10 +53,8 @@ const AddDataForm = ({ errors, entityuuid, onLoaded, onErrors, onUpdateUuid, act
             if (fieldName === 'firstName') updatedEntityData = { ...updatedEntityData, firstName: activeRow.fldValue };
             if (fieldName === 'lastName') updatedEntityData = { ...updatedEntityData, lastName: activeRow.fldValue };
             if (fieldName === 'dateOfBirth') updatedEntityData = { ...updatedEntityData, dateOfBirth: activeRow.fldValue };
-          }  else if (entityUpdateRes.data.validation_details) {
-            validationErrors = { entity: entityUpdateRes.data.validation_details }
           } else {
-            console.log(`... update entity ${fieldName} failed!`, entityUpdateRes);
+            validationErrors = { entity: entityUpdateRes.data.validation_details ? entityUpdateRes.data.validation_details : entityUpdateRes.data.message }
           }
         } catch (err) {
           console.log(`  ... unable to update entity ${fieldName}, looks like we ran into an issue!`);
@@ -66,7 +64,7 @@ const AddDataForm = ({ errors, entityuuid, onLoaded, onErrors, onUpdateUuid, act
 
       if (phoneFields.includes(fieldName)) {
         try {
-          const phoneRes = await api.addPhone(activeUser.handle, activeUser.private_key, activeRow.fldValue, {});
+          const phoneRes = await api.addPhone(activeUser.handle, activeUser.private_key, activeRow.fldValue);
           updatedResponses = [ ...updatedResponses, { endpoint: '/add/phone', result: JSON.stringify(phoneRes, null, '\t') } ];
 
           if (phoneRes.data.success) {
@@ -231,18 +229,28 @@ const AddDataForm = ({ errors, entityuuid, onLoaded, onErrors, onUpdateUuid, act
         if (updateSuccess) {
           refreshApp();
           const appUser = app.users.find(u => u.handle === activeUser.handle);
-          updatedEntityData = { ...appUser, ...updatedEntityData, kycLevel: app.settings.preferredKycLevel }
-          result = {
-            activeUser: { ...appUser, ...updatedEntityData } ,
-            alert: { message: activeRow.isAdding ? 'Registration data was successfully added.' : 'Registration data was successfully updated and saved.', type: 'success' }
-          };
-          appData = {
-            users: app.users.map(({ active, ...u }) => u.handle === activeUser.handle ? { ...u, ...updatedEntityData } : u),
-          };
-          if (Object.keys(errors).length || Object.keys(validationErrors).length) onErrors({});
+          if (action && action === 'update-member') {
+            updatedEntityData = { ...appUser, ...updatedEntityData, active: true }
+            result = {
+              alert: { message: activeRow.isAdding ? 'Registration data was successfully added.' : 'Registration data was successfully updated and saved.', type: 'success' }
+            };
+            appData = {
+              users: app.users.map(u => u.handle === activeMember.handle ? { ...u, ...updatedEntityData } : u)
+            };
+          } else {
+            updatedEntityData = { ...appUser, ...updatedEntityData, kycLevel: app.settings.preferredKycLevel }
+            result = {
+              activeUser: { ...appUser, ...updatedEntityData } ,
+              alert: { message: activeRow.isAdding ? 'Registration data was successfully added.' : 'Registration data was successfully updated and saved.', type: 'success' }
+            };
+            appData = {
+              users: app.users.map(({ active, ...u }) => u.handle === activeUser.handle ? { ...u, ...updatedEntityData } : u),
+            };
+          }
+          if ((Object.keys(errors).length || Object.keys(validationErrors).length) && onErrors) onErrors({});
           setActiveRow({...activeRow, fldName: '', fldValue: '' });
         } else if ( Object.keys(validationErrors).length ) {
-          onErrors(validationErrors);
+          if(onErrors) onErrors(validationErrors);
         }
 
         setAppData({
@@ -265,7 +273,7 @@ const AddDataForm = ({ errors, entityuuid, onLoaded, onErrors, onUpdateUuid, act
     setActiveRow({...activeRow, fldName: e.target.value ? e.target.value : '', fldValue: '' })
   }
   const getRefreshSMSstatus = async () => {
-    onLoaded(false);
+    if (onLoaded) onLoaded(false);
     try {
       const entitySmsRes = await api.getEntity(activeUser.handle, activeUser.private_key);
       if (entitySmsRes.data.success && entitySmsRes.data.phones && entitySmsRes.data.phones[0]) {
@@ -283,7 +291,7 @@ const AddDataForm = ({ errors, entityuuid, onLoaded, onErrors, onUpdateUuid, act
       console.log('  ... looks like we ran into an issue!, unable to refresh SMS status');
       handleError(err);
     }
-    onLoaded(true);
+    if (onLoaded) onLoaded(true);
   };
 
   useEffect(() => {
@@ -292,7 +300,7 @@ const AddDataForm = ({ errors, entityuuid, onLoaded, onErrors, onUpdateUuid, act
         if (isLoading.current) return;
         isLoading.current = true;
         if (onLoaded) onLoaded(false);
-        const entityRes = await api.getEntity(app.activeUser.handle, app.activeUser.private_key);
+        const entityRes = await api.getEntity(activeUser.handle, activeUser.private_key);
         if (entityRes.data.success) {
           if(onUpdateUuid) onUpdateUuid({ 
             email: entityRes.data.emails[0] ? entityRes.data.emails[0]['uuid'] : '',
@@ -307,11 +315,11 @@ const AddDataForm = ({ errors, entityuuid, onLoaded, onErrors, onUpdateUuid, act
       if (onLoaded) onLoaded(true);
       isLoading.current = false;
     }
-    if (app.activeUser && (!Object.keys(entityuuid.uuid).length || !entityuuid.isFetchedUUID)) {
+    if (activeUser && (!Object.keys(entityuuid.uuid).length || !entityuuid.isFetchedUUID)) {
       fetchEntity();
     }
 
-    if (app.settings.preferredKycLevel === INSTANT_ACH_KYC && !activeUser.deviceFingerprint) {
+    if (app.settings.flow === 'kyc' && app.settings.preferredKycLevel === INSTANT_ACH_KYC && !activeUser.deviceFingerprint) {
       try {
         window.IGLOO = window.IGLOO || {
           "enable_rip" : true,
@@ -349,21 +357,25 @@ const AddDataForm = ({ errors, entityuuid, onLoaded, onErrors, onUpdateUuid, act
 
   return (
     <div className="mt-3">
-      {activeUser && (activeUser.smsOptIn || Object.keys(KYC_REGISTER_FIELDS_ARRAY.filter(option => activeUser && !activeUser[option.value])).length !== 0)  && <div className="row mx-2 mb-3">
+      {app.settings.flow === 'kyc' && activeUser && (activeUser.smsOptIn || Object.keys(KYC_REGISTER_FIELDS_ARRAY.filter(option => activeUser && !activeUser[option.value])).length !== 0)  && <div className="row mx-2 mb-3">
         <div className="sms-notifications p-0 col-md-6 col-sm-12">
           {(activeUser && activeUser.smsOptIn) && <div className="text-left">
             SMS Notifications: <span className="text-primary">{activeUser.smsConfirmed ? 'Confirmed' : 'Requested'}</span>
             <Button variant="link" disabled={activeUser.smsConfirmed} className="ml-3 p-0 text-reset text-decoration-none loaded" onClick={getRefreshSMSstatus}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
           </div>}
         </div>
-        <div className="p-0 text-right col-md-6 col-sm-12">
+        <div className="p-0 text-right col-sm-12 col-md-6">
           {(!activeRow.isAdding && Object.keys(KYC_REGISTER_FIELDS_ARRAY.filter(option => activeUser && !activeUser[option.value])).length) ? <Button variant="link" className="p-0 new-registration shadow-none" onClick={onAddDataToggle}>Add new registration data+</Button> : null}
         </div>
       </div>}
 
+      {app.settings.flow === 'kyb' && activeUser && Object.keys(KYC_REGISTER_FIELDS_ARRAY.filter(option => activeUser && !activeUser[option.value])).length !== 0 && <div className="p-0 text-right col-sm-12 col-md-12">
+        {(!activeRow.isAdding && Object.keys(KYC_REGISTER_FIELDS_ARRAY.filter(option => activeUser && !activeUser[option.value])).length) ? <Button variant="link" className="p-0 new-registration shadow-none" onClick={onAddDataToggle}>Add new registration data+</Button> : null}
+      </div>}
+
       {activeRow.isAdding && <div className="add-data">
-        <h2 className="mb-4 mt-4">Add Data</h2>
-        {!activeRow.fldName && <Form.Group controlId="chooseData" className="select">
+        <h2 className="mb-3 mt-0">Add Data</h2>
+        {!activeRow.fldName && <Form.Group controlId="chooseData" className="select mb-3">
           <Form.Control placeholder="Choose a data point to add" as="select" name="choose_data" onChange={onChooseAddDataToggle}>
             <option value="">Choose a data point to add</option>
             {KYC_REGISTER_FIELDS_ARRAY.filter(option => activeUser && !activeUser[option.value]).map((option, index) => <option key={index} value={option.value}>{option.label}</option>)}
@@ -381,8 +393,8 @@ const AddDataForm = ({ errors, entityuuid, onLoaded, onErrors, onUpdateUuid, act
         </div>
       </div>}
 
-      {app.settings.preferredKycLevel === INSTANT_ACH_KYC && !activeUser.deviceFingerprint && <>
-        <h2 className="mb-4 mt-4">Device Fingerprint</h2>
+      {app.settings.flow === 'kyc' && app.settings.preferredKycLevel === INSTANT_ACH_KYC && !activeUser.deviceFingerprint && <>
+        <h2 className="mb-3 mt-0">Device Fingerprint</h2>
         <p className="text-muted mb-3">Your device fingerprint is a unique string of numbers used to identify your desktop or mobile device. You must opt-in to accept SMS notifications about all instant-ACH transactions. SMS notifications will be sent to the registered phone number of the user.</p>
         <Form.Group controlId="registerDeviceFingerprint" className="readonly">
           <Form.Control required placeholder="Loading..." name="deviceFingerprint" defaultValue={activeUser.deviceFingerprint ? activeUser.deviceFingerprint : deviceFingerprint} readOnly={true} isInvalid={Boolean(errors.device && errors.device.device_fingerprint)} />
