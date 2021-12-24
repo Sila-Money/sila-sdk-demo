@@ -81,7 +81,11 @@
 .form-control:invalid ~ .input-group-append,
 .form-control:invalid ~ .input-group-prepend,
 .form-control:invalid input:focus ~ .input-group-append,
-.form-control:invalid input:focus ~ .input-group-prepend {
+.form-control:invalid input:focus ~ .input-group-prepend,
+.was-validated .form-control:invalid ~ .input-group-append,
+.was-validated .form-control:not(:focus):invalid ~ .input-group-append,
+.was-validated .form-control:focus.is-invalid ~ .input-group-append,
+.was-validated .form-control:not(:focus).is-invalid ~ .input-group-append {
   border-color: $danger;
 }
 

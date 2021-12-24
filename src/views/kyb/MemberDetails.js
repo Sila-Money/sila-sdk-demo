@@ -12,6 +12,7 @@ import ConfirmModal from '../../components/common/ConfirmModal';
 
 const MemberDetails = ({ page, match, history, location }) => {
   const [member, setMember] = useState(false);
+  const [showMemberForm, setShowMemberForm] = useState(true);
   const [alert, setAlert] = useState(false);
   const [confirm, setConfirm] = useState({ show: false, message: '', onSuccess: () => { }, onHide: () => { } });
   const { app, api, handleError, setAppData } = useAppContext();
@@ -133,11 +134,13 @@ const MemberDetails = ({ page, match, history, location }) => {
         </>}
 
         {!location.pathname.includes('certify') && <>
-          <h1 className="mb-4">Registered Business Member</h1>
-          <p className="text-muted text-lg mb-4">We've gathered some information to see if this business member meet KYC guidelines. If you'd like to add, update or delete information, you can do so here.</p>
+          {showMemberForm && <>
+            <h1 className="mb-4">Registered Business Member</h1>
+            <p className="text-muted text-lg mb-4">We've gathered some information to see if this business member meet KYC guidelines. If you'd like to add, update or delete information, you can do so here.</p>
+            <MemberKYBForm handle={member.user_handle} activeMember={member} currentRole={currentRole} moreInfoNeeded={true} action="update-member" onConfirm={setConfirm} />
+          </>}
 
-          <MemberKYBForm handle={member.user_handle} activeMember={member} currentRole={currentRole} moreInfoNeeded={true} action="update-member" onConfirm={setConfirm} />
-          <LinkMemberForm member={member} onLinked={() => { setMember(false); getEntity(); }} onUnlinked={() => { setMember(false); getEntity(); }} />
+          <LinkMemberForm member={member} onLinked={() => { setMember(false); getEntity(); }} onUnlinked={() => { setMember(false); getEntity(); }} onShowMemberForm={(status) => { setShowMemberForm(status); }} />
 
           <p className="mt-5 mb-0 text-center"><Button variant="outline-light" className="text-muted text-uppercase" onClick={() => history.goBack()} disabled={member.memberships.length === 0}>I'm Done</Button></p>
         </>}

@@ -8,7 +8,7 @@ import { useAppContext } from '../context/AppDataProvider';
 import MemberKYBForm from '../../components/kyb/MemberKYBForm';
 import AlertMessage from '../common/AlertMessage';
 
-const LinkMemberForm = ({ member, onLinked, onUnlinked, onShowImDone }) => {
+const LinkMemberForm = ({ member, onLinked, onUnlinked, onShowImDone, onShowMemberForm }) => {
   const { app, api, setAppData, updateApp, handleError } = useAppContext();
   const [ownershipStake, setOwnershipStake] = useState(0);
   const [details, setDetails] = useState('');
@@ -84,6 +84,7 @@ const LinkMemberForm = ({ member, onLinked, onUnlinked, onShowImDone }) => {
     if (e) e.preventDefault();
     if (role && !hasRole(role.name) && (role.name === 'controlling_officer' || role.name === 'beneficial_owner')) {
       if (onShowImDone) onShowImDone(false);
+      if (onShowMemberForm) onShowMemberForm(false);
       setMoreInfoNeeded(role);
       updateApp({ ...app, alert: { message: '', type: '' } });
     } else {
@@ -95,6 +96,7 @@ const LinkMemberForm = ({ member, onLinked, onUnlinked, onShowImDone }) => {
     if (user && role && role.name === 'administrator') user.admin = true;
     if (onShowImDone) onShowImDone(true);
     setMoreInfoNeeded(false);
+    if (onShowMemberForm) onShowMemberForm(true);
     hasRole(role.name) ? unlinkMember(role) : linkMember(role, user);
   };
 
@@ -110,7 +112,7 @@ const LinkMemberForm = ({ member, onLinked, onUnlinked, onShowImDone }) => {
         <h1 className="mb-4">More Information Needed</h1>
         <p className="text-muted text-lg mb-4">To link this business member to the {moreInfoNeeded.label} role, we will need to gather more personal informaton before we can move on with the business registration (KYB) process.</p>
 
-        <MemberKYBForm handle={member.user_handle} activeMember={member} currentRole={moreInfoNeeded} moreInfoNeeded={moreInfoNeeded} onSuccess={updateActiveUser} />
+        <MemberKYBForm handle={member.user_handle} activeMember={member} currentRole={moreInfoNeeded} moreInfoNeeded={moreInfoNeeded} onMoreInfoNeeded={(status) => { setMoreInfoNeeded(status); if(onShowMemberForm) onShowMemberForm(true); }} onSuccess={updateActiveUser} />
       </>}
 
       {!moreInfoNeeded && <>

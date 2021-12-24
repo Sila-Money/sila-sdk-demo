@@ -369,7 +369,7 @@ const AddDataForm = ({ errors, entityuuid, onLoaded, onErrors, onUpdateUuid, act
         </div>
       </div>}
 
-      {app.settings.flow === 'kyb' && activeUser && Object.keys(KYC_REGISTER_FIELDS_ARRAY.filter(option => activeUser && !activeUser[option.value])).length !== 0 && <div className="p-0 text-right col-sm-12 col-md-12">
+      {app.settings.flow === 'kyb' && activeUser && Object.keys(KYC_REGISTER_FIELDS_ARRAY.filter(option => activeUser && !activeUser[option.value])).length !== 0 && <div className="p-0 text-right col-sm-12 col-md-12 mb-3">
         {(!activeRow.isAdding && Object.keys(KYC_REGISTER_FIELDS_ARRAY.filter(option => activeUser && !activeUser[option.value])).length) ? <Button variant="link" className="p-0 new-registration shadow-none" onClick={onAddDataToggle}>Add new registration data+</Button> : null}
       </div>}
 

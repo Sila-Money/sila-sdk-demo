@@ -9,7 +9,7 @@ import { useAppContext } from '../../components/context/AppDataProvider';
 import Loader from '../../components/common/Loader';
 import AddDataForm from '../../components/register/AddDataForm';
 
-const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, action, onConfirm, onError, onSuccess }) => {
+const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, action, onConfirm, onError, onSuccess, onMoreInfoNeeded }) => {
   const { app, api, refreshApp, handleError, updateApp, setAppData } = useAppContext();
   activeMember = activeMember ? app.users.find(u => u.handle === activeMember.user_handle) : undefined;
   const [validated, setValidated] = useState(false);
@@ -240,6 +240,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, acti
         }, () => {
           updateApp({ ...result });
           if (updateSuccess && onSuccess) onSuccess(currentRole, updatedEntityData);
+          if (action !== 'update-member' && updateSuccess && onMoreInfoNeeded) onMoreInfoNeeded(false);
         });
       } catch (err) {
         console.log('  ... looks like we ran into an issue!');
@@ -560,7 +561,10 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, acti
           </Form.Row>}
         </>}
 
-        {action !== 'update-member' && <Button type="submit" className="ml-auto d-flex mt-3" disabled={!handle}>{currentRole && currentRole.name === 'controlling_officer' ? 'Link as Controlling Officer' : currentRole && currentRole.name === 'beneficial_owner' ? 'Link as Beneficial Owner' : 'Register'}</Button>}
+        {action !== 'update-member' && <div className="d-flex">
+          <Button type="submit" className="ml-auto" disabled={!handle}>{currentRole && currentRole.name === 'controlling_officer' ? 'Link as Controlling Officer' : currentRole && currentRole.name === 'beneficial_owner' ? 'Link as Beneficial Owner' : 'Register'}</Button>
+          {onMoreInfoNeeded && <Button variant="outline-light" className="ml-3 text-muted text-uppercase" onClick={() => { onMoreInfoNeeded(false) }}>Cancel</Button>}
+        </div>}
         {action && action === 'update-member' && showUpdateBtn && <Button type="submit" className="ml-auto d-flex mt-3">Update data</Button>}
       </Form>
 
