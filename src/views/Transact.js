@@ -149,7 +149,6 @@ const Transact = ({ page, previous, next, isActive }) => {
     updateApp({ transactions: false });
     try {
       const res = await api.getTransactions(app.activeUser.handle, app.activeUser.private_key, {
-        bank_account_name: account.account_name,
         blockchain_address: wallet.blockchain_address,
         per_page: 50
       });
