@@ -4,10 +4,10 @@ import NumberFormat from 'react-number-format';
 
 import { STATES_ARRAY } from '../../constants';
 
-const DefaultKYCForm = ({ businessTypes, errors, isHide, app, children }) => {
+const LiteKYBForm = ({ businessTypes, errors, app, children }) => {
   
   return (
-    <div className={isHide ? 'd-none' : undefined}>
+    <>
       <p className="text-right text-lg text-warning">All fields are required for this KYB level.</p>
 
       <Form.Row>
@@ -53,8 +53,8 @@ const DefaultKYCForm = ({ businessTypes, errors, isHide, app, children }) => {
       </Form.Row>
       
       {children}
-    </div>
+    </>
   )
 };
 
-export default DefaultKYCForm;
+export default LiteKYBForm;
