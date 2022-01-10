@@ -4,6 +4,7 @@ import React from 'react';
 import Home from '../views/Home';
 import CheckHandle from '../views/CheckHandle';
 import RegisterUser from '../views/kyc/RegisterUser';
+import DocumentUpload from '../views/DocumentUpload';
 import RequestKYC from '../views/RequestKYC';
 import BusinessType from '../views/kyb/BusinessType';
 import RegisterBusiness from '../views/kyb/RegisterBusiness';
@@ -30,6 +31,7 @@ export const flows = {
     routes: [
       '/check_handle', 
       '/register_user', 
+      '/document_upload',
       '/request_kyc', 
       '/wallets', 
       '/accounts', 
@@ -49,6 +51,7 @@ export const flows = {
       '/business/handle', 
       '/business/register', 
       '/members',
+      '/document_upload',
       '/request_kyc',
       '/certify', 
       '/wallets', 
@@ -84,6 +87,12 @@ export default [
       "Editing registered data is great for when a KYC fails as a result of a potential mis-key.",
       "Look for a text message to the number provided in order to opt-in for SMS notifications!"
     ]
+  },
+  {
+    restricted: true,
+    title: 'Document Upload',
+    path: '/document_upload',
+    component: DocumentUpload
   },
   {
     restricted: true,

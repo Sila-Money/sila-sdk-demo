@@ -8,6 +8,8 @@ import Pagination from '../components/common/Pagination';
 import AlertMessage from '../components/common/AlertMessage';
 import KybKycModal from '../components/home/KybKycModal';
 
+import { DEFAULT_KYC } from '../constants';
+
 const RequestKYC = ({ page, previous, next }) => {
   const [certified, setCertified] = useState({ validated: false, valid: false });
   const [show, setShow] = useState(false);
@@ -137,7 +139,7 @@ const RequestKYC = ({ page, previous, next }) => {
       </>}
 
       <Pagination
-        previous={previous}
+        previous={app.settings.preferredKycLevel !== DEFAULT_KYC ? '/register_user' : previous}
         next={isActive ? next : undefined}
         currentPage={page} />
 
