@@ -25,14 +25,15 @@ const UploadDocumentModal = ({ show, onClose }) => {
     flexDirection: 'column',
     alignItems: 'center',
     padding: '20px',
-    borderWidth: 2,
+    borderWidth: 1,
     borderRadius: 2,
-    borderColor: '#eeeeee',
+    borderColor: '#4E70F8',
     borderStyle: 'dashed',
-    backgroundColor: '#fafafa',
-    color: '#bdbdbd',
+    backgroundColor: '#F4F6FF',
+    color: '#6D7892',
     outline: 'none',
-    transition: 'border .24s ease-in-out'
+    transition: 'border .24s ease-in-out',
+    fontSize:'20px'
   };
   
   const activeStyle = {
@@ -172,8 +173,9 @@ const UploadDocumentModal = ({ show, onClose }) => {
           <div className="d-flex flex-row">
             <div {...getRootProps({style})}>
               <input {...getInputProps()} />
-              {!uploadedFile && <p className="mt-3">Drag your document here, or <Button variant="link" className="p-0 shadow-none btn btn-link" onClick={open}>choose a file.</Button></p>}
-              {uploadedFile && <p className="mt-3">{uploadedFile.name} {bytesToSize(uploadedFile.size)}</p>}
+              {!uploadedFile && <div className="my-3 text-center"><i className="sila-icon sila-icon-document ml-2" style={{fontSize:45}}></i><p className='d-flex align-items-center'>Drag your document here, or <Button variant="link" className="p-0 shadow-none btn btn-link text-underline font-lg font-weight-bold ml-1" onClick={open}> choose a file.</Button></p></div>}
+              {uploadedFile && <div className="my-3 d-flex align-items-center w-100 justify-content-between">
+                <div className='col d-flex justify-content-start align-items-center'><i className="sila-icon sila-icon-document mr-4 text-primary" style={{fontSize:45}}></i> <div><p className='m-0 font-weight-bold'>{uploadedFile.name}</p> <p className='m-0 font-italic'> <small>{bytesToSize(uploadedFile.size)}</small></p></div></div> <div className='col d-flex justify-content-end align-items-center font-weight-bold'><i className="mr-2 sila-icon sila-icon-success text-success"></i>Ready to go!</div></div>}
             </div>
           </div>
 
