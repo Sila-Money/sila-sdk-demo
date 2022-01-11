@@ -19,6 +19,7 @@ const DocumentUpload = ({ history, page, previous, next, isActive }) => {
   const [documentTypes, setDocumentTypes] = useState([]);
   let isLoading = useRef(false);
   let isDocTypesLoading = useRef(false);
+  let updatedResponses = useRef([]);
 
   const { app, api, setAppData, handleError } = useAppContext();
 
@@ -34,9 +35,7 @@ const DocumentUpload = ({ history, page, previous, next, isActive }) => {
         if (isDocTypesLoading.current) return;
         isDocTypesLoading.current = true;
         const res = await api.getDocumentTypes();
-        setAppData({
-          responses: [{endpoint: '/document_types', result: JSON.stringify(res, null, '\t')}, ...app.responses]
-        });
+        updatedResponses.current = [{ endpoint: '/document_types', result: JSON.stringify(res, null, '\t') }, ...updatedResponses.current];
         setDocumentTypes((res.data.document_types && res.data.document_types.map(t => t.name ? { ...t, value: t.name } : t)) || undefined);
       } catch (err) {
         console.log('  ... looks like we ran into an issue in fetchDocumentTypes!');
@@ -51,16 +50,17 @@ const DocumentUpload = ({ history, page, previous, next, isActive }) => {
         if (isLoading.current) return;
         isLoading.current = true;
         const res = await api.listDocuments(app.activeUser.handle, app.activeUser.private_key);
+        updatedResponses.current = [{ endpoint: '/list_documents', result: JSON.stringify(res, null, '\t') }, ...updatedResponses.current];
         setAppData({
-          responses: [{ endpoint: '/list_documents', result: JSON.stringify(res, null, '\t')}, ...app.responses]
+          responses: [...updatedResponses.current, ...app.responses]
         });
         setDocuments(res.data.documents);
+        setDocumentsLoaded(true);
       } catch (err) {
         console.log('  ... looks like we ran into an issue!');
         handleError(err);
       }
       isLoading.current = false;
-      setDocumentsLoaded(true);
       setLoaded(true);
     };
 
