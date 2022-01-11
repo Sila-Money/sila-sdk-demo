@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { useDropzone } from 'react-dropzone';
 
@@ -8,16 +8,13 @@ import AlertMessage from '../common/AlertMessage';
 import SelectMenu from '../common/SelectMenu';
 import { bytesToSize } from '../../utils';
 
-const UploadDocumentModal = ({ show, onClose }) => {
+const UploadDocumentModal = ({ documentTypes, show, onClose }) => {
   const [validated, setValidated] = useState(false);
   const [errors, setErrors] = useState({});
   const [docType, setDocType] = useState(undefined);
   const [uploadedFile, setUploadedFile] = useState(undefined);
-  const [documentTypeList, setDocumentTypeList] = useState(undefined);
   const maxFileSize = 20971520; // in bytes 20MB
-  let isLoading = useRef(false);
-
-  const { api, app, setAppData, handleError } = useAppContext();
+  const { handleError } = useAppContext();
 
   const baseStyle = {
     flex: 1,
@@ -105,7 +102,7 @@ const UploadDocumentModal = ({ show, onClose }) => {
   }
 
   const onTypeChange = (value) => {
-    setDocType((value && documentTypeList && documentTypeList.find(option => option.value === value)) || undefined)
+    setDocType((value && documentTypes && documentTypes.find(option => option.value === value)) || undefined)
     if (uploadedFile) setValidated(true);
   }
 
@@ -115,35 +112,6 @@ const UploadDocumentModal = ({ show, onClose }) => {
     setUploadedFile(undefined)
     onClose();
   }
-
-  useEffect(() => {
-    async function fetchDocumentTypes() {
-      try {
-        if (isLoading.current) return;
-        isLoading.current = true;
-        const res = await api.getDocumentTypes();
-        if (res.statusCode === 200) {
-          setDocumentTypeList((res.data.document_types && res.data.document_types.map(t => t.name ? { ...t, value: t.name } : t)) || undefined);
-        } else {
-          console.log('Unabe to fetch document types ...', res);
-        }
-        setAppData({
-          responses: [{
-            endpoint: '/document_types',
-            result: JSON.stringify(res, null, '\t')
-          }, ...app.responses]
-        });
-      } catch (err) {
-        console.log('  ... looks like we ran into an issue!');
-        handleError(err);
-      }
-      isLoading.current = false;
-    };
-    
-    if(!documentTypeList) {
-      fetchDocumentTypes();
-    }
-  }, [api, app, handleError, setAppData, documentTypeList]);
 
   return (
     <Modal centered
@@ -166,7 +134,7 @@ const UploadDocumentModal = ({ show, onClose }) => {
               onChange={(value) => onTypeChange(value)}
               className="types mb-4"
               value={docType}
-              options={documentTypeList ? documentTypeList : []} />
+              options={documentTypes ? documentTypes : []} />
             {errors.doc_type && <Form.Control.Feedback type="none" className="text-danger">{errors.doc_type}</Form.Control.Feedback>}
           </Form.Group>
 
