@@ -12,3 +12,15 @@ export const bytesToSize = (size) => {
   var i = Math.floor(Math.log(size) / Math.log(1024));
   return (size / Math.pow(1024, i)).toFixed(2) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
 };
+
+export const formatDateAndTime = (timestamp, showTime) => {
+  const date = new Date(timestamp);
+  const year = date.getFullYear();
+  const month = (1 + date.getMonth()).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  if(showTime) {
+    const time = date.toLocaleTimeString('en-US');
+    return `${month}/${day}/${year} ${time}`;
+  }
+  return `${month}/${day}/${year}`;
+};
