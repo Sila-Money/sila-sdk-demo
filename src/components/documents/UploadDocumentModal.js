@@ -4,17 +4,15 @@ import { useDropzone } from 'react-dropzone';
 
 import { useAppContext } from '../context/AppDataProvider';
 
-import AlertMessage from '../common/AlertMessage';
 import SelectMenu from '../common/SelectMenu';
 import { bytesToSize } from '../../utils';
 
 const UploadDocumentModal = ({ documentTypes, show, onClose }) => {
   const [validated, setValidated] = useState(false);
-  const [errors, setErrors] = useState({});
   const [docType, setDocType] = useState(undefined);
   const [uploadedFile, setUploadedFile] = useState(undefined);
   const maxFileSize = 20971520; // in bytes 20MB
-  const { handleError } = useAppContext();
+  const { app, setAppData, updateApp } = useAppContext();
 
   const baseStyle = {
     flex: 1,
@@ -51,11 +49,8 @@ const UploadDocumentModal = ({ documentTypes, show, onClose }) => {
       reader.onabort = () => console.log('file reading was aborted.')
       reader.onerror = () => console.log('file reading has failed.')
       reader.onload = () => {
-        const fileBinaryStr = reader.result;
-        if (fileBinaryStr) {
-          file['dataUri'] = fileBinaryStr.replace(/^data:(\w+)\/(\w+);base64,/, '');
-          setUploadedFile(file || undefined);
-        }
+        file['body'] = reader.result.replace(/^data:(\w+)\/(\w+);base64,/, '');
+        setUploadedFile(file || undefined);
 			}
       reader.readAsDataURL(file);
     });
@@ -85,7 +80,7 @@ const UploadDocumentModal = ({ documentTypes, show, onClose }) => {
     if (validated && docType && uploadedFile) {
       try {
         const documentPayload = {
-          filePath: uploadedFile.dataUri,
+          filePath: uploadedFile.body,
           filename: uploadedFile.name,
           mimeType: uploadedFile.type,
           documentType: docType.name,
@@ -93,10 +88,19 @@ const UploadDocumentModal = ({ documentTypes, show, onClose }) => {
           name: docType.label
         };
         console.info(documentPayload);
-        // TODOS: here document upload is pending due to some blocker... will fix it soon!
+        // TODOS: here document upload is pending due to new API waiting... will fix it soon!
+
+        setAppData({
+          responses: [{
+            endpoint: '/documents',
+            result: JSON.stringify({}, null, '\t')
+          }, ...app.responses]
+        }, () => {
+          updateApp({ ...{ alert : { message: 'Document successfully uploaded.', type: 'success' } } });
+          onCancel();
+        });
       } catch (err) {
         console.log('  ... looks like we ran into an issue!');
-        handleError(err);
       }
     }
   }
@@ -135,7 +139,6 @@ const UploadDocumentModal = ({ documentTypes, show, onClose }) => {
               className="types mb-4"
               value={docType}
               options={documentTypes ? documentTypes : []} />
-            {errors.doc_type && <Form.Control.Feedback type="none" className="text-danger">{errors.doc_type}</Form.Control.Feedback>}
           </Form.Group>
 
           <div className="d-flex flex-row">
@@ -146,10 +149,7 @@ const UploadDocumentModal = ({ documentTypes, show, onClose }) => {
                 <div className='col d-flex justify-content-start align-items-center'><i className="sila-icon sila-icon-document mr-4 text-primary" style={{fontSize:45}}></i> <div><p className='m-0 font-weight-bold'>{uploadedFile.name}</p> <p className='m-0 font-italic'> <small>{bytesToSize(uploadedFile.size)}</small></p></div></div> <div className='col d-flex justify-content-end align-items-center font-weight-bold'><i className="mr-2 sila-icon sila-icon-success text-success"></i>Ready to go!</div></div>}
             </div>
           </div>
-
           {fileRejectionItems && <Form.Control.Feedback type="none" className="text-danger">{fileRejectionItems}</Form.Control.Feedback>}
-
-          {errors.auth && <AlertMessage noHide message={errors.auth} type="danger" />}
 
         </Modal.Body>
         <Modal.Footer>
