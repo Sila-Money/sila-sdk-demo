@@ -15,6 +15,7 @@ import { formatDateAndTime } from '../utils';
 const DocumentUpload = ({ history, page, previous, next, isActive }) => {
   const { app, api, setAppData, handleError } = useAppContext();
   const userHandle = app.settings.flow === 'kyb' ? app.settings.kybHandle : app.activeUser.handle;
+  const activeUser = app.users.find(user => user.handle === userHandle);
   const [show, setShow] = useState(false);
   const [loaded, setLoaded] = useState(true);
   const [documentsLoaded, setDocumentsLoaded] = useState(false);
@@ -30,7 +31,7 @@ const DocumentUpload = ({ history, page, previous, next, isActive }) => {
     if (document) {
       setPreview({ ...preview, show: true });
       try {
-        let res = await api.getDocument(app.activeUser.handle, app.activeUser.private_key, document.document_id);
+        let res = await api.getDocument(activeUser.handle, activeUser.private_key, document.document_id);
         console.info(res);
 
         if (imageTypes.includes(res['headers']['content-type'])) {
@@ -63,7 +64,7 @@ const DocumentUpload = ({ history, page, previous, next, isActive }) => {
         setLoaded(false);
         if (isLoading.current) return;
         isLoading.current = true;
-        const res = await api.listDocuments(app.activeUser.handle, app.activeUser.private_key);
+        const res = await api.listDocuments(activeUser.handle, activeUser.private_key);
         updatedResponses.current = [{ endpoint: '/list_documents', result: JSON.stringify(res, null, '\t') }, ...updatedResponses.current];
         setAppData({
           responses: [...updatedResponses.current, ...app.responses]
@@ -97,7 +98,7 @@ const DocumentUpload = ({ history, page, previous, next, isActive }) => {
 
     if(!documentsLoaded && !documents.length) fetchDocuments();
     if (!documentTypes.length) fetchDocumentTypes();
-  }, [userHandle, documents, documentTypes, documentsLoaded, handleError, setAppData, api, app, history, page]);
+  }, [activeUser, documents, documentTypes, documentsLoaded, handleError, setAppData, api, app, history, page]);
 
   useEffect(() => {
     setAppData({

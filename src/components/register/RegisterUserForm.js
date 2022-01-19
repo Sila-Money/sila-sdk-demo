@@ -114,7 +114,12 @@ const RegisterUserForm = ({ className, handle, onSuccess, onShowKycModal, onConf
 
           if (entityUpdateRes.data.success) {
             updateSuccess = true;
-            updatedEntityData = { ...updatedEntityData, firstName: e.target.firstName.value, lastName: e.target.lastName.value, dateOfBirth: e.target.dateOfBirth.value};
+            updatedEntityData = { 
+              ...updatedEntityData, 
+              firstName: e.target.firstName.value, 
+              lastName: e.target.lastName.value, 
+              dateOfBirth: e.target.dateOfBirth ? e.target.dateOfBirth.value : ''
+            };
           } else {
             if(entityUpdateRes.data && entityUpdateRes.data.message) result.alert = { message: entityUpdateRes.data.message, type: 'danger' };
             validationErrors = { ...validationErrors, entity: entityUpdateRes.data.validation_details ? entityUpdateRes.data.validation_details : entityUpdateRes.data.message }
@@ -369,29 +374,32 @@ const RegisterUserForm = ({ className, handle, onSuccess, onShowKycModal, onConf
   }
 
   return (
-    <Form noValidate className={className} validated={validated} autoComplete="off" onSubmit={register}>
-      {!loaded && <Loader overlay fixed />}
+    <>
+      <Form noValidate className={className} validated={validated} autoComplete="off" onSubmit={register}>
+        {!loaded && <Loader overlay fixed />}
 
-      <Form.Label className="text-muted mr-5">Please choose your preferred KYC level:</Form.Label>
-      <SelectMenu fullWidth
-        title={preferredKyc ? KYC_ARRAY.find(option => option.value === preferredKyc).label : 'Choose KYC'}
-        onChange={(value) => onKycLevelChange(value)}
-        className="types mb-4"
-        value={preferredKyc}
-        options={KYC_ARRAY} />
+        <Form.Label className="text-muted mr-5">Please choose your preferred KYC level:</Form.Label>
+        <SelectMenu fullWidth
+          title={preferredKyc ? KYC_ARRAY.find(option => option.value === preferredKyc).label : 'Choose KYC'}
+          onChange={(value) => onKycLevelChange(value)}
+          className="types mb-4"
+          value={preferredKyc}
+          options={KYC_ARRAY} />
 
-      {!preferredKyc ? <p className="text-right text-muted"><Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none" onClick={() => onShowKycModal(true)}><span className="lnk">What's the difference between these KYC levels?</span><i className="sila-icon sila-icon-info text-primary ml-2"></i></Button></p> : ''}
-      {preferredKyc === DEFAULT_KYC && !app.activeUser && <DefaultKYCForm errors={errors} app={app} />}
-      {preferredKyc === LITE_KYC && !app.activeUser && <KYCLiteForm errors={errors} app={app} />}
-      {preferredKyc === RECEIVE_ONLY_KYC && !app.activeUser && <ReceiveOnlyKYCForm errors={errors} app={app} />}
-      {preferredKyc === INSTANT_ACH_KYC && !app.activeUser && <InstantAchKYCForm errors={errors} app={app} />}
-      {app.activeUser && app.activeUser.handle && <UpdateKYCForm errors={errors} preferredKyc={preferredKyc} entityuuid={entityuuid} onLoaded={(isLoaded) => setLoaded(isLoaded)} onConfirm={onConfirm} onShowUpdate={(isUpdated) => setShowUpdateBtn(isUpdated)} />}
-      {preferredKyc && app.activeUser && showUpdateBtn && <Button type="submit" className="ml-auto d-flex mt-3">Update data</Button>}
-      {app.activeUser && app.activeUser.handle && <AddDataForm errors={errors} entityuuid={entityuuid} onLoaded={(isLoaded) => setLoaded(isLoaded)} onErrors={(errorsObj) => { setErrors(errorsObj); setValidated(true); } } onUpdateUuid={(uuidObj) => updateUuid(uuidObj)} />}
-      {app.alert.message && <div className="d-flex mt-3"><AlertMessage message={app.alert.message} type={app.alert.type} /></div>}
-
+        {!preferredKyc ? <p className="text-right text-muted"><Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none" onClick={() => onShowKycModal(true)}><span className="lnk">What's the difference between these KYC levels?</span><i className="sila-icon sila-icon-info text-primary ml-2"></i></Button></p> : ''}
+        {preferredKyc === DEFAULT_KYC && !app.activeUser && <DefaultKYCForm errors={errors} app={app} />}
+        {preferredKyc === LITE_KYC && !app.activeUser && <KYCLiteForm errors={errors} app={app} />}
+        {preferredKyc === RECEIVE_ONLY_KYC && !app.activeUser && <ReceiveOnlyKYCForm errors={errors} app={app} />}
+        {preferredKyc === INSTANT_ACH_KYC && !app.activeUser && <InstantAchKYCForm errors={errors} app={app} />}
+        {app.activeUser && app.activeUser.handle && <UpdateKYCForm errors={errors} preferredKyc={preferredKyc} entityuuid={entityuuid} onLoaded={(isLoaded) => setLoaded(isLoaded)} onConfirm={onConfirm} onShowUpdate={(isUpdated) => setShowUpdateBtn(isUpdated)} />}
+        {preferredKyc && app.activeUser && showUpdateBtn && <Button type="submit" className="ml-auto d-flex mt-3">Update data</Button>}
+      </Form>
+      <>
+        {app.activeUser && app.activeUser.handle && <AddDataForm errors={errors} entityuuid={entityuuid} onLoaded={(isLoaded) => setLoaded(isLoaded)} onErrors={(errorsObj) => { setErrors(errorsObj); setValidated(true); } } onUpdateUuid={(uuidObj) => updateUuid(uuidObj)} />}
+        {app.alert.message && <div className="d-flex mt-3"><AlertMessage message={app.alert.message} type={app.alert.type} /></div>}
+      </>
       {children}
-    </Form>
+    </>
   )
 };
 

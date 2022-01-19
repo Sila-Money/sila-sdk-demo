@@ -65,6 +65,7 @@ const AddDataForm = ({ errors, entityuuid, onLoaded, onErrors, onUpdateUuid }) =
           if (phoneRes.data.success) {
             updateSuccess = true;
             updatedEntityData = { ...updatedEntityData, phone: activeRow.fldValue };
+            if(phoneRes.data.phone && phoneRes.data.phone.uuid && onUpdateUuid) onUpdateUuid({ phone: phoneRes.data.phone.uuid});
           } else {
             validationErrors.contact = Object.assign({phone: phoneRes.data.validation_details ? phoneRes.data.validation_details.phone : phoneRes.data.message}, validationErrors.contact);
           }
@@ -82,6 +83,7 @@ const AddDataForm = ({ errors, entityuuid, onLoaded, onErrors, onUpdateUuid }) =
           if (emailRes.data.success) {
             updateSuccess = true;
             updatedEntityData = { ...updatedEntityData, email: activeRow.fldValue };
+            if(emailRes.data.email && emailRes.data.email.uuid && onUpdateUuid) onUpdateUuid({ email: emailRes.data.email.uuid});
           } else {
             validationErrors.contact = Object.assign({email: emailRes.data.validation_details ? emailRes.data.validation_details.email : emailRes.data.message}, validationErrors.contact);
           }
@@ -102,6 +104,7 @@ const AddDataForm = ({ errors, entityuuid, onLoaded, onErrors, onUpdateUuid }) =
           if (einRes.data.success) {
             updateSuccess = true;
             updatedEntityData = { ...updatedEntityData, ein: activeRow.fldValue };
+            if(einRes.data.identity && einRes.data.identity.uuid && onUpdateUuid) onUpdateUuid({ identity: einRes.data.identity.uuid});
           } else {
             validationErrors = { identity: einRes.data.validation_details ? einRes.data.validation_details : einRes.data.message }
           }
