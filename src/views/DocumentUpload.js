@@ -7,49 +7,64 @@ import AlertMessage from '../components/common/AlertMessage';
 import Loader from '../components/common/Loader';
 import Pagination from '../components/common/Pagination';
 import UploadDocumentModal from '../components/documents/UploadDocumentModal';
+import DocumentPreviewModal from '../components/documents/DocumentPreviewModal';
 
-import { DEFAULT_KYC } from '../constants';
+import { DEFAULT_KYC, KYB_STANDARD } from '../constants';
 import { formatDateAndTime } from '../utils';
 
 const DocumentUpload = ({ history, page, previous, next, isActive }) => {
+  const { app, api, setAppData, handleError } = useAppContext();
+  const userHandle = app.settings.flow === 'kyb' ? app.settings.kybHandle : app.activeUser.handle;
+  const activeUser = app.users.find(user => user.handle === userHandle);
   const [show, setShow] = useState(false);
   const [loaded, setLoaded] = useState(true);
   const [documentsLoaded, setDocumentsLoaded] = useState(false);
-  const [documents, setDocuments] = useState([]);
+  const [preview, setPreview] = useState({ show: false, data: undefined });
+  const [documents, setDocuments] = useState([])
   const [documentTypes, setDocumentTypes] = useState([]);
   let isLoading = useRef(false);
   let isDocTypesLoading = useRef(false);
   let updatedResponses = useRef([]);
+  const imageTypes = ['image/jpg', 'image/png'];
 
-  const { app, api, setAppData, handleError } = useAppContext();
+  const onDocumentView = async (document) => {
+    if (document) {
+      setPreview({ ...preview, show: true });
+      try {
+        let res = await api.getDocument(activeUser.handle, activeUser.private_key, document.document_id);
+        console.info(res);
 
-  const onViewDocument = (e) => {}
+        if (imageTypes.includes(res['headers']['content-type'])) {
+          const blob = new Blob([res['data']], { type: res['headers']['content-type'] });
+          setPreview({ show: true, data: { ...document, file_type: 'image', file: URL.createObjectURL(blob) } });
+        } else {
+          const blob = new Blob([res['data']], { type: res['headers']['content-type'] });
+          setPreview({ show: true, data: { ...document, file_type: 'pdf', file: URL.createObjectURL(blob) } });
+        }
+
+        setAppData({
+          responses: [{
+            endpoint: '/get_document', result: JSON.stringify(res, null, '\t')
+          }, ...app.responses]
+        });
+      } catch (err) {
+        setPreview({ show: false, data: undefined })
+        console.log('  ... looks like we ran into an issue in getDocument!');
+      }
+    }
+  };
 
   useEffect(() => {
-    if(app.settings.preferredKycLevel !== DEFAULT_KYC) {
+    if((app.settings.flow === 'kyc' && app.settings.preferredKycLevel !== DEFAULT_KYC) || (app.settings.flow === 'kyb' && app.settings.preferredKybLevel !== KYB_STANDARD)) {
       history.push({ pathname: '/request_kyc', state: { from: page } });
     }
-
-    async function fetchDocumentTypes() {
-      try {
-        if (isDocTypesLoading.current) return;
-        isDocTypesLoading.current = true;
-        const res = await api.getDocumentTypes();
-        updatedResponses.current = [{ endpoint: '/document_types', result: JSON.stringify(res, null, '\t') }, ...updatedResponses.current];
-        setDocumentTypes((res.data.document_types && res.data.document_types.map(t => t.name ? { ...t, value: t.name } : t)) || undefined);
-      } catch (err) {
-        console.log('  ... looks like we ran into an issue in fetchDocumentTypes!');
-        handleError(err);
-      }
-      isDocTypesLoading.current = false;
-    };
 
     async function fetchDocuments() {
       try {
         setLoaded(false);
         if (isLoading.current) return;
         isLoading.current = true;
-        const res = await api.listDocuments(app.activeUser.handle, app.activeUser.private_key);
+        const res = await api.listDocuments(activeUser.handle, activeUser.private_key);
         updatedResponses.current = [{ endpoint: '/list_documents', result: JSON.stringify(res, null, '\t') }, ...updatedResponses.current];
         setAppData({
           responses: [...updatedResponses.current, ...app.responses]
@@ -64,9 +79,32 @@ const DocumentUpload = ({ history, page, previous, next, isActive }) => {
       setLoaded(true);
     };
 
-    if (app.settings.preferredKycLevel === DEFAULT_KYC && !documentTypes.length) fetchDocumentTypes();
-    if(app.settings.preferredKycLevel === DEFAULT_KYC && !documentsLoaded && !documents.length) fetchDocuments();
-  }, [documents, documentTypes, documentsLoaded, handleError, setAppData, api, app, history, page]);
+    async function fetchDocumentTypes() {
+      try {
+        if (isDocTypesLoading.current) return;
+        isDocTypesLoading.current = true;
+        const res = await api.getDocumentTypes();
+        updatedResponses.current = [{ endpoint: '/document_types', result: JSON.stringify(res, null, '\t') }, ...updatedResponses.current];
+        setDocumentTypes((res.data.document_types && res.data.document_types.map(t => t.name ? { ...t, value: t.name } : t)) || undefined);
+        setAppData({
+          responses: [...updatedResponses.current, ...app.responses]
+        });
+      } catch (err) {
+        console.log('  ... looks like we ran into an issue in fetchDocumentTypes!');
+        handleError(err);
+      }
+      isDocTypesLoading.current = false;
+    };
+
+    if(!documentsLoaded && !documents.length) fetchDocuments();
+    if (!documentTypes.length) fetchDocumentTypes();
+  }, [activeUser, documents, documentTypes, documentsLoaded, handleError, setAppData, api, app, history, page]);
+
+  useEffect(() => {
+    setAppData({
+      success: documents.length && !isActive ? [...app.success, { handle: userHandle, page }] : app.success
+    });
+  }, [userHandle, documents]); // eslint-disable-line react-hooks/exhaustive-deps
   
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
@@ -92,14 +130,14 @@ const DocumentUpload = ({ history, page, previous, next, isActive }) => {
           </thead>
           <tbody>
             {loaded && documents.length > 0 ?
-              documents.map((documents, index) =>
+              documents.map((document, index) =>
                 <tr className="loaded" key={index}>
-                  <td>{formatDateAndTime(documents.created)}</td>
-                  <td>{documents.filename}</td>
-                  <td>{documentTypes.length !== 0 && documentTypes.find(t => t.name === documents.type).label}</td>
+                  <td>{formatDateAndTime(document.created)}</td>
+                  <td>{document.filename}</td>
+                  <td>{documentTypes.length !== 0 && documentTypes.find(t => t.name === document.type).label}</td>
                   <td className="text-center">
                     <div className="d-flex py-2 justify-content-center">
-                      <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none mx-1 px-1" onClick={() => onViewDocument()}>
+                      <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none mx-1 px-1" onClick={() => onDocumentView(document) }>
                         <i className="sila-icon sila-icon-view text-lg"></i>
                       </Button>
                     </div>
@@ -127,6 +165,7 @@ const DocumentUpload = ({ history, page, previous, next, isActive }) => {
         currentPage={page} />
       
       <UploadDocumentModal documentTypes={documentTypes} show={show} onClose={() => setShow(false)} />
+      <DocumentPreviewModal data={preview.data} show={preview.show} onHide={() => setPreview({ show: false, data: undefined })} />
 
     </Container>
   );

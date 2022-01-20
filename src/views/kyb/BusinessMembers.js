@@ -8,6 +8,8 @@ import AlertMessage from '../../components/common/AlertMessage';
 
 import { useAppContext } from '../../components/context/AppDataProvider';
 
+import { KYB_RECEIVE_ONLY, KYB_STANDARD } from '../../constants';
+
 const isRoleRequired = (member) => {
   const role = member.name || member.role;
   return (role === 'controlling_officer' || role === 'administrator');
@@ -195,7 +197,7 @@ const BusinessMembers = ({ page, previous, next, isActive }) => {
 
       <Pagination
         previous={previous}
-        next={app.settings.preferredKybLevel === 'RECEIVE_ONLY' ? next : members.length && rolesAndMembers.filter(member => member.label && isRoleRequired(member)).length === 0 ? next : undefined}
+        next={app.settings.preferredKybLevel === KYB_RECEIVE_ONLY ? '/request_kyc' : members.length && rolesAndMembers.filter(member => member.label && isRoleRequired(member)).length === 0 ? app.settings.preferredKybLevel !== KYB_STANDARD ? '/request_kyc' : next : undefined}
         currentPage={page} />
 
     </Container>
