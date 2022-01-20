@@ -390,12 +390,12 @@ const RegisterBusinessForm = ({ className, children, onSuccess, onShowKybModal, 
         {preferredKyb === KYB_RECEIVE_ONLY && !app.activeUser && <ReceiveOnlyKYBForm errors={errors} app={app} />}
         {app.activeUser && app.activeUser.handle && <UpdateKYBForm errors={errors} preferredKyb={preferredKyb} entityuuid={entityuuid} onLoaded={(isLoaded) => setLoaded(isLoaded)} onConfirm={onConfirm} onShowUpdate={(isUpdated) => setShowUpdateBtn(isUpdated)} />}
         {preferredKyb && app.activeUser && showUpdateBtn && <Button type="submit" className="ml-auto d-flex mt-3">Update data</Button>}
+        {children}
       </Form>
       <>
         {app.activeUser && app.activeUser.handle && <AddDataForm errors={errors} entityuuid={entityuuid} onLoaded={(isLoaded) => setLoaded(isLoaded)} onErrors={(errorsObj) => { setErrors(errorsObj); setValidated(true); } } onUpdateUuid={(uuidObj) => updateUuid(uuidObj)} />}
         {app.alert.message && <div className="d-flex mt-3"><AlertMessage message={app.alert.message} type={app.alert.type} /></div>}
       </>
-      {children}
     </>
   )
 };
