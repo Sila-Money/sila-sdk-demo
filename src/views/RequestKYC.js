@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Button, OverlayTrigger, Tooltip, Alert } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 
@@ -13,7 +13,8 @@ import { DEFAULT_KYC, KYB_STANDARD } from '../constants';
 const RequestKYC = ({ page, previous, next }) => {
   const [certified, setCertified] = useState({ validated: false, valid: false });
   const [show, setShow] = useState(false);
-  const { app, api, handleError, updateApp, setAppData } = useAppContext();
+  const [disabledRequestButton, setDisabledRequestButton] = useState(false);
+  const { app, api, handleError, updateApp, setAppData, refreshApp } = useAppContext();
   const activeUser = app.settings.flow === 'kyb' ? app.users.find(user => app.settings.kybHandle === user.handle) : app.activeUser;
   const isActive = app.success.find(success => activeUser && success.handle === activeUser.handle && success[app.settings.flow] && success.page === page) ? true : false;
 
@@ -44,7 +45,7 @@ const RequestKYC = ({ page, previous, next }) => {
     }
   }
 
-  const checkKyc = async () => {
+  const checkKyc = async (event) => {
     console.log(`Checking ${app.settings.flow.toUpperCase()} ...`);
     try {
       const res = await api.checkKYC(activeUser.handle, activeUser.private_key);
@@ -54,17 +55,37 @@ const RequestKYC = ({ page, previous, next }) => {
         result.alert = { message: res.data.message, type: 'success' };
         result[app.settings.flow].alert = { message: 'Passed ID verification', type: 'success' };
         setCertified({ validated: true, valid: res.data.certification_history && res.data.certification_history.some(history => !history.expires_after_epoch || history.expires_after_epoch > Date.now()) && res.data.certification_status && res.data.certification_status.includes('certified') });
+        refreshApp();
+        const appUser = app.users.find(u => u.handle === activeUser.handle);
+        const kycStatus = appUser.reviewStatus && appUser.reviewStatus.status === 'passed' && appUser.reviewStatus.level === app.settings.preferredKycLevel;
+        const kybStatus = appUser.reviewStatus && appUser.reviewStatus.status === 'passed' && appUser.reviewStatus.level === app.settings.preferredKybLevel;
+        setDisabledRequestButton(event === 'onclick' ? true : app.settings.flow === 'kyb' ? kybStatus : kycStatus);
       } else if (res.data.verification_status.includes('failed')) {
         result.alert = { message: res.data.message, type: 'danger' };
         result[app.settings.flow].alert = { message: 'Failed ID verification', type: 'danger' };
       } else {
-        result.alert = res.data.message.includes('requested') ? { message: res.data.message, type: 'danger' } : { message: `${activeUser.handle} is still pending ID verification.`, type: 'wait' };
-        if (!res.data.message.includes('requested')) result[app.settings.flow].alert = { message: 'Pending ID verification', type: 'warning' };
+        if(event === 'onclick') {
+          result.alert = res.data.message.includes('requested') ? { message: res.data.message, type: 'danger' } : { message: `${activeUser.handle} is still pending ID verification.`, type: 'wait' };
+          if (!res.data.message.includes('requested')) result[app.settings.flow].alert = { message: 'Pending ID verification', type: 'warning' };
+        }
       }
       if (res.data.members) {
         result[app.settings.flow].members = res.data.members;
       }
+
+      let appData = {};
+      if(event === 'onclick') {
+        const updatedUserData = { ...activeUser, reviewStatus: {
+          level: app.settings.flow === 'kyb' ? app.settings.preferredKybLevel : app.settings.preferredKycLevel,
+          status: res.data.verification_status.includes('passed') ? 'passed' : res.data.verification_status
+        }}
+        appData = {
+          users: app.users.map(({ active, ...u }) => u.handle === activeUser.handle ? { ...u, ...updatedUserData } : u)
+        };
+      }
+
       setAppData({
+        ...appData,
         success: res.data.verification_status.includes('passed') && !isActive ? [...app.success, { handle: activeUser.handle, [app.settings.flow]: true, page }] : app.success,
         responses: [{
           endpoint: '/check_kyc',
@@ -79,6 +100,10 @@ const RequestKYC = ({ page, previous, next }) => {
     }
   }
 
+  useEffect(() => {
+    checkKyc('onload');
+  }, [])
+
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 
@@ -91,7 +116,7 @@ const RequestKYC = ({ page, previous, next }) => {
         <p><Button variant="link" className="text-muted font-italic p-0 text-decoration-none" onClick={() => setShow(true)}><span className="lnk">What’s the difference between KYC and KYB?</span> <i className="sila-icon sila-icon-info text-primary ml-2"></i></Button></p>
       </div>
 
-      <p className="mb-5"><Button className="float-right" onClick={requestKyc}>Request {app.settings.flow.toUpperCase()}</Button></p>
+      <p className="mb-5"><Button className="float-right" onClick={requestKyc} disabled={disabledRequestButton}>Request {app.settings.flow.toUpperCase()}</Button></p>
 
       {app[app.settings.flow].alert && (app[app.settings.flow].alert.type === 'primary' || app[app.settings.flow].alert.type === 'wait') && <Alert variant="info" className="mb-4 loaded">Verification may take a few minutes, so make sure to refresh and check your status.</Alert>}
 
@@ -102,7 +127,7 @@ const RequestKYC = ({ page, previous, next }) => {
           delay={{ show: 250, hide: 400 }}
           overlay={(props) => <Tooltip id={`${app.settings.flow}-tooltip`} className="ml-2" {...props}>Checks {app.settings.flow.toUpperCase()}</Tooltip>}
         >
-          <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none loaded" onClick={checkKyc} disabled={certified.validated ? 1 : 0}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh Status</span></Button>
+          <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none loaded" onClick={() => checkKyc('onclick')} disabled={disabledRequestButton}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh Status</span></Button>
         </OverlayTrigger>}
       </div>
 

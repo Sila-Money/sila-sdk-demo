@@ -393,12 +393,12 @@ const RegisterUserForm = ({ className, handle, onSuccess, onShowKycModal, onConf
         {preferredKyc === INSTANT_ACH_KYC && !app.activeUser && <InstantAchKYCForm errors={errors} app={app} />}
         {app.activeUser && app.activeUser.handle && <UpdateKYCForm errors={errors} preferredKyc={preferredKyc} entityuuid={entityuuid} onLoaded={(isLoaded) => setLoaded(isLoaded)} onConfirm={onConfirm} onShowUpdate={(isUpdated) => setShowUpdateBtn(isUpdated)} />}
         {preferredKyc && app.activeUser && showUpdateBtn && <Button type="submit" className="ml-auto d-flex mt-3">Update data</Button>}
+        {children}
       </Form>
       <>
         {app.activeUser && app.activeUser.handle && <AddDataForm errors={errors} entityuuid={entityuuid} onLoaded={(isLoaded) => setLoaded(isLoaded)} onErrors={(errorsObj) => { setErrors(errorsObj); setValidated(true); } } onUpdateUuid={(uuidObj) => updateUuid(uuidObj)} />}
         {app.alert.message && <div className="d-flex mt-3"><AlertMessage message={app.alert.message} type={app.alert.type} /></div>}
       </>
-      {children}
     </>
   )
 };
