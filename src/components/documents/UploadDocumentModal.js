@@ -12,7 +12,7 @@ const UploadDocumentModal = ({ documentTypes, show, onClose }) => {
   const [docType, setDocType] = useState(undefined);
   const [uploadedFile, setUploadedFile] = useState(undefined);
   const maxFileSize = 20971520; // in bytes 20MB
-  const { app, setAppData, updateApp } = useAppContext();
+  const { api, app, setAppData, updateApp } = useAppContext();
 
   const baseStyle = {
     flex: 1,
@@ -44,15 +44,24 @@ const UploadDocumentModal = ({ documentTypes, show, onClose }) => {
   };
   
   const onDrop = useCallback((acceptedFiles) => {
+    const streamToText = async (blob) => {
+      const readableStream = await blob.getReader();
+      const chunk = await readableStream.read();
+      return new TextDecoder('utf-8').decode(chunk.value);
+    };
     acceptedFiles.forEach((file) => {
-      const reader = new FileReader()
-      reader.onabort = () => console.log('file reading was aborted.')
-      reader.onerror = () => console.log('file reading has failed.')
-      reader.onload = () => {
-        file['body'] = reader.result.replace(/^data:(\w+)\/(\w+);base64,/, '');
-        setUploadedFile(file || undefined);
-			}
-      reader.readAsDataURL(file);
+      (async () => {
+        const fileSliceBlob = file.slice(0, file.length);
+        const fileSliceBlobStream = await fileSliceBlob.stream();
+        const reader = new FileReader()
+        reader.onabort = () => console.log('file reading was aborted.')
+        reader.onerror = () => console.log('file reading has failed.')
+        reader.onload = async () => {
+          file.body = await streamToText(fileSliceBlobStream);
+          setUploadedFile(file || undefined);
+        }
+        reader.readAsDataURL(file);
+      })();
     });
     if (docType) setValidated(true);
   }, [docType])
@@ -80,16 +89,15 @@ const UploadDocumentModal = ({ documentTypes, show, onClose }) => {
     if (validated && docType && uploadedFile) {
       try {
         const documentPayload = {
-          filePath: uploadedFile.body,
+          fileObject: uploadedFile.body,
           filename: uploadedFile.name,
           mimeType: uploadedFile.type,
           documentType: docType.name,
           identityType: docType.identity_type,
           name: docType.label
         };
-        console.info(documentPayload);
-        // TODOS: here document upload is pending due to new API waiting... will fix it soon!
-
+        const res = api.uploadDocument(app.activeUser.handle, app.activeUser.private_key, documentPayload);
+        console.log(res);
         setAppData({
           responses: [{
             endpoint: '/documents',
@@ -100,6 +108,7 @@ const UploadDocumentModal = ({ documentTypes, show, onClose }) => {
           onCancel();
         });
       } catch (err) {
+        console.log(err);
         console.log('  ... looks like we ran into an issue!');
       }
     }
