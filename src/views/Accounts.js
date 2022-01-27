@@ -48,6 +48,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
   const [error, setError] = useState(undefined);
   const [confirm, setConfirm] = useState({ show: false, message: '', onSuccess: () => { }, onHide: () => { } });
   const [showInstitution, setShowInstitution] = useState(false);
+  const [institutions, setInstitutions] = useState([]);
   const tbodyRef = useRef()
   let result = {};
   let appData = {};
@@ -298,6 +299,23 @@ const Accounts = ({ page, previous, next, isActive }) => {
     }
   }
 
+  const getInstitutions = async (filter, page, perPage) => {
+    try {
+      let search_filters = {
+        page: page ? page : 1,
+        per_page: perPage ? perPage : 100
+      };
+      if (filter && filter['institution_name']) search_filters['institution_name'] = filter['institution_name'];
+      if (filter && filter['routing_number']) search_filters['routing_number'] = filter['routing_number'];
+
+      const res = await api.getInstitutions(search_filters);
+      setInstitutions(res.data && res.data.institutions);
+    } catch (err) {
+      console.log('  ... looks like we ran into an issue!');
+      handleError(err);
+    }
+  };
+
   useEffect(() => {
     getAccounts();
   }, [app.activeUser]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -323,6 +341,10 @@ const Accounts = ({ page, previous, next, isActive }) => {
       document.removeEventListener('mousedown', checkIfClickedOutside)
     }
   }, [activeRow])
+
+  useEffect(() => {
+    getInstitutions();
+  }, []);
 
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
@@ -426,7 +448,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
 
       <ConfirmModal show={confirm.show} message={confirm.message} onHide={confirm.onHide} buttonLabel="Delete" onSuccess={confirm.onSuccess} />
 
-      <InstitutionsModal show={showInstitution} onClose={() => setShowInstitution(false)} />
+      <InstitutionsModal institutions={institutions} show={showInstitution} onSearch={(filter) => getInstitutions(filter)} onClose={() => setShowInstitution(false)} />
 
     </Container>
   );
