@@ -48,6 +48,8 @@ const Accounts = ({ page, previous, next, isActive }) => {
   const [error, setError] = useState(undefined);
   const [confirm, setConfirm] = useState({ show: false, message: '', onSuccess: () => { }, onHide: () => { } });
   const [showInstitution, setShowInstitution] = useState(false);
+  const [institutions, setInstitutions] = useState({data: [], total_count:0, total_pages: 0, perPage: 100} );
+  const [isFetching, setIsFetching] = useState(false);
   const tbodyRef = useRef()
   let result = {};
   let appData = {};
@@ -298,6 +300,29 @@ const Accounts = ({ page, previous, next, isActive }) => {
     }
   }
 
+  const getInstitutions = async (filter, page) => {
+    try {
+      setIsFetching(true);
+      let concatData;
+      let search_filters = {
+        page: page ? page : 1,
+        per_page: institutions.perPage
+      };
+      if (filter && filter['institution_name']) search_filters['institution_name'] = filter['institution_name'];
+      if (filter && filter['routing_number']) search_filters['routing_number'] = filter['routing_number'];
+
+      const res = await api.getInstitutions(search_filters);
+      if (search_filters['page'] === 1) concatData = res.data.institutions;
+      else concatData = [ ...institutions.data, ...res.data.institutions ];
+
+      setInstitutions({ ...institutions, data: concatData, total_count: res.data.total_count, total_pages: res.data.pagination.total_pages });
+      setIsFetching(false);
+    } catch (err) {
+      console.log('  ... looks like we ran into an issue!');
+      handleError(err);
+    }
+  };
+
   useEffect(() => {
     getAccounts();
   }, [app.activeUser]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -323,6 +348,10 @@ const Accounts = ({ page, previous, next, isActive }) => {
       document.removeEventListener('mousedown', checkIfClickedOutside)
     }
   }, [activeRow])
+
+  useEffect(() => {
+    getInstitutions();
+  }, []);
 
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
@@ -426,7 +455,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
 
       <ConfirmModal show={confirm.show} message={confirm.message} onHide={confirm.onHide} buttonLabel="Delete" onSuccess={confirm.onSuccess} />
 
-      <InstitutionsModal show={showInstitution} onClose={() => setShowInstitution(false)} />
+      <InstitutionsModal institutions={institutions} isFetching={isFetching} show={showInstitution} onSearch={(filter, page) => getInstitutions(filter, page)} onClose={() => setShowInstitution(false)} />
 
     </Container>
   );
