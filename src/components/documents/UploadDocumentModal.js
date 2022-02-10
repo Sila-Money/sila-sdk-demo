@@ -4,15 +4,20 @@ import { useDropzone } from 'react-dropzone';
 
 import { useAppContext } from '../context/AppDataProvider';
 
+import AlertMessage from '../../components/common/AlertMessage';
+import Loader from '../../components/common/Loader';
 import SelectMenu from '../common/SelectMenu';
+
+import { MAX_UPLOAD_FILE_SIZE } from '../../constants';
 import { bytesToSize } from '../../utils';
 
-const UploadDocumentModal = ({ documentTypes, show, onClose }) => {
+const UploadDocumentModal = ({ activeUser, documentTypes, show, onClose, onSuccess }) => {
   const [validated, setValidated] = useState(false);
   const [docType, setDocType] = useState(undefined);
   const [uploadedFile, setUploadedFile] = useState(undefined);
-  const maxFileSize = 20971520; // in bytes 20MB
-  const { app, setAppData, updateApp } = useAppContext();
+  const [alert, setAlert] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const { api, app, setAppData, updateApp } = useAppContext();
 
   const baseStyle = {
     flex: 1,
@@ -45,14 +50,15 @@ const UploadDocumentModal = ({ documentTypes, show, onClose }) => {
   
   const onDrop = useCallback((acceptedFiles) => {
     acceptedFiles.forEach((file) => {
+      file['fileObject'] = file;
       const reader = new FileReader()
+      reader.onloadend = function(e) {
+        file['fileBuffer'] = new Uint8Array(e.target.result);
+        setUploadedFile(file || undefined);
+      };
       reader.onabort = () => console.log('file reading was aborted.')
       reader.onerror = () => console.log('file reading has failed.')
-      reader.onload = () => {
-        file['body'] = reader.result.replace(/^data:(\w+)\/(\w+);base64,/, '');
-        setUploadedFile(file || undefined);
-			}
-      reader.readAsDataURL(file);
+      reader.readAsArrayBuffer(file);
     });
     if (docType) setValidated(true);
   }, [docType])
@@ -61,7 +67,7 @@ const UploadDocumentModal = ({ documentTypes, show, onClose }) => {
     onDrop,
     accept: 'image/jpeg, image/png, application/pdf',
     maxFiles:1,
-    maxSize: maxFileSize,
+    maxSize: MAX_UPLOAD_FILE_SIZE,
     noClick: true,
     noKeyboard: true
   });
@@ -75,33 +81,47 @@ const UploadDocumentModal = ({ documentTypes, show, onClose }) => {
 
   const fileRejectionItems = fileRejections.map(({ errors }) => errors.map(e => (<p key={e.code}>{e.message}</p>)))
 
-  const onDocumentSubmit = (e) => {
+  const onDocumentSubmit = async (e) => {
     e.preventDefault();
     if (validated && docType && uploadedFile) {
+      setIsUploading(true);
       try {
         const documentPayload = {
-          filePath: uploadedFile.body,
+          fileObject: uploadedFile.fileObject,
+          fileBuffer: uploadedFile.fileBuffer,
           filename: uploadedFile.name,
           mimeType: uploadedFile.type,
           documentType: docType.name,
           identityType: docType.identity_type,
           name: docType.label
         };
-        console.info(documentPayload);
-        // TODOS: here document upload is pending due to new API waiting... will fix it soon!
 
+        let result = {};
+        const res = await api.uploadDocument(activeUser.handle, activeUser.private_key, documentPayload);
+        if (res.data.success) {
+          result.alert = { message: 'Document successfully uploaded.', type: 'success' };
+          onSuccess();
+        } else {
+          clearForm();
+          if (res.data && res.data.validation_details) {
+            setAlert({ message: `Error! ${res.data.validation_details.filename}`, type: 'danger' });
+          } else {
+            setAlert({ message: `Error! ${res.data.message}`, type: 'danger' });
+          }
+        }
         setAppData({
           responses: [{
             endpoint: '/documents',
             result: JSON.stringify({}, null, '\t')
           }, ...app.responses]
         }, () => {
-          updateApp({ ...{ alert : { message: 'Document successfully uploaded.', type: 'success' } } });
-          onCancel();
+          updateApp({ ...result });
+          if (res.data.success) onCancel();
         });
       } catch (err) {
         console.log('  ... looks like we ran into an issue!');
       }
+      setIsUploading(false);
     }
   }
 
@@ -113,8 +133,14 @@ const UploadDocumentModal = ({ documentTypes, show, onClose }) => {
   const onCancel = () => {
     setValidated(false);
     setDocType(undefined);
-    setUploadedFile(undefined)
+    setUploadedFile(undefined);
+    setAlert(false);
     onClose();
+  }
+
+  const clearForm = () => {
+    setValidated(false);
+    setUploadedFile(undefined)
   }
 
   return (
@@ -128,6 +154,7 @@ const UploadDocumentModal = ({ documentTypes, show, onClose }) => {
       </Modal.Header>
       
       <Form noValidate validated={validated} autoComplete="off" encType="multipart/form-data" onSubmit={onDocumentSubmit}>
+        {isUploading && <Loader />}
         <Modal.Body>
           <p className="text-muted mb-4">Please make sure all information on the document is visible and clear. We accept files in these formats: PNG, JPG, and PDF, no larger than 20MB.</p>
 
@@ -150,6 +177,7 @@ const UploadDocumentModal = ({ documentTypes, show, onClose }) => {
             </div>
           </div>
           {fileRejectionItems && <Form.Control.Feedback type="none" className="text-danger">{fileRejectionItems}</Form.Control.Feedback>}
+          {alert && <div className="d-flex mt-3"><AlertMessage message={alert.message} type={alert.type} onHide={() => setAlert(false)} /></div>}
 
         </Modal.Body>
         <Modal.Footer>
