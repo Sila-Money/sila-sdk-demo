@@ -10,7 +10,7 @@ const DefaultKYCForm = ({ errors, isHide, app, children }) => {
     <div className={isHide ? 'd-none' : undefined}>
       <p className="text-muted">This KYC Level requires us to gather more information from you. Please fill out the required fields below.</p>
 
-      <p className="text-right text-lg text-warning">All fields are required for this KYC level.</p>
+      <p className="text-lg text-warning">All fields are required for this KYC level.</p>
       <Form.Row>
         <Form.Group as={Col} md="6" controlId="registerFirstName" className="required">
           <Form.Control required placeholder="First Name" name="firstName" defaultValue={app.activeUser ? app.activeUser.firstName : undefined} isInvalid={Boolean(errors.entity && errors.entity.first_name)} />
