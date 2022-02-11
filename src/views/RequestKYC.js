@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Container, Form, Col, Button, OverlayTrigger, Tooltip, Alert, Table } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
@@ -26,6 +26,10 @@ const RequestKYC = ({ page, previous, next }) => {
   const activeUser = app.settings.flow === 'kyb' ? app.users.find(user => app.settings.kybHandle === user.handle) : app.activeUser;
   const [partnersKYC, setPartnersKYC] = useState(app.kycPartners.filter(partner => partner.handle === activeUser.handle));
   const isActive = app.success.find(success => activeUser && success.handle === activeUser.handle && success[app.settings.flow] && success.page === page) ? true : false;
+  const [isRequestedKyc, setIsRequestedKyc] = useState(false);
+  const maxAttempts = 3;
+  const retryInterval = 6000; // 6 seconds
+  let autoRefreshCount = useRef(0);
 
   const requestKyc = async () => {
     console.log(`Requesting ${app.settings.flow.toUpperCase()} ...`);
@@ -35,6 +39,7 @@ const RequestKYC = ({ page, previous, next }) => {
       let result = { kyc: {}, kyb: {} };
       console.log('  ... completed!');
       if (res.data.status === 'SUCCESS') {
+        setIsRequestedKyc(true);
         result.alert = { message: `Submitted for ${app.settings.flow.toUpperCase()} Review`, type: 'wait' };
         result[app.settings.flow].alert = { message: 'Submitted for review', type: 'wait' };
       } else {
@@ -196,6 +201,19 @@ const RequestKYC = ({ page, previous, next }) => {
   useEffect(() => {
     checkKyc('onload');
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    let timeoutId;
+    function autoRefreshKYCStatus() {
+      if (autoRefreshCount.current === maxAttempts || disabledRequestButton) {
+        clearTimeout(timeoutId);
+        return;
+      }
+      autoRefreshCount.current = autoRefreshCount.current + 1;
+      checkKyc('onclick');
+    }
+    if(isRequestedKyc && !disabledRequestButton) timeoutId = setInterval(autoRefreshKYCStatus, retryInterval);
+  }, [isRequestedKyc, disabledRequestButton])
 
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
