@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext } from 'react';
-import Sila from 'sila-sdk';
+import Sila from 'sila-sdk-javascript';
 
 export const appContext = createContext(null);
 

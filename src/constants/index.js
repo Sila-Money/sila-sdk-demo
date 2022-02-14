@@ -12,6 +12,8 @@ export const KYB_LITE = 'KYB-LITE';
 
 export const KYB_RECEIVE_ONLY = 'RECEIVE_ONLY';
 
+export const MAX_UPLOAD_FILE_SIZE = 20971520; // in bytes 20MB
+
 export const KYC_ARRAY = [{
     value: 'DOC_KYC',
     label: 'DOC KYC'

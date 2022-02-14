@@ -213,7 +213,7 @@ const RequestKYC = ({ page, previous, next }) => {
       checkKyc('onclick');
     }
     if(isRequestedKyc && !disabledRequestButton) timeoutId = setInterval(autoRefreshKYCStatus, retryInterval);
-  }, [isRequestedKyc, disabledRequestButton])
+  }, [isRequestedKyc, disabledRequestButton]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
@@ -355,8 +355,8 @@ const RequestKYC = ({ page, previous, next }) => {
       </>}
 
       <Pagination
-        previous={app.settings.flow === 'kyc' && app.settings.preferredKycLevel !== DEFAULT_KYC ? '/register_user' : app.settings.flow === 'kyb' && app.settings.preferredKybLevel !== KYB_STANDARD ? '/members' : previous}
-        next={isActive ? next : undefined}
+        previous={previous}
+        next={isActive ? app.settings.flow === 'kyc' && app.settings.preferredKycLevel !== DEFAULT_KYC ? '/wallets' : app.settings.flow === 'kyb' && app.settings.preferredKybLevel !== KYB_STANDARD ? '/certify' : next : undefined}
         currentPage={page} />
 
       <KybKycModal show={show} onHide={() => setShow(false)} />

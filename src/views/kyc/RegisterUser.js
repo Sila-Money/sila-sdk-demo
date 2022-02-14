@@ -8,7 +8,7 @@ import RegisterUserForm from '../../components/register/RegisterUserForm';
 import KycModal from '../../components/home/KycModal';
 import ConfirmModal from '../../components/common/ConfirmModal';
 
-import { DEFAULT_KYC, INSTANT_ACH_KYC } from '../../constants';
+import { INSTANT_ACH_KYC } from '../../constants';
 
 const RegisterUser = ({ page, previous, next, isActive }) => {
   const [show, setShow] = useState(false);
@@ -45,7 +45,7 @@ const RegisterUser = ({ page, previous, next, isActive }) => {
 
       <Pagination
         previous={previous}
-        next={isActive ? (app.settings.preferredKycLevel === INSTANT_ACH_KYC && !app.activeUser.smsConfirmed) ? undefined : app.settings.preferredKycLevel !== DEFAULT_KYC ? '/request_kyc' : next : undefined}
+        next={isActive ? (app.settings.preferredKycLevel === INSTANT_ACH_KYC && !app.activeUser.smsConfirmed) ? undefined : next : undefined}
         currentPage={page} />
 
       <KycModal show={show} onHide={() => setShow(false)} />

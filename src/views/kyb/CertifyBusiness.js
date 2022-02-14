@@ -10,6 +10,8 @@ import DisabledOverlay from '../../components/common/DisabledOverlay';
 
 import { useAppContext } from '../../components/context/AppDataProvider';
 
+import { KYB_STANDARD } from '../../constants';
+
 import * as confetti from '../../assets/vendor/confetti';
 
 const BusinessMembers = ({ page, previous, next, isActive }) => {
@@ -181,7 +183,7 @@ const BusinessMembers = ({ page, previous, next, isActive }) => {
       </>}
 
       <Pagination
-        previous={previous}
+        previous={app.settings.flow === 'kyb' && app.settings.preferredKybLevel !== KYB_STANDARD ? '/request_kyc' : previous}
         next={app.settings.preferredKybLevel === 'RECEIVE_ONLY' ? next : showCongrats ? next : undefined}
         currentPage={page} />
 
