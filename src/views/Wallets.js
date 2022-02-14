@@ -8,6 +8,8 @@ import AlertMessage from '../components/common/AlertMessage';
 import Loader from '../components/common/Loader';
 import Wallet from '../components/wallets/Wallet';
 
+import { DEFAULT_KYC, KYB_STANDARD } from '../constants';
+
 const Wallets = ({ page, previous, next, isActive }) => {
   const { app, api, updateApp, handleError, setAppData } = useAppContext();
   const activeUser = app.settings.flow === 'kyb' ? app.users.find(user => app.settings.kybHandle === user.handle) : app.activeUser;
@@ -261,7 +263,7 @@ const Wallets = ({ page, previous, next, isActive }) => {
       </div>
 
       <Pagination
-        previous={previous}
+        previous={app.settings.flow === 'kyc' && app.settings.preferredKycLevel !== DEFAULT_KYC ? '/request_kyc' : app.settings.flow === 'kyb' && app.settings.preferredKybLevel !== KYB_STANDARD ? '/request_kyc' : previous}
         next={isActive ? next : undefined}
         currentPage={page} />
 

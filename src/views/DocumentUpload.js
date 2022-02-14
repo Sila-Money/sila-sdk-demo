@@ -12,10 +12,11 @@ import DocumentPreviewModal from '../components/documents/DocumentPreviewModal';
 import { DEFAULT_KYC, KYB_STANDARD } from '../constants';
 import { formatDateAndTime } from '../utils';
 
-const DocumentUpload = ({ history, page, previous, next, isActive }) => {
+const DocumentUpload = ({ history, page, previous, next }) => {
   const { app, api, setAppData, handleError } = useAppContext();
   const userHandle = app.settings.flow === 'kyb' ? app.settings.kybHandle : app.activeUser.handle;
   const activeUser = app.users.find(user => user.handle === userHandle);
+  const isActive = app.success.find(success => activeUser && success.handle === activeUser.handle && success[app.settings.flow] && success.page === page) ? true : false;
   const [show, setShow] = useState(false);
   const [loaded, setLoaded] = useState(true);
   const [preview, setPreview] = useState({ show: false, data: undefined });
@@ -99,13 +100,13 @@ const DocumentUpload = ({ history, page, previous, next, isActive }) => {
 
   useEffect(() => {
     if((app.settings.flow === 'kyc' && app.settings.preferredKycLevel !== DEFAULT_KYC) || (app.settings.flow === 'kyb' && app.settings.preferredKybLevel !== KYB_STANDARD)) {
-      history.push({ pathname: '/request_kyc', state: { from: page } });
+      history.push({ pathname: app.settings.flow === 'kyb' ? '/certify' : '/wallets', state: { from: page } });
     }
   }, [app, history, page]);
 
   useEffect(() => {
     setAppData({
-      success: documents.length && !isActive ? [...app.success, { handle: userHandle, page }] : app.success
+      success: documents.length && !isActive ? [...app.success, { handle: userHandle, [app.settings.flow]: true, page }] : app.success,
     });
   }, [userHandle, documents]); // eslint-disable-line react-hooks/exhaustive-deps
   
