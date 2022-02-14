@@ -31,8 +31,8 @@ export const flows = {
     routes: [
       '/check_handle', 
       '/register_user', 
-      '/document_upload',
       '/request_kyc', 
+      '/document_upload',
       '/wallets', 
       '/accounts', 
       '/transact'
@@ -51,8 +51,8 @@ export const flows = {
       '/business/handle', 
       '/business/register', 
       '/members',
-      '/document_upload',
       '/request_kyc',
+      '/document_upload',
       '/certify', 
       '/wallets', 
       '/accounts', 
@@ -90,16 +90,16 @@ export default [
   },
   {
     restricted: true,
-    title: 'Document Upload',
-    path: '/document_upload',
-    component: DocumentUpload
-  },
-  {
-    restricted: true,
     admin: true,
     title: 'Request KYC',
     path: '/request_kyc',
     component: RequestKYC
+  },
+  {
+    restricted: true,
+    title: 'Document Upload',
+    path: '/document_upload',
+    component: DocumentUpload
   },
   {
     restricted: true,
