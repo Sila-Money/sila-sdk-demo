@@ -101,3 +101,10 @@
         content: "\e911";
     }
 }
+
+.sila-icon-up-close {
+    &:before {
+        content: "\e913";
+        color: #3f63f7;
+    }
+}
