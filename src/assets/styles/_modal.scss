@@ -23,6 +23,26 @@
   &-content {
     border-radius: 10px;
   }
+  &.show {
+    .select-menu {
+        .dropdown-toggle::after {
+        transform: rotate(0deg) scale(2) !important;
+      }
+      &.show {
+        .dropdown-toggle::after {
+          transform: rotate(180deg) scale(2) !important;
+        }
+      }
+      .dropdown-menu {
+        max-height: 270px;
+        .dropdown-item {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+    }
+  }
 }
 
 .modal-content {
