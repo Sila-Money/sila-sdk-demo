@@ -259,7 +259,7 @@ const Wallets = ({ page, previous, next, isActive }) => {
 
       <div className="d-flex mt-3">
         {app.alert.message && <AlertMessage message={app.alert.message} type={app.alert.type} />}
-        <Button onClick={addWallet} className="ml-auto">Add Additonal Wallet <i className="fas fa-plus-circle ml-2"></i></Button>
+        <Button onClick={addWallet} className="ml-auto">Add Additional Wallet <i className="fas fa-plus-circle ml-2"></i></Button>
       </div>
 
       <Pagination
