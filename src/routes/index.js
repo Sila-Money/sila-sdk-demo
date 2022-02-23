@@ -4,6 +4,7 @@ import React from 'react';
 import Home from '../views/Home';
 import CheckHandle from '../views/CheckHandle';
 import RegisterUser from '../views/kyc/RegisterUser';
+import DocumentUpload from '../views/DocumentUpload';
 import RequestKYC from '../views/RequestKYC';
 import BusinessType from '../views/kyb/BusinessType';
 import RegisterBusiness from '../views/kyb/RegisterBusiness';
@@ -31,6 +32,7 @@ export const flows = {
       '/check_handle', 
       '/register_user', 
       '/request_kyc', 
+      '/document_upload',
       '/wallets', 
       '/accounts', 
       '/transact'
@@ -50,6 +52,7 @@ export const flows = {
       '/business/register', 
       '/members',
       '/request_kyc',
+      '/document_upload',
       '/certify', 
       '/wallets', 
       '/accounts', 
@@ -91,6 +94,12 @@ export default [
     title: 'Request KYC',
     path: '/request_kyc',
     component: RequestKYC
+  },
+  {
+    restricted: true,
+    title: 'Document Upload',
+    path: '/document_upload',
+    component: DocumentUpload
   },
   {
     restricted: true,

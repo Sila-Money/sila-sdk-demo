@@ -25,6 +25,14 @@ const PlaidButton = ({ plaidToken, onSuccess }) => {
     onSuccess: (token, metadata) => onSuccess(token, metadata)
   });
 
+  const onOpen = () => {
+    if (activeUser && !activeUser.email) {
+      updateApp({ alert: { message: 'Email address is required to Connect via Plaid Link. please add your email from the Registered User page.', type: 'warning' } });
+      return;
+    }
+    open();
+  }
+
   useEffect(() => {
     if (plaidToken.token && plaidToken.auto && ready && open) open();
   }, [plaidToken]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -33,7 +41,7 @@ const PlaidButton = ({ plaidToken, onSuccess }) => {
     if (error) updateApp({ alert: { message: error, type: 'danger' } });
   }, [error]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return <Button block className="mb-4 text-nowrap" onClick={() => open()} disabled={!ready}>{plaidToken && plaidToken.account_name ? 'Launch microdeposit verification in Plaid' : 'Connect via Plaid Link'}</Button>;
+  return <Button block className="mb-4 text-nowrap" onClick={onOpen} disabled={!ready}>{plaidToken && plaidToken.account_name ? 'Launch microdeposit verification in Plaid' : 'Connect via Plaid Link'}</Button>;
 };
 
 const Accounts = ({ page, previous, next, isActive }) => {
@@ -329,7 +337,11 @@ const Accounts = ({ page, previous, next, isActive }) => {
 
       <p className="text-muted text-lg">We've partnered with Plaid to connect bank accounts to the Sila platform. This helps us ensure account ownership.</p>
 
-      <p className="text-muted text-lg">We also have the ability to connect bank accounts with just an account and routing number, if your product is dependent on receiving account information over the phone, on a form, or similar. This feature needs to be approved by Sila for use.</p>
+      <p className="text-muted text-lg">Connect via Account Routing: We also have the ability to connect bank accounts with just an account and routing number "This feature required Compliance Approval for processing"</p>
+
+      <p className="text-muted text-lg">Connect Via Plaid Link" The Sila will support Legacy public token and Link integration for the near term, however, this functionality is marked for deprecation.</p>
+
+      <p className="text-muted text-lg">Connect via Processor Token: Please seek a direct relationship with Plaid to use our Processor Token functionality</p>
 
       <p className="text-muted mb-0 mb-5">This page represents <a href="https://docs.silamoney.com/docs/get_accounts" target="_blank" rel="noopener noreferrer">/get_accounts</a>, <a href="https://docs.silamoney.com/docs/plaid_link_token" target="_blank" rel="noopener noreferrer">/plaid_link_token</a>, <a href="https://docs.silamoney.com/docs/link_account" target="_blank" rel="noopener noreferrer">/link_account</a>, and <a href="https://docs.silamoney.com/docs/plaid_sameday_auth" target="_blank" rel="noopener noreferrer">/plaid_sameday_auth</a> functionality.</p>
 

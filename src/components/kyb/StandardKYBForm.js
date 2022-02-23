@@ -4,10 +4,10 @@ import NumberFormat from 'react-number-format';
 
 import { STATES_ARRAY } from '../../constants';
 
-const StandardKYBForm = ({ errors, isHide, app, children }) => {
+const StandardKYBForm = ({ errors, app, children }) => {
   
   return (
-    <div className={isHide ? 'd-none' : undefined}>
+    <>
       <p className="text-right text-lg text-warning">All fields are required for this KYB level.</p>
 
       <Form.Row>
@@ -53,7 +53,7 @@ const StandardKYBForm = ({ errors, isHide, app, children }) => {
       </Form.Row>
 
       {children}
-    </div>
+    </>
   )
 };
 

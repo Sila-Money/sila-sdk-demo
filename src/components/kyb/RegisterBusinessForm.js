@@ -3,23 +3,27 @@ import { Form, Button } from 'react-bootstrap';
 
 import { useAppContext } from '../../components/context/AppDataProvider';
 
+import AlertMessage from '../../components/common/AlertMessage';
 import Loader from '../../components/common/Loader';
 import SelectMenu from '../../components/common/SelectMenu';
 import StandardKYBForm from '../../components/kyb/StandardKYBForm';
 import LiteKYBForm from '../../components/kyb/LiteKYBForm';
 import ReceiveOnlyKYBForm from '../../components/kyb/ReceiveOnlyKYBForm';
-import RegisterBusinessDataForm from '../../components/kyb/RegisterBusinessDataForm';
+import AddDataForm from '../../components/kyb/AddDataForm';
+import UpdateKYBForm from '../../components/kyb/UpdateKYBForm';
 
 import { KYB_STANDARD, KYB_LITE, KYB_RECEIVE_ONLY, KYB_ARRAY } from '../../constants';
 
-const RegisterBusinessForm = ({ className, children, onError, onSuccess, onShowKybModal, onConfirm }) => {
+const RegisterBusinessForm = ({ className, children, onSuccess, onShowKybModal, onConfirm }) => {
   const { app, api, refreshApp, handleError, updateApp, setAppData } = useAppContext();
   const [validated, setValidated] = useState(false);
   const [errors, setErrors] = useState({});
   const [loaded, setLoaded] = useState(true);
-  const [preferredKyb, setPreferredKyb] = useState(app.activeUser.kybLevel || app.settings.preferredKybLevel);
-  const [reloadUUID, setReloadUUID] = useState(false);
+  const [preferredKyb, setPreferredKyb] = useState(app.settings.preferredKybLevel || app.activeUser.kybLevel);
+  const [showUpdateBtn, setShowUpdateBtn] = useState(false);
+  const [entityuuid, setEntityuuid] = useState({ isFetchedUUID: false, uuid: {} });
   const businessTypes = ['sole_proprietorship', 'trust', 'unincorporated_association'];
+  let result = {};
 
   const register = async (e) => {
     console.log('\n*** BEGIN REGISTER BUSINESS ***');
@@ -37,31 +41,31 @@ const RegisterBusinessForm = ({ className, children, onError, onSuccess, onShowK
       isValidated = false;
       validationErrors.entity = Object.assign({entity_name: "This field may not be blank."}, validationErrors.entity);
     }
-    if (e.target.email && !e.target.email.value) {
+    if (preferredKyb !== KYB_RECEIVE_ONLY && e.target.email && !e.target.email.value) {
       isValidated = false;
       validationErrors.contact = Object.assign({email: "This field may not be blank."}, validationErrors.contact);
     }
-    if (e.target.address && !e.target.address.value) {
+    if (preferredKyb !== KYB_RECEIVE_ONLY && e.target.address && !e.target.address.value) {
       isValidated = false;
       validationErrors.address = Object.assign({street_address_1: "This field may not be blank."}, validationErrors.address);
     }
-    if (e.target.city && !e.target.city.value) {
+    if (preferredKyb !== KYB_RECEIVE_ONLY && e.target.city && !e.target.city.value) {
       isValidated = false;
       validationErrors.address = Object.assign({city: "This field may not be blank."}, validationErrors.address);
     }
-    if (e.target.state && !e.target.state.value) {
+    if (preferredKyb !== KYB_RECEIVE_ONLY && e.target.state && !e.target.state.value) {
       isValidated = false;
       validationErrors.address = Object.assign({state: "This field may not be blank."}, validationErrors.address);
     }
-    if (e.target.zip && !e.target.zip.value) {
+    if (preferredKyb !== KYB_RECEIVE_ONLY && e.target.zip && !e.target.zip.value) {
       isValidated = false;
       validationErrors.address = Object.assign({postal_code: "This field may not be blank."}, validationErrors.address);
     }
-    if (e.target.phone && !e.target.phone.value) {
+    if (preferredKyb !== KYB_RECEIVE_ONLY && e.target.phone && !e.target.phone.value) {
       isValidated = false;
       validationErrors.contact = Object.assign({phone: "This field may not be blank."}, validationErrors.contact);
     }
-    if (e.target.ein && !e.target.ein.value) {
+    if (preferredKyb !== KYB_RECEIVE_ONLY && preferredKyb !== KYB_LITE && e.target.ein && !e.target.ein.value) {
       if (e.target.ein && businessTypes && !businessTypes.includes(app.settings.kybBusinessType)) {
         isValidated = false;
         validationErrors.identity = "This field may not be blank.";
@@ -77,11 +81,12 @@ const RegisterBusinessForm = ({ className, children, onError, onSuccess, onShowK
     console.log('Waking up the API service ...');
     setLoaded(false);
     if (app.activeUser && app.activeUser.handle) {
+      setShowUpdateBtn(false);
       let ApiEndpoint;
       let updatedEntityData = {};
       let updatedResponses = [];
-      let successStatus = { entity: true, email: true, address: true, phone: true, identity: true };
       let entityRes = {};
+      let updateSuccess = false;
       try {
         entityRes = await api.getEntity(app.activeUser.handle, app.activeUser.private_key);
         if (!entityRes.data.success) {
@@ -92,18 +97,21 @@ const RegisterBusinessForm = ({ className, children, onError, onSuccess, onShowK
         handleError(err);
       }
 
-      if (e.target.entity_name && e.target.entity_name.value && e.target.entity_name.value !== app.activeUser.entity_name) {
+      const entityUpdateData = {};
+      if (e.target.entity_name && e.target.entity_name.value && e.target.entity_name.value !== app.activeUser.entity_name) entityUpdateData.entity_name = e.target.entity_name.value;
+      if (e.target.doing_business_as && e.target.doing_business_as.value !== app.activeUser.doing_business_as) entityUpdateData.doing_business_as = e.target.doing_business_as.value;
+      if (e.target.business_website && e.target.business_website.value !== app.activeUser.business_website) entityUpdateData.business_website = e.target.business_website.value;
+      if (Object.keys(entityUpdateData).length) {
         try {
-          const entityUpdateRes = await api.updateEntity(app.activeUser.handle, app.activeUser.private_key, { entity_name: e.target.entity_name.value });
+          const entityUpdateRes = await api.updateEntity(app.activeUser.handle, app.activeUser.private_key, entityUpdateData);
           updatedResponses = [ ...updatedResponses, { endpoint: '/update/entity', result: JSON.stringify(entityUpdateRes, null, '\t') } ];
 
           if (entityUpdateRes.data.success) {
-            updatedEntityData = { ...updatedEntityData, entity_name: e.target.entity_name.value};
-          }  else if (entityUpdateRes.data.validation_details) {
-            successStatus = {...successStatus, entity: false};
-            validationErrors = { ...validationErrors, entity: entityUpdateRes.data.validation_details }
+            updateSuccess = true;
+            updatedEntityData = { ...updatedEntityData, ...entityUpdateData };
           } else {
-            console.log('... update entity failed!', entityUpdateRes);
+            if(entityUpdateRes.data && entityUpdateRes.data.message) result.alert = { message: entityUpdateRes.data.message, type: 'danger' };
+            validationErrors = { ...validationErrors, entity: entityUpdateRes.data.validation_details ? entityUpdateRes.data.validation_details : entityUpdateRes.data.message }
           }
         } catch (err) {
           console.log('  ... unable to update entity, looks like we ran into an issue!');
@@ -111,8 +119,7 @@ const RegisterBusinessForm = ({ className, children, onError, onSuccess, onShowK
         }
       }
 
-      validationErrors = { ...validationErrors, contact: {} }
-      if (e.target.email && e.target.email.value !== app.activeUser.email) {
+      if (e.target.email && e.target.email.value && e.target.email.value !== app.activeUser.email) {
         try {
           ApiEndpoint = '/add/email';
           let emailRes = {};
@@ -129,12 +136,11 @@ const RegisterBusinessForm = ({ className, children, onError, onSuccess, onShowK
           updatedResponses = [ ...updatedResponses, { endpoint: ApiEndpoint, result: JSON.stringify(emailRes, null, '\t') } ];
 
           if (emailRes.data.success) {
+            updateSuccess = true;
             updatedEntityData = { ...updatedEntityData, email: e.target.email.value }
-          } else if (emailRes.data.validation_details) {
-            successStatus = {...successStatus, email: false };
-            validationErrors.contact = Object.assign({email: emailRes.data.validation_details.email}, validationErrors.contact);
           } else {
-            console.log('... update email failed!', emailRes);
+            validationErrors = { ...validationErrors, contact: {} }
+            validationErrors.contact = Object.assign({email: emailRes.data.validation_details ? emailRes.data.validation_details.email : emailRes.data.message}, validationErrors.contact);
           }
         } catch (err) {
           console.log('  ... unable to update email, looks like we ran into an issue!');
@@ -159,12 +165,11 @@ const RegisterBusinessForm = ({ className, children, onError, onSuccess, onShowK
           updatedResponses = [ ...updatedResponses, { endpoint: ApiEndpoint, result: JSON.stringify(phoneRes, null, '\t') } ];
 
           if (phoneRes.data.success) {
+            updateSuccess = true;
             updatedEntityData = { ...updatedEntityData, phone: e.target.phone.value }
-          } else if (phoneRes.data.validation_details) {
-            successStatus = {...successStatus, phone: false};
-            validationErrors.contact = Object.assign({phone: phoneRes.data.validation_details.phone}, validationErrors.contact);
           } else {
-            console.log('... update phone failed!', phoneRes);
+            if (!validationErrors.contact) validationErrors = { ...validationErrors, contact: {} }
+            validationErrors.contact = Object.assign({phone: phoneRes.data.validation_details ? phoneRes.data.validation_details.phone : phoneRes.data.message }, validationErrors.contact);
           }
         } catch (err) {
           console.log('  ... unable to update phone, looks like we ran into an issue!');
@@ -173,10 +178,10 @@ const RegisterBusinessForm = ({ className, children, onError, onSuccess, onShowK
       }
 
       const addressUpdateData = {};
-      if (e.target.address && e.target.address.value !== app.activeUser.address) addressUpdateData.street_address_1 = e.target.address ? e.target.address.value : '';
-      if (e.target.city && e.target.city.value !== app.activeUser.city) addressUpdateData.city = e.target.city ? e.target.city.value : '';
-      if (e.target.state && e.target.state.value !== app.activeUser.state) addressUpdateData.state = e.target.state ? e.target.state.value : '';
-      if (e.target.zip && e.target.zip.value !== app.activeUser.zip) addressUpdateData.postal_code = e.target.zip ? e.target.zip.value : '';
+      if (e.target.address && e.target.address.value && e.target.address.value !== app.activeUser.address) addressUpdateData.street_address_1 = e.target.address ? e.target.address.value : '';
+      if (e.target.city && e.target.city.value && e.target.city.value !== app.activeUser.city) addressUpdateData.city = e.target.city ? e.target.city.value : '';
+      if (e.target.state && e.target.state.value && e.target.state.value !== app.activeUser.state) addressUpdateData.state = e.target.state ? e.target.state.value : '';
+      if (e.target.zip && e.target.zip.value && e.target.zip.value !== app.activeUser.zip) addressUpdateData.postal_code = e.target.zip ? e.target.zip.value : '';
       if (Object.keys(addressUpdateData).length) {
         try {
           ApiEndpoint = '/add/address';
@@ -192,12 +197,10 @@ const RegisterBusinessForm = ({ className, children, onError, onSuccess, onShowK
           updatedResponses = [ ...updatedResponses, { endpoint: ApiEndpoint, result: JSON.stringify(addressRes, null, '\t') } ];
 
           if (addressRes.data.success) {
+            updateSuccess = true;
             updatedEntityData = { ...updatedEntityData, address: e.target.address.value, city: e.target.city.value, state: e.target.state.value, zip: e.target.zip.value }
-          } else if (addressRes.data.validation_details) {
-            successStatus = {...successStatus, address: false};
-            validationErrors = { ...validationErrors, address: addressRes.data.validation_details.address }
           } else {
-            console.log('... update address failed!', addressRes);
+            validationErrors = { ...validationErrors, address: addressRes.data.validation_details ? addressRes.data.validation_details.address : addressRes.data.message }
           }
         } catch (err) {
           console.log('  ... unable to update address, looks like we ran into an issue!');
@@ -223,12 +226,11 @@ const RegisterBusinessForm = ({ className, children, onError, onSuccess, onShowK
           updatedResponses = [ ...updatedResponses, { endpoint: ApiEndpoint, result: JSON.stringify(einRes, null, '\t') } ];
 
           if (einRes.data.success) {
+            updateSuccess = true;
             updatedEntityData = { ...updatedEntityData, ein: identityUpdateData.value }
-          } else if (einRes.data.validation_details) {
-            successStatus = {...successStatus, identity: false};
-            validationErrors = { ...validationErrors, identity: einRes.data.validation_details }
           } else {
-            console.log('... update identity failed!', einRes);
+            if(einRes.data && einRes.data.message) result.alert = { message: einRes.data.message, type: 'danger' };
+            validationErrors = { ...validationErrors, identity: einRes.data.validation_details ? einRes.data.validation_details : einRes.data.message }
           }
         } catch (err) {
           console.log('  ... unable to update identity, looks like we ran into an issue!');
@@ -238,25 +240,8 @@ const RegisterBusinessForm = ({ className, children, onError, onSuccess, onShowK
 
       try {
         console.log('  ... update completed!');
-        let result = {};
+        
         let appData = {};
-        let updateSuccess = false;
-
-        if (preferredKyb === KYB_STANDARD) {
-          if (successStatus.entity && successStatus.email && successStatus.address && successStatus.phone && successStatus.identity) {
-            updateSuccess = true;
-          }
-        } else if (preferredKyb === KYB_LITE) {
-          if (successStatus.entity && successStatus.email && successStatus.address && successStatus.phone) {
-            updateSuccess = true;
-            if(!successStatus.identity) updateSuccess = false;
-          }
-        } else if (preferredKyb === KYB_RECEIVE_ONLY) {
-          if (successStatus.entity) {
-            updateSuccess = true;
-          }
-        }
-
         if (updateSuccess) {
           refreshApp();
           const activeUser = app.users.find(u => u.handle === app.activeUser.handle);
@@ -268,13 +253,12 @@ const RegisterBusinessForm = ({ className, children, onError, onSuccess, onShowK
           appData = {
             users: app.users.map(({ active, ...u }) => u.handle === app.activeUser.handle ? { ...u, ...updatedEntityData } : u),
           };
-          setReloadUUID(true);
           if (Object.keys(errors).length) setErrors({});
         } else if ( Object.keys(validationErrors).length ) {
-          if (validationErrors.identity) validationErrors.identity = 'EIN acceptable format: xx-xxxxxxx';
+          if (validationErrors.identity && validationErrors.identity === "Input did not match EIN regex pattern ^\\d{2}-?\\d{7}$") validationErrors.identity = 'EIN acceptable format: xx-xxxxxxx';
+          setShowUpdateBtn(true);
           setErrors(validationErrors);
           setValidated(true);
-          if (onError) onError(validationErrors);
         }
         setAppData({
           ...appData,
@@ -339,7 +323,6 @@ const RegisterBusinessForm = ({ className, children, onError, onSuccess, onShowK
         } else if (res.data.validation_details) {
           if (res.data.validation_details.identity) res.data.validation_details.identity = 'EIN acceptable format: xx-xxxxxxx';
           setErrors(res.data.validation_details);
-          if (onError) onError(res.data.validation_details);
         }
         setAppData({
           ...appData,
@@ -364,7 +347,21 @@ const RegisterBusinessForm = ({ className, children, onError, onSuccess, onShowK
     setPreferredKyb(value || undefined)
     setAppData({
       settings: { ...app.settings, preferredKybLevel: value || undefined }
+    }, () => {
+      if (app.activeUser && app.activeUser.handle) {
+        const activeUser = app.users.find(u => u.handle === app.activeUser.handle);
+        updateApp({ activeUser: app.activeUser ? { ...activeUser, kybLevel: value } : false });
+      }
     });
+  }
+
+  const updateUuid = (uuidObj) => {
+    setEntityuuid({...entityuuid, isFetchedUUID: true, uuid: {
+      email: uuidObj && uuidObj.email ? uuidObj.email : entityuuid.uuid.email ? entityuuid.uuid.email : '',
+      phone: uuidObj && uuidObj.phone ? uuidObj.phone : entityuuid.uuid.phone ? entityuuid.uuid.phone : '',
+      identity: uuidObj && uuidObj.identity ? uuidObj.identity : entityuuid.uuid.identity ? entityuuid.uuid.identity : '',
+      address: uuidObj && uuidObj.address ? uuidObj.address : entityuuid.uuid.address ? entityuuid.uuid.address : ''
+    } })
   }
 
   useEffect(() => {
@@ -374,27 +371,32 @@ const RegisterBusinessForm = ({ className, children, onError, onSuccess, onShowK
   }, [app, updateApp])
 
   return (
-    <Form noValidate className={className} validated={validated} autoComplete="off" onSubmit={register}>
-      {!loaded && <Loader overlay />}
+    <>
+      <Form noValidate className={className} validated={validated} autoComplete="off" onSubmit={register}>
+        {!loaded && <Loader overlay fixed />}
 
-      <Form.Label className="text-muted mr-5">Please choose your preferred KYB level:</Form.Label>
-      <SelectMenu fullWidth
-        title={preferredKyb ? KYB_ARRAY.find(option => option.value === preferredKyb).label : 'Choose KYB level'}
-        onChange={(value) => onKybLevelChange(value)}
-        className="types mb-4"
-        value={preferredKyb}
-        options={KYB_ARRAY}
-        disabledOptions={(businessTypes && businessTypes.includes(app.settings.kybBusinessType)) ? ['KYB-STANDARD'] : []} />
+        <Form.Label className="text-muted mr-5">Please choose your preferred KYB level:</Form.Label>
+        <SelectMenu fullWidth
+          title={preferredKyb ? KYB_ARRAY.find(option => option.value === preferredKyb).label : 'Choose KYB level'}
+          onChange={(value) => onKybLevelChange(value)}
+          className="types mb-4"
+          value={preferredKyb}
+          options={KYB_ARRAY}
+          disabledOptions={(businessTypes && businessTypes.includes(app.settings.kybBusinessType)) ? ['KYB-STANDARD'] : []} />
 
-      {!preferredKyb ? <p className="text-right text-muted"><Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none" onClick={() => onShowKybModal(true)}><span className="lnk">What's the difference between the KYB levels?</span><i className="sila-icon sila-icon-info text-primary ml-2"></i></Button></p> : ''}
-      {preferredKyb === KYB_STANDARD && <StandardKYBForm errors={errors} app={app} isHide={(app.activeUser && app.activeUser.kybLevel === KYB_STANDARD)} />}
-      {preferredKyb === KYB_LITE && <LiteKYBForm businessTypes={businessTypes} errors={errors} app={app} isHide={(app.activeUser && app.activeUser.kybLevel === KYB_LITE)} />}
-      {preferredKyb === KYB_RECEIVE_ONLY && <ReceiveOnlyKYBForm errors={errors} app={app} isHide={(app.activeUser && app.activeUser.kybLevel === KYB_RECEIVE_ONLY)} />}
-      {preferredKyb && (app.activeUser && app.activeUser.kybLevel !== preferredKyb) && <div className="d-flex mb-md-5"><Button type="submit" className="ml-auto" disabled={!(app.activeUser && app.activeUser.kybLevel !== app.settings.preferredKybLevel)}>Add data</Button></div>}
-      {app.activeUser && app.activeUser.handle && <RegisterBusinessDataForm errors={errors} onConfirm={onConfirm} onLoaded={(isLoaded) => setLoaded(isLoaded)} onErrors={(errorsObj) => { setErrors(errorsObj); setValidated(true); } } reloadUUID={reloadUUID} onReloadedUUID={(isReloaded) => setReloadUUID(isReloaded)} />}
-
-      {children}
-    </Form>
+        {!preferredKyb ? <p className="text-right text-muted"><Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none" onClick={() => onShowKybModal(true)}><span className="lnk">What's the difference between the KYB levels?</span><i className="sila-icon sila-icon-info text-primary ml-2"></i></Button></p> : ''}
+        {preferredKyb === KYB_STANDARD && !app.activeUser && <StandardKYBForm errors={errors} app={app} />}
+        {preferredKyb === KYB_LITE && !app.activeUser && <LiteKYBForm businessTypes={businessTypes} errors={errors} app={app} />}
+        {preferredKyb === KYB_RECEIVE_ONLY && !app.activeUser && <ReceiveOnlyKYBForm errors={errors} app={app} />}
+        {app.activeUser && app.activeUser.handle && <UpdateKYBForm errors={errors} preferredKyb={preferredKyb} entityuuid={entityuuid} onLoaded={(isLoaded) => setLoaded(isLoaded)} onConfirm={onConfirm} onShowUpdate={(isUpdated) => setShowUpdateBtn(isUpdated)} />}
+        {preferredKyb && app.activeUser && showUpdateBtn && <Button type="submit" className="ml-auto d-flex mt-3">Update data</Button>}
+        {children}
+      </Form>
+      <>
+        {app.activeUser && app.activeUser.handle && <AddDataForm errors={errors} entityuuid={entityuuid} onLoaded={(isLoaded) => setLoaded(isLoaded)} onErrors={(errorsObj) => { setErrors(errorsObj); setValidated(true); } } onUpdateUuid={(uuidObj) => updateUuid(uuidObj)} />}
+        {app.alert.message && <div className="d-flex mt-3"><AlertMessage message={app.alert.message} type={app.alert.type} /></div>}
+      </>
+    </>
   )
 };
 

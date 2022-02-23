@@ -6,7 +6,6 @@ import { useAppContext } from '../../components/context/AppDataProvider';
 import RegisterBusinessForm from '../../components/kyb/RegisterBusinessForm';
 import KybModal from '../../components/home/KybModal';
 import ConfirmModal from '../../components/common/ConfirmModal';
-import AlertMessage from '../../components/common/AlertMessage';
 import Pagination from '../../components/common/Pagination';
 
 const RegisterBusinessModal = ({ show, onHide }) => {
@@ -117,10 +116,7 @@ const RegisterBusiness = ({ page, previous, next, isActive }) => {
 
         {app.settings.preferredKybLevel && !app.activeUser && <Alert variant="info" className="mt-4 mb-5">A wallet is automatically generated for you using the generateWallet() function upon registration.</Alert>}
 
-        <div className="d-flex">
-          {app.alert.message && <AlertMessage message={app.alert.message} type={app.alert.type} />}
-          {app.settings.preferredKybLevel && !app.activeUser && <Button type="submit" className="ml-auto" disabled={!app.settings.kybHandle || (app.activeUser && app.activeUser.handle === app.settings.kybHandle)}>Register Business</Button>}
-        </div>
+        {app.settings.preferredKybLevel && !app.activeUser && <Button type="submit" className="ml-auto float-right" disabled={!app.settings.kybHandle || (app.activeUser && app.activeUser.handle === app.settings.kybHandle)}>Register Business</Button>}
 
       </RegisterBusinessForm>
 

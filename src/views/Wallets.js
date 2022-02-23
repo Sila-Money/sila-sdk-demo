@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Form, Button } from 'react-bootstrap';
+import React, { useState, useEffect, useRef } from 'react';
+import { Container, Form, InputGroup, Button } from 'react-bootstrap';
 
 import { useAppContext } from '../components/context/AppDataProvider';
 
@@ -8,11 +8,15 @@ import AlertMessage from '../components/common/AlertMessage';
 import Loader from '../components/common/Loader';
 import Wallet from '../components/wallets/Wallet';
 
+import { DEFAULT_KYC, KYB_STANDARD } from '../constants';
+
 const Wallets = ({ page, previous, next, isActive }) => {
   const { app, api, updateApp, handleError, setAppData } = useAppContext();
   const activeUser = app.settings.flow === 'kyb' ? app.users.find(user => app.settings.kybHandle === user.handle) : app.activeUser;
   const [wallets, setWallets] = useState(app.wallets.filter(wallet => wallet.handle === activeUser.handle).sort((x, y) => x.default ? -1 : y.default ? 1 : x.private_key === activeUser.private_key ? -1 : y.private_key === activeUser.private_key ? 1 : 0));
   const [loaded, setLoaded] = useState(false);
+  const [activeRow, setActiveRow] = useState({ isNew: false, isEditing: false, error: undefined, index: undefined, value: undefined });
+  const walletsBodyRef = useRef();
 
   const getWallets = async () => {
     console.log('Getting Wallets ...');
@@ -45,24 +49,29 @@ const Wallets = ({ page, previous, next, isActive }) => {
     setLoaded(true);
   }
 
-  const updateWallet = async (wallet) => {
+  const updateWallet = async (wallet, index) => {
     console.log('Updating Wallet ...');
+    setLoaded(false);
     try {
       const res = await api.updateWallet(activeUser.handle, wallet.private_key, {
-        nickname: wallet.nickname,
+        nickname: activeRow.value ? activeRow.value : wallet.nickname,
         default: wallet.default
       });
-      let newWallet = wallet;
+      let newWallet = { ...wallet };
       let result = {};
       console.log('  ... completed!');
       if (res.data.success) {
-        newWallet = { ...wallet, ...res.data.wallet };
+        newWallet = { ...wallet, ...res.data.wallet, nickname: activeRow.value ? activeRow.value : wallet.nickname };
+        let newArr = [...wallets];
+        newArr[index]['nickname'] = activeRow.value ? activeRow.value : wallet.nickname;
+        setWallets(newArr);
+        setActiveRow({...activeRow, isEditing: false, index: undefined, value: undefined, error: undefined, isNew: false});
         result.alert = { message: 'Wallet saved!', type: 'success' };
         if (newWallet.default || wallets.length === 1) result.activeUser = { ...activeUser, private_key: newWallet.private_key, cryptoAddress: newWallet.blockchain_address }
       } else {
-        result.alert = { message: res.data && res.data.validation_details ? res.data.validation_details.nickname : res.data.message , type: 'danger' };
+        setActiveRow({...activeRow, error : res.data && res.data.validation_details ? res.data.validation_details.nickname : res.data.message });
       }
-      delete newWallet.editing;
+
       setAppData({
         wallets: app.wallets.map(w => {
           if (w.default && newWallet.default) delete w.default;
@@ -84,24 +93,36 @@ const Wallets = ({ page, previous, next, isActive }) => {
       console.log('  ... looks like we ran into an issue!');
       handleError(err);
     }
+    setLoaded(true);
   }
 
-  const registerWallet = async (wallet) => {
+  const registerWallet = async () => {
+    if (activeRow.isNew && !activeRow.value) return;
     console.log('Registering Wallet ...');
+    setLoaded(false);
     try {
+      const newWallet = await api.generateWallet();
       const res = await api.registerWallet(activeUser.handle, activeUser.private_key, {
-        address: wallet.blockchain_address,
-        privateKey: wallet.private_key
-      }, wallet.nickname);
+        address: newWallet.address,
+        privateKey: newWallet.privateKey
+      }, activeRow.value);
+
       let result = {};
       console.log('  ... completed!');
       let registerWallets = [...app.wallets];
       if (res.data.success) {
-        delete wallet.isNew;
-        registerWallets = [...app.wallets, { ...wallet }];
+        const newWalletData = {
+          blockchain_address: newWallet.address,
+          private_key: newWallet.privateKey,
+          handle: activeUser.handle,
+          nickname: res.data.wallet_nickname
+        }
+        setWallets([...wallets, newWalletData]);
+        setActiveRow({...activeRow, isNew: false, error: undefined, value: undefined});
+        registerWallets = [...app.wallets, { ...newWalletData }];
         result.alert = { message: 'Wallet saved!', type: 'success' };
       } else {
-        result.alert = { message: res.data && res.data.validation_details ? res.data.validation_details.wallet.nickname : res.data.message, type: 'danger' };
+        setActiveRow({...activeRow, error : res.data && res.data.validation_details ? res.data.validation_details.wallet.nickname : res.data.message });
       }
 
       setAppData({
@@ -117,10 +138,12 @@ const Wallets = ({ page, previous, next, isActive }) => {
       console.log('  ... looks like we ran into an issue!');
       handleError(err);
     }
+    setLoaded(true);
   }
 
-  const deleteWallet = async (wallet) => {
+  const deleteWallet = async (wallet, index) => {
     console.log('Deleting Wallet ...');
+    setLoaded(false);
     try {
       const res = await api.deleteWallet(activeUser.handle, wallet.private_key);
       let result = {};
@@ -146,39 +169,30 @@ const Wallets = ({ page, previous, next, isActive }) => {
       console.log('  ... looks like we ran into an issue!');
       handleError(err);
     }
+    setLoaded(true);
   }
 
   const addWallet = () => {
-    const newWallet = api.generateWallet();
-    setWallets([...wallets, {
-      blockchain_address: newWallet.address,
-      private_key: newWallet.privateKey,
-      handle: activeUser.handle,
-      isNew: true,
-      nickname: ''
-    }]);
+    setActiveRow({ ...activeRow, isNew: activeRow.isNew ? false : true, isEditing: false, index: '' });
   }
 
   const editWallet = (index) => {
-    let newArr = [...wallets];
-    newArr[index].editing = true;
-    setWallets(newArr);
+    setActiveRow({ ...activeRow, isEditing: true, index: index, isNew: false });
   }
 
-  const removeWallet = (wallet, index) => {
-    let newArr = [...wallets];
-    if (wallet.isNew) {
-      newArr.splice(index, 1);
-      setWallets(newArr);
-    } else {
-      deleteWallet(wallet);
+  const handleChange = (e) => {
+    setActiveRow({...activeRow, value: e.target.value.trim() || undefined});
+  }
+
+  const handleKeypress = (e, wallet, index) => {
+    if (e.key === 'Enter') {
+      if(activeRow.isEditing && wallet && typeof(index) !== undefined && activeRow.value && activeRow.value !== wallet.nickname) updateWallet(wallet, index);
+      if(activeRow.isNew) registerWallet();
     }
-  }
+  };
 
-  const handleChange = (e, index) => {
-    let newArr = [...wallets];
-    newArr[index][e.target.name] = e.target.value;
-    setWallets(newArr);
+  const submitWallet = (e) => {
+    e.preventDefault();
   }
 
   useEffect(() => {
@@ -194,6 +208,18 @@ const Wallets = ({ page, previous, next, isActive }) => {
     });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => {
+    const checkIfClickedOutside = (e) => {
+      if (activeRow.isEditing && walletsBodyRef.current && !walletsBodyRef.current.contains(e.target)) {
+        setActiveRow({...activeRow, isEditing: false, error: undefined, index: undefined, value: undefined});
+      }
+    }
+    document.addEventListener('mousedown', checkIfClickedOutside)
+    return () => {
+      document.removeEventListener('mousedown', checkIfClickedOutside)
+    }
+  }, [activeRow])
+
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 
@@ -203,18 +229,41 @@ const Wallets = ({ page, previous, next, isActive }) => {
 
       <p className="text-muted mb-5">This page represents <a href="https://docs.silamoney.com/docs/register_wallet" target="_blank" rel="noopener noreferrer">/register_wallet</a>, <a href="https://docs.silamoney.com/docs/delete_wallet" target="_blank" rel="noopener noreferrer">/delete_wallet</a>, <a href="https://docs.silamoney.com/docs/update_wallet" target="_blank" rel="noopener noreferrer">/update_wallet</a>, and <a href="https://docs.silamoney.com/docs/get_wallets" target="_blank" rel="noopener noreferrer">/get_wallets</a> functionality.</p>
 
-      <Form noValidate autoComplete="off" className="position-relative mt-4">
+      <Form noValidate autoComplete="off" className="position-relative mt-4" onSubmit={submitWallet}>
         {!loaded && <Loader overlay />}
-        {wallets.map((wallet, index) => <Wallet key={index} wallets={wallets} data={wallet} onHandleChange={handleChange} onCreate={registerWallet} onUpdate={updateWallet} onEdit={editWallet} onDelete={removeWallet} index={index} />)}
+        <span ref={walletsBodyRef}>
+          {wallets.map((wallet, index) => <Wallet key={index} data={wallet} activeRow={activeRow} onHandleChange={handleChange} onHandleKeypress={handleKeypress} onUpdate={updateWallet} onEdit={editWallet} onDelete={deleteWallet} index={index} />)}
+        </span>
+
+        {activeRow.isNew && <div className="wallet loaded">
+          <Form.Group controlId="formGroupAddWalletName">
+            <InputGroup className="mb-3">
+              <Form.Control
+                autoFocus
+                aria-label="New Wallet Name"
+                name="newnickname"
+                placeholder="New Wallet Name"
+                onChange={handleChange}
+                onKeyPress={(e) => handleKeypress(e)}
+                defaultValue={activeRow.value}
+              />
+              <InputGroup.Append className="d-flex justify-content-between align-items-center">
+                <Button className="p-1 text-decoration-none mr-3 px-3" disabled={!activeRow.value} onClick={registerWallet}>Save</Button>
+                <Button variant="outline-light" className="p-1 text-decoration-none mr-3 px-3 btn-sm" onClick={addWallet}>Cancel</Button>
+              </InputGroup.Append>
+            </InputGroup>
+            {activeRow.error && <Form.Control.Feedback type="none" className="text-danger">{activeRow.error}</Form.Control.Feedback>}
+          </Form.Group>
+        </div>}
       </Form>
 
-      <div className="d-flex mt-5">
+      <div className="d-flex mt-3">
         {app.alert.message && <AlertMessage message={app.alert.message} type={app.alert.type} />}
-        <Button onClick={addWallet} className="ml-auto">Add Additonal Wallet <i className="fas fa-plus-circle ml-2"></i></Button>
+        <Button onClick={addWallet} className="ml-auto">Add Additional Wallet <i className="fas fa-plus-circle ml-2"></i></Button>
       </div>
 
       <Pagination
-        previous={previous}
+        previous={app.settings.flow === 'kyc' && app.settings.preferredKycLevel !== DEFAULT_KYC ? '/request_kyc' : app.settings.flow === 'kyb' && app.settings.preferredKybLevel !== KYB_STANDARD ? '/request_kyc' : previous}
         next={isActive ? next : undefined}
         currentPage={page} />
 
