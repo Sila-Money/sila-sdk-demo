@@ -102,15 +102,22 @@
     }
 }
 
+.sila-icon-blue-dot {
+    &:before {
+        content: "\e912";
+        color: #3f63f7;
+    }
+}
+
 .sila-icon-search {
     &:before {
         content: "\e913";
     }
 }
 
-.sila-icon-blue-dot {
+.sila-icon-up-close {
     &:before {
-        content: "\e912";
+        content: "\e914";
         color: #3f63f7;
     }
 }

@@ -78,7 +78,7 @@ const RequestKYC = ({ page, previous, next }) => {
         result.alert = { message: res.data.message, type: 'danger' };
         result[app.settings.flow].alert = { message: 'Failed ID verification', type: 'danger' };
       } else {
-        if(event === 'onclick') {
+        if(res.data.verification_status !== 'unverified' || event === 'onclick') {
           result.alert = res.data.message.includes('requested') ? { message: res.data.message, type: 'danger' } : { message: `${activeUser.handle} is still pending ID verification.`, type: 'wait' };
           if (!res.data.message.includes('requested')) result[app.settings.flow].alert = { message: 'Pending ID verification', type: 'warning' };
         }
@@ -98,9 +98,16 @@ const RequestKYC = ({ page, previous, next }) => {
         };
       }
 
+      let appSuccessData;
+      if ((app.settings.flow === 'kyc' && app.settings.preferredKycLevel === DEFAULT_KYC) || (app.settings.flow === 'kyb' && app.settings.preferredKybLevel === KYB_STANDARD)) {
+        appSuccessData = res.data.verification_status !== 'unverified' && !isActive ? [...app.success, { handle: activeUser.handle, [app.settings.flow]: true, page }] : app.success;
+      } else {
+        appSuccessData = res.data.verification_status.includes('passed') && !isActive ? [...app.success, { handle: activeUser.handle, [app.settings.flow]: true, page }] : app.success;
+      }
+
       setAppData({
         ...appData,
-        success: res.data.verification_status.includes('passed') && !isActive ? [...app.success, { handle: activeUser.handle, [app.settings.flow]: true, page }] : app.success,
+        success: appSuccessData,
         responses: [{
           endpoint: '/check_kyc',
           result: JSON.stringify(res, null, '\t')

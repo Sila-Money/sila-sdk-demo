@@ -67,6 +67,7 @@ const UploadDocumentModal = ({ activeUser, documentTypes, show, onClose, onSucce
     onDrop,
     accept: 'image/jpeg, image/png, application/pdf',
     maxFiles:1,
+    multiple: false,
     maxSize: MAX_UPLOAD_FILE_SIZE,
     noClick: true,
     noKeyboard: true
@@ -138,6 +139,10 @@ const UploadDocumentModal = ({ activeUser, documentTypes, show, onClose, onSucce
     onClose();
   }
 
+  const onFileCancel = () => {
+    setUploadedFile(undefined);
+  }
+
   const clearForm = () => {
     setValidated(false);
     setUploadedFile(undefined)
@@ -173,15 +178,30 @@ const UploadDocumentModal = ({ activeUser, documentTypes, show, onClose, onSucce
               <input {...getInputProps()} />
               {!uploadedFile && <div className="my-3 text-center"><i className="sila-icon sila-icon-document ml-2" style={{fontSize:45}}></i><p className='d-flex align-items-center'>Drag your document here, or <Button variant="link" className="p-0 shadow-none btn btn-link text-underline font-lg font-weight-bold ml-1" onClick={open}> choose a file.</Button></p></div>}
               {uploadedFile && <div className="my-3 d-flex align-items-center w-100 justify-content-between">
-                <div className='col d-flex justify-content-start align-items-center'><i className="sila-icon sila-icon-document mr-4 text-primary" style={{fontSize:45}}></i> <div><p className='m-0 font-weight-bold'>{uploadedFile.name}</p> <p className='m-0 font-italic'> <small>{bytesToSize(uploadedFile.size)}</small></p></div></div> <div className='col d-flex justify-content-end align-items-center font-weight-bold'><i className="mr-2 sila-icon sila-icon-success text-success"></i>Ready to go!</div></div>}
+                <div className="col col-md-8 d-flex justify-content-start align-items-center">
+                  <i className="sila-icon sila-icon-document mr-4 text-primary" style={{fontSize:45}}></i>
+                  <div>
+                    <p className="m-0 font-weight-bold d-flex text-break text-wrap">
+                      {uploadedFile.name}
+                      <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none mx-2 px-2" onClick={onFileCancel}>
+                        <i className="sila-icon sila-icon-up-close text-lg text-primary"></i>
+                      </Button>
+                    </p>
+                    <p className="m-0 font-italic"><small>{bytesToSize(uploadedFile.size)}</small></p>
+                  </div>
+                </div>
+                <div className="col d-flex justify-content-end align-items-center font-weight-bold">
+                  <i className="mr-2 sila-icon sila-icon-success text-success"></i>Ready to go!
+                </div>
+              </div>}
             </div>
           </div>
-          {fileRejectionItems && <Form.Control.Feedback type="none" className="text-danger">{fileRejectionItems}</Form.Control.Feedback>}
+          {fileRejectionItems && fileRejections['0'] && <Form.Control.Feedback type="none" className="text-danger">{fileRejections['0']['errors']['0']['message']}</Form.Control.Feedback>}
           {alert && <div className="d-flex mt-3"><AlertMessage message={alert.message} type={alert.type} onHide={() => setAlert(false)} /></div>}
 
         </Modal.Body>
         <Modal.Footer>
-          <Button type="submit" className="text-decoration-none ml-3 p-2 px-4" disabled={!validated}>Add Document</Button>
+          {uploadedFile && <Button type="submit" className="text-decoration-none ml-3 p-2 px-4" disabled={!validated}>Add Document</Button>}
           <Button variant="outline-light" className="p-2 px-4" onClick={onCancel}>Cancel</Button>
         </Modal.Footer>
       </Form>
