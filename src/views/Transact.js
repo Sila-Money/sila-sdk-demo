@@ -11,6 +11,8 @@ import AlertMessage from '../components/common/AlertMessage';
 import Pagination from '../components/common/Pagination';
 import TransactionsModal from '../components/transact/TransactionsModal';
 
+import { PROCESSING_TYPES } from '../constants';
+
 const defaultForms = {
   issue: { values: {}, errors: {}, validated: false },
   transfer: { values: {}, errors: {}, validated: false },
@@ -33,7 +35,6 @@ const Transact = ({ page, previous, next, isActive }) => {
   const [forms, setForms] = useState(defaultForms);
   const [confirm, setConfirm] = useState(defaultConfirm);
   const [showTransactions, setShowTransactions] = useState(false);
-
   const handleChange = (e, form) => setForms({ ...forms, [form]: { ...forms[form], values: { ...forms[form].values, [e.target.name]: e.target.value } } });
   const handleFormError = (form, name, error) => setForms({ ...forms, [form]: { ...forms[form], errors: { ...forms[form].errors, [name]: error } } });
   const handleAccount = (index) => setAccount(userAccounts[index]);
@@ -72,7 +73,7 @@ const Transact = ({ page, previous, next, isActive }) => {
   const issueSila = async (amount) => {
     console.log(`Issuing ${amount} Sila ...`);
     try {
-      const res = await api.issueSila(amount, app.activeUser.handle, app.activeUser.private_key, account.account_name);
+      const res = await api.issueSila(amount, app.activeUser.handle, app.activeUser.private_key, account.account_name, undefined, undefined, forms.issue.values.processing_type);
       updatedResponses = [{ endpoint: '/issue_sila', result: JSON.stringify(res, null, '\t') }, ...updatedResponses];
       let result = {};
       console.log('  ... completed!');
@@ -97,7 +98,7 @@ const Transact = ({ page, previous, next, isActive }) => {
   const redeemSila = async (amount) => {
     console.log(`Redeeming ${amount} Sila ...`);
     try {
-      const res = await api.redeemSila(amount, app.activeUser.handle, app.activeUser.private_key, account.account_name);
+      const res = await api.redeemSila(amount, app.activeUser.handle, app.activeUser.private_key, account.account_name, undefined, undefined, forms.redeem.values.processing_type);
       updatedResponses = [{ endpoint: '/redeem_sila', result: JSON.stringify(res, null, '\t') }, ...updatedResponses];
       let result = {};
       console.log('  ... completed!');
@@ -170,6 +171,10 @@ const Transact = ({ page, previous, next, isActive }) => {
     }
   }
 
+  const onProcessingTypeChange = (value, form) => {
+    setForms({ ...forms, [form]: { ...forms[form], values: { ...forms[form].values, processing_type: value } } });
+  }
+
   useEffect(() => {
     setWallet(userWallets.find(wallet => wallet.private_key === app.activeUser.private_key));
   }, [app.activeUser]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -191,7 +196,7 @@ const Transact = ({ page, previous, next, isActive }) => {
 
       {userAccounts.length === 0 && <Alert variant="warning" className="mb-4">An active account is required to initiate a transaction.  <NavLink to="/accounts" className="text-reset text-underline">Link an account</NavLink></Alert>}
 
-      <p className="text-muted mb-5">This page represents <a href="https://docs.silamoney.com/docs/get_sila_balance" target="_blank" rel="noopener noreferrer">/get_sila_balance</a>, <a href="https://docs.silamoney.com/docs/issue_sila" target="_blank" rel="noopener noreferrer">/issue_sila</a>, <a href="https://docs.silamoney.com/docs/redeem_sila" target="_blank" rel="noopener noreferrer">/redeem_sila</a>, <a href="https://docs.silamoney.com/docs/transfer_sila" target="_blank" rel="noopener noreferrer">/transfer_sila</a>, and <a href="https://docs.silamoney.com/docs/get_transactions" target="_blank" rel="noopener noreferrer">/get_transactions</a>  functionality.</p>
+      <p className="text-muted mb-5">This page represents <a href="https://docs.silamoney.com/docs/get_sila_balance" target="_blank" rel="noopener noreferrer">/get_sila_balance</a>, <a href="https://docs.silamoney.com/docs/issue_sila" target="_blank" rel="noopener noreferrer">/issue_sila</a>, <a href="https://docs.silamoney.com/docs/redeem_sila" target="_blank" rel="noopener noreferrer">/redeem_sila</a>, <a href="https://docs.silamoney.com/docs/transfer_sila" target="_blank" rel="noopener noreferrer">/transfer_sila</a>, and <a href="https://docs.silamoney.com/docs/get_transactions" target="_blank" rel="noopener noreferrer">/get_transactions</a> functionality. Learn more about the ACH processing schedule <a href="https://docs.silamoney.com/docs/ach-processing-schedule#instant-ach-3" target="_blank" rel="noopener noreferrer">here.</a></p>
 
       <div className="d-flex mb-4">
         <h2 className="mb-0">Wallet Balance</h2>
@@ -249,13 +254,25 @@ const Transact = ({ page, previous, next, isActive }) => {
           <Card.Body>
             <Tab.Content>
               <Tab.Pane eventKey="issue">
+                <Form.Label className="text-muted mr-5">Choose a processing type:</Form.Label>
+                <SelectMenu fullWidth
+                  title={forms.issue.values.processing_type ? PROCESSING_TYPES.find(option => option.value === forms.issue.values.processing_type).label : 'Processing type'}
+                  onChange={(value) => onProcessingTypeChange(value, 'issue')}
+                  className="types mb-4"
+                  value={forms.issue.values.processing_type || ''}
+                  options={PROCESSING_TYPES} />
+                {forms.issue.errors.processing_type && <Form.Control.Feedback type="none" className="text-danger mb-3">{forms.issue.errors.processing_type}</Form.Control.Feedback>}
+
                 <p className="text-muted">Add Sila to your wallet by debiting a linked account. One Sila = 1¢.</p>
                 <Form noValidate validated={forms.issue.validated} autoComplete="off" className="d-flex mt-auto" onSubmit={(e) => {
                   e.preventDefault();
                   const amount = parseFloat(e.target.issue.value);
                   if (isNaN(amount) || amount % 1 !== 0) {
                     handleFormError('issue', 'issue', 'Please enter a whole number');
+                  } else if(!forms.issue.values.processing_type) {
+                    handleFormError('issue', 'processing_type', 'Please choose a processing type.');
                   } else {
+                    handleFormError('issue', 'processing_type', undefined);
                     setConfirm({
                       show: true,
                       message: `Please confirm that you would like to convert $${formatNumber(amount / 100)} USD from ${account.account_name} ending in ${account.account_number} to ${formatNumber(amount)} Sila in ${wallet.nickname}.`,
@@ -322,13 +339,25 @@ const Transact = ({ page, previous, next, isActive }) => {
                 </Form>
               </Tab.Pane>
               <Tab.Pane eventKey="redeem">
+                <Form.Label className="text-muted mr-5">Choose a processing type:</Form.Label>
+                <SelectMenu fullWidth
+                  title={forms.redeem.values.processing_type ? PROCESSING_TYPES.find(option => option.value === forms.redeem.values.processing_type).label : 'Processing type'}
+                  onChange={(value) => onProcessingTypeChange(value, 'redeem')}
+                  className="types mb-4"
+                  value={forms.redeem.values.processing_type || ''}
+                  options={PROCESSING_TYPES} />
+                {forms.redeem.errors.processing_type && <Form.Control.Feedback type="none" className="text-danger mb-3">{forms.redeem.errors.processing_type}</Form.Control.Feedback>}
+
                 <p className="text-muted">Convert Sila from your selected linked wallet to dollars in your primary linked account.</p>
                 <Form noValidate validated={forms.redeem.validated} autoComplete="off" className="d-flex mt-auto" onSubmit={(e) => {
                   e.preventDefault();
                   const amount = parseFloat(e.target.redeem.value);
                   if (isNaN(amount) || amount % 1 !== 0) {
                     handleFormError('redeem', 'redeem', 'Please enter a whole number');
+                  } else if(!forms.redeem.values.processing_type) {
+                    handleFormError('redeem', 'processing_type', 'Please choose a processing type.');
                   } else {
+                    handleFormError('redeem', 'processing_type', undefined);
                     setConfirm({
                       show: true,
                       message: `Please confirm that you would like to convert ${formatNumber(amount)} Sila from ${wallet.nickname} to $${formatNumber(amount / 100)} USD in ${account.account_name} ending in ${account.account_number}.`,
