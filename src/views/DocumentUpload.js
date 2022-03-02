@@ -42,6 +42,8 @@ const DocumentUpload = ({ history, page, previous, next }) => {
           setPreview(previewData);
         }
 
+        // Removed file binary content response due to localStorage quota limit exceeded error handling.
+        res['data'] = '';
         setAppData({
           responses: [{
             endpoint: '/get_document', result: JSON.stringify(res, null, '\t')

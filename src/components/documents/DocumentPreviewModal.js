@@ -45,7 +45,7 @@ const DocumentPreviewModal = ({ data, show, onHide }) => {
 
   const renderPage = useCallback((pageNum, pdf = pdfRef) => {
     pageRendering.current = true;
-    dimensions.width && dimensions.height && pdf && pdf.getPage(pageNum).then(function (page) {
+    dimensions && dimensions.width && dimensions.height && pdf && pdf.getPage(pageNum).then(function (page) {
       const viewport = page.getViewport({ scale: 1.5 });
       const canvas = canvasRef.current;
       canvas.height = viewport.height;
@@ -119,7 +119,7 @@ const DocumentPreviewModal = ({ data, show, onHide }) => {
               <span>Page: <span>{currentPage}</span> / <span>{totalPages}</span></span>
               {totalPages > 1 ? <button onClick={onNextPage}>Next</button> : ''}
             </div>
-            <canvas className="loaded" ref={canvasRef}></canvas></> : <div className="d-flex w-100 h-100 justify-content-center align-items-center"><img style={{ maxWidth: '100%' }} src={data.file} alt={data ? data.filename : undefined} /></div>}
+            <canvas className="loaded" ref={canvasRef}></canvas></> : <div className="d-flex w-100 h-100 justify-content-center align-items-center"><img style={{ maxWidth: '100%' }} src={data && data.file} alt={data ? data.filename : undefined} /></div>}
         </>}
       </Modal.Body>
     </Modal>
