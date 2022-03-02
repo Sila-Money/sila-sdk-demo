@@ -114,11 +114,14 @@ const DocumentPreviewModal = ({ data, show, onHide }) => {
       </Modal.Header>
       <Modal.Body ref={containerRef} className="p-0 overflow-auto position-relative" style={{ height: 500 }}>
         {!data && !loading ? <Loader /> : <>
-          {data && data.file_type === 'pdf' ? <><div className="preview-pdf-nav">
-              {totalPages > 1 ? <button onClick={onPrevPage}>Previous</button> : ''}
-              <span>Page: <span>{currentPage}</span> / <span>{totalPages}</span></span>
-              {totalPages > 1 ? <button onClick={onNextPage}>Next</button> : ''}
-            </div>
+          {data && data.file_type === 'pdf' ? <>
+            {totalPages > 1 ? <div className="d-flex justify-content-center">
+              <div className="preview-pdf-nav">
+                <button onClick={onPrevPage}>Previous</button>
+                <span className="px-4">Page: <span>{currentPage}</span> / <span>{totalPages}</span></span>
+                <button onClick={onNextPage}>Next</button>
+              </div>
+            </div> : ''}
             <canvas className="loaded" ref={canvasRef}></canvas></> : <div className="d-flex w-100 h-100 justify-content-center align-items-center"><img style={{ maxWidth: '100%' }} src={data && data.file} alt={data ? data.filename : undefined} /></div>}
         </>}
       </Modal.Body>
