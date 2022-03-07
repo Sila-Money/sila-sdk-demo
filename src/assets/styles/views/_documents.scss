@@ -1,0 +1,14 @@
+// RegisterUser view
+
+.preview-pdf-nav {
+  padding: 10px;
+  text-align: center;
+  margin: 0 auto;
+  z-index: 1;
+  position: fixed;
+  background-color: $white;
+  button{
+    border: 1px solid $gray-lighter;
+    padding: 3px 10px;
+  }
+}

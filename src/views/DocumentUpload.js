@@ -10,7 +10,7 @@ import UploadDocumentModal from '../components/documents/UploadDocumentModal';
 import DocumentPreviewModal from '../components/documents/DocumentPreviewModal';
 
 import { DEFAULT_KYC, KYB_STANDARD } from '../constants';
-import { formatDateAndTime } from '../utils';
+import { formatDateAndTime, b64toBlob } from '../utils';
 
 const DocumentUpload = ({ history, page, previous, next }) => {
   const { app, api, setAppData, handleError } = useAppContext();
@@ -25,34 +25,36 @@ const DocumentUpload = ({ history, page, previous, next }) => {
   let isLoading = useRef(false);
   let isDocTypesLoading = useRef(false);
   let updatedResponses = useRef([]);
-  //const imageTypes = ['image/jpg', 'image/png'];
+  const imageTypes = ['image/jpeg', 'image/jpg', 'image/png'];
 
-  // const onDocumentView = async (document) => {
-  //   if (document) {
-  //     setPreview({ ...preview, show: true });
-  //     try {
-  //       let res = await api.getDocument(activeUser.handle, activeUser.private_key, document.document_id);
-  //       console.info(res);
+  const onDocumentView = async (document) => {
+    if (document) {
+      setPreview({ ...preview, show: true });
+      try {
+        const res = await api.getDocument(activeUser.handle, activeUser.private_key, document.document_id);
+        if (res['statusCode'] === 200) {
+          var encodedData = new Buffer(res['data'].toString(), "binary").toString("base64");
+          const blob = b64toBlob(encodedData, res['headers']['content-type']);
+          let previewData = { show: true, data: { ...document, file_type: 'image', file: URL.createObjectURL(blob) } };
+          if (!imageTypes.includes(res['headers']['content-type'])) {
+            previewData.data['file_type'] = 'pdf';
+          }
+          setPreview(previewData);
+        }
 
-  //       if (imageTypes.includes(res['headers']['content-type'])) {
-  //         const blob = new Blob([res['data']], { type: res['headers']['content-type'] });
-  //         setPreview({ show: true, data: { ...document, file_type: 'image', file: URL.createObjectURL(blob) } });
-  //       } else {
-  //         const blob = new Blob([res['data']], { type: res['headers']['content-type'] });
-  //         setPreview({ show: true, data: { ...document, file_type: 'pdf', file: URL.createObjectURL(blob) } });
-  //       }
-
-  //       setAppData({
-  //         responses: [{
-  //           endpoint: '/get_document', result: JSON.stringify(res, null, '\t')
-  //         }, ...app.responses]
-  //       });
-  //     } catch (err) {
-  //       setPreview({ show: false, data: undefined })
-  //       console.log('  ... looks like we ran into an issue in getDocument!');
-  //     }
-  //   }
-  // };
+        // Removed file binary content response due to localStorage quota limit exceeded error handling.
+        res['data'] = '';
+        setAppData({
+          responses: [{
+            endpoint: '/get_document', result: JSON.stringify(res, null, '\t')
+          }, ...app.responses]
+        });
+      } catch (err) {
+        setPreview({ show: false, data: undefined })
+        console.log('  ... looks like we ran into an issue in getDocument!');
+      }
+    }
+  };
 
   const fetchDocuments = async () => {
     try {
@@ -129,7 +131,7 @@ const DocumentUpload = ({ history, page, previous, next }) => {
               <th className="text-lg bg-secondary text-dark font-weight-bold">Date Uploaded</th>
               <th className="text-lg bg-secondary text-dark font-weight-bold">Document Name</th>
               <th className="text-lg bg-secondary text-dark font-weight-bold">Document Type</th>
-              {/* <th className="text-lg bg-secondary text-dark font-weight-bold text-center">Action</th> */}
+              <th className="text-lg bg-secondary text-dark font-weight-bold text-center">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -139,17 +141,18 @@ const DocumentUpload = ({ history, page, previous, next }) => {
                   <td>{formatDateAndTime(document.created)}</td>
                   <td>{document.filename}</td>
                   <td>{documentTypes.length !== 0 && documentTypes.find(t => t.name === document.type).label}</td>
-                  {/* <td className="text-center">
+                  <td className="text-center">
                     <div className="d-flex py-2 justify-content-center">
                       <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none mx-1 px-1" onClick={() => onDocumentView(document) }>
                         <i className="sila-icon sila-icon-view text-lg"></i>
                       </Button>
                     </div>
-                  </td> */}
+                  </td>
                 </tr>
               ) :
               <tr className="loaded">
                 {loaded && documents.length === 0 ? <td><em>No documents added</em></td> : <td>&nbsp;</td>}
+                <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
               </tr>
