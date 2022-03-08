@@ -107,7 +107,7 @@ const UpdateKYCForm = ({ errors, preferredKyc, entityuuid, onLoaded, onConfirm, 
     <>
       <p className="text-muted">This KYC Level requires us to gather more information from you. Please fill out the required fields below.</p>
 
-      <p className="text-right text-lg text-warning">All fields are required for this KYC level.</p>
+      <p className="text-lg text-warning">All fields are required for this KYC level.</p>
       <Form.Row>
         {activeUser && activeUser.firstName && <Form.Group as={Col} md="6" controlId="registerFirstName" className="required">
           <Form.Control required placeholder="First Name" name="firstName" defaultValue={activeUser.firstName} onChange={onChange} />

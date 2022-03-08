@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Alert } from 'react-bootstrap';
 
 import { useAppContext } from '../../components/context/AppDataProvider';
 
@@ -378,7 +378,7 @@ const RegisterUserForm = ({ className, handle, onSuccess, onShowKycModal, onConf
       <Form noValidate className={className} validated={validated} autoComplete="off" onSubmit={register}>
         {!loaded && <Loader overlay fixed />}
 
-        <Form.Label className="text-muted mr-5">Please choose your preferred KYC level:</Form.Label>
+        <Form.Label className="text-muted mr-5">Please choose your preferred KYC level, if you are a first time user, we suggest the DOC KYC flow:</Form.Label>
         <SelectMenu fullWidth
           title={preferredKyc ? KYC_ARRAY.find(option => option.value === preferredKyc).label : 'Choose KYC'}
           onChange={(value) => onKycLevelChange(value)}
@@ -386,7 +386,8 @@ const RegisterUserForm = ({ className, handle, onSuccess, onShowKycModal, onConf
           value={preferredKyc}
           options={KYC_ARRAY} />
 
-        {!preferredKyc ? <p className="text-right text-muted"><Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none" onClick={() => onShowKycModal(true)}><span className="lnk">What's the difference between these KYC levels?</span><i className="sila-icon sila-icon-info text-primary ml-2"></i></Button></p> : ''}
+        <p className="text-right text-muted"><Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none" onClick={() => onShowKycModal(true)}><span className="lnk">What's the difference between these KYC levels?</span><i className="sila-icon sila-icon-info text-primary ml-2"></i></Button></p>
+        {preferredKyc === INSTANT_ACH_KYC && !app.activeUser && <Alert variant="warning" className="mb-3">For the first time user, use DOC KYC or KYC lite before testing out Instant ACH functionality.</Alert>}
         {preferredKyc === DEFAULT_KYC && !app.activeUser && <DefaultKYCForm errors={errors} app={app} />}
         {preferredKyc === LITE_KYC && !app.activeUser && <KYCLiteForm errors={errors} app={app} />}
         {preferredKyc === RECEIVE_ONLY_KYC && !app.activeUser && <ReceiveOnlyKYCForm errors={errors} app={app} />}

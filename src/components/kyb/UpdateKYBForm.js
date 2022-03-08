@@ -104,7 +104,7 @@ const UpdateKYBForm = ({ errors, preferredKyb, entityuuid, onLoaded, onConfirm, 
   
   return (
     <>
-      <p className="text-right text-lg text-warning">All fields are required for this KYB level.</p>
+      <p className="text-lg text-warning">All fields are required for this KYB level.</p>
 
       {activeUser && activeUser.entity_name && !activeUser.email && <Form.Group controlId="businessName" className="required">
         <Form.Control required placeholder="Legal Company Name" name="entity_name" defaultValue={activeUser ? activeUser.entity_name : undefined} onChange={onChange} isInvalid={Boolean(errors.entity && errors.entity.entity_name)} />

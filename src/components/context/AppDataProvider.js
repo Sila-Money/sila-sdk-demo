@@ -24,7 +24,8 @@ let appData = {
   wallets: [],
   accounts: [],
   responses: [],
-  success: []
+  success: [],
+  kycPartners: []
 };
 
 // Get app data
@@ -35,7 +36,8 @@ const getAppStorage = () => ({
   wallets: JSON.parse(localStorage.getItem('wallets')) || appData.wallets,
   accounts: JSON.parse(localStorage.getItem('accounts')) || appData.accounts,
   responses: JSON.parse(localStorage.getItem('responses')) || appData.responses,
-  success: JSON.parse(localStorage.getItem('success')) || appData.success
+  success: JSON.parse(localStorage.getItem('success')) || appData.success,
+  kycPartners: JSON.parse(localStorage.getItem('kycPartners')) || appData.kycPartners
 });
 
 // Set app data
@@ -46,7 +48,8 @@ const setAppStorage = (data) => ( // eslint-disable-next-line
   data.wallets && localStorage.setItem('wallets', JSON.stringify(data.wallets)),
   data.accounts && localStorage.setItem('accounts', JSON.stringify(data.accounts)),
   data.responses && localStorage.setItem('responses', JSON.stringify(data.responses)),
-  data.success && localStorage.setItem('success', JSON.stringify(data.success.filter(success => typeof(success) !== 'string')))
+  data.success && localStorage.setItem('success', JSON.stringify(data.success.filter(success => typeof(success) !== 'string'))),
+  data.kycPartners && localStorage.setItem('kycPartners', JSON.stringify(data.kycPartners))
 );
 
 // Initialize app data
@@ -81,6 +84,7 @@ const AppDataProvider = props => {
     accounts: initAppData.accounts,
     users: initAppData.users,
     success: initAppData.success,
+    kycPartners: initAppData.kycPartners,
     activeUser: activeUser || false,
     kyc: {},
     kyb: {},
@@ -122,7 +126,8 @@ const AppDataProvider = props => {
       responses: initAppData.responses,
       wallets: initAppData.wallets,
       accounts: initAppData.accounts,
-      success: initAppData.success
+      success: initAppData.success,
+      kycPartners: initAppData.kycPartners
     });
     if (!auth) {
       // If there is no Auth setting, remove authentication in the SDK and demo app
@@ -147,6 +152,7 @@ const AppDataProvider = props => {
           type: 'success',
           loaded: true
         }],
+        kycPartners: [],
         kyc: {},
         kyb: {},
         transactions: false,
