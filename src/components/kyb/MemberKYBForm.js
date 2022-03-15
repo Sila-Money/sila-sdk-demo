@@ -248,7 +248,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, acti
             successUuid = {...successUuid, address: addressRes.data && addressRes.data.address ? addressRes.data.address.uuid : entityuuid.uuid.address ? entityuuid.uuid.address : '' };
           } else {
             successStatus = {...successStatus, address: false};
-            validationErrors = { ...validationErrors, address: addressRes.data.validation_details ? addressRes.data.validation_details.address : addressRes.data.message }
+            validationErrors = { ...validationErrors, address: addressRes.data.validation_details ? addressRes.data.validation_details.address ? addressRes.data.validation_details.address : addressRes.data.validation_details : addressRes.data.message }
           }
         } catch (err) {
           console.log('  ... unable to update address, looks like we ran into an issue!');
