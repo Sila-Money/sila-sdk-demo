@@ -13,8 +13,8 @@ const InstitutionsModal = ({ institutions, isFetching, show, onSearch, onClose }
     if (isFetching) return;
     if(institutionNameRef.current.value || routingNumberRef.current.value) {
       onSearch({
-        institution_name: institutionNameRef.current.value ? institutionNameRef.current.value : '',
-        routing_number: routingNumberRef.current.value ? routingNumberRef.current.value : ''
+        institution_name: institutionNameRef.current.value.trim() ? institutionNameRef.current.value : '',
+        routing_number: routingNumberRef.current.value.trim() ? routingNumberRef.current.value : ''
       });
       setAction({...action, filtered: true, page: 1 });
     }
@@ -68,7 +68,7 @@ const InstitutionsModal = ({ institutions, isFetching, show, onSearch, onClose }
 
           <Form.Group className="mb-3 input-italic" controlId="RoutingNumber">
             <InputGroup className="mb-0">
-              <Form.Control ref={routingNumberRef} placeholder="Search by routing number" aria-label="Search by routing number" name="RoutingNumber" />
+              <Form.Control ref={routingNumberRef} placeholder="Search by routing number" aria-label="Search by routing number" name="RoutingNumber" type="number" />
               <InputGroup.Append className="d-flex justify-content-between align-items-center">
                 <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={searchInstitution}><i className="sila-icon sila-icon-search text-lg"></i></Button>
               </InputGroup.Append>
