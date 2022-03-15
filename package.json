@@ -22,7 +22,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.1",
     "react-syntax-highlighter": "^15.4.3",
-    "sila-sdk-javascript": "^0.2.37",
+    "sila-sdk-javascript": "^0.2.39",
     "stickybits": "^3.7.8"
   },
   "scripts": {
