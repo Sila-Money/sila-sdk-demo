@@ -3,7 +3,7 @@ import { Modal, Form, Button, Table, InputGroup } from 'react-bootstrap';
 
 import Loader from '../../components/common/Loader';
 
-const InstitutionsModal = ({ institutions, isFetching, show, onSearch, onClose }) => {
+const InstitutionsModal = ({ institutions, errors, isFetching, show, onSearch, onClose }) => {
   const [action, setAction] = useState({filtered: false, page: 1, loadMoreLable: 'Load more'});
   const institutionNameRef = useRef(null);
   const routingNumberRef = useRef(null);
@@ -59,20 +59,22 @@ const InstitutionsModal = ({ institutions, isFetching, show, onSearch, onClose }
         <Form noValidate validated={true} autoComplete="off" onSubmit={searchInstitution}>
           <Form.Group className="mb-3 input-italic" controlId="institutionName">
             <InputGroup className="mb-0">
-              <Form.Control ref={institutionNameRef} placeholder="Search by institution name" aria-label="Search by institution name" name="institutionName" />
+              <Form.Control ref={institutionNameRef} placeholder="Search by institution name" aria-label="Search by institution name" name="institutionName" isInvalid={Boolean(errors && errors.search_filters && errors.search_filters.institution_name)} />
               <InputGroup.Append className="d-flex justify-content-between align-items-center">
                 <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={searchInstitution}><i className="sila-icon sila-icon-search text-lg"></i></Button>
               </InputGroup.Append>
             </InputGroup>
+            {errors && errors.search_filters && errors.search_filters.institution_name && <Form.Control.Feedback type="none" className="text-danger">{errors.search_filters.institution_name}</Form.Control.Feedback>}
           </Form.Group>
 
           <Form.Group className="mb-3 input-italic" controlId="RoutingNumber">
             <InputGroup className="mb-0">
-              <Form.Control ref={routingNumberRef} placeholder="Search by routing number" aria-label="Search by routing number" name="RoutingNumber" type="number" />
+              <Form.Control ref={routingNumberRef} placeholder="Search by routing number" aria-label="Search by routing number" name="RoutingNumber" type="number" isInvalid={Boolean(errors && errors.search_filters && errors.search_filters.routing_number)} />
               <InputGroup.Append className="d-flex justify-content-between align-items-center">
                 <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={searchInstitution}><i className="sila-icon sila-icon-search text-lg"></i></Button>
               </InputGroup.Append>
             </InputGroup>
+            {errors && errors.search_filters && errors.search_filters.routing_number && <Form.Control.Feedback type="none" className="text-danger">{errors.search_filters.routing_number}</Form.Control.Feedback>}
           </Form.Group>
 
           <Button type="submit" variant="primary" className="invisible"></Button>

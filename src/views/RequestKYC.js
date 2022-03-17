@@ -30,6 +30,7 @@ const RequestKYC = ({ page, previous, next }) => {
   const maxAttempts = 3;
   const retryInterval = 6000; // 6 seconds
   let autoRefreshCount = useRef(0);
+  const isKycPassed = useRef(false);
 
   const requestKyc = async () => {
     console.log(`Requesting ${app.settings.flow.toUpperCase()} ...`);
@@ -62,10 +63,12 @@ const RequestKYC = ({ page, previous, next }) => {
   const checkKyc = async (event) => {
     console.log(`Checking ${app.settings.flow.toUpperCase()} ...`);
     try {
+      if (isKycPassed.current) return;
       const res = await api.checkKYC(activeUser.handle, activeUser.private_key);
       let result = { kyc: {}, kyb: {} };
       console.log('  ... completed!');
       if (res.data.verification_status.includes('passed')) {
+        isKycPassed.current = true;
         result.alert = { message: res.data.message, type: 'success' };
         result[app.settings.flow].alert = { message: 'Passed ID verification', type: 'success' };
         setCertified({ validated: true, valid: res.data.certification_history && res.data.certification_history.some(history => !history.expires_after_epoch || history.expires_after_epoch > Date.now()) && res.data.certification_status && res.data.certification_status.includes('certified') });
