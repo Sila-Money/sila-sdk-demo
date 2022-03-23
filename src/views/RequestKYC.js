@@ -291,8 +291,9 @@ const RequestKYC = ({ page, previous, next }) => {
 
       {checkPartnerKYC && <>
         <h1 className="mb-4">Check Partner {app.settings.flow.toUpperCase()}</h1>
-        <p className="text-lg text-muted mb-4">This endpoint is used to check KYC status of end-users across apps. For example, if app A is seeking to enable services for their users through App B, then App B has a need to verify that the users have been KYC'd and have passed. <span className="font-weight-bold">In production, this endpoint must be enabled by a support request to Sila to establish the mapping between apps.</span></p>
-        <p className="text-lg text-muted mb-4">To check the verification status of an end-user on a partner app, you must specify by the app handle and user handle below.</p>
+        <p className="text-lg text-muted mb-4">This endpoint is used to check KYC status of end-users across apps. For example, if app A is seeking to enable services for their users through App B, then App B has a need to verify that the users have been KYC'd and have passed.</p>
+        <p className="text-lg text-muted mb-4 font-weight-bold">In production, this endpoint must be enabled by a support request to Sila to establish the mapping between apps.  If you are interested in a partnership opportunity with Sila, please reach out to us <a href="https://sila.atlassian.net/servicedesk/customer/portals" target="_blank" rel="noopener noreferrer" className="new-registration">here</a>!</p>
+        <p className="text-lg text-muted mb-4">To check the verification status of an end-user on a partner app, you must specify by the app handle and user handle below. For this demo, you can find <a href="https://docs.silamoney.com/docs/check_partner_kyc" target="_blank" rel="noopener noreferrer" className="new-registration">mock inputs</a> on our docs.</p>
         <p className="text-muted mb-4">This page represents <a href="https://docs.silamoney.com/docs/check_partner_kyc" target="_blank" rel="noopener noreferrer">/check_partner_kyc</a> functionality.</p>
         <Form noValidate validated={validated} autoComplete="off" onSubmit={submitCheckPartnerKYC}>
           <Form.Row>
