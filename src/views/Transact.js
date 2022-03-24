@@ -291,7 +291,7 @@ const Transact = ({ page, previous, next, isActive }) => {
                     <Form.Control type="number" name="issue" id="issue" className="m-0" value={forms.issue.values.issue || ''} placeholder="# of Sila" isInvalid={forms.issue.errors.issue ? true : false} onChange={(e) => handleChange(e, 'issue')} />
                     {forms.issue.errors.issue && <Form.Control.Feedback type="invalid">{forms.issue.errors.issue}</Form.Control.Feedback>}
                   </InputGroup>
-                  <Button className="text-nowrap ml-2" variant="primary" type="submit" disabled={!forms.issue.values.issue}>GO</Button>
+                  <Button className="text-nowrap m-auto mt-md-0 ml-md-2" variant="primary" type="submit" disabled={!forms.issue.values.issue}>GO</Button>
                 </Form>
               </Tab.Pane>
               <Tab.Pane eventKey="transfer">
@@ -320,7 +320,8 @@ const Transact = ({ page, previous, next, isActive }) => {
                         <InputGroup.Prepend>
                           <InputGroup.Text><i className="sila-icon sila-icon-sila"></i></InputGroup.Text>
                         </InputGroup.Prepend>
-                        <Form.Control type="number" name="transfer" id="transfer" value={forms.transfer.values.transfer || ''} onChange={(e) => handleChange(e, 'transfer')} placeholder="# of Sila" />
+                        <Form.Control type="number" name="transfer" id="transfer" value={forms.transfer.values.transfer || ''} onChange={(e) => handleChange(e, 'transfer')} isInvalid={forms.transfer.errors.transfer ? true : false} placeholder="# of Sila" />
+                        {forms.transfer.errors.transfer && <Form.Control.Feedback type="invalid">{forms.transfer.errors.transfer}</Form.Control.Feedback>}
                       </InputGroup>
                     </Col>
                     <Col className="destination-typeahead position-relative" sm="12" md="6">
@@ -335,7 +336,7 @@ const Transact = ({ page, previous, next, isActive }) => {
                         selected={forms.transfer.values.destination || ['']} />
                     </Col>
                   </Row>
-                  <Button className="text-nowrap ml-2" variant="primary" type="submit" disabled={!forms.transfer.values.transfer || !forms.transfer.values.destination}>GO</Button>
+                  <Button className="text-nowrap m-auto mt-md-0 ml-md-2" variant="primary" type="submit" disabled={!forms.transfer.values.transfer || !forms.transfer.values.destination}>GO</Button>
                 </Form>
               </Tab.Pane>
               <Tab.Pane eventKey="redeem">
@@ -373,10 +374,10 @@ const Transact = ({ page, previous, next, isActive }) => {
                     <InputGroup.Prepend>
                       <InputGroup.Text><i className="sila-icon sila-icon-sila"></i></InputGroup.Text>
                     </InputGroup.Prepend>
-                    <Form.Control type="number" name="redeem" id="redeem" className="m-0" value={forms.redeem.values.redeem || ''} placeholder="# of Sila" isInvalid={forms.redeem.errors.issue ? true : false} onChange={(e) => handleChange(e, 'redeem')} />
+                    <Form.Control type="number" name="redeem" id="redeem" className="m-0" value={forms.redeem.values.redeem || ''} placeholder="# of Sila" isInvalid={forms.redeem.errors.redeem ? true : false} onChange={(e) => handleChange(e, 'redeem')} />
+                    {forms.redeem.errors.redeem && <Form.Control.Feedback type="invalid">{forms.redeem.errors.redeem}</Form.Control.Feedback>}
                   </InputGroup>
-                  {forms.redeem.errors.issue && <Form.Control.Feedback type="invalid">{forms.redeem.errors.issue}</Form.Control.Feedback>}
-                  <Button className="text-nowrap ml-2" variant="primary" type="submit" disabled={!forms.redeem.values.redeem}>GO</Button>
+                  <Button className="text-nowrap m-auto mt-md-0 ml-md-2" variant="primary" type="submit" disabled={!forms.redeem.values.redeem}>GO</Button>
                 </Form>
               </Tab.Pane>
             </Tab.Content>
