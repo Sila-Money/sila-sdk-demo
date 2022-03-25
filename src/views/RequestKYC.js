@@ -10,9 +10,9 @@ import Pagination from '../components/common/Pagination';
 import AlertMessage from '../components/common/AlertMessage';
 import KybKycModal from '../components/home/KybKycModal';
 
-import { DEFAULT_KYC, KYB_STANDARD } from '../constants';
+import { DEFAULT_KYC, KYB_STANDARD, INSTANT_ACH_KYC } from '../constants';
 
-const RequestKYC = ({ page, previous, next }) => {
+const RequestKYC = ({ history, page, previous, next }) => {
   const [certified, setCertified] = useState({ validated: false, valid: false });
   const [show, setShow] = useState(false);
   const [disabledRequestButton, setDisabledRequestButton] = useState(false);
@@ -224,6 +224,12 @@ const RequestKYC = ({ page, previous, next }) => {
     }
     if(isRequestedKyc && !disabledRequestButton) timeoutId = setInterval(autoRefreshKYCStatus, retryInterval);
   }, [isRequestedKyc, disabledRequestButton]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (app.settings.flow === 'kyc' && app.settings.preferredKycLevel === INSTANT_ACH_KYC && app.activeUser && !app.activeUser.smsConfirmed) {
+      history.push({ pathname: '/register_user', state: { from: page } });
+    }
+  }, [app, history, page]);
 
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
