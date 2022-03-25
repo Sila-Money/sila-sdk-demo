@@ -10,7 +10,7 @@ import Pagination from '../components/common/Pagination';
 import AlertMessage from '../components/common/AlertMessage';
 import KybKycModal from '../components/home/KybKycModal';
 
-import { DEFAULT_KYC, KYB_STANDARD, INSTANT_ACH_KYC } from '../constants';
+import { DEFAULT_KYC, KYB_STANDARD, INSTANT_ACH_KYC, MOCK_APP_HANDLES, MOCK_USER_HANDLES } from '../constants';
 
 const RequestKYC = ({ history, page, previous, next }) => {
   const [certified, setCertified] = useState({ validated: false, valid: false });
@@ -154,7 +154,17 @@ const RequestKYC = ({ history, page, previous, next }) => {
       try {
         let result = {};
         let appData = {};
-        const res = await api.checkPartnerKyc({query_app_handle: app_handle, query_user_handle: user_handle});
+        const res = {};
+        res.data = {
+          success: true,
+          message: "checkpartnerkycuser has passed ID verification!",
+          reference: "80df8d12-2d02-4ec8-895b-866fbb22c708",
+          entity_type: "individual",
+          verification_status: "passed",
+          valid_kyc_levels: ["DEFAULT", "DOC_KYC", "DOC_KYC_BETA", "INSTANT-ACH", "INSTANT-ACHV2", "KYC-LITE", "NONE", "RECEIVE_ONLY"],
+          status: "SUCCESS",
+          response_time_ms: "114"
+        };
         if (res.data && res.data.validation_details) {
           setErrors(res.data.validation_details);
         } else {
@@ -299,28 +309,22 @@ const RequestKYC = ({ history, page, previous, next }) => {
         <h1 className="mb-4">Check Partner {app.settings.flow.toUpperCase()}</h1>
         <p className="text-lg text-muted mb-4">This endpoint is used to check KYC status of end-users across apps. For example, if app A is seeking to enable services for their users through App B, then App B has a need to verify that the users have been KYC'd and have passed.</p>
         <p className="text-lg text-muted mb-4 font-weight-bold">In production, this endpoint must be enabled by a support request to Sila to establish the mapping between apps.  If you are interested in a partnership opportunity with Sila, please reach out to us <a href="https://sila.atlassian.net/servicedesk/customer/portals" target="_blank" rel="noopener noreferrer" className="new-registration">here</a>!</p>
-        <p className="text-lg text-muted mb-4">To check the verification status of an end-user on a partner app, you must specify by the app handle and user handle below. For this demo, you can find <a href="https://docs.silamoney.com/docs/check_partner_kyc" target="_blank" rel="noopener noreferrer" className="new-registration">mock inputs</a> on our docs.</p>
+        <p className="text-lg text-muted mb-4">To check the verification status of an end-user on a partner app, you must specify by the app handle and user handle below. For this demo, you can find mock inputs on our docs.</p>
         <p className="text-muted mb-4">This page represents <a href="https://docs.silamoney.com/docs/check_partner_kyc" target="_blank" rel="noopener noreferrer">/check_partner_kyc</a> functionality.</p>
         <Form noValidate validated={validated} autoComplete="off" onSubmit={submitCheckPartnerKYC}>
           <Form.Row>
             <Form.Group as={Col} md="6" controlId="partnerAppHandle" className="required">
-              <Form.Control
-                required
-                placeholder="App handle"
-                name="partnerAppHandle"
-                value={partnerAppHandle}
-                onChange={partnerAppHandleChange}
-                isInvalid={Boolean(errors && errors.query_app_handle)} />
+              <Form.Control required as="select" name="partnerAppHandle" value={partnerAppHandle} onChange={partnerAppHandleChange} isInvalid={Boolean(errors && errors.query_app_handle)}>
+                <option value="">Select App handle</option>
+                {MOCK_APP_HANDLES.map((option, index) => <option key={index} value={option.value}>{option.label}</option>)}
+              </Form.Control>
               {errors && <Form.Control.Feedback type="invalid">{errors.query_app_handle}</Form.Control.Feedback>}
             </Form.Group>
             <Form.Group as={Col} md="6" controlId="partnerUserHandle" className="required">
-              <Form.Control
-                required
-                placeholder="User handle"
-                name="partnerUserHandle"
-                value={partnerUserHandle}
-                onChange={partnerUserHandleChange}
-                isInvalid={Boolean(errors && errors.query_user_handle)} />
+              <Form.Control required as="select" name="partnerUserHandle" value={partnerUserHandle} onChange={partnerUserHandleChange} isInvalid={Boolean(errors && errors.query_user_handle)}>
+                <option value="">Select User handle</option>
+                {MOCK_USER_HANDLES.map((option, index) => <option key={index} value={option.value}>{option.label}</option>)}
+              </Form.Control>
               {errors && <Form.Control.Feedback type="invalid">{errors.query_user_handle}</Form.Control.Feedback>}
             </Form.Group>
           </Form.Row>
