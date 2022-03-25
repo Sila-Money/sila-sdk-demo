@@ -140,6 +140,18 @@ export const KYB_REGISTER_FIELDS_ARRAY = [{
   }
 ];
 
+export const MOCK_APP_HANDLES = [{
+    value: 'arc_sandbox_02',
+    label: 'arc_sandbox_02'
+  }
+];
+
+export const MOCK_USER_HANDLES = [{
+    value: 'checkpartnerkycuser',
+    label: 'checkpartnerkycuser'
+  }
+];
+
 export const STATES_ARRAY = [{
     value: 'AL',
     label: 'Alabama'
