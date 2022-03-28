@@ -186,13 +186,20 @@ const Transact = ({ page, previous, next, isActive }) => {
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 
-      <div className="d-flex mb-4">
-        <h1 className="mb-0">Transact</h1>
-        {userAccounts.length !== 0 && <Form.Group className="d-flex align-items-center ml-auto w-50">
-          <Form.Label className="mr-4 mb-0 font-weight-bold" htmlFor="account">Account:</Form.Label>
-          <SelectMenu fullWidth id="account" size="sm" onChange={handleAccount} options={userAccounts.map((account, index) => ({ label: account.account_name, value: index }))} />
-        </Form.Group>}
-      </div>
+      <Row className="mb-4">
+        <Col sm="12" md="5">
+          <h1 className="mb-0">Transact</h1>
+        </Col>
+        <Col sm="12" md="2" className="text-right d-none d-md-block">
+          <label className="font-weight-bold mt-2">Account:</label>
+        </Col>
+        <Col sm="12" md="2" className="d-block d-md-none">
+          <label className="font-weight-bold mt-2">Account:</label>
+        </Col>
+        <Col sm="12" md="5">
+          <SelectMenu className="text-truncate" fullWidth id="account" size="sm" onChange={handleAccount} options={userAccounts.map((account, index) => ({ label: account.account_name, value: index }))} />
+        </Col>
+      </Row>
 
       {userAccounts.length === 0 && <Alert variant="warning" className="mb-4">An active account is required to initiate a transaction.  <NavLink to="/accounts" className="text-reset text-underline">Link an account</NavLink></Alert>}
 
