@@ -306,7 +306,12 @@ const Transact = ({ page, previous, next, isActive }) => {
                 <Form noValidate validated={forms.transfer.validated} autoComplete="off" className="d-flex" onSubmit={(e) => {
                   e.preventDefault();
                   const amount = parseFloat(e.target.transfer.value);
-                  const destination = forms.transfer.values.destination.toString();
+                  let destination;
+                  if (forms.transfer.values.destination && forms.transfer.values.destination.length && forms.transfer.values.destination[0]['destination']) {
+                    destination = forms.transfer.values.destination[0]['destination'];
+                  } else {
+                    destination = forms.transfer.values.destination.toString();
+                  }
                   if (isNaN(amount) || amount % 1 !== 0) {
                     handleFormError('transfer', 'transfer', 'Please enter a whole number');
                   } else {
