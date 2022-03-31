@@ -44,3 +44,13 @@
     }
   }
 }
+
+.headborder {
+  &.table-bordered {
+    thead {
+      th {
+        border:1px solid $thGray;
+      }
+    }
+  }
+}

@@ -89,9 +89,16 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, acti
     }
 
     setLoaded(false);
+    let ApiEndpoint;
     let updatedEntityData = {};
     let updatedResponses = [];
     let successStatus = { entity: true, email: true, phone: true, identity: true, address: true };
+    let successUuid = {
+      email: entityuuid.uuid.email ? entityuuid.uuid.email : '',
+      phone: entityuuid.uuid.phone ? entityuuid.uuid.phone : '',
+      identity: entityuuid.uuid.identity ? entityuuid.uuid.identity : '',
+      address: entityuuid.uuid.address ? entityuuid.uuid.address : ''
+    };
 
     if (moreInfoNeeded && activeMember) {
       const entityUpdateData = {};
@@ -105,6 +112,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, acti
 
           if (entityUpdateRes.data.success) {
             updatedEntityData = { ...updatedEntityData, firstName: e.target.firstName.value, lastName: e.target.lastName.value, dateOfBirth: e.target.dateOfBirth ? e.target.dateOfBirth.value : activeMember.dateOfBirth};
+            successStatus = {...successStatus, entity: true};
           } else {
             successStatus = {...successStatus, entity: false};
             validationErrors = { ...validationErrors, entity: entityUpdateRes.data.validation_details ? entityUpdateRes.data.validation_details : entityUpdateRes.data.message }
@@ -119,11 +127,24 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, acti
       validationErrors = { ...validationErrors, contact: {} }
       if (e.target.email && e.target.email.value !== activeMember.email) {
         try {
-          const emailRes = await api.addEmail(activeMember.handle, activeMember.private_key, e.target.email.value);
-          updatedResponses = [ ...updatedResponses, { endpoint: '/add/email', result: JSON.stringify(emailRes, null, '\t') } ];
+          ApiEndpoint = '/add/email';
+          let emailRes = {};
+          if (entityuuid.uuid.email && entityuuid.uuid.email.length) {
+            ApiEndpoint = '/update/email';
+            emailRes = await api.updateEmail(activeMember.handle, activeMember.private_key, {
+              email: e.target.email.value,
+              uuid: entityuuid.uuid.email
+            });
+          } else {
+            emailRes = await api.addEmail(activeMember.handle, activeMember.private_key, e.target.email.value);
+          }
+
+          updatedResponses = [ ...updatedResponses, { endpoint: ApiEndpoint, result: JSON.stringify(emailRes, null, '\t') } ];
 
           if (emailRes.data.success) {
             updatedEntityData = { ...updatedEntityData, email: e.target.email.value }
+            successStatus = {...successStatus, email: true };
+            successUuid = {...successUuid, email: emailRes.data && emailRes.data.email ? emailRes.data.email.uuid : entityuuid.uuid.email ? entityuuid.uuid.email : '' };
           } else {
             successStatus = {...successStatus, email: false };
             validationErrors.contact = Object.assign({email: emailRes.data.validation_details ? emailRes.data.validation_details.email : emailRes.data.message}, validationErrors.contact);
@@ -136,11 +157,24 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, acti
 
       if (e.target.phone && e.target.phone.value !== activeMember.phone) {
         try {
-          const phoneRes = await api.addPhone(activeMember.handle, activeMember.private_key, e.target.phone.value);
-          updatedResponses = [ ...updatedResponses, { endpoint: '/add/phone', result: JSON.stringify(phoneRes, null, '\t') } ];
+          ApiEndpoint = '/add/phone';
+          let phoneRes = {};
+          if (entityuuid.uuid.phone && entityuuid.uuid.phone.length) {
+            ApiEndpoint = '/update/phone';
+            phoneRes = await api.updatePhone(activeMember.handle, activeMember.private_key, {
+              phone: e.target.phone.value,
+              uuid: entityuuid.uuid.phone
+            });
+          } else {
+            phoneRes = await api.addPhone(activeMember.handle, activeMember.private_key, e.target.phone.value);
+          }
+
+          updatedResponses = [ ...updatedResponses, { endpoint: ApiEndpoint, result: JSON.stringify(phoneRes, null, '\t') } ];
 
           if (phoneRes.data.success) {
             updatedEntityData = { ...updatedEntityData, phone: e.target.phone.value }
+            successStatus = {...successStatus, phone: true};
+            successUuid = {...successUuid, phone: phoneRes.data && phoneRes.data.phone ? phoneRes.data.phone.uuid : entityuuid.uuid.phone ? entityuuid.uuid.phone : '' };
           } else {
             successStatus = {...successStatus, phone: false};
             validationErrors.contact = Object.assign({phone: phoneRes.data.validation_details ? phoneRes.data.validation_details.phone : phoneRes.data.message}, validationErrors.contact);
@@ -152,15 +186,26 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, acti
       }
       
       if (e.target.ssn && e.target.ssn.value !== activeMember.ssn) {
+        const identityUpdateData = {};
+        identityUpdateData.alias = 'SSN';
+        identityUpdateData.value = e.target.ssn ? e.target.ssn.value : '';
         try {
-          const ssnRes = await api.addIdentity(activeMember.handle, activeMember.private_key, {
-            alias: 'SSN',
-            value: e.target.ssn.value
-          });
-          updatedResponses = [ ...updatedResponses, { endpoint: '/add/identity', result: JSON.stringify(ssnRes, null, '\t') } ];
+          ApiEndpoint = '/add/identity';
+          let ssnRes = {};
+          if (entityuuid.uuid.identity && entityuuid.uuid.identity.length) {
+            identityUpdateData.uuid = entityuuid.uuid.identity;
+            ssnRes = await api.updateIdentity(activeMember.handle, activeMember.private_key, identityUpdateData);
+            ApiEndpoint = '/update/identity';
+          } else {
+            ssnRes = await api.addIdentity(activeMember.handle, activeMember.private_key, identityUpdateData);
+          }
+
+          updatedResponses = [ ...updatedResponses, { endpoint: ApiEndpoint, result: JSON.stringify(ssnRes, null, '\t') } ];
 
           if (ssnRes.data.success) {
             updatedEntityData = { ...updatedEntityData, ssn: e.target.ssn.value }
+            successStatus = {...successStatus, identity: true};
+            successUuid = {...successUuid, identity: ssnRes.data && ssnRes.data.identity ? ssnRes.data.identity.uuid : entityuuid.uuid.identity ? entityuuid.uuid.identity : '' };
           } else {
             successStatus = {...successStatus, identity: false};
             validationErrors = { ...validationErrors, identity: ssnRes.data.validation_details ? ssnRes.data.validation_details : ssnRes.data.message }
@@ -179,8 +224,17 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, acti
       if (e.target.zip && e.target.zip.value !== activeMember.zip) addressUpdateData.postal_code = e.target.zip ? e.target.zip.value : '';
       if (Object.keys(addressUpdateData).length) {
         try {
-          const addressRes = await api.addAddress(activeMember.handle, activeMember.private_key, addressUpdateData);
-          updatedResponses = [ ...updatedResponses, { endpoint: '/add/address', result: JSON.stringify(addressRes, null, '\t') } ];
+          ApiEndpoint = '/add/address';
+          let addressRes = {};
+          if (entityuuid.uuid.address && entityuuid.uuid.address.length) {
+            addressUpdateData.uuid = entityuuid.uuid.address
+            addressRes = await api.updateAddress(activeMember.handle, activeMember.private_key, addressUpdateData);
+            ApiEndpoint = '/update/address';
+          } else {
+            addressRes = await api.addAddress(activeMember.handle, activeMember.private_key, addressUpdateData);
+          }
+
+          updatedResponses = [ ...updatedResponses, { endpoint: ApiEndpoint, result: JSON.stringify(addressRes, null, '\t') } ];
 
           if (addressRes.data.success) {
             updatedEntityData = {
@@ -190,9 +244,11 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, acti
               state: e.target.state ? e.target.state.value : activeMember.state,
               zip: e.target.zip ? e.target.zip.value : activeMember.zip
             }
+            successStatus = {...successStatus, address: true};
+            successUuid = {...successUuid, address: addressRes.data && addressRes.data.address ? addressRes.data.address.uuid : entityuuid.uuid.address ? entityuuid.uuid.address : '' };
           } else {
             successStatus = {...successStatus, address: false};
-            validationErrors = { ...validationErrors, address: addressRes.data.validation_details ? addressRes.data.validation_details.address : addressRes.data.message }
+            validationErrors = { ...validationErrors, address: addressRes.data.validation_details ? addressRes.data.validation_details.address ? addressRes.data.validation_details.address : addressRes.data.validation_details : addressRes.data.message }
           }
         } catch (err) {
           console.log('  ... unable to update address, looks like we ran into an issue!');
@@ -203,6 +259,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, acti
       try {
         console.log('  ... update completed!');
         let updateSuccess = false;
+        setEntityuuid({...entityuuid, uuid: successUuid })
 
         if (successStatus.entity && successStatus.email && successStatus.phone && successStatus.identity && successStatus.address) {
           updateSuccess = true;

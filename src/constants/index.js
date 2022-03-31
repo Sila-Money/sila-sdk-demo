@@ -14,6 +14,16 @@ export const KYB_RECEIVE_ONLY = 'RECEIVE_ONLY';
 
 export const MAX_UPLOAD_FILE_SIZE = 20971520; // in bytes 20MB
 
+export const PROCESSING_TYPES = [{
+    value: 'STANDARD_ACH',
+    label: 'STANDARD_ACH'
+  },
+  {
+    value: 'SAME_DAY_ACH',
+    label: 'SAME_DAY_ACH'
+  }
+];
+
 export const KYC_ARRAY = [{
     value: 'DOC_KYC',
     label: 'DOC KYC'
@@ -127,6 +137,18 @@ export const KYB_REGISTER_FIELDS_ARRAY = [{
   {
     value: 'business_website',
     label: 'Business Website'
+  }
+];
+
+export const MOCK_APP_HANDLES = [{
+    value: 'arc_sandbox_02',
+    label: 'arc_sandbox_02'
+  }
+];
+
+export const MOCK_USER_HANDLES = [{
+    value: 'checkpartnerkycuser',
+    label: 'checkpartnerkycuser'
   }
 ];
 

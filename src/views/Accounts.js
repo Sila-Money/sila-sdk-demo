@@ -9,6 +9,7 @@ import Loader from '../components/common/Loader';
 import Pagination from '../components/common/Pagination';
 import LinkAccountModal from '../components/accounts/LinkAccountModal';
 import ProcessorTokenModal from '../components/accounts/ProcessorTokenModal';
+import InstitutionsModal from '../components/accounts/InstitutionsModal';
 import ConfirmModal from '../components/common/ConfirmModal';
 
 const PlaidButton = ({ plaidToken, onSuccess }) => {
@@ -54,6 +55,10 @@ const Accounts = ({ page, previous, next, isActive }) => {
   const [isChecked, setIsChecked] = useState(false);
   const [error, setError] = useState(undefined);
   const [confirm, setConfirm] = useState({ show: false, message: '', onSuccess: () => { }, onHide: () => { } });
+  const [showInstitution, setShowInstitution] = useState(false);
+  const [institutions, setInstitutions] = useState({data: [], total_count:0, total_pages: 0, perPage: 100} );
+  const [isFetching, setIsFetching] = useState(false);
+  const [errors, setErrors] = useState(false);
   const tbodyRef = useRef()
   let result = {};
   let appData = {};
@@ -304,6 +309,33 @@ const Accounts = ({ page, previous, next, isActive }) => {
     }
   }
 
+  const getInstitutions = async (filter, page) => {
+    try {
+      setIsFetching(true);
+      let concatData;
+      let search_filters = {
+        page: page ? page : 1,
+        per_page: institutions.perPage
+      };
+      if (filter && filter['institution_name']) search_filters['institution_name'] = filter['institution_name'];
+      if (filter && filter['routing_number']) search_filters['routing_number'] = filter['routing_number'];
+
+      const res = await api.getInstitutions(search_filters);
+      if (res.data.success) {
+        setErrors(false);
+        if (search_filters['page'] === 1) concatData = res.data.institutions;
+        else concatData = [ ...institutions.data, ...res.data.institutions ];
+        setInstitutions({ ...institutions, data: concatData, total_count: res.data.total_count, total_pages: res.data.pagination.total_pages });
+      } else {
+        setErrors(res.data.validation_details ? res.data.validation_details : false);
+      }
+      setIsFetching(false);
+    } catch (err) {
+      console.log('  ... looks like we ran into an issue!');
+      handleError(err);
+    }
+  };
+
   useEffect(() => {
     getAccounts();
   }, [app.activeUser]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -330,20 +362,24 @@ const Accounts = ({ page, previous, next, isActive }) => {
     }
   }, [activeRow])
 
+  useEffect(() => {
+    getInstitutions();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 
       <h1 className="mb-4">Link a Bank Account</h1>
 
       <p className="text-muted text-lg">We've partnered with Plaid to connect bank accounts to the Sila platform. This helps us ensure account ownership.</p>
-
+     
       <p className="text-muted text-lg">Connect via Account Routing: We also have the ability to connect bank accounts with just an account and routing number "This feature required Compliance Approval for processing"</p>
 
       <p className="text-muted text-lg">Connect Via Plaid Link" The Sila will support Legacy public token and Link integration for the near term, however, this functionality is marked for deprecation.</p>
 
       <p className="text-muted text-lg">Connect via Processor Token: Please seek a direct relationship with Plaid to use our Processor Token functionality</p>
 
-      <p className="text-muted mb-0 mb-5">This page represents <a href="https://docs.silamoney.com/docs/get_accounts" target="_blank" rel="noopener noreferrer">/get_accounts</a>, <a href="https://docs.silamoney.com/docs/plaid_link_token" target="_blank" rel="noopener noreferrer">/plaid_link_token</a>, <a href="https://docs.silamoney.com/docs/link_account" target="_blank" rel="noopener noreferrer">/link_account</a>, and <a href="https://docs.silamoney.com/docs/plaid_sameday_auth" target="_blank" rel="noopener noreferrer">/plaid_sameday_auth</a> functionality.</p>
+      <p className="text-muted mb-0 mb-5">This page represents <a href="https://docs.silamoney.com/docs/get_accounts" target="_blank" rel="noopener noreferrer">/get_accounts</a>, <a href="https://docs.silamoney.com/docs/get_institutions" target="_blank" rel="noopener noreferrer">/get_institutions</a>, <a href="https://docs.silamoney.com/docs/plaid_link_token" target="_blank" rel="noopener noreferrer">/plaid_link_token</a>, <a href="https://docs.silamoney.com/docs/link_account" target="_blank" rel="noopener noreferrer">/link_account</a>, <a href="https://docs.silamoney.com/docs/delete_account-1" target="_blank" rel="noopener noreferrer">/delete_account</a>, and <a href="https://docs.silamoney.com/docs/plaid_sameday_auth" target="_blank" rel="noopener noreferrer">/plaid_sameday_auth</a> functionality.</p>
 
       <div className="d-flex mb-3">
         <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none loaded" onClick={getAccounts}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
@@ -418,7 +454,10 @@ const Accounts = ({ page, previous, next, isActive }) => {
         </div>
       </div>}
 
-      <p className="text-right loaded mb-2"><Button variant="link" className="text-reset font-italic p-0 text-decoration-none" href="http://plaid.com/docs/#testing-auth" target="_blank" rel="noopener noreferrer"><span className="lnk">How do I login to Plaid?</span> <i className="sila-icon sila-icon-info text-primary ml-2"></i></Button></p>
+      <p className="text-right loaded mb-2">
+        <Button variant="link" className="text-reset font-italic p-0 mr-5 text-decoration-none" onClick={() => setShowInstitution(true)}><span className="lnk">Which institutions are supported by Plaid?</span> <i className="sila-icon sila-icon-info text-primary ml-2"></i></Button>
+        <Button variant="link" className="text-reset font-italic p-0 text-decoration-none" href="https://dashboard.plaid.com/signin" target="_blank" rel="noopener noreferrer"><span className="lnk">How do I login to Plaid?</span> <i className="sila-icon sila-icon-info text-primary ml-2"></i></Button>
+      </p>
 
       {app.alert.message && <div className="mb-4"><AlertMessage message={app.alert.message} type={app.alert.type} noIcon={app.alert.noIcon} loading={app.alert.loading} /></div>}
 
@@ -432,6 +471,8 @@ const Accounts = ({ page, previous, next, isActive }) => {
       <ProcessorTokenModal show={app.manageProcessorToken} onSuccess={getAccounts} />
 
       <ConfirmModal show={confirm.show} message={confirm.message} onHide={confirm.onHide} buttonLabel="Delete" onSuccess={confirm.onSuccess} />
+
+      <InstitutionsModal institutions={institutions} errors={errors} isFetching={isFetching} show={showInstitution} onSearch={(filter, page) => getInstitutions(filter, page)} onClose={() => setShowInstitution(false)} />
 
     </Container>
   );

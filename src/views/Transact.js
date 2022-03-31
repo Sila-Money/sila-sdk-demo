@@ -11,6 +11,8 @@ import AlertMessage from '../components/common/AlertMessage';
 import Pagination from '../components/common/Pagination';
 import TransactionsModal from '../components/transact/TransactionsModal';
 
+import { PROCESSING_TYPES } from '../constants';
+
 const defaultForms = {
   issue: { values: {}, errors: {}, validated: false },
   transfer: { values: {}, errors: {}, validated: false },
@@ -33,7 +35,6 @@ const Transact = ({ page, previous, next, isActive }) => {
   const [forms, setForms] = useState(defaultForms);
   const [confirm, setConfirm] = useState(defaultConfirm);
   const [showTransactions, setShowTransactions] = useState(false);
-
   const handleChange = (e, form) => setForms({ ...forms, [form]: { ...forms[form], values: { ...forms[form].values, [e.target.name]: e.target.value } } });
   const handleFormError = (form, name, error) => setForms({ ...forms, [form]: { ...forms[form], errors: { ...forms[form].errors, [name]: error } } });
   const handleAccount = (index) => setAccount(userAccounts[index]);
@@ -72,7 +73,7 @@ const Transact = ({ page, previous, next, isActive }) => {
   const issueSila = async (amount) => {
     console.log(`Issuing ${amount} Sila ...`);
     try {
-      const res = await api.issueSila(amount, app.activeUser.handle, app.activeUser.private_key, account.account_name);
+      const res = await api.issueSila(amount, app.activeUser.handle, app.activeUser.private_key, account.account_name, undefined, undefined, forms.issue.values.processing_type);
       updatedResponses = [{ endpoint: '/issue_sila', result: JSON.stringify(res, null, '\t') }, ...updatedResponses];
       let result = {};
       console.log('  ... completed!');
@@ -97,7 +98,7 @@ const Transact = ({ page, previous, next, isActive }) => {
   const redeemSila = async (amount) => {
     console.log(`Redeeming ${amount} Sila ...`);
     try {
-      const res = await api.redeemSila(amount, app.activeUser.handle, app.activeUser.private_key, account.account_name);
+      const res = await api.redeemSila(amount, app.activeUser.handle, app.activeUser.private_key, account.account_name, undefined, undefined, forms.redeem.values.processing_type);
       updatedResponses = [{ endpoint: '/redeem_sila', result: JSON.stringify(res, null, '\t') }, ...updatedResponses];
       let result = {};
       console.log('  ... completed!');
@@ -170,6 +171,10 @@ const Transact = ({ page, previous, next, isActive }) => {
     }
   }
 
+  const onProcessingTypeChange = (value, form) => {
+    setForms({ ...forms, [form]: { ...forms[form], values: { ...forms[form].values, processing_type: value } } });
+  }
+
   useEffect(() => {
     setWallet(userWallets.find(wallet => wallet.private_key === app.activeUser.private_key));
   }, [app.activeUser]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -181,17 +186,24 @@ const Transact = ({ page, previous, next, isActive }) => {
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 
-      <div className="d-flex mb-4">
-        <h1 className="mb-0">Transact</h1>
-        {userAccounts.length !== 0 && <Form.Group className="d-flex align-items-center ml-auto w-50">
-          <Form.Label className="mr-4 mb-0 font-weight-bold" htmlFor="account">Account:</Form.Label>
-          <SelectMenu fullWidth id="account" size="sm" onChange={handleAccount} options={userAccounts.map((account, index) => ({ label: account.account_name, value: index }))} />
-        </Form.Group>}
-      </div>
+      <Row className="mb-4">
+        <Col sm="12" md="5">
+          <h1 className="mb-0">Transact</h1>
+        </Col>
+        <Col sm="12" md="2" className="text-right d-none d-md-block">
+          <label className="font-weight-bold mt-2">Account:</label>
+        </Col>
+        <Col sm="12" md="2" className="d-block d-md-none">
+          <label className="font-weight-bold mt-2">Account:</label>
+        </Col>
+        <Col sm="12" md="5">
+          <SelectMenu className="text-truncate" fullWidth id="account" size="sm" onChange={handleAccount} options={userAccounts.map((account, index) => ({ label: account.account_name, value: index }))} />
+        </Col>
+      </Row>
 
       {userAccounts.length === 0 && <Alert variant="warning" className="mb-4">An active account is required to initiate a transaction.  <NavLink to="/accounts" className="text-reset text-underline">Link an account</NavLink></Alert>}
 
-      <p className="text-muted mb-5">This page represents <a href="https://docs.silamoney.com/docs/get_sila_balance" target="_blank" rel="noopener noreferrer">/get_sila_balance</a>, <a href="https://docs.silamoney.com/docs/issue_sila" target="_blank" rel="noopener noreferrer">/issue_sila</a>, <a href="https://docs.silamoney.com/docs/redeem_sila" target="_blank" rel="noopener noreferrer">/redeem_sila</a>, <a href="https://docs.silamoney.com/docs/transfer_sila" target="_blank" rel="noopener noreferrer">/transfer_sila</a>, and <a href="https://docs.silamoney.com/docs/get_transactions" target="_blank" rel="noopener noreferrer">/get_transactions</a>  functionality.</p>
+      <p className="text-muted mb-5">This page represents <a href="https://docs.silamoney.com/docs/get_sila_balance" target="_blank" rel="noopener noreferrer">/get_sila_balance</a>, <a href="https://docs.silamoney.com/docs/issue_sila" target="_blank" rel="noopener noreferrer">/issue_sila</a>, <a href="https://docs.silamoney.com/docs/redeem_sila" target="_blank" rel="noopener noreferrer">/redeem_sila</a>, <a href="https://docs.silamoney.com/docs/transfer_sila" target="_blank" rel="noopener noreferrer">/transfer_sila</a>, and <a href="https://docs.silamoney.com/docs/get_transactions" target="_blank" rel="noopener noreferrer">/get_transactions</a> functionality. Learn more about the ACH processing schedule <a href="https://docs.silamoney.com/docs/ach-processing-schedule#instant-ach-3" target="_blank" rel="noopener noreferrer">here.</a></p>
 
       <div className="d-flex mb-4">
         <h2 className="mb-0">Wallet Balance</h2>
@@ -249,13 +261,25 @@ const Transact = ({ page, previous, next, isActive }) => {
           <Card.Body>
             <Tab.Content>
               <Tab.Pane eventKey="issue">
+                <Form.Label className="text-muted mr-5">Choose a processing type:</Form.Label>
+                <SelectMenu fullWidth
+                  title={forms.issue.values.processing_type ? PROCESSING_TYPES.find(option => option.value === forms.issue.values.processing_type).label : 'Processing type'}
+                  onChange={(value) => onProcessingTypeChange(value, 'issue')}
+                  className="types mb-4"
+                  value={forms.issue.values.processing_type || ''}
+                  options={PROCESSING_TYPES} />
+                {forms.issue.errors.processing_type && <Form.Control.Feedback type="none" className="text-danger mb-3">{forms.issue.errors.processing_type}</Form.Control.Feedback>}
+
                 <p className="text-muted">Add Sila to your wallet by debiting a linked account. One Sila = 1¢.</p>
                 <Form noValidate validated={forms.issue.validated} autoComplete="off" className="d-flex mt-auto" onSubmit={(e) => {
                   e.preventDefault();
                   const amount = parseFloat(e.target.issue.value);
                   if (isNaN(amount) || amount % 1 !== 0) {
                     handleFormError('issue', 'issue', 'Please enter a whole number');
+                  } else if(!forms.issue.values.processing_type) {
+                    handleFormError('issue', 'processing_type', 'Please choose a processing type.');
                   } else {
+                    handleFormError('issue', 'processing_type', undefined);
                     setConfirm({
                       show: true,
                       message: `Please confirm that you would like to convert $${formatNumber(amount / 100)} USD from ${account.account_name} ending in ${account.account_number} to ${formatNumber(amount)} Sila in ${wallet.nickname}.`,
@@ -274,7 +298,7 @@ const Transact = ({ page, previous, next, isActive }) => {
                     <Form.Control type="number" name="issue" id="issue" className="m-0" value={forms.issue.values.issue || ''} placeholder="# of Sila" isInvalid={forms.issue.errors.issue ? true : false} onChange={(e) => handleChange(e, 'issue')} />
                     {forms.issue.errors.issue && <Form.Control.Feedback type="invalid">{forms.issue.errors.issue}</Form.Control.Feedback>}
                   </InputGroup>
-                  <Button className="text-nowrap ml-2" variant="primary" type="submit" disabled={!forms.issue.values.issue}>GO</Button>
+                  <Button className="text-nowrap m-auto mt-md-0 ml-md-2" variant="primary" type="submit" disabled={!forms.issue.values.issue}>GO</Button>
                 </Form>
               </Tab.Pane>
               <Tab.Pane eventKey="transfer">
@@ -282,7 +306,12 @@ const Transact = ({ page, previous, next, isActive }) => {
                 <Form noValidate validated={forms.transfer.validated} autoComplete="off" className="d-flex" onSubmit={(e) => {
                   e.preventDefault();
                   const amount = parseFloat(e.target.transfer.value);
-                  const destination = forms.transfer.values.destination.toString();
+                  let destination;
+                  if (forms.transfer.values.destination && forms.transfer.values.destination.length && forms.transfer.values.destination[0]['destination']) {
+                    destination = forms.transfer.values.destination[0]['destination'];
+                  } else {
+                    destination = forms.transfer.values.destination.toString();
+                  }
                   if (isNaN(amount) || amount % 1 !== 0) {
                     handleFormError('transfer', 'transfer', 'Please enter a whole number');
                   } else {
@@ -303,7 +332,8 @@ const Transact = ({ page, previous, next, isActive }) => {
                         <InputGroup.Prepend>
                           <InputGroup.Text><i className="sila-icon sila-icon-sila"></i></InputGroup.Text>
                         </InputGroup.Prepend>
-                        <Form.Control type="number" name="transfer" id="transfer" value={forms.transfer.values.transfer || ''} onChange={(e) => handleChange(e, 'transfer')} placeholder="# of Sila" />
+                        <Form.Control type="number" name="transfer" id="transfer" value={forms.transfer.values.transfer || ''} onChange={(e) => handleChange(e, 'transfer')} isInvalid={forms.transfer.errors.transfer ? true : false} placeholder="# of Sila" />
+                        {forms.transfer.errors.transfer && <Form.Control.Feedback type="invalid">{forms.transfer.errors.transfer}</Form.Control.Feedback>}
                       </InputGroup>
                     </Col>
                     <Col className="destination-typeahead position-relative" sm="12" md="6">
@@ -318,17 +348,29 @@ const Transact = ({ page, previous, next, isActive }) => {
                         selected={forms.transfer.values.destination || ['']} />
                     </Col>
                   </Row>
-                  <Button className="text-nowrap ml-2" variant="primary" type="submit" disabled={!forms.transfer.values.transfer || !forms.transfer.values.destination}>GO</Button>
+                  <Button className="text-nowrap m-auto mt-md-0 ml-md-2" variant="primary" type="submit" disabled={!forms.transfer.values.transfer || !forms.transfer.values.destination}>GO</Button>
                 </Form>
               </Tab.Pane>
               <Tab.Pane eventKey="redeem">
+                <Form.Label className="text-muted mr-5">Choose a processing type:</Form.Label>
+                <SelectMenu fullWidth
+                  title={forms.redeem.values.processing_type ? PROCESSING_TYPES.find(option => option.value === forms.redeem.values.processing_type).label : 'Processing type'}
+                  onChange={(value) => onProcessingTypeChange(value, 'redeem')}
+                  className="types mb-4"
+                  value={forms.redeem.values.processing_type || ''}
+                  options={PROCESSING_TYPES} />
+                {forms.redeem.errors.processing_type && <Form.Control.Feedback type="none" className="text-danger mb-3">{forms.redeem.errors.processing_type}</Form.Control.Feedback>}
+
                 <p className="text-muted">Convert Sila from your selected linked wallet to dollars in your primary linked account.</p>
                 <Form noValidate validated={forms.redeem.validated} autoComplete="off" className="d-flex mt-auto" onSubmit={(e) => {
                   e.preventDefault();
                   const amount = parseFloat(e.target.redeem.value);
                   if (isNaN(amount) || amount % 1 !== 0) {
                     handleFormError('redeem', 'redeem', 'Please enter a whole number');
+                  } else if(!forms.redeem.values.processing_type) {
+                    handleFormError('redeem', 'processing_type', 'Please choose a processing type.');
                   } else {
+                    handleFormError('redeem', 'processing_type', undefined);
                     setConfirm({
                       show: true,
                       message: `Please confirm that you would like to convert ${formatNumber(amount)} Sila from ${wallet.nickname} to $${formatNumber(amount / 100)} USD in ${account.account_name} ending in ${account.account_number}.`,
@@ -344,10 +386,10 @@ const Transact = ({ page, previous, next, isActive }) => {
                     <InputGroup.Prepend>
                       <InputGroup.Text><i className="sila-icon sila-icon-sila"></i></InputGroup.Text>
                     </InputGroup.Prepend>
-                    <Form.Control type="number" name="redeem" id="redeem" className="m-0" value={forms.redeem.values.redeem || ''} placeholder="# of Sila" isInvalid={forms.redeem.errors.issue ? true : false} onChange={(e) => handleChange(e, 'redeem')} />
+                    <Form.Control type="number" name="redeem" id="redeem" className="m-0" value={forms.redeem.values.redeem || ''} placeholder="# of Sila" isInvalid={forms.redeem.errors.redeem ? true : false} onChange={(e) => handleChange(e, 'redeem')} />
+                    {forms.redeem.errors.redeem && <Form.Control.Feedback type="invalid">{forms.redeem.errors.redeem}</Form.Control.Feedback>}
                   </InputGroup>
-                  {forms.redeem.errors.issue && <Form.Control.Feedback type="invalid">{forms.redeem.errors.issue}</Form.Control.Feedback>}
-                  <Button className="text-nowrap ml-2" variant="primary" type="submit" disabled={!forms.redeem.values.redeem}>GO</Button>
+                  <Button className="text-nowrap m-auto mt-md-0 ml-md-2" variant="primary" type="submit" disabled={!forms.redeem.values.redeem}>GO</Button>
                 </Form>
               </Tab.Pane>
             </Tab.Content>

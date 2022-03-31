@@ -219,3 +219,17 @@ select.form-control option[value=""] {
   border-color: $primary;
   background-color: transparent;
 }
+
+.bg-lightblue{
+  background-color: $light-blue !important;
+  border-color: $gray-almost-white;
+}
+.input-italic .form-control::-moz-placeholder {
+  font-style: italic;
+}
+.input-italic .form-control:-ms-input-placeholder {
+  font-style: italic;
+}
+.input-italic .form-control::-webkit-input-placeholder {
+  font-style: italic;
+}

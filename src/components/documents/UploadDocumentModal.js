@@ -163,7 +163,7 @@ const UploadDocumentModal = ({ activeUser, documentTypes, show, onClose, onSucce
         <Modal.Body>
           <p className="text-muted mb-4">Please make sure all information on the document is visible and clear. We accept files in these formats: PNG, JPG, and PDF, no larger than 20MB.</p>
 
-          <Form.Group className="mb-3">
+          <Form.Group className="mb-3 required">
             <Form.Label>Choose your document type:</Form.Label>
             <SelectMenu fullWidth
               title="Choose type"
