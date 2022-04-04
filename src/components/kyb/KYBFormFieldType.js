@@ -44,7 +44,7 @@ const KYBFormFieldType = ({ fieldType, errors, app, onEditing, onSave }) => {
         {errors.address && errors.address.city && <Form.Control.Feedback type="invalid">{errors.address.city}</Form.Control.Feedback>}
       </Form.Group>}
 
-      {fieldType && fieldType === 'state' && <Form.Group controlId="businessState" className="select required">
+      {fieldType && fieldType === 'state' && <Form.Group controlId="businessState" className="select required mb-3">
         <Form.Control required as="select" name="state" className="p-2" autoFocus onChange={onEditing} onKeyDown={handleKeypress} defaultValue={app.activeUser ? app.activeUser.state : undefined} isInvalid={Boolean(errors.address && errors.address.state)}>
           <option value="">State</option>
           {STATES_ARRAY.map((option, index) => <option key={index} value={option.value}>{option.label}</option>)}

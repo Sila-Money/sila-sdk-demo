@@ -197,7 +197,7 @@ const UploadDocumentModal = ({ activeUser, documentTypes, show, onClose, onSucce
             </div>
           </div>
           {fileRejectionItems && fileRejections['0'] && <Form.Control.Feedback type="none" className="text-danger">{fileRejections['0']['errors']['0']['message']}</Form.Control.Feedback>}
-          {alert && <div className="d-flex mt-3"><AlertMessage message={alert.message} type={alert.type} onHide={() => setAlert(false)} /></div>}
+          {alert && <div className="d-flex mt-2"><AlertMessage message={alert.message} type={alert.type} onHide={() => setAlert(false)} /></div>}
 
         </Modal.Body>
         <Modal.Footer>

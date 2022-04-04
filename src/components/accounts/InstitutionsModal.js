@@ -67,7 +67,7 @@ const InstitutionsModal = ({ institutions, errors, isFetching, show, onSearch, o
             {errors && errors.search_filters && errors.search_filters.institution_name && <Form.Control.Feedback type="none" className="text-danger">{errors.search_filters.institution_name}</Form.Control.Feedback>}
           </Form.Group>
 
-          <Form.Group className="mb-3 input-italic" controlId="RoutingNumber">
+          <Form.Group className="mb-0 input-italic" controlId="RoutingNumber">
             <InputGroup className="mb-0">
               <Form.Control ref={routingNumberRef} placeholder="Search by routing number" aria-label="Search by routing number" name="RoutingNumber" type="number" isInvalid={Boolean(errors && errors.search_filters && errors.search_filters.routing_number)} />
               <InputGroup.Append className="d-flex justify-content-between align-items-center">

@@ -104,19 +104,19 @@ const UpdateKYBForm = ({ errors, preferredKyb, entityuuid, onLoaded, onConfirm, 
   
   return (
     <>
-      <p className="text-lg text-warning">All fields are required for this KYB level.</p>
+      <p className="text-lg text-warning mb-1">All fields are required for this KYB level.</p>
 
-      {activeUser && activeUser.entity_name && !activeUser.email && <Form.Group controlId="businessName" className="required">
+      {activeUser && activeUser.entity_name && !activeUser.email && <Form.Group controlId="businessName" className="required mb-3">
         <Form.Control required placeholder="Legal Company Name" name="entity_name" defaultValue={activeUser ? activeUser.entity_name : undefined} onChange={onChange} isInvalid={Boolean(errors.entity && errors.entity.entity_name)} />
         {errors.entity && errors.entity.entity_name && <Form.Control.Feedback type="invalid">{errors.entity.entity_name}</Form.Control.Feedback>}
       </Form.Group>}
 
       {activeUser && activeUser.entity_name && activeUser.email && <Form.Row>
-        <Form.Group as={Col} md="6" controlId="businessName" className="required">
+        <Form.Group as={Col} md="6" controlId="businessName" className="required mb-3">
           <Form.Control required placeholder="Legal Company Name" name="entity_name" defaultValue={activeUser ? activeUser.entity_name : undefined} onChange={onChange} isInvalid={Boolean(errors.entity && errors.entity.entity_name)} />
           {errors.entity && errors.entity.entity_name && <Form.Control.Feedback type="invalid">{errors.entity.entity_name}</Form.Control.Feedback>}
         </Form.Group>
-        <Form.Group as={Col} md="6" controlId="businessEmail" className={preferredKyb !== KYB_RECEIVE_ONLY ? 'required' : ''}>
+        <Form.Group as={Col} md="6" controlId="businessEmail" className={preferredKyb !== KYB_RECEIVE_ONLY ? 'required mb-3' : 'mb-3'}>
           <InputGroup className="mb-0">
             <Form.Control 
               required={preferredKyb !== KYB_RECEIVE_ONLY}
@@ -134,7 +134,7 @@ const UpdateKYBForm = ({ errors, preferredKyb, entityuuid, onLoaded, onConfirm, 
         </Form.Group>
       </Form.Row>}
 
-      {activeUser && activeUser.address && <Form.Group controlId="businessAddress" className={preferredKyb !== KYB_RECEIVE_ONLY ? 'required' : ''}>
+      {activeUser && activeUser.address && <Form.Group controlId="businessAddress" className={preferredKyb !== KYB_RECEIVE_ONLY ? 'required mb-3' : 'mb-3'}>
         <InputGroup className="mb-0">
           <Form.Control 
             required={preferredKyb !== KYB_RECEIVE_ONLY}
@@ -151,7 +151,7 @@ const UpdateKYBForm = ({ errors, preferredKyb, entityuuid, onLoaded, onConfirm, 
       </Form.Group>}
 
       {activeUser && (activeUser.city || activeUser.state || activeUser.zip) && <Form.Row>
-        {activeUser.city && <Form.Group as={Col} md="4" controlId="businessCity" className={preferredKyb !== KYB_RECEIVE_ONLY ? 'required' : ''}>
+        {activeUser.city && <Form.Group as={Col} md="4" controlId="businessCity" className={preferredKyb !== KYB_RECEIVE_ONLY ? 'required mb-3' : 'mb-3'}>
           <InputGroup className="mb-0">
             <Form.Control 
               required={preferredKyb !== KYB_RECEIVE_ONLY}
@@ -166,7 +166,7 @@ const UpdateKYBForm = ({ errors, preferredKyb, entityuuid, onLoaded, onConfirm, 
             {errors.address && errors.address.city && <Form.Control.Feedback type="invalid">{errors.address.city}</Form.Control.Feedback>}
           </InputGroup>
         </Form.Group>}
-        {activeUser.state && <Form.Group as={Col} md="4" controlId="businessState" className={`select ${preferredKyb !== KYB_RECEIVE_ONLY ? 'required' : ''}`}>
+        {activeUser.state && <Form.Group as={Col} md="4" controlId="businessState" className={`select ${preferredKyb !== KYB_RECEIVE_ONLY ? 'required mb-3' : 'mb-3'}`}>
           <InputGroup className="mb-0">
             <Form.Control 
               required={preferredKyb !== KYB_RECEIVE_ONLY}
@@ -184,7 +184,7 @@ const UpdateKYBForm = ({ errors, preferredKyb, entityuuid, onLoaded, onConfirm, 
             {errors.address && errors.address.state && <Form.Control.Feedback type="invalid">{errors.address.state}</Form.Control.Feedback>}
           </InputGroup>
         </Form.Group>}
-        {activeUser.zip && <Form.Group as={Col} md="4" controlId="businessZip" className={preferredKyb !== KYB_RECEIVE_ONLY ? 'required' : ''}>
+        {activeUser.zip && <Form.Group as={Col} md="4" controlId="businessZip" className={preferredKyb !== KYB_RECEIVE_ONLY ? 'required mb-3' : 'mb-3'}>
           <InputGroup className="mb-0">
             <Form.Control 
               required={preferredKyb !== KYB_RECEIVE_ONLY}
@@ -202,7 +202,7 @@ const UpdateKYBForm = ({ errors, preferredKyb, entityuuid, onLoaded, onConfirm, 
       </Form.Row>}
 
       {activeUser && (activeUser.phone || activeUser.ein) && <Form.Row>
-        {activeUser.phone && <Form.Group as={Col} md="6" controlId="businessPhone" className={preferredKyb !== KYB_RECEIVE_ONLY ? 'required' : ''}>
+        {activeUser.phone && <Form.Group as={Col} md="6" controlId="businessPhone" className={preferredKyb !== KYB_RECEIVE_ONLY ? 'required mb-3' : 'mb-3'}>
           <InputGroup className="mb-0">
             <Form.Control 
               required={preferredKyb !== KYB_RECEIVE_ONLY}
@@ -220,7 +220,7 @@ const UpdateKYBForm = ({ errors, preferredKyb, entityuuid, onLoaded, onConfirm, 
             {errors.contact && errors.contact.phone && <Form.Control.Feedback type="invalid">{errors.contact.phone}</Form.Control.Feedback>}
           </InputGroup>
         </Form.Group>}
-        {activeUser.ein && <Form.Group as={Col} md="6" controlId="businessEIN" className={preferredKyb !== KYB_RECEIVE_ONLY && preferredKyb !== KYB_LITE ? 'required' : ''}>
+        {activeUser.ein && <Form.Group as={Col} md="6" controlId="businessEIN" className={preferredKyb !== KYB_RECEIVE_ONLY && preferredKyb !== KYB_LITE ? 'required mb-3' : 'mb-3'}>
           <InputGroup className="mb-0">
             <Form.Control 
               required={preferredKyb !== KYB_RECEIVE_ONLY && preferredKyb !== KYB_LITE}
@@ -238,7 +238,7 @@ const UpdateKYBForm = ({ errors, preferredKyb, entityuuid, onLoaded, onConfirm, 
       </Form.Row>}
 
       {activeUser && (activeUser.doing_business_as || activeUser.business_website) && <Form.Row>
-        {activeUser.doing_business_as && <Form.Group as={Col} md="6" controlId="businessDoingBusinessAs">
+        {activeUser.doing_business_as && <Form.Group as={Col} md="6" className="mb-3" controlId="businessDoingBusinessAs">
           <Form.Control 
             placeholder="DBA (If Applicable)" 
             name="doing_business_as" 
@@ -247,7 +247,7 @@ const UpdateKYBForm = ({ errors, preferredKyb, entityuuid, onLoaded, onConfirm, 
             isInvalid={Boolean(errors.entity && errors.entity.doing_business_as)} />
           {errors.entity && errors.entity.doing_business_as && <Form.Control.Feedback type="invalid">{errors.entity.doing_business_as}</Form.Control.Feedback>}
         </Form.Group>}
-        {activeUser.business_website && <Form.Group as={Col} md="6" controlId="businessWebsite">
+        {activeUser.business_website && <Form.Group as={Col} md="6" className="mb-3" controlId="businessWebsite">
           <Form.Control 
             name="business_website"
             defaultValue={activeUser ? activeUser.business_website : undefined} 

@@ -115,15 +115,15 @@ const DocumentUpload = ({ history, page, previous, next }) => {
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 
-      <h1 className="mb-4">Document Upload</h1>
+      <h1 className="mb-1">Document Upload</h1>
 
-      {app.settings.flow === 'kyc' && <p className="text-lg text-muted mb-4">When a user registers for Doc KYC, supporting documents are necessary to aid in verifying the identity of the end-user. All new and previously uploaded documents will be displayed below, with the ability to preview each. To test the documents endpoints, you may upload dummy documents here.</p>}
+      {app.settings.flow === 'kyc' && <p className="text-lg text-muted mb-1">When a user registers for Doc KYC, supporting documents are necessary to aid in verifying the identity of the end-user. All new and previously uploaded documents will be displayed below, with the ability to preview each. To test the documents endpoints, you may upload dummy documents here.</p>}
 
-      {app.settings.flow === 'kyb' && <p className="text-lg text-muted mb-4">When a user registers for Doc KYB, supporting documents are necessary to aid verifying that the business is legitamate, as well as verifying the identities of the business members. All new and previously uploaded documents will be displayed below, with the ability to preview each. To test the documents endpoints, you may upload dummy documents here.</p>}
+      {app.settings.flow === 'kyb' && <p className="text-lg text-muted mb-1">When a user registers for Doc KYB, supporting documents are necessary to aid verifying that the business is legitamate, as well as verifying the identities of the business members. All new and previously uploaded documents will be displayed below, with the ability to preview each. To test the documents endpoints, you may upload dummy documents here.</p>}
 
-      <p className="text-muted mb-5">This page represents <a href="https://docs.silamoney.com/docs/documents" target="_blank" rel="noopener noreferrer">/documents</a>, <a href="https://docs.silamoney.com/docs/get_documents" target="_blank" rel="noopener noreferrer">/get_document</a>, <a href="https://docs.silamoney.com/docs/list_documents" target="_blank" rel="noopener noreferrer">/list_documents</a>, and <a href="https://docs.silamoney.com/docs/document_types" target="_blank" rel="noopener noreferrer">/document_types</a> functionality.</p>
+      <p className="text-muted mb-3">This page represents <a href="https://docs.silamoney.com/docs/documents" target="_blank" rel="noopener noreferrer">/documents</a>, <a href="https://docs.silamoney.com/docs/get_documents" target="_blank" rel="noopener noreferrer">/get_document</a>, <a href="https://docs.silamoney.com/docs/list_documents" target="_blank" rel="noopener noreferrer">/list_documents</a>, and <a href="https://docs.silamoney.com/docs/document_types" target="_blank" rel="noopener noreferrer">/document_types</a> functionality.</p>
 
-      <div className="accounts position-relative mb-5">
+      <div className="accounts position-relative mb-3">
         {!loaded && <Loader overlay />}
         <Table bordered responsive>
           <thead>
@@ -163,7 +163,7 @@ const DocumentUpload = ({ history, page, previous, next }) => {
 
       <Button variant="link" className="d-flex ml-auto p-0 new-registration shadow-none" onClick={() => setShow(true)}>Add a new document +</Button>
 
-      {app.alert.message && <div className="d-flex mt-3"><AlertMessage message={app.alert.message} type={app.alert.type} /></div>}
+      {app.alert.message && <div className="d-flex mt-2"><AlertMessage message={app.alert.message} type={app.alert.type} /></div>}
 
       <Pagination
         previous={previous}

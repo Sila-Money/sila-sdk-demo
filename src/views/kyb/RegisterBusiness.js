@@ -19,7 +19,7 @@ const RegisterBusinessModal = ({ show, onHide }) => {
         <Modal.Title id="about-modal-title">Register Individuals vs Businesses</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <p className="text-center mb-5">Create a new business or individual user and attach information that will be used to verify their identity. This does not start verification of the KYC data; it only adds the data to be verified.</p>
+        <p className="text-center mb-4">Create a new business or individual user and attach information that will be used to verify their identity. This does not start verification of the KYC data; it only adds the data to be verified.</p>
         <CardGroup>
           <Card>
             <Card.Header className="text-center bg-light">
@@ -100,21 +100,21 @@ const RegisterBusiness = ({ page, previous, next, isActive }) => {
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 
-      <h1 className="mb-4">{app.activeUser ? 'Registered Business' : 'Business Information'}</h1>
+      <h1 className="mb-1">{app.activeUser ? 'Registered Business' : 'Business Information'}</h1>
 
-      <p className="mb-4 text-muted text-lg">{app.activeUser ? "We've gathered some information to see if you meet KYB guidelines. If you'd like to add, update or delete information, you can do so here." : "We need to gather some information to see if this business meets KYB guidelines."}</p>
+      <p className="mb-1 text-muted text-lg">{app.activeUser ? "We've gathered some information to see if you meet KYB guidelines. If you'd like to add, update or delete information, you can do so here." : "We need to gather some information to see if this business meets KYB guidelines."}</p>
 
-      <p className="mb-4 text-muted text-lg">To register a new end-user as a business instead of an individual, the following must be sent in the request:</p>
+      <p className="mb-1 text-muted text-lg">To register a new end-user as a business instead of an individual, the following must be sent in the request:</p>
 
-      {app.activeUser && <p className="text-muted mb-5">This page represents <a href="https://docs.silamoney.com/docs/addregistration-data" target="_blank" rel="noopener noreferrer">/add</a>, <a href="https://docs.silamoney.com/docs/updateregistration-data" target="_blank" rel="noopener noreferrer">/update,</a> and <a href="https://docs.silamoney.com/docs/deleteregistration-data" target="_blank" rel="noopener noreferrer">/delete</a> functionality.</p>}
+      {app.activeUser && <p className="text-muted mb-3">This page represents <a href="https://docs.silamoney.com/docs/addregistration-data" target="_blank" rel="noopener noreferrer">/add</a>, <a href="https://docs.silamoney.com/docs/updateregistration-data" target="_blank" rel="noopener noreferrer">/update,</a> and <a href="https://docs.silamoney.com/docs/deleteregistration-data" target="_blank" rel="noopener noreferrer">/delete</a> functionality.</p>}
 
-      {!app.activeUser && <p className="text-muted mb-5">This page represents <a href="https://docs.silamoney.com/docs/register" target="_blank" rel="noopener noreferrer">/register</a> functionality.</p>}
+      {!app.activeUser && <p className="text-muted mb-3">This page represents <a href="https://docs.silamoney.com/docs/register" target="_blank" rel="noopener noreferrer">/register</a> functionality.</p>}
 
-      {!app.activeUser && <p className="text-right"><Button variant="link" className="text-muted font-italic p-0 text-decoration-none" onClick={() => setShow(true)}><span className="lnk">What's the difference between registering an individual and a business?</span> <i className="sila-icon sila-icon-info text-primary ml-2"></i></Button></p>}
+      {!app.activeUser && <p className="text-right mb-2"><Button variant="link" className="text-muted font-italic p-0 text-decoration-none" onClick={() => setShow(true)}><span className="lnk">What's the difference between registering an individual and a business?</span> <i className="sila-icon sila-icon-info text-primary ml-2"></i></Button></p>}
 
       <RegisterBusinessForm handle={app.settings.kybHandle} onSuccess={registerUser} onShowKybModal={(showKybModal) => setShowKybModal(showKybModal)} onConfirm={setConfirm}>
 
-        {app.settings.preferredKybLevel && !app.activeUser && <Alert variant="info" className="mt-4 mb-5">A wallet is automatically generated for you using the generateWallet() function upon registration.</Alert>}
+        {app.settings.preferredKybLevel && !app.activeUser && <Alert variant="info" className="mt-1 mb-3">A wallet is automatically generated for you using the generateWallet() function upon registration.</Alert>}
 
         {app.settings.preferredKybLevel && !app.activeUser && <Button type="submit" className="ml-auto float-right" disabled={!app.settings.kybHandle || (app.activeUser && app.activeUser.handle === app.settings.kybHandle)}>Register Business</Button>}
 

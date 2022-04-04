@@ -63,7 +63,7 @@ const CheckHandleForm = ({ className, defaultValue, onSuccess, disabled, page })
 
   return (
     <Form noValidate className={className} validated={validated} autoComplete="off" onSubmit={checkHandle}>
-      <Form.Group controlId="formGroupHandle">
+      <Form.Group controlId="formGroupHandle" className="mb-2">
         <Form.Control
           placeholder={`${app.settings.flow === 'kyb' && page !== '/members/register' ? 'Business' : 'User'} Handle`}
           aria-label="handle"
@@ -77,7 +77,7 @@ const CheckHandleForm = ({ className, defaultValue, onSuccess, disabled, page })
         <Form.Text className="text-muted">Spaces, special characters, and uppercase characters are not permitted.  Minimum of 3 characters of input required.</Form.Text>
       </Form.Group>
 
-      <div className="d-flex mt-4">
+      <div className="d-flex mt-2">
         {alert && <AlertMessage message={alert.message} type={alert.type} onHide={() => setAlert(false)} />}
         <Button type="submit" className="ml-auto" disabled={disabled || !handle || error}>{isSending ? 'Sending...' : 'Check handle'}</Button>
       </div>

@@ -223,13 +223,13 @@ const Wallets = ({ page, previous, next, isActive }) => {
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 
-      <h1 className="mb-4">Wallets</h1>
+      <h1 className="mb-1">Wallets</h1>
 
-      <p className="text-lg text-muted mb-4">An Ethereum wallet has been automatically generated for this business by this demo. Per best practice, the private keys are stored locally on your computer and never sent over the network.</p>
+      <p className="text-lg text-muted mb-1">An Ethereum wallet has been automatically generated for this business by this demo. Per best practice, the private keys are stored locally on your computer and never sent over the network.</p>
 
-      <p className="text-muted mb-5">This page represents <a href="https://docs.silamoney.com/docs/register_wallet" target="_blank" rel="noopener noreferrer">/register_wallet</a>, <a href="https://docs.silamoney.com/docs/delete_wallet" target="_blank" rel="noopener noreferrer">/delete_wallet</a>, <a href="https://docs.silamoney.com/docs/update_wallet" target="_blank" rel="noopener noreferrer">/update_wallet</a>, and <a href="https://docs.silamoney.com/docs/get_wallets" target="_blank" rel="noopener noreferrer">/get_wallets</a> functionality.</p>
+      <p className="text-muted mb-3">This page represents <a href="https://docs.silamoney.com/docs/register_wallet" target="_blank" rel="noopener noreferrer">/register_wallet</a>, <a href="https://docs.silamoney.com/docs/delete_wallet" target="_blank" rel="noopener noreferrer">/delete_wallet</a>, <a href="https://docs.silamoney.com/docs/update_wallet" target="_blank" rel="noopener noreferrer">/update_wallet</a>, and <a href="https://docs.silamoney.com/docs/get_wallets" target="_blank" rel="noopener noreferrer">/get_wallets</a> functionality.</p>
 
-      <Form noValidate autoComplete="off" className="position-relative mt-4" onSubmit={submitWallet}>
+      <Form noValidate autoComplete="off" className="position-relative mt-2" onSubmit={submitWallet}>
         {!loaded && <Loader overlay />}
         <span ref={walletsBodyRef}>
           {wallets.map((wallet, index) => <Wallet key={index} data={wallet} activeRow={activeRow} onHandleChange={handleChange} onHandleKeypress={handleKeypress} onUpdate={updateWallet} onEdit={editWallet} onDelete={deleteWallet} index={index} />)}
@@ -257,7 +257,7 @@ const Wallets = ({ page, previous, next, isActive }) => {
         </div>}
       </Form>
 
-      <div className="d-flex mt-3">
+      <div className="d-flex">
         {app.alert.message && <AlertMessage message={app.alert.message} type={app.alert.type} />}
         <Button onClick={addWallet} className="ml-auto">Add Additional Wallet <i className="fas fa-plus-circle ml-2"></i></Button>
       </div>

@@ -449,52 +449,52 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, acti
   
   return (
     <>
-      <Form className="mt-4" noValidate validated={validated} autoComplete="off" onSubmit={register}>
+      <Form className="mt-2" noValidate validated={validated} autoComplete="off" onSubmit={register}>
         {!loaded && <Loader overlay />}
 
-        <p className="text-muted">Please fill out the below fields for this business member.</p>
+        <p className="text-muted mb-1">Please fill out the below fields for this business member.</p>
 
-        <p className="text-right text-lg text-warning">All fields are required for this Business Member.</p>
+        <p className="text-right text-lg text-warning mb-2">All fields are required for this Business Member.</p>
 
         <Form.Row>
-          <Form.Group as={Col} md="6" controlId="registerFirstName" className="required">
+          <Form.Group as={Col} md="6" controlId="registerFirstName" className="required mb-3">
             <Form.Control required placeholder="First Name" name="firstName" onChange={onChange} defaultValue={activeMember ? activeMember.firstName : undefined} isInvalid={Boolean(errors.entity && errors.entity.first_name)} />
             {errors.entity && errors.entity.first_name && <Form.Control.Feedback type="invalid">{errors.entity.first_name}</Form.Control.Feedback>}
           </Form.Group>
-          <Form.Group as={Col} md="6" controlId="registerLastName" className="required">
+          <Form.Group as={Col} md="6" controlId="registerLastName" className="required mb-3">
             <Form.Control required placeholder="Last Name" name="lastName" onChange={onChange} defaultValue={activeMember ? activeMember.lastName : undefined} isInvalid={Boolean(errors.entity && errors.entity.last_name)} />
             {errors.entity && errors.entity.last_name && <Form.Control.Feedback type="invalid">{errors.entity.last_name}</Form.Control.Feedback>}
           </Form.Group>
         </Form.Row>
 
         {currentRole && currentRole.name !== 'administrator' && action !== 'update-member' && <>
-          <Form.Group controlId="registerAddress" className="required">
+          <Form.Group controlId="registerAddress" className="required mb-3">
             <Form.Control required placeholder="Home Address" name="address" onChange={onChange} defaultValue={activeMember ? activeMember.address : undefined} isInvalid={Boolean(errors.address && errors.address.street_address_1)} />
             {errors.address && errors.address.street_address_1 && <Form.Control.Feedback type="invalid">{errors.address.street_address_1}</Form.Control.Feedback>}
           </Form.Group>
           <Form.Row>
-            <Form.Group as={Col} md="4" controlId="registerCity" className="required">
+            <Form.Group as={Col} md="4" controlId="registerCity" className="required mb-3">
               <Form.Control required placeholder="City" name="city" onChange={onChange} defaultValue={activeMember ? activeMember.city : undefined} isInvalid={Boolean(errors.address && errors.address.city)} />
               {errors.address && errors.address.city && <Form.Control.Feedback type="invalid">{errors.address.city}</Form.Control.Feedback>}
             </Form.Group>
-            <Form.Group as={Col} md="4" controlId="registerState" className="select required">
+            <Form.Group as={Col} md="4" controlId="registerState" className="select required mb-3">
               <Form.Control required as="select" name="state" onChange={onChange} defaultValue={activeMember ? activeMember.state : undefined} isInvalid={Boolean(errors.address && errors.address.state)}>
                 <option value="">State</option>
                 {STATES_ARRAY.map((option, index) => <option key={index} value={option.value}>{option.label}</option>)}
               </Form.Control>
               {errors.address && errors.address.state && <Form.Control.Feedback type="invalid">{errors.address.state}</Form.Control.Feedback>}
             </Form.Group>
-            <Form.Group as={Col} md="4" controlId="registerZip" className="required">
+            <Form.Group as={Col} md="4" controlId="registerZip" className="required mb-3">
               <Form.Control required placeholder="Zip" name="zip" onChange={onChange} defaultValue={activeMember ? activeMember.zip : undefined} isInvalid={Boolean(errors.address && errors.address.postal_code)} />
               {errors.address && errors.address.postal_code && <Form.Control.Feedback type="invalid">{errors.address.postal_code}</Form.Control.Feedback>}
             </Form.Group>
           </Form.Row>
           <Form.Row>
-            <Form.Group as={Col} md="6" controlId="registerSSN" className="required">
+            <Form.Group as={Col} md="6" controlId="registerSSN" className="required mb-3">
               <Form.Control required placeholder="Social Security Number 123-34-5678" name="ssn" onChange={onChange} defaultValue={activeMember ? activeMember.ssn : undefined} isInvalid={errors.identity} />
               {errors.identity && <Form.Control.Feedback type="invalid">{errors.identity.identity_value || errors.identity}</Form.Control.Feedback>}
             </Form.Group>
-            <Form.Group as={Col} md="6" controlId="registerDateOfBirth" className="required">
+            <Form.Group as={Col} md="6" controlId="registerDateOfBirth" className="required mb-3">
               <Form.Control required type="date" placeholder="Date of Birth" name="dateOfBirth" onChange={onChange} defaultValue={activeMember ? activeMember.dateOfBirth : undefined} isInvalid={Boolean(errors.entity && errors.entity.birthdate)} />
               {errors.entity && errors.entity.birthdate && <Form.Control.Feedback type="invalid">{errors.entity.birthdate}</Form.Control.Feedback>}
             </Form.Group>
@@ -502,11 +502,11 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, acti
         </>}
 
         <Form.Row>
-          <Form.Group as={Col} md="6" controlId="registerEmail" className="required">
+          <Form.Group as={Col} md="6" controlId="registerEmail" className="required mb-3">
             <Form.Control required type="email" placeholder="Email" name="email" onChange={onChange} defaultValue={activeMember ? activeMember.email : undefined} isInvalid={Boolean(errors.contact && errors.contact.email)} />
             {errors.contact && errors.contact.email && <Form.Control.Feedback type="invalid">{errors.contact.email}</Form.Control.Feedback>}
           </Form.Group>
-          <Form.Group as={Col} md="6" controlId="registerPhone" className="required">
+          <Form.Group as={Col} md="6" controlId="registerPhone" className="required mb-3">
             <Form.Control required name="phone" type="tel" onChange={onChange} defaultValue={activeMember ? activeMember.phone : undefined} as={NumberFormat} placeholder="Phone Number (___) ___-____" format="(###) ###-####" mask="_" isInvalid={Boolean(errors.contact && errors.contact.phone)} />
             {errors.contact && errors.contact.phone && <Form.Control.Feedback type="invalid">{errors.contact.phone}</Form.Control.Feedback>}
           </Form.Group>
@@ -514,7 +514,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, acti
 
         {action && action === 'update-member' && <>
           {activeMember && activeMember.address && <Form.Group controlId="registerAddress" className={currentRole && currentRole.name !== 'administrator' ? 'required' : ''}>
-            <InputGroup className="mb-0">
+            <InputGroup className="mb-2">
               <Form.Control
                 required={currentRole && currentRole.name !== 'administrator' ? true : false}
                 placeholder="Home Address"
@@ -622,7 +622,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, acti
           <Button type="submit" className="ml-auto" disabled={!handle}>{currentRole && currentRole.name === 'controlling_officer' ? 'Link as Controlling Officer' : currentRole && currentRole.name === 'beneficial_owner' ? 'Link as Beneficial Owner' : 'Register'}</Button>
           {onMoreInfoNeeded && <Button variant="outline-light" className="ml-3 text-muted text-uppercase" onClick={() => { onMoreInfoNeeded(false) }}>Cancel</Button>}
         </div>}
-        {action && action === 'update-member' && showUpdateBtn && <Button type="submit" className="ml-auto d-flex mt-3">Update data</Button>}
+        {action && action === 'update-member' && showUpdateBtn && <Button type="submit" className="ml-auto d-flex mt-2">Update data</Button>}
       </Form>
 
       {activeMember && action && action === 'update-member' && <AddDataForm errors={errors} entityuuid={entityuuid} onLoaded={(isLoaded) => setLoaded(isLoaded)} onErrors={(errorsObj) => { setErrors(errorsObj); setValidated(true); } } onUpdateUuid={(uuidObj) => updateUuid(uuidObj)} activeMember={activeMember} action={action} />}

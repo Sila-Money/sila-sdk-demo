@@ -109,26 +109,26 @@ const LinkMemberForm = ({ member, onLinked, onUnlinked, onShowImDone, onShowMemb
   return (
     <>
       {moreInfoNeeded && <>
-        <h1 className="mb-4">More Information Needed</h1>
-        <p className="text-muted text-lg mb-4">To link this business member to the {moreInfoNeeded.label} role, we will need to gather more personal informaton before we can move on with the business registration (KYB) process.</p>
+        <h1 className="mb-1">More Information Needed</h1>
+        <p className="text-muted text-lg mb-3">To link this business member to the {moreInfoNeeded.label} role, we will need to gather more personal informaton before we can move on with the business registration (KYB) process.</p>
 
         <MemberKYBForm handle={member.user_handle} activeMember={member} currentRole={moreInfoNeeded} moreInfoNeeded={moreInfoNeeded} onMoreInfoNeeded={(status) => { setMoreInfoNeeded(status); if(onShowMemberForm) onShowMemberForm(true); }} onSuccess={updateActiveUser} />
       </>}
 
       {!moreInfoNeeded && <>
-        <h1 className="mb-4">Link or unlink  {member.entity.entity_name} to this Business</h1>
+        <h1 className="mb-1">Link or unlink  {member.entity.entity_name} to this Business</h1>
 
-        <p className="text-muted text-lg mb-4">Link or unlink your individual business member account to your role in this business. It is possible for one individual account to be linked as more than one role. You may provide an optional title to your account (such as CEO, CTO, etc,) as well as provide us with your ownership stake, if applicable. </p>
+        <p className="text-muted text-lg mb-3">Link or unlink your individual business member account to your role in this business. It is possible for one individual account to be linked as more than one role. You may provide an optional title to your account (such as CEO, CTO, etc,) as well as provide us with your ownership stake, if applicable. </p>
 
-        <Form.Group controlId="linkDetails">
+        <Form.Group controlId="linkDetails" className="mb-3">
           <Form.Control onChange={(e) => setDetails(e.target.value)} placeholder="Optional Position Title" name="detail" />
         </Form.Group>
 
         <div className="d-none d-xl-block">
-          {app.settings.kybRoles.sort((a, b) => a.name !== 'beneficial_owner' ? -1 : 0).map((role, index) => (<div key={index} className="d-flex mt-4 align-items-center">
+          {app.settings.kybRoles.sort((a, b) => a.name !== 'beneficial_owner' ? -1 : 0).map((role, index) => (<div key={index} className="d-flex mt-2 align-items-center">
             <div>
               <p className="text-lg mb-0 text-muted">As a {role.label} of this Business</p>
-              {role.name === 'beneficial_owner' && !hasRole(role.name) && <Form.Group className="mt-3 d-block text-nowrap">
+              {role.name === 'beneficial_owner' && !hasRole(role.name) && <Form.Group className="my-2 d-block text-nowrap">
                 <Form.Label className="d-block text-muted">Ownership Percentage ({ownershipStake}%)</Form.Label>
                 <RangeSlider value={ownershipStake} onChange={e => setOwnershipStake(parseInt(e.target.value))} tooltipLabel={(label) => `${label}%`} name="ownership_stake" />
                 {!ownershipStake && <Form.Text className="text-muted mt-2 text-nowrap loaded">Ownership Percentage is required before you can link to this business.</Form.Text>}
@@ -140,8 +140,8 @@ const LinkMemberForm = ({ member, onLinked, onUnlinked, onShowImDone, onShowMemb
         </div>
 
         <div className="d-block d-xl-none">
-          {app.settings.kybRoles.sort((a, b) => a.name !== 'beneficial_owner' ? -1 : 0).map((role, index) => (<div key={index} className="d-flex mt-4 align-items-center">
-            <p className="text-lg mb-3 text-muted">As a {role.label} of this Business</p>
+          {app.settings.kybRoles.sort((a, b) => a.name !== 'beneficial_owner' ? -1 : 0).map((role, index) => (<div key={index} className="d-flex mt-2 align-items-center">
+            <p className="text-lg mb-2 text-muted">As a {role.label} of this Business</p>
             {role.name === 'beneficial_owner' && !hasRole(role.name) && <Form.Group className="mt-3">
               <Form.Label className="d-block text-muted">Ownership Percentage ({ownershipStake}%)</Form.Label>
               <RangeSlider value={ownershipStake} onChange={e => setOwnershipStake(parseInt(e.target.value))} tooltipLabel={(label) => `${label}%`} name="ownership_stake" />
@@ -153,7 +153,7 @@ const LinkMemberForm = ({ member, onLinked, onUnlinked, onShowImDone, onShowMemb
         </div>
       </>}
 
-      {app.alert.message && <div className="mt-5"><AlertMessage message={app.alert.message} type={app.alert.type} /></div>}
+      {app.alert.message && <div className="mt-2"><AlertMessage message={app.alert.message} type={app.alert.type} /></div>}
     </>
   );
 };
