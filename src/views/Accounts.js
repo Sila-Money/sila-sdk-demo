@@ -62,6 +62,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
   const tbodyRef = useRef()
   let result = {};
   let appData = {};
+  let updatedResponses = [];
 
   const getAccountBalance = async (newAccounts) => {
     console.log('Checking Account Balance ...');
@@ -84,11 +85,13 @@ const Accounts = ({ page, previous, next, isActive }) => {
     });
   };
 
-  const getAccounts = async () => {
+  const getAccounts = async (resObj) => {
     console.log('Getting Accounts ...');
     setLoaded(false);
     try {
+      if (resObj) updatedResponses = [resObj, ...updatedResponses];
       const res = await api.getAccounts(activeUser.handle, activeUser.private_key);
+      updatedResponses = [{ endpoint: '/get_accounts', result: JSON.stringify(res, null, '\t') }, ...updatedResponses];
       let newAccounts = [];
       let result = {};
       console.log('  ... completed!');
@@ -99,10 +102,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
       }
       setAppData({
         accounts: [...app.accounts.filter(acc => acc.handle !== activeUser.handle), ...newAccounts],
-        responses: [{
-          endpoint: '/get_accounts',
-          result: JSON.stringify(res, null, '\t')
-        }, ...app.responses]
+        responses: [...updatedResponses, ...app.responses]
       }, () => {
         updateApp({ ...result });
       });
@@ -131,27 +131,23 @@ const Accounts = ({ page, previous, next, isActive }) => {
     updateApp({ alert: { message: 'Linking account ...', type: 'info', noIcon: true, loading: true } });
     try {
       const res = await api.linkAccount(activeUser.handle, activeUser.private_key, token, metadata.account.name, metadata.account_id, 'link');
+      const responseObj = { endpoint: '/link_account', result: JSON.stringify(res, null, '\t') };
       let result = {};
       console.log('  ... completed!');
       if (res.statusCode === 200) {
         result.alert = { message: 'Bank account successfully linked!', type: 'success' };
-        getAccounts();
+        getAccounts(responseObj);
       } else if (metadata.account.verification_status === 'pending_automatic_verification') {
         setPlaidToken({ token, auto: true });
+        onResponse(responseObj);
       } else if (metadata.account.verification_status === 'pending_manual_verification') {
         result.alert = { message: 'Bank account requires manual verification!', type: 'danger' };
-        getAccounts();
+        getAccounts(responseObj);
       } else {
         result.alert = { message: res.data.message, type: 'danger' };
+        onResponse(responseObj);
       }
-      setAppData({
-        responses: [{
-          endpoint: '/link_account',
-          result: JSON.stringify(res, null, '\t')
-        }, ...app.responses]
-      }, () => {
-        updateApp({ ...result });
-      });
+      updateApp({ ...result });
     } catch (err) {
       console.log('  ... looks like we ran into an issue!');
       handleError(err);
@@ -336,6 +332,14 @@ const Accounts = ({ page, previous, next, isActive }) => {
     }
   };
 
+  const onResponse = async (resObj) => {
+    if (resObj) {
+      setAppData({
+        responses: [resObj, ...app.responses]
+      });
+    }
+  }
+
   useEffect(() => {
     getAccounts();
   }, [app.activeUser]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -382,7 +386,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
       <p className="text-muted mb-3">This page represents <a href="https://docs.silamoney.com/docs/get_accounts" target="_blank" rel="noopener noreferrer">/get_accounts</a>, <a href="https://docs.silamoney.com/docs/get_institutions" target="_blank" rel="noopener noreferrer">/get_institutions</a>, <a href="https://docs.silamoney.com/docs/plaid_link_token" target="_blank" rel="noopener noreferrer">/plaid_link_token</a>, <a href="https://docs.silamoney.com/docs/link_account" target="_blank" rel="noopener noreferrer">/link_account</a>, <a href="https://docs.silamoney.com/docs/delete_account-1" target="_blank" rel="noopener noreferrer">/delete_account</a>, and <a href="https://docs.silamoney.com/docs/plaid_sameday_auth" target="_blank" rel="noopener noreferrer">/plaid_sameday_auth</a> functionality.</p>
 
       <div className="d-flex mb-2">
-        <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none loaded" onClick={getAccounts}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
+        <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none loaded" onClick={() => getAccounts(undefined)}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
       </div>
 
       <div className="accounts position-relative mb-3">
@@ -466,9 +470,9 @@ const Accounts = ({ page, previous, next, isActive }) => {
         next={(isActive || accounts.length) ? next : undefined}
         currentPage={page} />
 
-      <LinkAccountModal show={app.manageLinkAccount} onSuccess={getAccounts} />
+      <LinkAccountModal show={app.manageLinkAccount} onSuccess={getAccounts} onResponse={onResponse} />
 
-      <ProcessorTokenModal show={app.manageProcessorToken} onSuccess={getAccounts} />
+      <ProcessorTokenModal show={app.manageProcessorToken} onSuccess={getAccounts} onResponse={onResponse} />
 
       <ConfirmModal show={confirm.show} message={confirm.message} onHide={confirm.onHide} buttonLabel="Delete" onSuccess={confirm.onSuccess} />
 

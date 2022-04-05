@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { useAppContext } from '../context/AppDataProvider';
 
-const LinkAccountModal = ({ show, onSuccess }) => {
+const LinkAccountModal = ({ show, onSuccess, onResponse }) => {
   const [validated, setValidated] = useState(false);
   const [errors, setErrors] = useState({});
-  const { app, updateApp, setAppData, api, handleError } = useAppContext();
+  const { app, updateApp, api, handleError } = useAppContext();
 
   const linkAccount = (e) => {
     console.log('Linking account ...');
@@ -16,6 +16,7 @@ const LinkAccountModal = ({ show, onSuccess }) => {
       e.target.accountNumber.value,
       e.target.routingNumber.value,
       e.target.accountName.value).then(res => {
+        const responseObj = { endpoint: '/link_account', result: JSON.stringify(res, null, '\t') };
         let result = {};
         console.log('  ... completed!');
         if (res.data.success) {
@@ -24,18 +25,12 @@ const LinkAccountModal = ({ show, onSuccess }) => {
             manageLinkAccount: false
           }
           if (Object.keys(errors).length) setErrors({});
-          onSuccess();
+          onSuccess(responseObj);
         } else if (res.data.validation_details) {
           setErrors(res.data.validation_details)
+          onResponse(responseObj);
         }
-        setAppData({
-          responses: [{
-            endpoint: '/link_account',
-            result: JSON.stringify(res, null, '\t')
-          }, ...app.responses]
-        }, () => {
-          updateApp({ ...result });
-        });
+        updateApp({ ...result });
       })
       .catch((err) => {
         console.log('  ... looks like we ran into an issue!');
