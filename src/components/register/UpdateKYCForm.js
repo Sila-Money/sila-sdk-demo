@@ -109,16 +109,16 @@ const UpdateKYCForm = ({ errors, preferredKyc, entityuuid, onLoaded, onConfirm, 
 
       <p className="text-lg text-warning mb-1">All fields are required for this KYC level.</p>
       <Form.Row>
-        {activeUser && activeUser.firstName && <Form.Group as={Col} md="6" controlId="registerFirstName" className="required mb-3">
+        {activeUser && activeUser.firstName && <Form.Group as={Col} md="6" controlId="registerFirstName" className="required">
           <Form.Control required placeholder="First Name" name="firstName" defaultValue={activeUser.firstName} onChange={onChange} />
           {errors.entity && errors.entity.first_name && <Form.Control.Feedback type="invalid">{errors.entity.first_name}</Form.Control.Feedback>}
         </Form.Group>}
-        {activeUser && activeUser.lastName && <Form.Group as={Col} md="6" controlId="registerLastName" className="required mb-3">
+        {activeUser && activeUser.lastName && <Form.Group as={Col} md="6" controlId="registerLastName" className="required">
           <Form.Control required placeholder="Last Name" name="lastName" defaultValue={activeUser.lastName} onChange={onChange} />
           {errors.entity && errors.entity.last_name && <Form.Control.Feedback type="invalid">{errors.entity.last_name}</Form.Control.Feedback>}
         </Form.Group>}
 
-        {activeUser && activeUser.email && <Form.Group as={Col} md="6" controlId="registerEmail" className={preferredKyc !== RECEIVE_ONLY_KYC ? 'required mb-3' : 'mb-3'}>
+        {activeUser && activeUser.email && <Form.Group as={Col} md="6" controlId="registerEmail" className={preferredKyc !== RECEIVE_ONLY_KYC ? 'required' : ''}>
           <InputGroup className="mb-0">
             <Form.Control 
               required={preferredKyc !== RECEIVE_ONLY_KYC}
@@ -136,7 +136,7 @@ const UpdateKYCForm = ({ errors, preferredKyc, entityuuid, onLoaded, onConfirm, 
           </InputGroup>
         </Form.Group>}
 
-        {activeUser && activeUser.phone && <Form.Group as={Col} md="6" controlId="registerPhone" className={preferredKyc !== RECEIVE_ONLY_KYC ? 'required mb-3' : 'mb-3'}>
+        {activeUser && activeUser.phone && <Form.Group as={Col} md="6" controlId="registerPhone" className={preferredKyc !== RECEIVE_ONLY_KYC ? 'required' : ''}>
           <InputGroup className="mb-0">
             <Form.Control 
               required={preferredKyc !== RECEIVE_ONLY_KYC}
@@ -156,7 +156,7 @@ const UpdateKYCForm = ({ errors, preferredKyc, entityuuid, onLoaded, onConfirm, 
           </InputGroup>
         </Form.Group>}
 
-        {activeUser && activeUser.dateOfBirth && <Form.Group as={Col} md="6" controlId="registerDateOfBirth" className={preferredKyc !== RECEIVE_ONLY_KYC ? 'required mb-3' : 'mb-3'}>
+        {activeUser && activeUser.dateOfBirth && <Form.Group as={Col} md="6" controlId="registerDateOfBirth" className={preferredKyc !== RECEIVE_ONLY_KYC ? 'required' : ''}>
           <Form.Control 
             required={preferredKyc !== RECEIVE_ONLY_KYC} 
             type="date" defaultValue={activeUser.dateOfBirth} 
@@ -166,7 +166,7 @@ const UpdateKYCForm = ({ errors, preferredKyc, entityuuid, onLoaded, onConfirm, 
           {errors.entity && errors.entity.birthdate && <Form.Control.Feedback type="invalid">{errors.entity.birthdate}</Form.Control.Feedback>}
         </Form.Group>}
 
-        {activeUser && activeUser.ssn && <Form.Group as={Col} md="6" controlId="registerSSN" className={preferredKyc !== RECEIVE_ONLY_KYC && preferredKyc !== LITE_KYC ? 'required mb-3' : 'mb-3'}>
+        {activeUser && activeUser.ssn && <Form.Group as={Col} md="6" controlId="registerSSN" className={preferredKyc !== RECEIVE_ONLY_KYC && preferredKyc !== LITE_KYC ? 'required' : ''}>
           <InputGroup className="mb-0">
             <Form.Control 
               required={preferredKyc !== RECEIVE_ONLY_KYC && preferredKyc !== LITE_KYC}
@@ -183,7 +183,7 @@ const UpdateKYCForm = ({ errors, preferredKyc, entityuuid, onLoaded, onConfirm, 
         </Form.Group>}
       </Form.Row>
 
-      {activeUser && activeUser.address && <Form.Group controlId="registerAddress" className={preferredKyc !== RECEIVE_ONLY_KYC && preferredKyc !== LITE_KYC ? 'required mb-3' : 'mb-3'}>
+      {activeUser && activeUser.address && <Form.Group controlId="registerAddress" className={preferredKyc !== RECEIVE_ONLY_KYC && preferredKyc !== LITE_KYC ? 'required' : ''}>
         <InputGroup className="mb-0">
           <Form.Control 
             required={preferredKyc !== RECEIVE_ONLY_KYC && preferredKyc !== LITE_KYC}
@@ -200,7 +200,7 @@ const UpdateKYCForm = ({ errors, preferredKyc, entityuuid, onLoaded, onConfirm, 
       </Form.Group>}
       
       {activeUser && (activeUser.city || activeUser.state || activeUser.zip) && <Form.Row className="mb-0">
-        {activeUser.city && <Form.Group as={Col} md="4" controlId="registerCity" className={preferredKyc !== RECEIVE_ONLY_KYC && preferredKyc !== LITE_KYC ? 'required mb-3' : 'mb-3'}>
+        {activeUser.city && <Form.Group as={Col} md="4" controlId="registerCity" className={preferredKyc !== RECEIVE_ONLY_KYC && preferredKyc !== LITE_KYC ? 'required' : ''}>
           <InputGroup className="mb-0">
             <Form.Control 
               required={preferredKyc !== RECEIVE_ONLY_KYC && preferredKyc !== LITE_KYC}
@@ -216,7 +216,7 @@ const UpdateKYCForm = ({ errors, preferredKyc, entityuuid, onLoaded, onConfirm, 
           </InputGroup>
         </Form.Group>}
 
-        {activeUser.state && <Form.Group as={Col} md="4" controlId="registerState" className={`select ${preferredKyc !== RECEIVE_ONLY_KYC && preferredKyc !== LITE_KYC ? 'required mb-3' : 'mb-3'}`}>
+        {activeUser.state && <Form.Group as={Col} md="4" controlId="registerState" className={`select ${preferredKyc !== RECEIVE_ONLY_KYC && preferredKyc !== LITE_KYC ? 'required' : ''}`}>
           <InputGroup className="mb-0">
             <Form.Control 
               required={preferredKyc !== RECEIVE_ONLY_KYC && preferredKyc !== LITE_KYC}
@@ -235,7 +235,7 @@ const UpdateKYCForm = ({ errors, preferredKyc, entityuuid, onLoaded, onConfirm, 
           </InputGroup>
         </Form.Group>}
 
-        {activeUser.zip && <Form.Group as={Col} md="4" controlId="registerZip" className={preferredKyc !== RECEIVE_ONLY_KYC && preferredKyc !== LITE_KYC ? 'required mb-3' : 'mb-3'}>
+        {activeUser.zip && <Form.Group as={Col} md="4" controlId="registerZip" className={preferredKyc !== RECEIVE_ONLY_KYC && preferredKyc !== LITE_KYC ? 'required' : ''}>
           <InputGroup className="mb-0">
             <Form.Control 
               required={preferredKyc !== RECEIVE_ONLY_KYC && preferredKyc !== LITE_KYC}

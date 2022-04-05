@@ -63,7 +63,7 @@ const CheckHandleForm = ({ className, defaultValue, onSuccess, disabled, page })
 
   return (
     <Form noValidate className={className} validated={validated} autoComplete="off" onSubmit={checkHandle}>
-      <Form.Group controlId="formGroupHandle" className="mb-2">
+      <Form.Group controlId="formGroupHandle">
         <Form.Control
           placeholder={`${app.settings.flow === 'kyb' && page !== '/members/register' ? 'Business' : 'User'} Handle`}
           aria-label="handle"

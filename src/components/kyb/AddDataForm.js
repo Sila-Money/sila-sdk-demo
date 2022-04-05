@@ -248,14 +248,14 @@ const AddDataForm = ({ errors, entityuuid, onLoaded, onErrors, onUpdateUuid }) =
 
       {activeRow.isAdding && <div className="add-data">
         <h2 className="mb-2">Add Data</h2>
-        {!activeRow.fldName && <Form.Group controlId="chooseData" className="select mb-3">
+        {!activeRow.fldName && <Form.Group controlId="chooseData" className="select">
           <Form.Control placeholder="Choose a data point to add" as="select" name="choose_data" onChange={onChooseAddDataToggle}>
             <option value="">Choose a data point to add</option>
             {KYB_REGISTER_FIELDS_ARRAY.filter(option => app.activeUser && !app.activeUser[option.value]).map((option, index) => <option key={index} value={option.value}>{option.label}</option>)}
           </Form.Control>
         </Form.Group>}
 
-        {activeRow.fldName && <Form.Group controlId="addData" className="required mb-3">
+        {activeRow.fldName && <Form.Group controlId="addData" className="required">
           <KYBFormFieldType fieldType={activeRow.fldName} errors={errors} app={app} onEditing={onEditing} onSave={onSave} />
         </Form.Group>}
 

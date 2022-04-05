@@ -313,14 +313,14 @@ const RequestKYC = ({ history, page, previous, next }) => {
         <p className="text-muted mb-3">This page represents <a href="https://docs.silamoney.com/docs/check_partner_kyc" target="_blank" rel="noopener noreferrer">/check_partner_kyc</a> functionality.</p>
         <Form noValidate validated={validated} autoComplete="off" onSubmit={submitCheckPartnerKYC}>
           <Form.Row>
-            <Form.Group as={Col} md="6" controlId="partnerAppHandle" className="required mb-3">
+            <Form.Group as={Col} md="6" controlId="partnerAppHandle" className="required">
               <Form.Control required as="select" name="partnerAppHandle" value={partnerAppHandle} onChange={partnerAppHandleChange} isInvalid={Boolean(errors && errors.query_app_handle)}>
                 <option value="">Select App handle</option>
                 {MOCK_APP_HANDLES.map((option, index) => <option key={index} value={option.value}>{option.label}</option>)}
               </Form.Control>
               {errors && <Form.Control.Feedback type="invalid">{errors.query_app_handle}</Form.Control.Feedback>}
             </Form.Group>
-            <Form.Group as={Col} md="6" controlId="partnerUserHandle" className="required mb-3">
+            <Form.Group as={Col} md="6" controlId="partnerUserHandle" className="required">
               <Form.Control required as="select" name="partnerUserHandle" value={partnerUserHandle} onChange={partnerUserHandleChange} isInvalid={Boolean(errors && errors.query_user_handle)}>
                 <option value="">Select User handle</option>
                 {MOCK_USER_HANDLES.map((option, index) => <option key={index} value={option.value}>{option.label}</option>)}
