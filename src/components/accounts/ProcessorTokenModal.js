@@ -4,17 +4,18 @@ import { useAppContext } from '../context/AppDataProvider';
 
 import AlertMessage from '../common/AlertMessage';
 
-const LinkAccountModal = ({ show, onSuccess }) => {
+const LinkAccountModal = ({ show, onSuccess, onResponse }) => {
   const [validated, setValidated] = useState(false);
   const [errors, setErrors] = useState(false);
   const [token, setToken] = useState(false);
   const [alert, setAlert] = useState(false);
-  const { app, updateApp, setAppData, api, handleError } = useAppContext();
+  const { app, updateApp, api, handleError } = useAppContext();
 
   const linkAccount = (e) => {
     console.log('Linking account ...');
     e.preventDefault();
     api.linkAccount(app.activeUser.handle, app.activeUser.private_key, token, e.target.accountName.value, null, 'processor').then(res => {
+        const responseObj = { endpoint: '/link_account', result: JSON.stringify(res, null, '\t') };
         let result = {};
         console.log('  ... completed!');
         if (res.data.success) {
@@ -23,21 +24,16 @@ const LinkAccountModal = ({ show, onSuccess }) => {
             manageProcessorToken: false
           }
           if (errors) setErrors(false);
-          onSuccess();
+          onSuccess(responseObj);
           resetForm();
         } else if (res.data.validation_details) {
           setErrors(res.data.validation_details);
+          onResponse(responseObj);
         } else {
           setAlert({ message: `Error! ${res.data.message}`, type: 'danger' });
+          onResponse(responseObj);
         }
-        setAppData({
-          responses: [{
-            endpoint: '/link_account',
-            result: JSON.stringify(res, null, '\t')
-          }, ...app.responses]
-        }, () => {
-          updateApp({ ...result });
-        });
+        updateApp({ ...result });
       })
       .catch((err) => {
         console.log('  ... looks like we ran into an issue!');
