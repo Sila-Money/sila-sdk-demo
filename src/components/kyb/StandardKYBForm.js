@@ -8,7 +8,7 @@ const StandardKYBForm = ({ errors, app, children }) => {
   
   return (
     <>
-      <p className="text-lg text-warning">All fields are required for this KYB level.</p>
+      <p className="text-lg text-warning mb-1">All fields are required for this KYB level.</p>
 
       <Form.Row>
         <Form.Group as={Col} md="6" controlId="businessName" className="required">

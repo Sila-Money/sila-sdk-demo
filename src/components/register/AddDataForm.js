@@ -356,8 +356,8 @@ const AddDataForm = ({ errors, entityuuid, onLoaded, onErrors, onUpdateUuid, act
   }, [entityuuid, api, app, activeUser, onLoaded, onUpdateUuid])
 
   return (
-    <div className="mt-3">
-      {app.settings.flow === 'kyc' && activeUser && (activeUser.smsOptIn || Object.keys(KYC_REGISTER_FIELDS_ARRAY.filter(option => activeUser && !activeUser[option.value])).length !== 0)  && <div className="row mx-2 mb-3">
+    <div className="mt-1">
+      {app.settings.flow === 'kyc' && activeUser && (activeUser.smsOptIn || Object.keys(KYC_REGISTER_FIELDS_ARRAY.filter(option => activeUser && !activeUser[option.value])).length !== 0)  && <div className="row mx-2">
         <div className="sms-notifications p-0 col-md-6 col-sm-12">
           {(activeUser && activeUser.smsOptIn) && <div className="text-left">
             SMS Notifications: <span className="text-primary">{activeUser.smsConfirmed ? 'Confirmed' : 'Requested'}</span>
@@ -394,14 +394,14 @@ const AddDataForm = ({ errors, entityuuid, onLoaded, onErrors, onUpdateUuid, act
       </div>}
 
       {app.settings.flow === 'kyc' && app.settings.preferredKycLevel === INSTANT_ACH_KYC && !activeUser.deviceFingerprint && <>
-        <h2 className="mb-3 mt-0">Device Fingerprint</h2>
-        <p className="text-muted mb-3">Your device fingerprint is a unique string of numbers used to identify your desktop or mobile device. You must opt-in to accept SMS notifications about all instant-ACH transactions. SMS notifications will be sent to the registered phone number of the user.</p>
-        <Form.Group controlId="registerDeviceFingerprint" className="readonly">
+        <h2 className="mb-2 mt-0">Device Fingerprint</h2>
+        <p className="text-muted mb-2">Your device fingerprint is a unique string of numbers used to identify your desktop or mobile device. You must opt-in to accept SMS notifications about all instant-ACH transactions. SMS notifications will be sent to the registered phone number of the user.</p>
+        <Form.Group controlId="registerDeviceFingerprint" className="readonly mb-2">
           <Form.Control required placeholder="Loading..." name="deviceFingerprint" defaultValue={activeUser.deviceFingerprint ? activeUser.deviceFingerprint : deviceFingerprint} readOnly={true} isInvalid={Boolean(errors.device && errors.device.device_fingerprint)} />
           {errors.device && errors.device.device_fingerprint && <Form.Control.Feedback type="invalid">{errors.device.device_fingerprint}</Form.Control.Feedback>}
         </Form.Group>
-        <Form.Group controlId="registerSms" className="mb-5 registerSms">
-          <Form.Check custom id="registerSms" className="mb-5 ml-n2" type="checkbox">
+        <Form.Group controlId="registerSms" className="mb-1 registerSms">
+          <Form.Check custom id="registerSms" className="mb-2 ml-n2" type="checkbox">
             <Form.Check.Input type="checkbox" name="smsOptIn" onChange={onSMSChange} checked={activeRow.smsOptInCheck} />
             <Form.Check.Label className="text-muted ml-2">Yes, opt-in to receive SMS notifications about all instant ACH transactions.</Form.Check.Label>
           </Form.Check>

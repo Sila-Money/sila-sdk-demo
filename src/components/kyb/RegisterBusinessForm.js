@@ -379,22 +379,22 @@ const RegisterBusinessForm = ({ className, children, onSuccess, onShowKybModal, 
         <SelectMenu fullWidth
           title={preferredKyb ? KYB_ARRAY.find(option => option.value === preferredKyb).label : 'Choose KYB level'}
           onChange={(value) => onKybLevelChange(value)}
-          className="types mb-4"
+          className="types mb-2"
           value={preferredKyb}
           options={KYB_ARRAY}
           disabledOptions={(businessTypes && businessTypes.includes(app.settings.kybBusinessType)) ? ['KYB-STANDARD'] : []} />
 
-        <p className="text-right text-muted"><Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none" onClick={() => onShowKybModal(true)}><span className="lnk">What's the difference between the KYB levels?</span><i className="sila-icon sila-icon-info text-primary ml-2"></i></Button></p>
+        <p className="text-right text-muted mb-1"><Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none" onClick={() => onShowKybModal(true)}><span className="lnk">What's the difference between the KYB levels?</span><i className="sila-icon sila-icon-info text-primary ml-2"></i></Button></p>
         {preferredKyb === KYB_STANDARD && !app.activeUser && <StandardKYBForm errors={errors} app={app} />}
         {preferredKyb === KYB_LITE && !app.activeUser && <LiteKYBForm businessTypes={businessTypes} errors={errors} app={app} />}
         {preferredKyb === KYB_RECEIVE_ONLY && !app.activeUser && <ReceiveOnlyKYBForm errors={errors} app={app} />}
         {app.activeUser && app.activeUser.handle && <UpdateKYBForm errors={errors} preferredKyb={preferredKyb} entityuuid={entityuuid} onLoaded={(isLoaded) => setLoaded(isLoaded)} onConfirm={onConfirm} onShowUpdate={(isUpdated) => setShowUpdateBtn(isUpdated)} />}
-        {preferredKyb && app.activeUser && showUpdateBtn && <Button type="submit" className="ml-auto d-flex mt-3">Update data</Button>}
+        {preferredKyb && app.activeUser && showUpdateBtn && <Button type="submit" className="ml-auto d-flex mt-2">Update data</Button>}
         {children}
       </Form>
       <>
         {app.activeUser && app.activeUser.handle && <AddDataForm errors={errors} entityuuid={entityuuid} onLoaded={(isLoaded) => setLoaded(isLoaded)} onErrors={(errorsObj) => { setErrors(errorsObj); setValidated(true); } } onUpdateUuid={(uuidObj) => updateUuid(uuidObj)} />}
-        {app.alert.message && <div className="d-flex mt-3"><AlertMessage message={app.alert.message} type={app.alert.type} /></div>}
+        {app.alert.message && <div className="d-flex mt-2"><AlertMessage message={app.alert.message} type={app.alert.type} /></div>}
       </>
     </>
   )

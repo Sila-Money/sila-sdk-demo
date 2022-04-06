@@ -7,11 +7,11 @@ import { STATES_ARRAY } from '../../constants';
 const InstantAchKYCForm = ({ errors, isHide, app, children }) => {
   return (
     <div className={isHide ? 'd-none' : undefined}>
-      <p className="text-muted">This KYC Level requires us to gather more information from you. Please fill out the required fields below.</p>
+      <p className="text-muted mb-1">This KYC Level requires us to gather more information from you. Please fill out the required fields below.</p>
 
-      <p className="text-lg text-warning">All fields are required for this KYC level.</p>
+      <p className="text-lg text-warning mb-1">All fields are required for this KYC level.</p>
       <Form.Row>
-        <Form.Group as={Col} md="6" controlId="registerFirstName" className="required">
+        <Form.Group as={Col} md="6" controlId="registerFirstName" className="required mb-3">
           <Form.Control required placeholder="First Name" name="firstName" defaultValue={app.activeUser ? app.activeUser.firstName : undefined} />
           {errors.entity && errors.entity.first_name && <Form.Control.Feedback type="invalid">{errors.entity.first_name}</Form.Control.Feedback>}
         </Form.Group>
@@ -44,7 +44,7 @@ const InstantAchKYCForm = ({ errors, isHide, app, children }) => {
         <Form.Control required placeholder="Street Address" name="address" defaultValue={app.activeUser ? app.activeUser.address : undefined} isInvalid={Boolean(errors.address && errors.address.street_address_1)} />
         {errors.address && errors.address.street_address_1 && <Form.Control.Feedback type="invalid">{errors.address.street_address_1}</Form.Control.Feedback>}
       </Form.Group>
-      <Form.Row className="mb-4">
+      <Form.Row className="mb-0">
         <Form.Group as={Col} md="4" controlId="registerCity" className="required">
           <Form.Control required placeholder="City" name="city" defaultValue={app.activeUser ? app.activeUser.city : undefined} isInvalid={Boolean(errors.address && errors.address.city)} />
           {errors.address && errors.address.city && <Form.Control.Feedback type="invalid">{errors.address.city}</Form.Control.Feedback>}

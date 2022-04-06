@@ -6,7 +6,7 @@ const KYCLiteForm = ({ errors, isHide, app, children }) => {
   
   return (
     <div className={isHide ? 'd-none' : undefined}>
-      <p className="text-lg text-warning">All fields are required for this KYC level.</p>
+      <p className="text-lg text-warning mb-1">All fields are required for this KYC level.</p>
       <Form.Row>
         <Form.Group as={Col} md="6" controlId="registerFirstName" className="required">
           <Form.Control required placeholder="First Name" name="firstName" defaultValue={app.activeUser ? app.activeUser.firstName : undefined} />

@@ -80,43 +80,43 @@ const MemberDetails = ({ page, match, history, location }) => {
       {!member ? <Loader /> : <div className="loaded">
 
         {location.pathname.includes('certify') && <>
-          <div className="mb-4 d-flex align-items-center">
+          <div className="mb-2 d-flex align-items-center">
             <h1 className="mb-0">Team Member</h1>
             {location.pathname.includes('certify') && <p className="text-warning text-lg ml-auto mb-0">In Review</p>}
           </div>
 
-          <p className="text-lg text-muted mb-4">Please review the following information and certify that it is correct.</p>
+          <p className="text-lg text-muted mb-2">Please review the following information and certify that it is correct.</p>
 
-          <p className="text-muted mb-5">This page represents <a href="https://docs.silamoney.com/docs/get_entity" target="_blank" rel="noopener noreferrer">/get_entity</a> and {location.pathname.includes('certify') ? <a href="https://docs.silamoney.com/docs/certify_beneficial_owner" target="_blank" rel="noopener noreferrer">/certify_beneficial_owner</a> : <a href="https://docs.silamoney.com/docs/link_business_member" target="_blank" rel="noopener noreferrer">/link_business_member</a>} functionality.</p>
+          <p className="text-muted mb-2">This page represents <a href="https://docs.silamoney.com/docs/get_entity" target="_blank" rel="noopener noreferrer">/get_entity</a> and {location.pathname.includes('certify') ? <a href="https://docs.silamoney.com/docs/certify_beneficial_owner" target="_blank" rel="noopener noreferrer">/certify_beneficial_owner</a> : <a href="https://docs.silamoney.com/docs/link_business_member" target="_blank" rel="noopener noreferrer">/link_business_member</a>} functionality.</p>
 
           <Row className="mb-0">
-            <Col md="12" lg="6" className="mb-4">
+            <Col md="12" lg="6" className="mb-3">
               <p className="pb-2 mb-1 border-bottom border-light text-lg">{`${member.entity.first_name} ${member.entity.last_name}`}</p>
               <p className="mb-0 text-muted">Full Name</p>
             </Col>
-            <Col md="12" lg="6" className="mb-4">
+            <Col md="12" lg="6" className="mb-3">
               <p className="pb-2 mb-1 border-bottom border-light text-lg">{member.emails.length ? member.emails[0].email : 'N/A'}</p>
               <p className="mb-0 text-muted">Email</p>
             </Col>
           </Row>
 
           <Row className="mb-0">
-            <Col md="12" lg="6" className="mb-4">
+            <Col md="12" lg="6" className="mb-3">
               <p className="pb-2 mb-1 border-bottom border-light text-lg">{member.phones.length ? member.phones[0].phone : 'N/A'}</p>
               <p className="mb-0 text-muted">Phone</p>
             </Col>
-            <Col md="12" lg="6" className="mb-4">
+            <Col md="12" lg="6" className="mb-3">
               <p className="pb-2 mb-1 border-bottom border-light text-lg">{member.identities.length ? member.identities[0].identity : 'N/A'}</p>
               <p className="mb-0 text-muted">SSN (Last 4 digits)</p>
             </Col>
           </Row>
 
           <Row className="mb-0">
-            <Col md={beneficialOwner && 12} lg={beneficialOwner && 6} className="mb-4">
+            <Col md={beneficialOwner && 12} lg={beneficialOwner && 6} className="mb-3">
               <p className="pb-2 mb-1 border-bottom border-light text-lg">{member.addresses.length ? `${member.addresses[0].street_address_1} ${member.addresses[0].city}, ${member.addresses[0].state} ${member.addresses[0].postal_code}` : 'N/A'}</p>
-              <p className="mb-4 text-muted">Home Address</p>
+              <p className="mb-0 text-muted">Home Address</p>
             </Col>
-            {beneficialOwner && <Col md="12" lg="6" className="mb-4">
+            {beneficialOwner && <Col md="12" lg="6" className="mb-3">
               <p className="pb-2 mb-1 border-bottom border-light text-lg">{`${Math.round(beneficialOwner.ownership_stake * 100)}%`}</p>
               <p className="mb-0 text-muted">Ownership Percentage</p>
             </Col>}
@@ -135,19 +135,19 @@ const MemberDetails = ({ page, match, history, location }) => {
 
         {!location.pathname.includes('certify') && <>
           {showMemberForm && <>
-            <h1 className="mb-4">Registered Business Member</h1>
-            <p className="text-muted text-lg mb-4">We've gathered some information to see if this business member meet KYC guidelines. If you'd like to add, update or delete information, you can do so here.</p>
+            <h1 className="mb-2">Registered Business Member</h1>
+            <p className="text-muted text-lg mb-2">We've gathered some information to see if this business member meet KYC guidelines. If you'd like to add, update or delete information, you can do so here.</p>
             <MemberKYBForm handle={member.user_handle} activeMember={member} currentRole={currentRole} moreInfoNeeded={true} action="update-member" onConfirm={setConfirm} />
           </>}
 
           <LinkMemberForm member={member} onLinked={() => { setMember(false); getEntity(); }} onUnlinked={() => { setMember(false); getEntity(); }} onShowMemberForm={(status) => { setShowMemberForm(status); }} />
 
-          <p className="mt-5 mb-0 text-center"><Button variant="outline-light" className="text-muted text-uppercase" onClick={() => history.goBack()} disabled={member.memberships.length === 0}>I'm Done</Button></p>
+          <p className="mt-3 mb-0 text-center"><Button variant="outline-light" className="text-muted text-uppercase" onClick={() => history.goBack()} disabled={member.memberships.length === 0}>I'm Done</Button></p>
         </>}
 
         {location.pathname.includes('certify') && <p className="d-flex mt-4"><Button onClick={certifyMember} disabled={!canCertify} className="ml-auto">Certify</Button></p>}
 
-        {alert && <div className="mt-4"><AlertMessage message={alert.message} type={alert.type} onHide={() => setAlert(false)} /></div>}
+        {alert && <div className="mt-2"><AlertMessage message={alert.message} type={alert.type} onHide={() => setAlert(false)} /></div>}
 
       </div>}
 

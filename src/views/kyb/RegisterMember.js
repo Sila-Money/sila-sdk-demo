@@ -51,23 +51,23 @@ const RegisterMember = ({ page, location, history }) => {
 
       {!activeUser && <div className="loaded">
 
-        <div className="mb-4 d-flex">
+        <div className="mb-2 d-flex">
           <h1 className="mb-0">{location.state.role === 'administrator' ? 'Business Administration' : location.state.role ? app.settings.kybRoles.find(role => role.name === location.state.role).label : 'Add a Business Member'}</h1>
         </div>
 
-        {!handle && app.users.filter(user => !user.business).length !== 0 && <div className="loaded"><Form.Check custom id="register-user" className="mb-4 ml-n2" type="radio">
+        {!handle && app.users.filter(user => !user.business).length !== 0 && <div className="loaded"><Form.Check custom id="register-user" className="mb-2 ml-n2" type="radio">
           <Form.Check.Input name="existing" onChange={() => { setActiveUser(false); setExisting(false); }} defaultChecked type="radio" />
           <Form.Check.Label className="ml-2 text-lg">Register and link a new user</Form.Check.Label>
         </Form.Check>
-          <Form.Check custom id="existing-user" className="mb-5 ml-n2" type="radio">
+          <Form.Check custom id="existing-user" className="mb-2 ml-n2" type="radio">
             <Form.Check.Input name="existing" onChange={() => { setExisting(true); }} type="radio" />
             <Form.Check.Label className="ml-2 text-lg">Link an existing user</Form.Check.Label>
           </Form.Check></div>}
 
         {!existing ? <div className="loaded">
-          {currentRole && currentRole.name === 'controlling_officer' && <p className="mb-4 text-muted text-lg">As a {currentRole.label}, personal information is required before we can move on with the business registration (KYB) process.</p>}
-          {currentRole && currentRole.name === 'administrator' && <p className="mb-4 text-muted text-lg">As the {currentRole.label}, personal information is required before we can move on with the business registration (KYB) process.</p>}
-          {currentRole && currentRole.name === 'beneficial_owner' && <p className="mb-4 text-muted text-lg">To link this business member to the Beneficial Owner role, we will need to gather more personal informaton before we can move on with the business registration (KYB) process.</p>}
+          {currentRole && currentRole.name === 'controlling_officer' && <p className="mb-3 text-muted text-lg">As a {currentRole.label}, personal information is required before we can move on with the business registration (KYB) process.</p>}
+          {currentRole && currentRole.name === 'administrator' && <p className="mb-3 text-muted text-lg">As the {currentRole.label}, personal information is required before we can move on with the business registration (KYB) process.</p>}
+          {currentRole && currentRole.name === 'beneficial_owner' && <p className="mb-3 text-muted text-lg">To link this business member to the Beneficial Owner role, we will need to gather more personal informaton before we can move on with the business registration (KYB) process.</p>}
 
           <CheckHandleForm page={page} disabled={activeUser} onSuccess={(handle) => setHandle(handle)} />
 
@@ -75,7 +75,7 @@ const RegisterMember = ({ page, location, history }) => {
         </div>
           :
           <div className="mb-5 loaded position-relative select-menu-height" style={{ zIndex: 4 }}>
-            <p className="text-lg text-muted mb-4 loaded">Select the user you wish to link to the business.</p>
+            <p className="text-lg text-muted mb-2 loaded">Select the user you wish to link to the business.</p>
             <SelectMenu fullWidth title="Choose a user..." options={app.users.filter(user => !user.business).map(user => ({ label: `${user.firstName} ${user.lastName} (${user.handle})`, value: user.handle }))} onChange={(handle) => handleActiveUser(undefined, app.users.find(user => user.handle === handle))} />
           </div>}
 
@@ -85,7 +85,7 @@ const RegisterMember = ({ page, location, history }) => {
 
         {member.loading ? <Loader /> : <div className="loaded">
           <LinkMemberForm member={{ ...activeUser, ...member }} onLinked={() => getEntity()} onUnlinked={() => getEntity()} onShowImDone={(status) => setShowImDoneButton(status)} />
-          {showImDoneButton && <p className="mt-5 mb-0 text-center"><Button variant="outline-light" className="text-muted text-uppercase" onClick={() => history.goBack()}>I'm Done</Button></p>}
+          {showImDoneButton && <p className="mt-3 mb-0 text-center"><Button variant="outline-light" className="text-muted text-uppercase" onClick={() => history.goBack()}>I'm Done</Button></p>}
         </div>}
 
       </div>}

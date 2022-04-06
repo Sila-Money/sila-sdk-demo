@@ -13,7 +13,7 @@ const KybModal = ({ show, onHide }) => {
       </Modal.Header>
       <Modal.Body>
         <p>Sila offers various KYB levels for our customers to assign to their businesses. <span className="text-primary font-weight-bold">Most businesses are in standard level. </span>Unlike with KYC, with KYB the KYC_LEVEL does not need to be specified explicitly by your API request. Instead, KYB levels are applied to the business entity based on the business type.</p>
-        <ul className="mb-5">
+        <ul className="mb-4">
           <li>
             <p><span className="font-weight-bold">If it's your first time using the demo,</span> we recommend you start with KYB Standard to gain a proper understanding of the process. <Button variant="link" className="p-0 new-registration shadow-none btn btn-link" href="https://docs.silamoney.com/docs/kyckyb-levels#kyb" target="_blank" rel="noopener noreferrer"><span className="lnk text-lg">Read more about the KYB levels on our docs!</span></Button></p>
           </li>

@@ -21,11 +21,11 @@ const CheckHandle = ({ page, previous, next }) => {
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 
-      <h1 className="mb-4">Check user handle</h1>
+      <h1 className="mb-1">Check user handle</h1>
 
-      <p className="mb-4 text-lg text-muted">{app.settings.flow === 'kyb' ? 'Create a unique handle to identify this business and check to ensure it is available.' : 'Create a unique handle to identify the end-user and check to ensure it is available.'}</p>
+      <p className="mb-2 text-lg text-muted">{app.settings.flow === 'kyb' ? 'Create a unique handle to identify this business and check to ensure it is available.' : 'Create a unique handle to identify the end-user and check to ensure it is available.'}</p>
 
-      <p className="text-muted mb-5">This page represents <a href="https://docs.silamoney.com/docs/check_handle" target="_blank" rel="noopener noreferrer">/check_handle</a> functionality.</p>
+      <p className="text-muted mb-3">This page represents <a href="https://docs.silamoney.com/docs/check_handle" target="_blank" rel="noopener noreferrer">/check_handle</a> functionality.</p>
 
       <CheckHandleForm defaultValue={handle} onSuccess={handleSuccess} />
 

@@ -449,12 +449,12 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, acti
   
   return (
     <>
-      <Form className="mt-4" noValidate validated={validated} autoComplete="off" onSubmit={register}>
+      <Form className="mt-2" noValidate validated={validated} autoComplete="off" onSubmit={register}>
         {!loaded && <Loader overlay />}
 
-        <p className="text-muted">Please fill out the below fields for this business member.</p>
+        <p className="text-muted mb-1">Please fill out the below fields for this business member.</p>
 
-        <p className="text-right text-lg text-warning">All fields are required for this Business Member.</p>
+        <p className="text-right text-lg text-warning mb-2">All fields are required for this Business Member.</p>
 
         <Form.Row>
           <Form.Group as={Col} md="6" controlId="registerFirstName" className="required">
@@ -514,7 +514,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, acti
 
         {action && action === 'update-member' && <>
           {activeMember && activeMember.address && <Form.Group controlId="registerAddress" className={currentRole && currentRole.name !== 'administrator' ? 'required' : ''}>
-            <InputGroup className="mb-0">
+            <InputGroup className="mb-2">
               <Form.Control
                 required={currentRole && currentRole.name !== 'administrator' ? true : false}
                 placeholder="Home Address"
@@ -622,7 +622,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, acti
           <Button type="submit" className="ml-auto" disabled={!handle}>{currentRole && currentRole.name === 'controlling_officer' ? 'Link as Controlling Officer' : currentRole && currentRole.name === 'beneficial_owner' ? 'Link as Beneficial Owner' : 'Register'}</Button>
           {onMoreInfoNeeded && <Button variant="outline-light" className="ml-3 text-muted text-uppercase" onClick={() => { onMoreInfoNeeded(false) }}>Cancel</Button>}
         </div>}
-        {action && action === 'update-member' && showUpdateBtn && <Button type="submit" className="ml-auto d-flex mt-3">Update data</Button>}
+        {action && action === 'update-member' && showUpdateBtn && <Button type="submit" className="ml-auto d-flex mt-2">Update data</Button>}
       </Form>
 
       {activeMember && action && action === 'update-member' && <AddDataForm errors={errors} entityuuid={entityuuid} onLoaded={(isLoaded) => setLoaded(isLoaded)} onErrors={(errorsObj) => { setErrors(errorsObj); setValidated(true); } } onUpdateUuid={(uuidObj) => updateUuid(uuidObj)} activeMember={activeMember} action={action} />}

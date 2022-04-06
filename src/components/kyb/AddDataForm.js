@@ -239,7 +239,7 @@ const AddDataForm = ({ errors, entityuuid, onLoaded, onErrors, onUpdateUuid }) =
   }, [entityuuid, api, app, onLoaded, onUpdateUuid])
 
   return (
-    <div className="mt-3">
+    <div>
       {app.activeUser && !activeRow.isAdding && Object.keys(KYB_REGISTER_FIELDS_ARRAY.filter(option => app.activeUser && !app.activeUser[option.value])).length !== 0 && <div className="row mx-2">
         <div className="p-0 text-right col-md-12 col-sm-12">
           {(!activeRow.isAdding && Object.keys(KYB_REGISTER_FIELDS_ARRAY.filter(option => app.activeUser && !app.activeUser[option.value])).length) ? <Button variant="link" className="p-0 new-registration shadow-none" onClick={onAddDataToggle}>Add new registration data+</Button> : null}
@@ -247,7 +247,7 @@ const AddDataForm = ({ errors, entityuuid, onLoaded, onErrors, onUpdateUuid }) =
       </div>}
 
       {activeRow.isAdding && <div className="add-data">
-        <h2 className="mb-4 mt-4">Add Data</h2>
+        <h2 className="mb-2">Add Data</h2>
         {!activeRow.fldName && <Form.Group controlId="chooseData" className="select">
           <Form.Control placeholder="Choose a data point to add" as="select" name="choose_data" onChange={onChooseAddDataToggle}>
             <option value="">Choose a data point to add</option>

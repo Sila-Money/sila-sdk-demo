@@ -97,11 +97,11 @@ const BusinessMembers = ({ page, previous, next, isActive }) => {
 
         {!showCongrats && <>
 
-          <h1 className="mb-4">Certify</h1>
+          <h1 className="mb-1">Certify</h1>
 
-          <p className="text-meta text-lg mb-4">Your team has successfully gone through the KYB process and have been verified. Let’s certify that all the information you have on hand is correct and get you ready to transact. First step is to get your business members certified, then you can certify your business.</p>
+          <p className="text-meta text-lg mb-1">Your team has successfully gone through the KYB process and have been verified. Let’s certify that all the information you have on hand is correct and get you ready to transact. First step is to get your business members certified, then you can certify your business.</p>
 
-          <p className="text-meta mb-0 mb-5">This page represents <a href="https://docs.silamoney.com/docs/certify_business" target="_blank" rel="noopener noreferrer">/certify_business</a> functionality.</p>
+          <p className="text-meta mb-3">This page represents <a href="https://docs.silamoney.com/docs/certify_business" target="_blank" rel="noopener noreferrer">/certify_business</a> functionality.</p>
 
           {!app.settings.kybAdminHandle && <DisabledOverlay>
             <p className="mb-0"><i className="fas fa-lock mr-2"></i> You must be an administrator to certify the business and it's members. {!app.settings.kybAdminHandle && <Button variant="link" as={NavLink} className="p-0 text-white important ml-2" to={{ pathname: '/members/register', state: { role: 'administrator', from: page } }}>Add an Administator</Button>}</p>
@@ -109,7 +109,7 @@ const BusinessMembers = ({ page, previous, next, isActive }) => {
 
           <div className="members position-relative">
 
-            <Row className="mb-4 position-relative" style={{ zIndex: 4 }}>
+            <Row className="mb-3 position-relative" style={{ zIndex: 4 }}>
               <Col sm="8" className="d-block d-sm-flex align-items-center">
                 <Form.Control className="w-100 mr-3 mb-2 mb-md-0 loaded" placeholder="Search by name" aria-label="Search by name" onChange={(e) => setFilters({ ...filters, search: e.currentTarget.value })} />
                 <DropdownButton className="text-nowrap text-nowrap mt-2 mt-sm-0 loaded" variant="outline-light" title={app.settings.kybRoles.find(role => role.name === filters.role) ? app.settings.kybRoles.find(role => role.name === filters.role).label : 'All roles'}>
@@ -172,9 +172,9 @@ const BusinessMembers = ({ page, previous, next, isActive }) => {
 
           <Sketch setup={confetti.setup} draw={confetti.draw} windowResized={confetti.windowResized} />
 
-          <h1 className="mb-4">Congratulations!</h1>
+          <h1 className="mb-1">Congratulations!</h1>
 
-          <p className="text-meta text-lg mb-5">You’ve completed all verification steps. This business is now ready to link bank accounts, create wallets, and transact!</p>
+          <p className="text-meta text-lg mb-3">You’ve completed all verification steps. This business is now ready to link bank accounts, create wallets, and transact!</p>
 
           <p className="text-right"><Button as={NavLink} to={{ pathname: next, state: { from: page } }}>Go to Wallets</Button></p>
 

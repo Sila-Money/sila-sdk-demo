@@ -104,7 +104,7 @@ const UpdateKYBForm = ({ errors, preferredKyb, entityuuid, onLoaded, onConfirm, 
   
   return (
     <>
-      <p className="text-lg text-warning">All fields are required for this KYB level.</p>
+      <p className="text-lg text-warning mb-1">All fields are required for this KYB level.</p>
 
       {activeUser && activeUser.entity_name && !activeUser.email && <Form.Group controlId="businessName" className="required">
         <Form.Control required placeholder="Legal Company Name" name="entity_name" defaultValue={activeUser ? activeUser.entity_name : undefined} onChange={onChange} isInvalid={Boolean(errors.entity && errors.entity.entity_name)} />
@@ -151,7 +151,7 @@ const UpdateKYBForm = ({ errors, preferredKyb, entityuuid, onLoaded, onConfirm, 
       </Form.Group>}
 
       {activeUser && (activeUser.city || activeUser.state || activeUser.zip) && <Form.Row>
-        {activeUser.city && <Form.Group as={Col} md="4" controlId="businessCity" className={preferredKyb !== KYB_RECEIVE_ONLY ? 'required' : ''}>
+        {activeUser.city && <Form.Group as={Col} md="4" controlId="businessCity" className={preferredKyb !== KYB_RECEIVE_ONLY ? 'required mb-3' : 'mb-3'}>
           <InputGroup className="mb-0">
             <Form.Control 
               required={preferredKyb !== KYB_RECEIVE_ONLY}
@@ -247,7 +247,7 @@ const UpdateKYBForm = ({ errors, preferredKyb, entityuuid, onLoaded, onConfirm, 
             isInvalid={Boolean(errors.entity && errors.entity.doing_business_as)} />
           {errors.entity && errors.entity.doing_business_as && <Form.Control.Feedback type="invalid">{errors.entity.doing_business_as}</Form.Control.Feedback>}
         </Form.Group>}
-        {activeUser.business_website && <Form.Group as={Col} md="6" controlId="businessWebsite">
+        {activeUser.business_website && <Form.Group as={Col} md="6"  controlId="businessWebsite">
           <Form.Control 
             name="business_website"
             defaultValue={activeUser ? activeUser.business_website : undefined} 

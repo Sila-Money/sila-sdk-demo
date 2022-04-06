@@ -9,7 +9,7 @@ const Wallet = ({ data, activeRow, onHandleChange, onHandleKeypress, onUpdate, o
 
   return (
     <div key={data.blockchain_address} className="wallet loaded">
-      <Form.Group controlId="formGroupWalletName" className={!activeRow.isEditing && 'readonly'}>
+      <Form.Group controlId="formGroupWalletName" className={!activeRow.isEditing && 'readonly mb-3'}>
         <InputGroup className="mb-3">
           {activeRow.isEditing && activeRow.index === index ? <Form.Control
             autoFocus

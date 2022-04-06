@@ -42,7 +42,7 @@ const PlaidButton = ({ plaidToken, onSuccess }) => {
     if (error) updateApp({ alert: { message: error, type: 'danger' } });
   }, [error]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return <Button block className="mb-4 text-nowrap" onClick={onOpen} disabled={!ready}>{plaidToken && plaidToken.account_name ? 'Launch microdeposit verification in Plaid' : 'Connect via Plaid Link'}</Button>;
+  return <Button block className="mb-2 text-nowrap" onClick={onOpen} disabled={!ready}>{plaidToken && plaidToken.account_name ? 'Launch microdeposit verification in Plaid' : 'Connect via Plaid Link'}</Button>;
 };
 
 const Accounts = ({ page, previous, next, isActive }) => {
@@ -373,23 +373,23 @@ const Accounts = ({ page, previous, next, isActive }) => {
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 
-      <h1 className="mb-4">Link a Bank Account</h1>
+      <h1 className="mb-1">Link a Bank Account</h1>
 
-      <p className="text-muted text-lg">We've partnered with Plaid to connect bank accounts to the Sila platform. This helps us ensure account ownership.</p>
+      <p className="text-muted text-lg mb-1">We've partnered with Plaid to connect bank accounts to the Sila platform. This helps us ensure account ownership.</p>
      
-      <p className="text-muted text-lg">Connect via Account Routing: We also have the ability to connect bank accounts with just an account and routing number "This feature required Compliance Approval for processing"</p>
+      <p className="text-muted text-lg mb-1">Connect via Account Routing: We also have the ability to connect bank accounts with just an account and routing number "This feature required Compliance Approval for processing"</p>
 
-      <p className="text-muted text-lg">Connect Via Plaid Link" The Sila will support Legacy public token and Link integration for the near term, however, this functionality is marked for deprecation.</p>
+      <p className="text-muted text-lg mb-1">Connect Via Plaid Link" The Sila will support Legacy public token and Link integration for the near term, however, this functionality is marked for deprecation.</p>
 
-      <p className="text-muted text-lg">Connect via Processor Token: Please seek a direct relationship with Plaid to use our Processor Token functionality</p>
+      <p className="text-muted text-lg mb-1">Connect via Processor Token: Please seek a direct relationship with Plaid to use our Processor Token functionality</p>
 
-      <p className="text-muted mb-0 mb-5">This page represents <a href="https://docs.silamoney.com/docs/get_accounts" target="_blank" rel="noopener noreferrer">/get_accounts</a>, <a href="https://docs.silamoney.com/docs/get_institutions" target="_blank" rel="noopener noreferrer">/get_institutions</a>, <a href="https://docs.silamoney.com/docs/plaid_link_token" target="_blank" rel="noopener noreferrer">/plaid_link_token</a>, <a href="https://docs.silamoney.com/docs/link_account" target="_blank" rel="noopener noreferrer">/link_account</a>, <a href="https://docs.silamoney.com/docs/delete_account-1" target="_blank" rel="noopener noreferrer">/delete_account</a>, and <a href="https://docs.silamoney.com/docs/plaid_sameday_auth" target="_blank" rel="noopener noreferrer">/plaid_sameday_auth</a> functionality.</p>
+      <p className="text-muted mb-3">This page represents <a href="https://docs.silamoney.com/docs/get_accounts" target="_blank" rel="noopener noreferrer">/get_accounts</a>, <a href="https://docs.silamoney.com/docs/get_institutions" target="_blank" rel="noopener noreferrer">/get_institutions</a>, <a href="https://docs.silamoney.com/docs/plaid_link_token" target="_blank" rel="noopener noreferrer">/plaid_link_token</a>, <a href="https://docs.silamoney.com/docs/link_account" target="_blank" rel="noopener noreferrer">/link_account</a>, <a href="https://docs.silamoney.com/docs/delete_account-1" target="_blank" rel="noopener noreferrer">/delete_account</a>, and <a href="https://docs.silamoney.com/docs/plaid_sameday_auth" target="_blank" rel="noopener noreferrer">/plaid_sameday_auth</a> functionality.</p>
 
-      <div className="d-flex mb-3">
+      <div className="d-flex mb-2">
         <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none loaded" onClick={() => getAccounts(undefined)}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
       </div>
 
-      <div className="accounts position-relative mb-5">
+      <div className="accounts position-relative mb-3">
         {(!loaded || !plaidToken) && <Loader overlay />}
         <Table bordered responsive>
           <thead>
@@ -448,11 +448,11 @@ const Accounts = ({ page, previous, next, isActive }) => {
         {accounts.find(acc => acc.account_link_status === 'microdeposit_pending_manual_verification') && <p className="text-muted mt-4">With Same Day Micro-deposits, Plaid verfies the deposit within 1 business days Within the Sandbox timeframe, it’s only takes a few minutes. To jump back into your session, we’ll need you to retrieve a public token from Plaid. From there, two microdeposits should appear in your account within minutes. We will need you to verify the amount of these depsoits in order to launch Phase 2.</p>}
       </div>
 
-      {plaidToken && <div className="d-block d-xl-flex align-items-center mb-4 loaded">
+      {plaidToken && <div className="d-block d-xl-flex align-items-center mb-2 loaded">
         <div className="ml-auto">
           <Row>
-            <Col lg="12" xl="4"><Button block className="mb-4 text-nowrap" onClick={() => updateApp({ manageLinkAccount: true })}>Enter Account/Routing</Button></Col>
-            <Col lg="12" xl="4"><Button block className="mb-4 text-nowrap" onClick={() => updateApp({ manageProcessorToken: true })}>Enter Processor Token</Button></Col>
+            <Col lg="12" xl="4"><Button block className="mb-2 text-nowrap" onClick={() => updateApp({ manageLinkAccount: true })}>Enter Account/Routing</Button></Col>
+            <Col lg="12" xl="4"><Button block className="mb-2 text-nowrap" onClick={() => updateApp({ manageProcessorToken: true })}>Enter Processor Token</Button></Col>
             <Col lg="12" xl="4"><PlaidButton plaidToken={plaidToken} onSuccess={linkAccount} /></Col>
           </Row>
         </div>
@@ -463,7 +463,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
         <Button variant="link" className="text-reset font-italic p-0 text-decoration-none" href="https://dashboard.plaid.com/signin" target="_blank" rel="noopener noreferrer"><span className="lnk">How do I login to Plaid?</span> <i className="sila-icon sila-icon-info text-primary ml-2"></i></Button>
       </p>
 
-      {app.alert.message && <div className="mb-4"><AlertMessage message={app.alert.message} type={app.alert.type} noIcon={app.alert.noIcon} loading={app.alert.loading} /></div>}
+      {app.alert.message && <div className="mb-2"><AlertMessage message={app.alert.message} type={app.alert.type} noIcon={app.alert.noIcon} loading={app.alert.loading} /></div>}
 
       <Pagination
         previous={previous}

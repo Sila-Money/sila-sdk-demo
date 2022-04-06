@@ -13,7 +13,7 @@ const KycModal = ({ show, onHide }) => {
       </Modal.Header>
       <Modal.Body>
         <p>Sila offers various KYC levels for our customers to assign to their end-users. A KYC level determines the verification requirements and transaction limits for an end-user. A level with more thorough verification requirements will allow an end-user to make larger transactions, whereas a level with less thorough verification requirements will restrict the end-user's to smaller transaction amounts. <span className="text-primary font-weight-bold">Levels other than our DOC KYC level are currently granted on a case-by case basis.</span></p>
-        <ul className="mb-5">
+        <ul className="mb-4">
           <li>
             <p><span className="font-weight-bold">If it's your first time using the demo,</span> we recommend you start with DOC KYC to gain a proper understanding of the process. <Button variant="link" className="p-0 new-registration shadow-none btn btn-link ml-auto" href="https://docs.silamoney.com/docs/kyckyb-levels#kyc" target="_blank" rel="noopener noreferrer"><span className="lnk text-lg">Read more about the KYC levels on our docs!</span></Button></p>
           </li>
