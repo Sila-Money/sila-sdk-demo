@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Container, Table, Button, Row, Col, Form } from 'react-bootstrap';
+import { Container, Table, Button, Row, Col, Form, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { usePlaidLink } from 'react-plaid-link';
 
 import { useAppContext } from '../components/context/AppDataProvider';
@@ -394,7 +394,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
         <Table bordered responsive>
           <thead>
             <tr>
-              <th className="text-lg bg-secondary text-dark font-weight-bold text-nowrap">Account  #</th>
+              <th className="text-lg bg-secondary text-dark font-weight-bold text-nowrap">Account #</th>
               <th className="text-lg bg-secondary text-dark font-weight-bold">Name</th>
               <th className="text-lg bg-secondary text-dark font-weight-bold">Type</th>
               <th className="text-lg bg-secondary text-dark font-weight-bold">Balance</th>
@@ -406,7 +406,17 @@ const Accounts = ({ page, previous, next, isActive }) => {
             {loaded && plaidToken && accounts.length > 0 ?
               accounts.map((acc, index) =>
                 <tr className="loaded" key={index}>
-                  <td>{acc.account_number}</td>
+                  <td>
+                    <div className="d-flex justify-content-between">
+                      {acc.account_number}
+                      <OverlayTrigger placement="top" delay={{ show: 250, hide: 400 }}
+                        overlay={(props) => <Tooltip id={`account-number-tooltip-${index}`} {...props}>Linked via {acc.account_link_status === 'processor_token' ? 'Processor Token' : 'Account/Routing'}</Tooltip>}>
+                        <Button variant="link" className="text-reset font-italic p-0 m-0 text-decoration-none shadow-none">
+                          <i className="sila-icon sila-icon-info text-primary ml-2"></i>
+                        </Button>
+                      </OverlayTrigger>
+                    </div>
+                  </td>
                   <td className="text-break">{activeRow.isEditing && activeRow.rowNumber === index ? <Form.Group controlId="accountNumber" className="required mb-0">
                     <Form.Control required placeholder="Account Name" name="account_number" className="p-2" autoFocus onChange={onEditing} onKeyDown={handleKeypress} defaultValue={acc.account_name ? acc.account_name : undefined} isInvalid={Boolean(error)} />
                     {error && <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>}
