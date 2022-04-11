@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, Container, Row, Col, Button } from 'react-bootstrap';
 
-const ProcessorTokenFlowModal = ({ show, onHide }) => {
+const ProcessorTokenFlowModal = ({ show, onShowProcessorTokenModal, onHide }) => {
   return (
     <Modal centered
       show={show}
@@ -27,7 +27,7 @@ const ProcessorTokenFlowModal = ({ show, onHide }) => {
             </Col>
           </Row>
           <Row className="align-items-center">
-            <Col sm={4}><Button block className="mb-2 p-3">Provide Processor Token</Button></Col>
+            <Col sm={4}><Button onClick={onShowProcessorTokenModal} block className="mb-2 p-3">Provide Processor Token</Button></Col>
             <Col sm={8}>
               <p className="text-muted">If you already have a processor token, all you need to do is supply the information and we can connect your bank account instantly.</p>
             </Col>

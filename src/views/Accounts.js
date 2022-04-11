@@ -280,6 +280,11 @@ const Accounts = ({ page, previous, next, isActive }) => {
     }
   }
 
+  const onShowProcessorTokenModal = () => {
+    setProcessorTokenFlowModal(false);
+    updateApp({ manageProcessorToken: true });
+  }
+
   useEffect(() => {
     getAccounts();
   }, [app.activeUser]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -426,7 +431,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
 
       <InstitutionsModal institutions={institutions} errors={errors} isFetching={isFetching} show={showInstitution} onSearch={(filter, page) => getInstitutions(filter, page)} onClose={() => setShowInstitution(false)} />
 
-      <ProcessorTokenFlowModal show={processorTokenFlowModal} onHide={() => setProcessorTokenFlowModal(false)} />
+      <ProcessorTokenFlowModal show={processorTokenFlowModal} onShowProcessorTokenModal={onShowProcessorTokenModal} onHide={() => setProcessorTokenFlowModal(false)} />
 
     </Container>
   );
