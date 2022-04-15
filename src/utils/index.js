@@ -44,3 +44,10 @@ export const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
   const blob = new Blob(byteArrays, {type: contentType});
   return blob;
 }
+
+export const getQueryString = (params) => {
+  var esc = encodeURIComponent;
+  return Object.keys(params)
+    .map(k => esc(k) + '=' + esc(params[k]))
+    .join('&');
+};

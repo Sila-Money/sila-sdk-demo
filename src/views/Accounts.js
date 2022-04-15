@@ -10,6 +10,7 @@ import LinkAccountModal from '../components/accounts/LinkAccountModal';
 import ProcessorTokenModal from '../components/accounts/ProcessorTokenModal';
 import InstitutionsModal from '../components/accounts/InstitutionsModal';
 import ProcessorTokenFlowModal from '../components/accounts/ProcessorTokenFlowModal';
+import GenerateProcessorTokenModal from '../components/accounts/GenerateProcessorTokenModal';
 import ConfirmModal from '../components/common/ConfirmModal';
 
 const Accounts = ({ page, previous, next, isActive }) => {
@@ -27,6 +28,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
   const [isFetching, setIsFetching] = useState(false);
   const [errors, setErrors] = useState(false);
   const [processorTokenFlowModal, setProcessorTokenFlowModal] = useState(false);
+  const [generateProcessorTokenModal, setGenerateProcessorTokenModal] = useState(false);
   const tbodyRef = useRef()
   let result = {};
   let appData = {};
@@ -285,6 +287,11 @@ const Accounts = ({ page, previous, next, isActive }) => {
     updateApp({ manageProcessorToken: true });
   }
 
+  const onShowGenerateProcessorTokenModal = () => {
+    setProcessorTokenFlowModal(false);
+    setGenerateProcessorTokenModal(true);
+  }
+
   useEffect(() => {
     getAccounts();
   }, [app.activeUser]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -431,7 +438,9 @@ const Accounts = ({ page, previous, next, isActive }) => {
 
       <InstitutionsModal institutions={institutions} errors={errors} isFetching={isFetching} show={showInstitution} onSearch={(filter, page) => getInstitutions(filter, page)} onClose={() => setShowInstitution(false)} />
 
-      <ProcessorTokenFlowModal show={processorTokenFlowModal} onShowProcessorTokenModal={onShowProcessorTokenModal} onHide={() => setProcessorTokenFlowModal(false)} />
+      <ProcessorTokenFlowModal show={processorTokenFlowModal} onShowProcessorTokenModal={onShowProcessorTokenModal} onShowGenerateProcessorTokenModal={onShowGenerateProcessorTokenModal} onHide={() => setProcessorTokenFlowModal(false)} />
+
+      <GenerateProcessorTokenModal show={generateProcessorTokenModal} onHide={() => setGenerateProcessorTokenModal(false)} />
 
     </Container>
   );
