@@ -48,7 +48,7 @@ const KycModal = ({ show, onHide }) => {
             </Card.Header>
             <Card.Body>
               <Card.Text>
-                <p>This level allows for speedy ACH transactions to trusted end-users. It contains full KYC and requires an end-user to have a Plaid-linked bank account and undergo device registration and SMS opt-in and confirmation. Each transaction will also go through a risk assessment to estimate the risk of an ACH return. With this level, transactions have limits of $299.99.</p>
+                <p>This level allows for speedy ACH transactions to trusted end-users. It contains full KYC and requires an end-user to have a Plaid-linked bank account and undergo device registration and SMS opt-in and confirmation. Each transaction will also go through a risk assessment to estimate the risk of an ACH return. With this level, transactions have limits of $500.00.</p>
                 <ul>
                   <li className="text-warning">Instant ACH is in closed beta and requires approval</li>
                 </ul>
