@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, Container, Row, Col, Button } from 'react-bootstrap';
 
-const ProcessorTokenFlowModal = ({ show, onShowProcessorTokenModal, onShowGenerateProcessorTokenModal, onHide }) => {
+const ProcessorTokenFlowModal = ({ show, onShowProcessorTokenModal, onShowGenerateProcessorTokenPage, onHide }) => {
   return (
     <Modal centered
       show={show}
@@ -21,7 +21,7 @@ const ProcessorTokenFlowModal = ({ show, onShowProcessorTokenModal, onShowGenera
             </Col>
           </Row>
           <Row className="mb-4 align-items-center">
-            <Col sm={4}><Button onClick={onShowGenerateProcessorTokenModal} block className="mb-2 p-3">Generate Processor Token</Button></Col>
+            <Col sm={4}><Button onClick={onShowGenerateProcessorTokenPage} block className="mb-2 p-3">Generate Processor Token</Button></Col>
             <Col sm={8}>
               <p className="text-muted">With this flow, you will be able to generate your own processor token using your Plaid Sandbox credentials. Your credentials are held locally, and are completely secure. We will make calls on your behalf, which allows you to see the API responses in real-time. </p>
             </Col>

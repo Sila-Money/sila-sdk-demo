@@ -1,15 +1,11 @@
-const PLAID_CLIENT_ID = '<add your plaid client id>';
-
-const PLAID_SECRET = '<add your plaid secret>';
-
 const { Configuration, PlaidApi, PlaidEnvironments } = require('plaid');
 
 const configuration = new Configuration({
 	basePath: PlaidEnvironments.sandbox,
 	baseOptions: {
 		headers: {
-			'PLAID-CLIENT-ID': PLAID_CLIENT_ID,
-			'PLAID-SECRET': PLAID_SECRET,
+			'PLAID-CLIENT-ID': '',
+			'PLAID-SECRET': '',
 		},
 	},
 });
@@ -17,13 +13,17 @@ const configuration = new Configuration({
 const plaidClient = new PlaidApi(configuration);
 
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.use(require('body-parser').json()); 
 app.use(require('body-parser').urlencoded({ extended: true }));
+app.use(cookieParser())
 
 app.post("/link/token/create", async (req, res) => {
+	configuration['baseOptions']['headers']['PLAID-CLIENT-ID'] = req.cookies['sila_demo_clientId'] || '';
+	configuration['baseOptions']['headers']['PLAID-SECRET'] = req.cookies['sila_demo_secretKey'] || '';
 	let resObj;
 	try {
 		const response = await plaidClient.linkTokenCreate({
