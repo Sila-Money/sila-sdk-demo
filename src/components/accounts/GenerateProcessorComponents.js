@@ -10,11 +10,12 @@ export const PlaidSilaAccount = ({ step, title, onHandleClick }) => {
   return (<>
     <h2 className="text-primary">{`${step}. ${title}`}</h2>
     <p className="text-muted mb-3">In order to use the Plaid + Sila integration, a user must have accounts at both Plaid and Sila. If you already have your Plaid account and have enabled it for integration, click the "I have a Plaid Account" option. If you do not have your own account with sandbox credentials, click "Create Plaid Account".</p>
-    <div className="d-block d-xl-flex align-items-center mb-2 loaded">
-      <div className="ml-auto">
-        <Row className="mt-2">
-          <Col lg="12" xl="6"><Button onClick={() => onHandleClick('signup')} block className="mb-2 text-nowrap">Create Plaid Account</Button></Col>
-          <Col lg="12" xl="6"><Button onClick={() => onHandleClick('createToken')} block className="mb-2 text-nowrap">I have a Plaid Account</Button></Col>
+    <div className="mb-2 loaded">
+      <div className="">
+        <Row className="mt-2 justify-content-end">
+          <Col lg="12" xl="4"><Button onClick={() => onHandleClick('signup')} block className="mb-2">Create Plaid Account</Button></Col>
+          <Col lg="12" xl="4"><Button onClick={() => onHandleClick('havePlaidAccount')} block className="mb-2">I have a Plaid Account</Button></Col>
+          <Col lg="12" xl="2"><Button variant="outline-light" block onClick={() => onHandleClick('accounts')}>Cancel</Button></Col>
         </Row>
       </div>
     </div>
@@ -24,13 +25,14 @@ export const PlaidSilaAccount = ({ step, title, onHandleClick }) => {
 export const AccountContextual = ({ step, title, context, onHandleClick, isTutorial=true }) => {
   return (<>
     <h2 className="text-primary">{`${step}. ${title}`}</h2>
-    {context && context.map((option, index) => <p key={index} className="text-muted mb-3" dangerouslySetInnerHTML={{ __html: option.link && option.content ? option.content.replace(option.link, `<a href="${option.link}" target="_blank" rel="noopener noreferrer">${option.link}</a>`) : option.content }}></p>)}
+    {context && context.map((option, index) => <p key={index} className="text-muted mb-3" dangerouslySetInnerHTML={{ __html: option.link && option.content ? option.content.replace(option.link, `<a href="${option.link}" class="text-break" target="_blank" rel="noopener noreferrer">${option.link}</a>`) : option.content }}></p>)}
     {isTutorial && <>
       <img src="/video-placeholder.png" className="img-fluid" alt="Placeholder" />
-      <div className="d-block d-xl-flex align-items-center mt-2 mb-2 loaded">
-        <div className="ml-auto">
-          <Row className="mt-2">
-            <Col><Button block className="mb-2" onClick={() => onHandleClick(undefined, step)}>Next Step</Button></Col>
+      <div className="mt-2 mb-2 loaded">
+        <div className="">
+          <Row className="mt-2 justify-content-end">
+            <Col lg="12" xl="3"><Button block className="mb-2" onClick={() => onHandleClick(undefined, step)}>Next Step</Button></Col>
+            {step === 1 && <Col lg="12" xl="3"><Button block variant="outline-light" className="mb-2" onClick={() => onHandleClick('goBack')}>Go Back</Button></Col>}
           </Row>
         </div>
       </div>
@@ -397,10 +399,8 @@ export const LinkProcessorToken = ({ step, title, context, allPlaidTokens, onHan
   </>);
 };
 
-export const plaidSignUpSteps = [{
-    title: 'Plaid + Sila Account',
-    disabled: false,
-    context: [{
+const COMMON_CONTENT_AND_LINKS = [{
+  'plaidSila' : [{
         content: 'In order to use the Plaid + Sila integration, a user must have accounts at both Plaid and Sila. You may follow the links below to begin this process. You may also watch a tutorial below on how to accomplish both tasks. When both tasks are complete, you may go to the next step.',
       },
       {
@@ -410,7 +410,58 @@ export const plaidSignUpSteps = [{
       {
         link: 'https://console.silamoney.com/register',
         content: 'To open an account with Sila, go here: https://console.silamoney.com/register',
-    }],
+    }
+  ],
+  'linkToken' : [{
+        content: 'A link_token is a short-lived, one-time use token that is used to authenitcate your app with Plaid Link. You will need to form the request with your client_id, secret, and a few other required parameters from your Plaid sandbox environment. Please input your client_id and secret below to authenticate the API request and generate a link token. These credentials are held locally and are completely secure.',
+      },
+      {
+        link: 'https://plaid.com/docs/api/tokens/#linktoken',
+        content: 'To learn more about link tokens, go here: https://plaid.com/docs/api/tokens/#linktoken',
+      },
+      {
+      link: 'https://dashboard.plaid.com/team/keys',
+      content: 'To see your client ID and secret, go here: https://dashboard.plaid.com/team/keys',
+    }
+  ],
+  'publicToken' : [{
+        content: 'To generate a public token, you must integrate with Plaid Link. Initialize Link by passing in the link_token you just generated. When the Link flow is completed, Link will pass back a public_token via the onSuccess callback.',
+      },
+      {
+        link: 'https://plaid.com/docs/link/',
+        content: 'For more information on initializing and receiving data back from Link, see the Link documentation here: https://plaid.com/docs/link/',
+    }
+  ],
+  'accesssToken': [{
+      content: "The public token, which you can see in the response body, was generated by Plaid Link. To call Plaid's Exchange Token endpoint, also known as the Access Token, you must pass through the public token and account ID to generate an Access Token.",
+    },
+    {
+      link: 'https://plaid.com/docs/api/tokens/#itempublic_tokenexchange',
+      content: 'Learn more about exchanging pubic tokens for access tokens here: https://plaid.com/docs/api/tokens/#itempublic_tokenexchange',
+    }
+  ],
+  'retrieveAccountCredentials': [{
+      content: "In addition to a public_token, Plaid Link will also return an accounts array. The accounts array will contain information about bank accounts associated with the credentials entered by the user. In order to create a processor token, you will need to pass in the access token you just generated, along with the account ID. A processor is also needed, which is provided below.",
+    },
+    {
+      link: 'https://dashboard.plaid.com/link/account-select',
+      content: 'Learn more about the accounts array here: https://dashboard.plaid.com/link/account-select',
+    }
+  ],
+  'processorToken': [{
+      content: "Congratulations! You have successfully generated your processor token, which has been returned by the Plaid API. All that's left to do is provide a name, and link the bank account!",
+    },
+    {
+      link: 'https://plaid.com/docs/api/processors/#processortokencreate',
+      content: 'Learn more about this process here: https://plaid.com/docs/api/processors/#processortokencreate',
+    }
+  ]
+}];
+
+export const plaidSignUpSteps = [{
+    title: 'Plaid + Sila Account',
+    disabled: false,
+    context: COMMON_CONTENT_AND_LINKS[0]['plaidSila'],
     component: AccountContextual
   },
   {
@@ -440,65 +491,69 @@ export const plaidSignUpSteps = [{
   {
     title: 'Create a Link Token',
     disabled: true,
-    context: [{
-        content: 'A link_token is a short-lived, one-time use token that is used to authenitcate your app with Plaid Link. You will need to form the request with your client_id, secret, and a few other required parameters from your Plaid sandbox environment. Please input your client_id and secret below to authenticate the API request and generate a link token. These credentials are held locally and are completely secure.',
-      },
-      {
-        link: 'https://plaid.com/docs/api/tokens/#linktoken',
-        content: 'To learn more about link tokens, go here: https://plaid.com/docs/api/tokens/#linktoken',
-      },
-      {
-      link: 'https://dashboard.plaid.com/team/keys',
-      content: 'To see your client ID and secret, go here: https://dashboard.plaid.com/team/keys',
-    }],
+    context: COMMON_CONTENT_AND_LINKS[0]['linkToken'],
     component: CreateLinkToken
   },
   {
     title: 'Generate a Public Token',
     disabled: true,
-    context: [{
-        content: 'To generate a public token, you must integrate with Plaid Link. Initialize Link by passing in the link_token you just generated. When the Link flow is completed, Link will pass back a public_token via the onSuccess callback.',
-      },
-      {
-        link: 'https://plaid.com/docs/link/',
-        content: 'For more information on initializing and receiving data back from Link, see the Link documentation here: https://plaid.com/docs/link/',
-    }],
+    context: COMMON_CONTENT_AND_LINKS[0]['publicToken'],
     component: GeneratePublicToken,
   },
   {
     title: 'Generate an Accesss Token',
     disabled: true,
-    context: [{
-      content: "The public token, which you can see in the response body, was generated by Plaid Link. To call Plaid's Exchange Token endpoint, also known as the Access Token, you must pass through the public token and account ID to generate an Access Token.",
-    },
-    {
-      link: 'https://plaid.com/docs/api/tokens/#itempublic_tokenexchange',
-      content: 'Learn more about exchanging pubic tokens for access tokens here: https://plaid.com/docs/api/tokens/#itempublic_tokenexchange',
-    }],
+    context: COMMON_CONTENT_AND_LINKS[0]['accesssToken'],
     component: GenerateAccessToken,
   },
   {
     title: 'Retrieve Account ID and credentials',
     disabled: true,
-    context: [{
-      content: "In addition to a public_token, Plaid Link will also return an accounts array. The accounts array will contain information about bank accounts associated with the credentials entered by the user. In order to create a processor token, you will need to pass in the access token you just generated, along with the account ID. A processor is also needed, which is provided below.",
-    },
-    {
-      link: 'https://dashboard.plaid.com/link/account-select',
-      content: 'Learn more about the accounts array here: https://dashboard.plaid.com/link/account-select',
-    }],
+    context: COMMON_CONTENT_AND_LINKS[0]['retrieveAccountCredentials'],
     component: RetrieveAccountCredentials,
   },
   {
     title: 'Link via Processor Token',
     disabled: true,
-    context: [{
-      content: "Congratulations! You have successfully generated your processor token, which has been returned by the Plaid API. All that's left to do is provide a name, and link the bank account!",
-    },
-    {
-      link: 'https://plaid.com/docs/api/processors/#processortokencreate',
-      content: 'Learn more about this process here: https://plaid.com/docs/api/processors/#processortokencreate',
-    }],
+    context: COMMON_CONTENT_AND_LINKS[0]['processorToken'],
+    component: LinkProcessorToken,
+  }
+];
+
+export const havePlaidAccountSteps = [{
+    title: 'Plaid + Sila Account',
+    disabled: false,
+    context: COMMON_CONTENT_AND_LINKS[0]['plaidSila'],
+    component: AccountContextual
+  },
+  {
+    title: 'Create a Link Token',
+    disabled: false,
+    context: COMMON_CONTENT_AND_LINKS[0]['linkToken'],
+    component: CreateLinkToken
+  },
+  {
+    title: 'Generate a Public Token',
+    disabled: true,
+    context: COMMON_CONTENT_AND_LINKS[0]['publicToken'],
+    component: GeneratePublicToken,
+  },
+  {
+    title: 'Generate an Accesss Token',
+    disabled: true,
+    context: COMMON_CONTENT_AND_LINKS[0]['accesssToken'],
+    component: GenerateAccessToken,
+  },
+  {
+    title: 'Retrieve Account ID and credentials',
+    disabled: true,
+    context: COMMON_CONTENT_AND_LINKS[0]['retrieveAccountCredentials'],
+    component: RetrieveAccountCredentials,
+  },
+  {
+    title: 'Link via Processor Token',
+    disabled: true,
+    context: COMMON_CONTENT_AND_LINKS[0]['processorToken'],
     component: LinkProcessorToken,
   }
 ];
