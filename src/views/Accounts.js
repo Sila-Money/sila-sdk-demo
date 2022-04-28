@@ -10,8 +10,9 @@ import LinkAccountModal from '../components/accounts/LinkAccountModal';
 import ProcessorTokenModal from '../components/accounts/ProcessorTokenModal';
 import InstitutionsModal from '../components/accounts/InstitutionsModal';
 import ProcessorTokenFlowModal from '../components/accounts/ProcessorTokenFlowModal';
-import { plaidSignUpSteps, havePlaidAccountSteps, PlaidSilaAccount } from '../components/accounts/GenerateProcessorComponents';
 import ConfirmModal from '../components/common/ConfirmModal';
+
+import { DEFAULT_GP_ROUTES, plaidSignUpSteps, havePlaidAccountSteps } from '../constants/plaidGenerateProcessor';
 
 const Accounts = ({ page, previous, next, isActive }) => {
   const { app, api, setAppData, updateApp, handleError } = useAppContext();
@@ -29,11 +30,6 @@ const Accounts = ({ page, previous, next, isActive }) => {
   const [errors, setErrors] = useState(false);
   const [processorTokenFlowModal, setProcessorTokenFlowModal] = useState(false);
   const [tabKey, setTabKey] = useState(0);
-  const DEFAULT_GP_ROUTES = [{
-    title: 'Plaid + Sila Account',
-    component: PlaidSilaAccount,
-    disabled: false
-  }];
   const [generateProcessorPages, setGenerateProcessorPages] = useState({ isGpPage: false, gpRoutes: DEFAULT_GP_ROUTES });
   const [allPlaidTokens, setAllPlaidTokens] = useState({ linkToken: '', publicToken: '', accessToken: '', processorToken: '', accountName: '', accountId: '' });
   const tbodyRef = useRef()
@@ -348,7 +344,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
       setTabKey(0);
     } else if (key) {
       setTabKey(key);
-      generateProcessorPages.gpRoutes[key]['disabled'] = false;
+      generateProcessorPages.gpRoutes[key].disabled = false;
       setGenerateProcessorPages({ ...generateProcessorPages, gpRoutes: generateProcessorPages.gpRoutes });
     }
   }
@@ -529,7 +525,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
         </Container>
       </>}
 
-      {app.alert.message && <div className="mb-2 p-3"><AlertMessage message={app.alert.message} type={app.alert.type} noIcon={app.alert.noIcon} loading={app.alert.loading} /></div>}
+      {app.alert && app.alert.message && <div className="mb-2 p-3"><AlertMessage message={app.alert.message} type={app.alert.type} noIcon={app.alert.noIcon} loading={app.alert.loading} /></div>}
 
       <Pagination
         previous={previous}
