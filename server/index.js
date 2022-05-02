@@ -35,7 +35,6 @@ app.post("/link/token/create", async (req, res) => {
 		});
 		resObj = { status: response.status, data: response.data };
 	} catch (error) {
-		console.log(error);
 		resObj = { status: error.response.status, data: error.response.data };
 	}
 	res.json(resObj);
@@ -47,7 +46,6 @@ app.post("/item/public_token/exchange", async (req, res) => {
 		const response = await plaidClient.itemPublicTokenExchange({public_token: req.body.public_token});
 		resObj = { status: response.status, data: response.data };
 	} catch (error) {
-		console.log(error);
 		resObj = { status: error.response.status, data: error.response.data };
 	}
 	res.json(resObj);
@@ -63,7 +61,6 @@ app.post("/processor/token/create", async (req, res) => {
 		});
 		resObj = { status: response.status, data: response.data };
 	} catch (error) {
-		console.log(error);
 		resObj = { status: error.response.status, data: error.response.data };
 	}
 	res.json(resObj);

@@ -12,7 +12,7 @@ import InstitutionsModal from '../components/accounts/InstitutionsModal';
 import ProcessorTokenFlowModal from '../components/accounts/ProcessorTokenFlowModal';
 import ConfirmModal from '../components/common/ConfirmModal';
 
-import { DEFAULT_GP_ROUTES, plaidSignUpSteps } from '../constants/plaidGenerateProcessor';
+import { DEFAULT_GP_ROUTES, plaidSignUpSteps, havePlaidAccountSteps } from '../constants/plaidGenerateProcessor';
 
 const Accounts = ({ page, previous, next, isActive }) => {
   const { app, api, setAppData, updateApp, handleError } = useAppContext();
@@ -111,6 +111,8 @@ const Accounts = ({ page, previous, next, isActive }) => {
       if (res.statusCode === 200) {
         if (linkType === 'processor') {
           setGenerateProcessorPages({ ...generateProcessorPages, isGpPage: false, gpRoutes: DEFAULT_GP_ROUTES });
+          setAllPlaidTokens({ ...allPlaidTokens, linkToken: '', publicToken: '', accessToken: '', processorToken: '', accountName: '', accountId: '' })
+          setTabKey(0);
         }
         result.alert = { message: 'Bank account successfully linked!', type: 'success' };
         getAccounts(responseObj);
@@ -330,10 +332,19 @@ const Accounts = ({ page, previous, next, isActive }) => {
 
   const handleClick = (type, key) => {
     if (!key && type && type === 'signup') {
-      setGenerateProcessorPages({ ...generateProcessorPages, gpRoutes: plaidSignUpSteps });
+      setGenerateProcessorPages({ ...generateProcessorPages, gpRoutes: plaidSignUpSteps.map((r, index) => index === 0 ? { ...r, disabled: false } : { ...r, disabled: true }) });
+    } else if (!key && type && type === 'havePlaidAccount') {
+      setGenerateProcessorPages({ ...generateProcessorPages, gpRoutes: havePlaidAccountSteps.map((r, index) => (index === 0 || index === 1) ? { ...r, disabled: false } : { ...r, disabled: true }) });
+      setTabKey(1);
+    } else if (!key && type && type === 'accounts') {
+      setGenerateProcessorPages({ ...generateProcessorPages, isGpPage: false, gpRoutes: DEFAULT_GP_ROUTES });
+      setTabKey(0);
+    } else if (!key && type && type === 'goBack') {
+      setGenerateProcessorPages({ ...generateProcessorPages, gpRoutes: DEFAULT_GP_ROUTES });
+      setTabKey(0);
     } else if (key) {
-      generateProcessorPages.gpRoutes[key]['disabled'] = false;
       setTabKey(key);
+      generateProcessorPages.gpRoutes[key].disabled = false;
       setGenerateProcessorPages({ ...generateProcessorPages, gpRoutes: generateProcessorPages.gpRoutes });
     }
   }
@@ -483,7 +494,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
                   {generateProcessorPages.gpRoutes.map((option, index) => <Nav.Item key={index}>
                     <Nav.Link eventKey={`${index}`} className={`p-3 ${(generateProcessorPages.gpRoutes.length !== index+1 || index === 0) ? 'border-bottom' : ''}`} disabled={option.disabled}>
                       <p className={`d-flex text-uppercase text-primary font-weight-bold mb-1 ${option.disabled ? 'text-muted' : ''}`}>
-                        {!option.disabled && <i className="mr-2 sila-icon sila-icon-success text-primary text-sm"></i>} {`Step ${index+1}`}
+                        {!option.disabled && tabKey !== index && <i className="mr-2 sila-icon sila-icon-success text-primary text-sm"></i>} {`Step ${index+1}`}
                       </p>
                       <p className={`mb-0 text-dark font-weight-bold ${option.disabled ? 'text-muted' : ''}`}>{option.title}</p>
                     </Nav.Link>
