@@ -7,7 +7,7 @@ import plaidApi from '../../../api/plaid';
 
 import AccountContextual from './AccountContextual';
 
-const CreateLinkToken = ({ step, title, context, onHandleClick, onLinkToken, onLoaded }) => {
+const CreateLinkToken = ({ step, title, context, isTutorial, onHandleClick, onLinkToken, onLoaded }) => {
   const { app, setAppData, updateApp } = useAppContext();
   const [validated, setValidated] = useState(false);
   const [errors, setErrors] = useState(false);
@@ -82,9 +82,9 @@ const CreateLinkToken = ({ step, title, context, onHandleClick, onLinkToken, onL
   };
 
   return (<>
-    <AccountContextual step={step} title={title} context={context} onHandleClick={onHandleClick} isTutorial={false} />
+    <AccountContextual step={step} title={title} context={context} isTutorial={isTutorial} onHandleClick={onHandleClick} />
     
-    <Form noValidate validated={validated} autoComplete="off" onSubmit={linkTokenCreate}>
+    {!isTutorial && <Form noValidate validated={validated} autoComplete="off" onSubmit={linkTokenCreate}>
       <Form.Group className="mb-3">
         <Form.Label htmlFor="clientId">Client ID</Form.Label>
         <Form.Control autoFocus required id="clientId" placeholder="client_id" aria-label="Client ID" name="clientId" defaultValue={authCredentials.clientId ? authCredentials.clientId : undefined} isInvalid={Boolean(errors && errors.clientId)} />
@@ -103,7 +103,7 @@ const CreateLinkToken = ({ step, title, context, onHandleClick, onLinkToken, onL
           </Row>
         </div>
       </div>
-    </Form>
+    </Form>}
   </>);
 };
 
