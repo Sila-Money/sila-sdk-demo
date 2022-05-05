@@ -6,7 +6,7 @@ import plaidApi from '../../../api/plaid';
 
 import AccountContextual from './AccountContextual';
 
-const GenerateAccessToken = ({ step, title, context, allPlaidTokens, onHandleClick, onAccessToken, onLoaded }) => {
+const GenerateAccessToken = ({ step, title, context, isTutorial, allPlaidTokens, onHandleClick, onAccessToken, onLoaded }) => {
   const { app, setAppData, updateApp } = useAppContext();
   const [validated, setValidated] = useState(false);
   const [errors, setErrors] = useState(false);
@@ -59,9 +59,9 @@ const GenerateAccessToken = ({ step, title, context, allPlaidTokens, onHandleCli
   };
 
   return (<>
-    <AccountContextual step={step} title={title} context={context} onHandleClick={onHandleClick} isTutorial={false} />
+    <AccountContextual step={step} title={title} context={context} isTutorial={isTutorial} onHandleClick={onHandleClick} />
     
-    <Form noValidate validated={validated} autoComplete="off" onSubmit={createAccessToken}>
+    {!isTutorial && <Form noValidate validated={validated} autoComplete="off" onSubmit={createAccessToken}>
       <Form.Group className="mb-3">
         <Form.Label htmlFor="publicToken">Public Token</Form.Label>
         <Form.Control readOnly id="publicToken" placeholder="Public Token" aria-label="Public Token" name="publicToken" defaultValue={allPlaidTokens.publicToken ? allPlaidTokens.publicToken : undefined} isInvalid={Boolean(errors && errors.publicToken)} />
@@ -75,7 +75,7 @@ const GenerateAccessToken = ({ step, title, context, allPlaidTokens, onHandleCli
           </Row>
         </div>
       </div>
-    </Form>
+    </Form>}
   </>);
 };
 

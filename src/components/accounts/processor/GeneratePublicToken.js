@@ -35,29 +35,31 @@ const PlaidButton = ({ linkToken, onSuccess }) => {
   return <Button block className="mb-2 text-nowrap" onClick={onOpen} disabled={!ready}>Launch Plaid Link</Button>;
 };
 
-const GeneratePublicToken = ({ step, title, context, allPlaidTokens, onHandleClick, onPublicToken }) => {
+const GeneratePublicToken = ({ step, title, context, isTutorial, allPlaidTokens, onHandleClick, onPublicToken }) => {
   const publicToken = (pubToken, metadata) => {
     onPublicToken(pubToken, metadata.account.name, metadata.account_id);
     onHandleClick(undefined, step);
   };
 
   return (<>
-    <AccountContextual step={step} title={title} context={context} onHandleClick={onHandleClick} isTutorial={false} />
+    <AccountContextual step={step} title={title} context={context} isTutorial={isTutorial} onHandleClick={onHandleClick} />
 
-    <Form noValidate validated={false} autoComplete="off">
-      <Form.Group className="mb-3">
-        <Form.Label htmlFor="linkToken">Link Token</Form.Label>
-        <Form.Control readOnly id="linkToken" placeholder="Link Token" aria-label="Link Token" name="linkToken" defaultValue={allPlaidTokens.linkToken ? allPlaidTokens.linkToken : undefined} />
-      </Form.Group>
-    </Form>
-    
-    <div className="d-block d-xl-flex align-items-center mt-2 mb-2 loaded">
-      <div className="ml-auto">
-        <Row className="mt-2">
-          <Col><PlaidButton linkToken={allPlaidTokens.linkToken} onSuccess={publicToken} /></Col>
-        </Row>
+    {!isTutorial && <>
+      <Form noValidate validated={false} autoComplete="off">
+        <Form.Group className="mb-3">
+          <Form.Label htmlFor="linkToken">Link Token</Form.Label>
+          <Form.Control readOnly id="linkToken" placeholder="Link Token" aria-label="Link Token" name="linkToken" defaultValue={allPlaidTokens.linkToken ? allPlaidTokens.linkToken : undefined} />
+        </Form.Group>
+      </Form>
+
+      <div className="d-block d-xl-flex align-items-center mt-2 mb-2 loaded">
+        <div className="ml-auto">
+          <Row className="mt-2">
+            <Col><PlaidButton linkToken={allPlaidTokens.linkToken} onSuccess={publicToken} /></Col>
+          </Row>
+        </div>
       </div>
-    </div>
+    </>}
   </>);
 };
 

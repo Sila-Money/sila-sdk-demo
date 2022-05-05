@@ -15,13 +15,13 @@ const ProcessorTokenFlowModal = ({ show, onShowProcessorTokenModal, onShowGenera
         <p className="mb-4 text-muted">We've provided a few different options here for the processor token flow, depending on where you are at in your process with Plaid, and what you would like to learn! Please choose one of the three options below:</p>
         <Container className="bg-lightblue p-4">
           <Row className="mb-4 align-items-center">
-            <Col sm={4}><Button block className="mb-2 p-3">Processor Token Tutorial</Button></Col>
+            <Col sm={4}><Button onClick={() => onShowGenerateProcessorTokenPage(true)} block className="mb-2 p-3">Processor Token Tutorial</Button></Col>
             <Col sm={8}>
               <p className="text-muted">Here we will walk you through step-by-step how to set up your Plaid account for integration and how to generate a processor token to link your bank account. This flow will be entirely simulated, and will provide you with a mock processor token at the end.</p>
             </Col>
           </Row>
           <Row className="mb-4 align-items-center">
-            <Col sm={4}><Button onClick={onShowGenerateProcessorTokenPage} block className="mb-2 p-3">Generate Processor Token</Button></Col>
+            <Col sm={4}><Button onClick={() => onShowGenerateProcessorTokenPage(false)} block className="mb-2 p-3">Generate Processor Token</Button></Col>
             <Col sm={8}>
               <p className="text-muted">With this flow, you will be able to generate your own processor token using your Plaid Sandbox credentials. Your credentials are held locally, and are completely secure. We will make calls on your behalf, which allows you to see the API responses in real-time. </p>
             </Col>

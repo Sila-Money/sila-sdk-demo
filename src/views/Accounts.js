@@ -12,7 +12,7 @@ import InstitutionsModal from '../components/accounts/InstitutionsModal';
 import ProcessorTokenFlowModal from '../components/accounts/ProcessorTokenFlowModal';
 import ConfirmModal from '../components/common/ConfirmModal';
 
-import { DEFAULT_GP_ROUTES, plaidSignUpSteps, havePlaidAccountSteps } from '../constants/plaidGenerateProcessor';
+import { DEFAULT_GP_ROUTES, plaidSignUpSteps, havePlaidAccountSteps, plaidTutorialSteps } from '../constants/plaidGenerateProcessor';
 
 const Accounts = ({ page, previous, next, isActive }) => {
   const { app, api, setAppData, updateApp, handleError } = useAppContext();
@@ -30,7 +30,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
   const [errors, setErrors] = useState(false);
   const [processorTokenFlowModal, setProcessorTokenFlowModal] = useState(false);
   const [tabKey, setTabKey] = useState(0);
-  const [generateProcessorPages, setGenerateProcessorPages] = useState({ isGpPage: false, gpRoutes: DEFAULT_GP_ROUTES });
+  const [generateProcessorPages, setGenerateProcessorPages] = useState({ isGpPage: false, isTutorial: false, isDemoLinkProcessorPage: false, gpRoutes: DEFAULT_GP_ROUTES });
   const [allPlaidTokens, setAllPlaidTokens] = useState({ linkToken: '', publicToken: '', accessToken: '', processorToken: '', accountName: '', accountId: '' });
   const tbodyRef = useRef()
   let result = {};
@@ -100,6 +100,14 @@ const Accounts = ({ page, previous, next, isActive }) => {
   };
 
   const linkAccount = async (token, metadata, linkType='link') => {
+    if (linkType === 'demo') {
+      setGenerateProcessorPages({ ...generateProcessorPages, isGpPage: false, isTutorial: false, isDemoLinkProcessorPage: false, gpRoutes: DEFAULT_GP_ROUTES });
+      setAllPlaidTokens({ ...allPlaidTokens, linkToken: '', publicToken: '', accessToken: '', processorToken: '', accountName: '', accountId: '' })
+      setTabKey(0);
+      updateApp({ alert: { message: 'Bank account successfully linked!', type: 'success' } });
+      return;
+    }
+
     console.log('Linking account ...');
     updateApp({ alert: { message: 'Linking account ...', type: 'info', noIcon: true, loading: true } });
     setLoaded(false);
@@ -110,7 +118,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
       console.log('  ... completed!');
       if (res.statusCode === 200) {
         if (linkType === 'processor') {
-          setGenerateProcessorPages({ ...generateProcessorPages, isGpPage: false, gpRoutes: DEFAULT_GP_ROUTES });
+          setGenerateProcessorPages({ ...generateProcessorPages, isGpPage: false, isTutorial: false, isDemoLinkProcessorPage: false, gpRoutes: DEFAULT_GP_ROUTES });
           setAllPlaidTokens({ ...allPlaidTokens, linkToken: '', publicToken: '', accessToken: '', processorToken: '', accountName: '', accountId: '' })
           setTabKey(0);
         }
@@ -322,30 +330,50 @@ const Accounts = ({ page, previous, next, isActive }) => {
 
   const onShowProcessorTokenModal = () => {
     setProcessorTokenFlowModal(false);
-    updateApp({ manageProcessorToken: true });
+    updateApp({ manageProcessorToken: true, alert: { message: '', type: '' } });
   }
 
-  const onShowGenerateProcessorTokenPage = () => {
+  const onShowGenerateProcessorTokenPage = (isTutorial=false) => {
     setProcessorTokenFlowModal(false);
-    setGenerateProcessorPages({ ...generateProcessorPages, isGpPage: true });
+    setGenerateProcessorPages({ ...generateProcessorPages, isGpPage: true, isTutorial: isTutorial, isDemoLinkProcessorPage: false });
+    if (isTutorial) handleClick('tutorial');
+    updateApp({ alert: { message: '', type: '' } });
   }
 
   const handleClick = (type, key) => {
-    if (!key && type && type === 'signup') {
-      setGenerateProcessorPages({ ...generateProcessorPages, gpRoutes: plaidSignUpSteps.map((r, index) => index === 0 ? { ...r, disabled: false } : { ...r, disabled: true }) });
-    } else if (!key && type && type === 'havePlaidAccount') {
-      setGenerateProcessorPages({ ...generateProcessorPages, gpRoutes: havePlaidAccountSteps.map((r, index) => (index === 0 || index === 1) ? { ...r, disabled: false } : { ...r, disabled: true }) });
-      setTabKey(1);
-    } else if (!key && type && type === 'accounts') {
-      setGenerateProcessorPages({ ...generateProcessorPages, isGpPage: false, gpRoutes: DEFAULT_GP_ROUTES });
-      setTabKey(0);
-    } else if (!key && type && type === 'goBack') {
-      setGenerateProcessorPages({ ...generateProcessorPages, gpRoutes: DEFAULT_GP_ROUTES });
-      setTabKey(0);
-    } else if (key) {
-      setTabKey(key);
-      generateProcessorPages.gpRoutes[key].disabled = false;
-      setGenerateProcessorPages({ ...generateProcessorPages, gpRoutes: generateProcessorPages.gpRoutes });
+    if (key) {
+      if (type && type === 'tutorial') {
+        setGenerateProcessorPages({ ...generateProcessorPages, isDemoLinkProcessorPage: true });
+        setTabKey(plaidTutorialSteps.length-1);
+      } else {
+        setTabKey(key);
+        generateProcessorPages.gpRoutes[key].disabled = false;
+        setGenerateProcessorPages({ ...generateProcessorPages, gpRoutes: generateProcessorPages.gpRoutes });
+      }
+    } else if (type) {
+      switch (type) {
+        case 'signup':
+          setGenerateProcessorPages({ ...generateProcessorPages, isTutorial: false, isDemoLinkProcessorPage: false, gpRoutes: plaidSignUpSteps.map((r, index) => index === 0 ? { ...r, disabled: false } : { ...r, disabled: true }) });
+          break;
+        case 'havePlaidAccount':
+          setGenerateProcessorPages({ ...generateProcessorPages, isTutorial: false, isDemoLinkProcessorPage: false, gpRoutes: havePlaidAccountSteps.map((r, index) => (index === 0 || index === 1) ? { ...r, disabled: false } : { ...r, disabled: true }) });
+          setTabKey(1);
+          break;
+        case 'tutorial':
+          setGenerateProcessorPages({ ...generateProcessorPages, isGpPage: true, isTutorial: true, isDemoLinkProcessorPage: false, gpRoutes: plaidTutorialSteps.map((r, index) => index === 0 ? { ...r, disabled: false } : { ...r, disabled: true }) });
+          setTabKey(0);
+          break;
+        case 'accounts':
+          setGenerateProcessorPages({ ...generateProcessorPages, isGpPage: false, isTutorial: false, isDemoLinkProcessorPage: false, gpRoutes: DEFAULT_GP_ROUTES });
+          setTabKey(0);
+          break;
+        case "goBack":
+          setGenerateProcessorPages({ ...generateProcessorPages, isTutorial: false, isDemoLinkProcessorPage: false, gpRoutes: DEFAULT_GP_ROUTES });
+          setTabKey(0);
+          break;
+        default:
+          break;
+      }
     }
   }
 
@@ -482,7 +510,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
       </>}
 
       {generateProcessorPages.isGpPage && <>
-        <h1 className="mb-1 mt-3">Generate a Plaid Processor Token</h1>
+        <h1 className="mb-1 mt-3">{generateProcessorPages.isTutorial ? 'Tutorial: Generating a Plaid Processor Token' : 'Generate a Plaid Processor Token'}</h1>
         <p className="text-muted mb-3">One of the most popular methods to connect a bank account via Plaid is through the use of a Processor Token. We can generate a processor token using your sandbox credentials. Credentials are held locally, and are completely secure.</p>
 
         <Container className="border p-0">
@@ -508,6 +536,8 @@ const Accounts = ({ page, previous, next, isActive }) => {
                       step={index+1}
                       title={option.title}
                       context={option.context}
+                      isTutorial={option.isTutorial ? option.isTutorial : false}
+                      isDemoLinkProcessorPage={generateProcessorPages.isDemoLinkProcessorPage}
                       allPlaidTokens={allPlaidTokens}
                       onHandleClick={handleClick}
                       onLinkToken={(t) => setAllPlaidTokens({ ...allPlaidTokens, linkToken: t})}
@@ -516,6 +546,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
                       onProcessorToken={(t) => setAllPlaidTokens({ ...allPlaidTokens, processorToken: t})}
                       linkAccount={linkAccount}
                       onLoaded={setLoaded}
+                      onTabKey={(k) => setTabKey(k)}
                     />
                   </Tab.Pane>)}
                 </Tab.Content>
@@ -540,7 +571,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
 
       <InstitutionsModal institutions={institutions} errors={errors} isFetching={isFetching} show={showInstitution} onSearch={(filter, page) => getInstitutions(filter, page)} onClose={() => setShowInstitution(false)} />
 
-      <ProcessorTokenFlowModal show={processorTokenFlowModal} onShowProcessorTokenModal={onShowProcessorTokenModal} onShowGenerateProcessorTokenPage={onShowGenerateProcessorTokenPage} onHide={() => setProcessorTokenFlowModal(false)} />
+      <ProcessorTokenFlowModal show={processorTokenFlowModal} onShowProcessorTokenModal={onShowProcessorTokenModal} onShowGenerateProcessorTokenPage={(isTutorial) => onShowGenerateProcessorTokenPage(isTutorial)} onHide={() => setProcessorTokenFlowModal(false)} />
 
     </Container>
   );

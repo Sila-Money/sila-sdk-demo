@@ -8,7 +8,7 @@ import AccountContextual from './AccountContextual';
 
 import { DEFAULT_PROCESSOR_NAME } from '../../../constants/plaidGenerateProcessor';
 
-const RetrieveAccountCredentials = ({ step, title, context, allPlaidTokens, onHandleClick, onProcessorToken, onLoaded }) => {
+const RetrieveAccountCredentials = ({ step, title, context, isTutorial, allPlaidTokens, onHandleClick, onProcessorToken, onLoaded }) => {
   const { app, setAppData, updateApp } = useAppContext();
   const [validated, setValidated] = useState(false);
   const [errors, setErrors] = useState(false);
@@ -74,17 +74,17 @@ const RetrieveAccountCredentials = ({ step, title, context, allPlaidTokens, onHa
   };
 
   return (<>
-    <AccountContextual step={step} title={title} context={context} onHandleClick={onHandleClick} isTutorial={false} />
+    <AccountContextual step={step} title={title} context={context} isTutorial={isTutorial} onHandleClick={onHandleClick} />
     
-    <Form noValidate validated={validated} autoComplete="off" onSubmit={createProcessorToken}>
+    {!isTutorial && <Form noValidate validated={validated} autoComplete="off" onSubmit={createProcessorToken}>
       <Form.Group className="mb-3">
         <Form.Label htmlFor="accessToken">Access Token</Form.Label>
-        <Form.Control readOnly id="accessToken" placeholder="Access Token" aria-label="Access Token" name="accessToken" defaultValue={allPlaidTokens.accessToken ? allPlaidTokens.accessToken : undefined} isInvalid={Boolean(errors && errors.accessToken)} />
+        <Form.Control required readOnly id="accessToken" placeholder="Access Token" aria-label="Access Token" name="accessToken" defaultValue={allPlaidTokens.accessToken ? allPlaidTokens.accessToken : undefined} isInvalid={Boolean(errors && errors.accessToken)} />
         {errors && errors.accessToken && <Form.Control.Feedback type="invalid">{errors.accessToken}</Form.Control.Feedback>}
       </Form.Group>
       <Form.Group>
         <Form.Label htmlFor="accountId">Account ID</Form.Label>
-        <Form.Control required id="accountId" placeholder="Account ID" aria-label="Account ID" name="accountId" defaultValue={allPlaidTokens.accountId ? allPlaidTokens.accountId : undefined} isInvalid={Boolean(errors && errors.accountId)} />
+        <Form.Control required readOnly id="accountId" placeholder="Account ID" aria-label="Account ID" name="accountId" defaultValue={allPlaidTokens.accountId ? allPlaidTokens.accountId : undefined} isInvalid={Boolean(errors && errors.accountId)} />
         {errors && errors.accountId && <Form.Control.Feedback type="invalid">{errors.accountId}</Form.Control.Feedback>}
       </Form.Group>
       <Form.Group>
@@ -100,7 +100,7 @@ const RetrieveAccountCredentials = ({ step, title, context, allPlaidTokens, onHa
           </Row>
         </div>
       </div>
-    </Form>
+    </Form>}
   </>);
 };
 
