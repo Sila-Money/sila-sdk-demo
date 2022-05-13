@@ -7,7 +7,7 @@ import plaidApi from '../../../api/plaid';
 
 import AccountContextual from './AccountContextual';
 
-const CreateLinkToken = ({ step, title, context, isTutorial, onHandleClick, onLinkToken, onLoaded }) => {
+const CreateLinkToken = ({ step, title, context, isTutorial, onHandleClick, onLinkToken, onLoaded, onTabKey }) => {
   const { app, setAppData, updateApp } = useAppContext();
   const [validated, setValidated] = useState(false);
   const [errors, setErrors] = useState(false);
@@ -82,7 +82,7 @@ const CreateLinkToken = ({ step, title, context, isTutorial, onHandleClick, onLi
   };
 
   return (<>
-    <AccountContextual step={step} title={title} context={context} isTutorial={isTutorial} onHandleClick={onHandleClick} />
+    <AccountContextual step={step} title={title} context={context} isTutorial={isTutorial} onHandleClick={onHandleClick} onTabKey={onTabKey} />
     
     {!isTutorial && <Form noValidate validated={validated} autoComplete="off" onSubmit={linkTokenCreate}>
       <Form.Group className="mb-3">
@@ -96,12 +96,11 @@ const CreateLinkToken = ({ step, title, context, isTutorial, onHandleClick, onLi
         {errors && errors.secretKey && <Form.Control.Feedback type="invalid">{errors.secretKey}</Form.Control.Feedback>}
       </Form.Group>
 
-      <div className="d-block d-xl-flex align-items-center mt-2 mb-2 loaded">
-        <div className="ml-auto">
-          <Row className="mt-2">
-            <Col><Button block className="mb-2" type="submit">Generate Link Token</Button></Col>
-          </Row>
-        </div>
+      <div className="mt-2 mb-2 loaded">
+        <Row className="mt-2 justify-content-end">
+          <Col lg="12" xl="3"><Button block variant="outline-light" className="mb-2" onClick={() => onTabKey(step-2)}>Previous</Button></Col>
+          <Col lg="12" xl="4"><Button block className="mb-2" type="submit">Generate Link Token</Button></Col>
+        </Row>
       </div>
     </Form>}
   </>);

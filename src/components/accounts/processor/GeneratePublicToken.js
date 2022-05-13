@@ -35,14 +35,14 @@ const PlaidButton = ({ linkToken, onSuccess }) => {
   return <Button block className="mb-2 text-nowrap" onClick={onOpen} disabled={!ready}>Launch Plaid Link</Button>;
 };
 
-const GeneratePublicToken = ({ step, title, context, isTutorial, allPlaidTokens, onHandleClick, onPublicToken }) => {
+const GeneratePublicToken = ({ step, title, context, isTutorial, allPlaidTokens, onHandleClick, onPublicToken, onTabKey }) => {
   const publicToken = (pubToken, metadata) => {
     onPublicToken(pubToken, metadata.account.name, metadata.account_id);
     onHandleClick(undefined, step);
   };
 
   return (<>
-    <AccountContextual step={step} title={title} context={context} isTutorial={isTutorial} onHandleClick={onHandleClick} />
+    <AccountContextual step={step} title={title} context={context} isTutorial={isTutorial} onHandleClick={onHandleClick} onTabKey={onTabKey} />
 
     {!isTutorial && <>
       <Form noValidate validated={false} autoComplete="off">
@@ -52,12 +52,11 @@ const GeneratePublicToken = ({ step, title, context, isTutorial, allPlaidTokens,
         </Form.Group>
       </Form>
 
-      <div className="d-block d-xl-flex align-items-center mt-2 mb-2 loaded">
-        <div className="ml-auto">
-          <Row className="mt-2">
-            <Col><PlaidButton linkToken={allPlaidTokens.linkToken} onSuccess={publicToken} /></Col>
-          </Row>
-        </div>
+      <div className="mt-2 mb-2 loaded">
+        <Row className="mt-2 justify-content-end">
+          <Col lg="12" xl="3"><Button block variant="outline-light" className="mb-2" onClick={() => onTabKey(step-2)}>Previous</Button></Col>
+          <Col lg="12" xl="3"><PlaidButton linkToken={allPlaidTokens.linkToken} onSuccess={publicToken} /></Col>
+        </Row>
       </div>
     </>}
   </>);

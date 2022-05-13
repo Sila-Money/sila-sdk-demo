@@ -4,10 +4,15 @@ import { Row, Col, Button } from 'react-bootstrap';
 
 import { plaidTutorialSteps } from '../../../constants/plaidGenerateProcessor';
 
-const AccountContextual = ({ step, title, context, isTutorial, onHandleClick }) => {
+const AccountContextual = ({ step, title, context, isTutorial, onHandleClick, onTabKey }) => {
   const onNext = () => {
     if (plaidTutorialSteps.length === step) onHandleClick('tutorial', step);
     else onHandleClick(undefined, step);
+  }
+
+  const onPrev = () => {
+    if (step === 1) onHandleClick('goBack');
+    else onTabKey(step-2);
   }
 
   return (<>
@@ -17,8 +22,8 @@ const AccountContextual = ({ step, title, context, isTutorial, onHandleClick }) 
       <img src="/video-placeholder.png" className="img-fluid" alt="Placeholder" />
       <div className="mt-2 mb-2 loaded">
         <Row className="mt-2 justify-content-end">
+          <Col lg="12" xl="3"><Button block variant="outline-light" className="mb-2" onClick={onPrev}>{step === 1 ? 'Go Back' : 'Previous'}</Button></Col>
           <Col lg="12" xl="3"><Button block className="mb-2" onClick={onNext}>Next Step</Button></Col>
-          {step === 1 && <Col lg="12" xl="3"><Button block variant="outline-light" className="mb-2" onClick={() => onHandleClick('goBack')}>Go Back</Button></Col>}
         </Row>
       </div>
     </>}

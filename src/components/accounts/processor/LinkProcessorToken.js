@@ -52,12 +52,11 @@ const LinkProcessorToken = ({ step, title, context, isTutorial, isDemoLinkProces
         {errors && errors.processorToken && <Form.Control.Feedback type="invalid">{errors.processorToken}</Form.Control.Feedback>}
       </Form.Group>
 
-      <div className="d-block d-xl-flex align-items-center mt-2 mb-2 loaded">
-        <div className="ml-auto">
-          <Row className="mt-2">
-            <Col><Button block className="mb-2" type="submit">Link bank account</Button></Col>
-          </Row>
-        </div>
+      <div className="mt-2 mb-2 loaded">
+        <Row className="mt-2 justify-content-end">
+          <Col lg="12" xl="3"><Button block variant="outline-light" className="mb-2" onClick={() => onTabKey(step-2)}>Previous</Button></Col>
+          <Col lg="12" xl="4"><Button block className="mb-2" type="submit">Link bank account</Button></Col>
+        </Row>
       </div>
     </Form>}
 
@@ -71,12 +70,11 @@ const LinkProcessorToken = ({ step, title, context, isTutorial, isDemoLinkProces
         <Form.Control required readOnly id="processorToken" placeholder="Processor Token" aria-label="Processor Token" name="processorToken" defaultValue="processor-123-456" />
       </Form.Group>
 
-      <div className="d-block d-xl-flex align-items-center mt-2 mb-2 loaded">
-        <div className="ml-auto">
-          <Row className="mt-2">
-          <Col><Button block className="mb-2" type="submit">Link bank account</Button></Col>
-          </Row>
-        </div>
+      <div className="mt-2 mb-2 loaded">
+        <Row className="mt-2 justify-content-end">
+          <Col lg="12" xl="3"><Button block variant="outline-light" className="mb-2" onClick={() => onTabKey(step-2)}>Previous</Button></Col>
+          <Col lg="12" xl="4"><Button block className="mb-2" type="submit">Link bank account</Button></Col>
+        </Row>
       </div>
     </Form>}
   </>);

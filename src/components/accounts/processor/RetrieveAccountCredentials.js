@@ -8,7 +8,7 @@ import AccountContextual from './AccountContextual';
 
 import { DEFAULT_PROCESSOR_NAME } from '../../../constants/plaidGenerateProcessor';
 
-const RetrieveAccountCredentials = ({ step, title, context, isTutorial, allPlaidTokens, onHandleClick, onProcessorToken, onLoaded }) => {
+const RetrieveAccountCredentials = ({ step, title, context, isTutorial, allPlaidTokens, onHandleClick, onProcessorToken, onLoaded, onTabKey }) => {
   const { app, setAppData, updateApp } = useAppContext();
   const [validated, setValidated] = useState(false);
   const [errors, setErrors] = useState(false);
@@ -74,7 +74,7 @@ const RetrieveAccountCredentials = ({ step, title, context, isTutorial, allPlaid
   };
 
   return (<>
-    <AccountContextual step={step} title={title} context={context} isTutorial={isTutorial} onHandleClick={onHandleClick} />
+    <AccountContextual step={step} title={title} context={context} isTutorial={isTutorial} onHandleClick={onHandleClick} onTabKey={onTabKey} />
     
     {!isTutorial && <Form noValidate validated={validated} autoComplete="off" onSubmit={createProcessorToken}>
       <Form.Group className="mb-3">
@@ -89,16 +89,15 @@ const RetrieveAccountCredentials = ({ step, title, context, isTutorial, allPlaid
       </Form.Group>
       <Form.Group>
         <Form.Label htmlFor="processorName">Processor</Form.Label>
-        <Form.Control required id="processorName" placeholder="Processor" aria-label="Processor" name="processorName" defaultValue={DEFAULT_PROCESSOR_NAME} isInvalid={Boolean(errors && errors.processorName)} />
+        <Form.Control required readOnly id="processorName" placeholder="Processor" aria-label="Processor" name="processorName" defaultValue={DEFAULT_PROCESSOR_NAME} isInvalid={Boolean(errors && errors.processorName)} />
         {errors && errors.processorName && <Form.Control.Feedback type="invalid">{errors.processorName}</Form.Control.Feedback>}
       </Form.Group>
-    
-      <div className="d-block d-xl-flex align-items-center mt-2 mb-2 loaded">
-        <div className="ml-auto">
-          <Row className="mt-2">
-          <Col><Button block className="mb-2" type="submit">Retrieve Credentials</Button></Col>
-          </Row>
-        </div>
+
+      <div className="mt-2 mb-2 loaded">
+        <Row className="mt-2 justify-content-end">
+          <Col lg="12" xl="3"><Button block variant="outline-light" className="mb-2" onClick={() => onTabKey(step-2)}>Previous</Button></Col>
+          <Col lg="12" xl="4"><Button block className="mb-2" type="submit">Retrieve Credentials</Button></Col>
+        </Row>
       </div>
     </Form>}
   </>);
