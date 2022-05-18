@@ -39,7 +39,7 @@ const LinkProcessorToken = ({ step, title, context, isTutorial, isDemoLinkProces
   };
 
   return (<>
-    <AccountContextual step={step} title={isTutorial && isDemoLinkProcessorPage ? 'Processor Token Created!' : title} context={isTutorial && isDemoLinkProcessorPage ? COMMON_CONTENT_AND_LINKS[0]['tutorialProcessorTokenCreated'] : context} isTutorial={isTutorial && isDemoLinkProcessorPage ? false : isTutorial} onHandleClick={onHandleClick} />
+    <AccountContextual step={step} title={isTutorial && isDemoLinkProcessorPage ? 'Processor Token Created!' : title} context={isTutorial && isDemoLinkProcessorPage ? COMMON_CONTENT_AND_LINKS[0]['tutorialProcessorTokenCreated'] : context} isTutorial={isTutorial && isDemoLinkProcessorPage ? false : isTutorial} onHandleClick={onHandleClick} onTabKey={onTabKey} />
 
     {!isTutorial && !isDemoLinkProcessorPage && <Form noValidate validated={validated} autoComplete="off" onSubmit={linkProcessorToken}>
       <Form.Group className="mb-3">
