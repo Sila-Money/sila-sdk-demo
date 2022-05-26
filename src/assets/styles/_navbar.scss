@@ -31,3 +31,16 @@
     }
   }
 }
+
+.accounts {
+  .nav-pills {
+    .nav-link {
+      &.active {
+        background: $main-sidebar-background !important;
+      }
+      &:hover {
+        background: $main-sidebar-background !important;
+      }
+    }
+  }
+}

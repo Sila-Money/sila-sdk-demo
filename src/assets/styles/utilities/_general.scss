@@ -42,3 +42,7 @@ a.important {
     background: rgba($black, 0.7);
   }
 }
+
+.min-vh-50{
+  min-height: $min-height-50;
+}
