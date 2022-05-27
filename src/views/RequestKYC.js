@@ -199,7 +199,7 @@ const RequestKYC = ({ history, page, previous, next }) => {
 
       <Pagination
         previous={previous}
-        next={isActive ? app.settings.flow === 'kyc' && app.settings.preferredKycLevel !== DEFAULT_KYC ? '/wallets' : app.settings.flow === 'kyb' && app.settings.preferredKybLevel !== KYB_STANDARD ? '/certify' : next : undefined}
+        next={isActive ? app.settings.flow === 'kyc' && (app.settings.preferredKycLevel !== DEFAULT_KYC || (app.settings.preferredKycLevel === DEFAULT_KYC && isKycPassed.current)) ? '/wallets' : app.settings.flow === 'kyb' && (app.settings.preferredKybLevel !== KYB_STANDARD || (app.settings.preferredKybLevel === KYB_STANDARD && isKycPassed.current)) ? '/certify' : next : undefined}
         currentPage={page} />
 
       <KybKycModal show={show} onHide={() => setShow(false)} />
