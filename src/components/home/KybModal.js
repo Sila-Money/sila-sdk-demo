@@ -35,7 +35,7 @@ const KybModal = ({ show, onHide }) => {
             </Card.Header>
             <Card.Body>
               <Card.Text>
-                <p>With this KYB level, EINs and certification are not required (but can still be provided) for the following business types: sole proprietorships, trusts, unincorporated associations. If the business is one of these types, it will go through the KYB-LITE flow. The transaction limit is $299.99 per end-user per week.</p>
+                <p>With this KYB level, EINs and certification are not required (but can still be provided) for the following business types: sole proprietorships, trusts, unincorporated associations. If the business is one of these types, it will go through the KYB-LITE flow.</p>
                 <ul>
                   <li className="text-warning">Only Sole Proprietorships, Trusts, and Unincorporated Associations qualify for KYB Lite</li>
                 </ul>
