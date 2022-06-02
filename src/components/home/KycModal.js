@@ -25,7 +25,8 @@ const KycModal = ({ show, onHide }) => {
             </Card.Header>
             <Card.Body>
               <Card.Text>
-                This level contains full KYC, meaning information about the individual is reviewed, including full name, home address, SSN, phone number, birthdate, and email. With this level of KYC, an end-user can send up to $499.99 a day, and there are no limits on receiving.
+                <p>This level contains full KYC, meaning information about the individual is reviewed, including full name, home address, SSN, phone number, birthdate, and email.</p>
+                <p><a href="https://docs.silamoney.com/docs/limits-overview" target="_blank" rel="noopener noreferrer">See API Limits in our docs</a>.</p>
               </Card.Text>
             </Card.Body>
           </Card>
@@ -35,8 +36,9 @@ const KycModal = ({ show, onHide }) => {
             </Card.Header>
             <Card.Body>
               <Card.Text>
-                <p>This level allows you to skip third party verification and only provide the minimal amount of information (name, email, phone number, date of birth). These entities have limited transaction capabilities in regards to amounts, funds held, and funds flow. The transaction limit is $299.99 per end-user per week. This level is great for P2P and PFM apps who want to streamline onboarding.</p>
-                <ul>
+                <p>This level allows you to skip third party verification and only provide the minimal amount of information (name, email, phone number, date of birth). These entities have limited transaction capabilities in regards to amounts, funds held, and funds flow.  This level is great for P2P and PFM apps who want to streamline onboarding.</p>
+                <p><a href="https://docs.silamoney.com/docs/limits-overview" target="_blank" rel="noopener noreferrer">See API Limits in our docs</a>.</p>
+                <ul className="pl-3">
                   <li className="text-warning">KYC Lite is not authorized for crypto or international use cases, and it requires approval from Sila's compliance team</li>
                 </ul>
               </Card.Text>
@@ -48,8 +50,9 @@ const KycModal = ({ show, onHide }) => {
             </Card.Header>
             <Card.Body>
               <Card.Text>
-                <p>This level allows for speedy ACH transactions to trusted end-users. It contains full KYC and requires an end-user to have a Plaid-linked bank account and undergo device registration and SMS opt-in and confirmation. Each transaction will also go through a risk assessment to estimate the risk of an ACH return. With this level, transactions have limits of $500.00.</p>
-                <ul>
+                <p>This level allows for speedy ACH transactions to trusted end-users. It contains full KYC and requires an end-user to have a Plaid-linked bank account and undergo device registration and SMS opt-in and confirmation. Each transaction will also go through a risk assessment to estimate the risk of an ACH return.</p>
+                <p><a href="https://docs.silamoney.com/docs/limits-overview" target="_blank" rel="noopener noreferrer">See API Limits in our docs</a>.</p>
+                <ul className="pl-3">
                   <li className="text-warning">Instant ACH is in closed beta and requires approval</li>
                 </ul>
               </Card.Text>
@@ -62,7 +65,7 @@ const KycModal = ({ show, onHide }) => {
             <Card.Body>
               <Card.Text>
                 <p>Oftentimes customers need to onboard an entity that exists solely to receive payments. In this instance the individual does not need to pass KYC, as long as they are receiving payment from a fully KYC’d/KYB’d entity. This level allows you to skip third party verification and only provide the minimal amount of information. This entity is limited to receiving funds only from a full KYC/KYB source, they may not issue or transfer.</p>
-                <ul>
+                <ul className="pl-3">
                   <li className="text-warning">KYC Receive Only requires special approval</li>
                 </ul>
               </Card.Text>
