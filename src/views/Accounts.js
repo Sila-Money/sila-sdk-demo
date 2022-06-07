@@ -520,7 +520,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
               <Col sm={3} className="border-right p-0">
                 <Nav variant="pills" className="flex-column">
                   {generateProcessorPages.gpRoutes.map((option, index) => <Nav.Item key={index}>
-                    <Nav.Link eventKey={`${index}`} className={`p-3 ${(generateProcessorPages.gpRoutes.length !== index+1 || index === 0) ? 'border-bottom' : ''}`} disabled={option.disabled}>
+                    <Nav.Link eventKey={`${index}`} className="p-3 border-bottom" disabled={option.disabled}>
                       <p className={`d-flex text-uppercase text-primary font-weight-bold mb-1 ${option.disabled ? 'text-muted' : ''}`}>
                         {!option.disabled && tabKey !== index && <i className="mr-2 sila-icon sila-icon-success text-primary text-sm"></i>} {`Step ${index+1}`}
                       </p>
@@ -529,9 +529,9 @@ const Accounts = ({ page, previous, next, isActive }) => {
                   </Nav.Item>)}
                 </Nav>
               </Col>
-              <Col sm={9} className="p-4">
-                <Tab.Content>
-                  {generateProcessorPages.gpRoutes.map((option, index) => <Tab.Pane eventKey={`${index}`} key={index}>
+              <Col sm={9} className="d-flex flex-column p-4">
+                <Tab.Content className="h-100">
+                  {generateProcessorPages.gpRoutes.map((option, index) => <Tab.Pane className="d-flex flex-column" eventKey={`${index}`} key={index}>
                     <option.component
                       step={index+1}
                       title={option.title}
