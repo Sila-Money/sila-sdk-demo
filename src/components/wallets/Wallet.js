@@ -20,7 +20,7 @@ const Wallet = ({ data, activeRow, onHandleChange, onHandleKeypress, onUpdate, o
             placeholder={`${data.nickname ? data.nickname : activeRow.isEditing ? 'Wallet Name' : 'Generated Wallet'}${data.default ? ' (Default)' : ''}`}
             readOnly={ activeRow.isEditing ? activeRow.index === index ? false : true : true }
             defaultValue={data.nickname}
-          /> : <div className="form-control">{`${data.nickname} ${data.default ? ' (Default)' : ''}`}</div>}
+          /> : <div className="form-control" style={{ whiteSpace: 'pre' }}>{`${data.nickname} ${data.default ? ' (Default)' : ''}`}</div>}
           <InputGroup.Append className="d-flex justify-content-between align-items-center">
             {!activeRow.isEditing && !data.default && <Button variant="link" onClick={(e) => onUpdate({ ...data, default: true }, index)}>Make default</Button>}
             <Button variant="link" className="p-0 mr-3 text-decoration-none loaded" title="Edit" onClick={() => { onEdit(index); }}><i className={`sila-icon sila-icon-edit text-lg ${activeRow.isEditing && activeRow.index === index ? 'text-primary' : ''} `}></i></Button>
