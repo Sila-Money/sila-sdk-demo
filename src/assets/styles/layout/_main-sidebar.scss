@@ -136,7 +136,7 @@
 @include media-breakpoint-down(md) {
   .tip-container {
     p {
-      font-size: $font-size-sm
+      font-size: $font-size-sm;
     }
   }
 }

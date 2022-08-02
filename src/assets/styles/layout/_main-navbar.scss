@@ -4,14 +4,6 @@
   height: $main-navbar-height;
   background: $white;
 
-  #main-logo {
-    height: 30px;
-
-    @include media-breakpoint-up(md) {
-      height: 46px;
-    }
-  }
-
   .nav-link,
   .btn-link {
     display: flex;

@@ -75,7 +75,7 @@ const TransactionsModal = ({ show, onHide, transactions, onRefresh, formatNumber
           delay={{ show: 250, hide: 400 }}
           overlay={(props) => <Tooltip id="transactions-tooltip" className="ml-2" {...props}>Gets Transactions</Tooltip>}
         >
-          <Button variant="link" className="p-0 text-reset text-decoration-none" onClick={onRefresh}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
+          <Button variant="link" className="p-0 text-reset text-decoration-none" onClick={onRefresh}><i className="fas fa-sync-alt text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
         </OverlayTrigger>
         </p>
         {(!transactions || !loaded) && <Loader overlay />}
@@ -96,7 +96,7 @@ const TransactionsModal = ({ show, onHide, transactions, onRefresh, formatNumber
                 {capitalize(transaction.transaction_type)}{transaction.destination_handle && app.activeUser.handle !== transaction.destination_handle && <em className="text-muted d-block">{`to ${transaction.destination_handle}`}</em>}
                 {transaction.destination_handle && app.activeUser.handle === transaction.destination_handle && <em className="text-muted d-block">{`from ${transaction.user_handle}`}</em>}
               </td>
-              <td><i className="sila-icon sila-icon-sila"></i> {formatNumber(transaction.sila_amount)}</td>
+              <td><i className="sila-icon sila"></i> {formatNumber(transaction.sila_amount)}</td>
               <td className={transaction.status === 'success' ? 'text-success' : transaction.status === 'pending' ? 'text-warning' : transaction.status === 'failed' ? 'text-danger' : 'text-primary'}>{transaction.status}</td>
               <td className="text-center">
                 {transaction.status === 'pending' && <div className="d-flex py-2 justify-content-center">
@@ -105,7 +105,7 @@ const TransactionsModal = ({ show, onHide, transactions, onRefresh, formatNumber
                     delay={{ show: 250, hide: 400 }}
                     overlay={(props) => <Tooltip id="cancel-transactions-tooltip" {...props}>Cancel Transaction</Tooltip>}
                   >
-                    <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none mx-2 px-2" onClick={(e) => onDelete(transaction.transaction_id)}><i className="sila-icon sila-icon-cross text-danger text-lg"></i></Button>
+                    <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none mx-2 px-2" onClick={(e) => onDelete(transaction.transaction_id)}><i className="sila-icon close text-danger text-lg"></i></Button>
                   </OverlayTrigger>
                 </div>}
               </td>

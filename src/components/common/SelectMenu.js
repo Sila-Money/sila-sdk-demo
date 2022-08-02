@@ -5,7 +5,7 @@ import { NavLink } from 'react-router-dom';
 import classNames from 'classnames';
 
 const SelectMenu = ({ fullWidth, className, show, id, variant, options, onChange, value, size, action, title, disabledOptions }) => {
-  const [menuTitle, setMenuTitle] = useState(title ? title : value ? options.find(option => option.value === value).label : options.length ? options[0].label : false);  
+  const [menuTitle, setMenuTitle] = useState(title ? title : value ? options.find(option => option.value === value).label : options.length ? options[0].label : false);
   const menuItems = options.filter(option => option.label !== menuTitle);
   const classes = classNames(
     'select-menu flex-grow-0 flex-shrink-1',
@@ -37,11 +37,13 @@ const SelectMenu = ({ fullWidth, className, show, id, variant, options, onChange
     <Dropdown id={id} className={classes} as={Nav.Item}>
       <Dropdown.Toggle size={size} variant={variant || 'outline-light'} className={buttonClasses} as={Button}>{menuTitle}</Dropdown.Toggle>
       {((menuItems.length) || (!menuItems.length && action)) && <Dropdown.Menu show={show} className={menuClasses}>
-        {menuItems.filter(option => option.label !== menuTitle).map((option, index) => <Dropdown.Item key={index} eventKey={index + 1} onClick={() => handleChange(option)} className={itemClasses} disabled={(disabledOptions && disabledOptions.includes(option.value)) ? true : false}>{option.htmlBefore}{option.label}{option.htmlAfter}</Dropdown.Item>)}
-        {action && <>
-          {menuItems.length !== 0 && <Dropdown.Divider />}
-          <Dropdown.Item as={action.to && NavLink} to={action.to} href={action.href} className={itemClasses}>{action.htmlBefore}{action.label}{action.htmlAfter}</Dropdown.Item>
-        </>}
+        <div className="overflow-auto custom-scrollbar" style={{ maxHeight: 270 }}>
+          {menuItems.filter(option => option.label !== menuTitle).map((option, index) => <Dropdown.Item key={index} eventKey={index + 1} onClick={() => handleChange(option)} className={itemClasses} disabled={(disabledOptions && disabledOptions.includes(option.value)) ? true : false}>{option.htmlBefore}{option.label}{option.htmlAfter}</Dropdown.Item>)}
+          {action && <>
+            {menuItems.length !== 0 && <Dropdown.Divider />}
+            <Dropdown.Item as={action.to && NavLink} to={action.to} href={action.href} className={itemClasses}>{action.htmlBefore}{action.label}{action.htmlAfter}</Dropdown.Item>
+          </>}
+        </div>
       </Dropdown.Menu>}
     </Dropdown>
   );

@@ -1,16 +1,48 @@
+// Tabs Adjustments
+
+.nav-tabs {
+  .nav-link {
+    margin: -1px -1px 0 -1px;
+
+    &:not(.active) {
+      position: relative;
+
+      &:hover,
+      &:focus {
+        border-color: transparent;
+      }
+    }
+  }
+
+  .nav-item:not(:first-child) .nav-link:not(.active)::before {
+    width: 1px;
+    height: calc(100% - 2rem);
+    background: $border-color;
+    margin: 1rem 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: '';
+    display: block;
+  }
+
+}
+
+
 // Tab content Adjustments
 
 .tab-content {
   display: flex;
 }
 
-.tab-content > .tab-pane {
-  display: block; /* undo "display: none;" */
+.tab-content>.tab-pane {
+  display: block;
+  /* undo "display: none;" */
   visibility: hidden;
   margin-right: -100%;
   width: 100%;
 }
 
-.tab-content > .active {
+.tab-content>.active {
   visibility: visible;
 }

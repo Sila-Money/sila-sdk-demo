@@ -3,26 +3,33 @@ import PropTypes from 'prop-types';
 import { Accordion, Card } from 'react-bootstrap';
 import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 
-const CustomToggle = ({ children, eventKey, activeKey }) => {
-  return (<div className={`d-flex ${activeKey === eventKey ? 'expand' : 'collapse'}`}>
+const CustomToggle = ({ children, eventKey, prepend, append, isExpanded, small }) => (
+  <div className="d-flex">
     <div className="mr-auto d-flex align-items-center">
-      <h2 className="ttl m-0 font-weight-bold">{children}</h2>
+      {prepend}
+      <h3 className={`ttl m-0${small ? ' text-reg' : ''}`}>{children}</h3>
     </div>
     <div className="ml-auto d-flex align-items-center">
-      <button className="toggle m-1 accordion-icon" type="button" onClick={useAccordionToggle(eventKey)}></button>
+      {append}
+      <button
+        className="toggle m-1"
+        type="button"
+        onClick={useAccordionToggle(eventKey)}>
+        <i className={`text-primary fas fa-${isExpanded ? 'minus' : 'plus'}${!small ? ' text-lg' : ''}`}></i>
+      </button>
     </div>
-  </div>)
-};
+  </div>
+);
 
-const AccordionItem = ({ className, children, eventKey, activeKey, label, expanded, onSetExpanded, itemRef }) => {
+const AccordionItem = ({ className, children, eventKey, label, expanded, onSetExpanded, prepend, append, itemRef, small }) => {
   const isExpanded = expanded instanceof Array ? expanded.includes(eventKey) : expanded === eventKey;
   return (
     <Card className={className}>
-      <Accordion.Toggle as={Card.Header} eventKey={eventKey} className={`px-3 py-3${isExpanded && ' active'}`} ref={itemRef} onClick={() => onSetExpanded(eventKey)}>
-        <CustomToggle eventKey={eventKey} activeKey={activeKey}>{label}</CustomToggle>
+      <Accordion.Toggle as={Card.Header} eventKey={eventKey} className={`${small ? 'px-3 py-1' : 'px-4 py-3'}${isExpanded ? ' active' : ''}`} ref={itemRef} onClick={() => onSetExpanded(eventKey)}>
+        <CustomToggle eventKey={eventKey} prepend={prepend} isExpanded={isExpanded} append={append} small={small}>{label}</CustomToggle>
       </Accordion.Toggle>
       <Accordion.Collapse eventKey={eventKey}>
-        <Card.Body className="p-0">{children}</Card.Body>
+        <Card.Body className={small ? 'p-3' : 'p-4'}>{children}</Card.Body>
       </Accordion.Collapse>
     </Card>
   );
@@ -47,7 +54,11 @@ AccordionItem.propTypes = {
   /**
    * The label.
    */
-  label: PropTypes.string.isRequired
+  label: PropTypes.oneOfType([
+    PropTypes.string.isRequired,
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ]),
 };
 
 export default AccordionItem;

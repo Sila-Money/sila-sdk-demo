@@ -1,8 +1,18 @@
 // Text utilities adjustments
 
-// Light text adjustments
+// Light text
 .text-light {
-  color: $text-light-color !important;
+  color: $info !important;
+}
+
+// Ultra light text
+.text-ultra-light {
+  color: $input-border-color !important;
+}
+
+// Primary dark
+.text-primary-dark {
+  color: $primary-dark !important;
 }
 
 // Semibold text
@@ -10,14 +20,19 @@
   font-weight: $text-semibold-font-weight !important;
 }
 
-// Tiny text
-.text-tiny {
-  font-size: $font-size-tiny !important;
+// 3XL text
+.text-xxxl {
+  font-size: $font-size-xxxl !important;
 }
 
-// Small text
-.text-sm {
-  font-size: $font-size-sm !important;
+// 2XL text
+.text-xxl {
+  font-size: $font-size-xxl !important;
+}
+
+// XL text
+.text-xl {
+  font-size: $font-size-xl !important;
 }
 
 // Large text
@@ -25,25 +40,53 @@
   font-size: $font-size-lg !important;
 }
 
-// Larger text
-.text-lgr {
-  font-size: 1.25rem !important;
+// Regular text
+.text-reg {
+  font-size: $body-font-size !important;
 }
 
-// Meta text
-.text-meta {
-  color: $gray-medium !important;
+// Small text
+.text-sm {
+  font-size: $font-size-sm !important;
 }
 
-// Underline text
+// Exra small
+.text-xs {
+  font-size: $font-size-xs !important;
+}
+
+// Add underline
 .text-underline {
   text-decoration: underline !important;
 }
 
 // Meta link
-.text-meta-link {
-  color: $text-light-color !important;
+.text-info-link {
+  color: $info !important;
+
   &:hover {
-    color: $text-light-color !important;
+    color: $primary !important;
   }
+}
+
+// Ellipsis
+.text-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// Yellow text
+.text-caution {
+  color: $caution !important;
+}
+
+// Success dark text
+.text-success-dark {
+  color: $success-dark !important;
+}
+
+// Strikethrough text
+.text-strikethrough {
+  text-decoration: line-through !important;
 }

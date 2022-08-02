@@ -99,9 +99,9 @@ const BusinessMembers = ({ page, previous, next, isActive }) => {
 
           <h1 className="mb-1">Certify</h1>
 
-          <p className="text-meta text-lg mb-1">Your team has successfully gone through the KYB process and have been verified. Let’s certify that all the information you have on hand is correct and get you ready to transact. First step is to get your business members certified, then you can certify your business.</p>
+          <p className="text-info text-lg mb-1">Your team has successfully gone through the KYB process and have been verified. Let’s certify that all the information you have on hand is correct and get you ready to transact. First step is to get your business members certified, then you can certify your business.</p>
 
-          <p className="text-meta mb-3">This page represents <a href="https://docs.silamoney.com/docs/certify_business" target="_blank" rel="noopener noreferrer">/certify_business</a> functionality.</p>
+          <p className="text-info mb-3">This page represents <a href="https://docs.silamoney.com/docs/certify_business" target="_blank" rel="noopener noreferrer">/certify_business</a> functionality.</p>
 
           {!app.settings.kybAdminHandle && <DisabledOverlay>
             <p className="mb-0"><i className="fas fa-lock mr-2"></i> You must be an administrator to certify the business and it's members. {!app.settings.kybAdminHandle && <Button variant="link" as={NavLink} className="p-0 text-white important ml-2" to={{ pathname: '/members/register', state: { role: 'administrator', from: page } }}>Add an Administator</Button>}</p>
@@ -148,18 +148,18 @@ const BusinessMembers = ({ page, previous, next, isActive }) => {
                               <Badge pill className="w-100 badge-outline py-2 px-3" variant={statusVariant}>{statusLabel}</Badge>
                             </td>
                             <td width="1%" className="actions text-center">
-                              {(member.beneficial_owner_certification_status.includes('pending')) ? <Button size="sm" as={NavLink} to={{ pathname: `/certify/${member.user_handle}`, state: { role: member.role, from: page } }}>Certify</Button> : <span className="text-meta">N/A</span>}
+                              {(member.beneficial_owner_certification_status.includes('pending')) ? <Button size="sm" as={NavLink} to={{ pathname: `/certify/${member.user_handle}`, state: { role: member.role, from: page } }}>Certify</Button> : <span className="text-info">N/A</span>}
                             </td>
                           </tr>
                         );
-                      }) : <tr><td className="text-center text-meta py-3" colSpan="4">No members found.</td></tr>}
+                      }) : <tr><td className="text-center text-info py-3" colSpan="4">No members found.</td></tr>}
                     </tbody>
                   </>}
               </Table>
             </Card>
 
             <div className="d-flex">
-              <span className="text-meta">Total Members: {filteredMembers.length}</span>
+              <span className="text-info">Total Members: {filteredMembers.length}</span>
               <Button onClick={certifyBusiness} disabled={members.some(member => member.beneficial_owner_certification_status.includes('pending'))} className="ml-auto">Certify Business</Button>
             </div>
           </div>
@@ -174,7 +174,7 @@ const BusinessMembers = ({ page, previous, next, isActive }) => {
 
           <h1 className="mb-1">Congratulations!</h1>
 
-          <p className="text-meta text-lg mb-3">You’ve completed all verification steps. This business is now ready to link bank accounts, create wallets, and transact!</p>
+          <p className="text-info text-lg mb-3">You’ve completed all verification steps. This business is now ready to link bank accounts, create wallets, and transact!</p>
 
           <p className="text-right"><Button as={NavLink} to={{ pathname: next, state: { from: page } }}>Go to Wallets</Button></p>
 

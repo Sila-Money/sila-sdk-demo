@@ -23,9 +23,9 @@ const Wallet = ({ data, activeRow, onHandleChange, onHandleKeypress, onUpdate, o
           /> : <div className="form-control" style={{ whiteSpace: 'pre' }}>{`${data.nickname} ${data.default ? ' (Default)' : ''}`}</div>}
           <InputGroup.Append className="d-flex justify-content-between align-items-center">
             {!activeRow.isEditing && !data.default && <Button variant="link" onClick={(e) => onUpdate({ ...data, default: true }, index)}>Make default</Button>}
-            <Button variant="link" className="p-0 mr-3 text-decoration-none loaded" title="Edit" onClick={() => { onEdit(index); }}><i className={`sila-icon sila-icon-edit text-lg ${activeRow.isEditing && activeRow.index === index ? 'text-primary' : ''} `}></i></Button>
+            <Button variant="link" className="p-0 mr-3 text-decoration-none loaded" title="Edit" onClick={() => { onEdit(index); }}><i className={`fas fa-pen text-lg ${activeRow.isEditing && activeRow.index === index ? 'text-primary' : ''} `}></i></Button>
             {activeRow.isEditing && activeRow.index === index && <Button className="p-1 text-decoration-none mr-3 px-3" onClick={(e) => onUpdate(data, index)} disabled={(activeRow.isEditing && (!activeRow.value || activeRow.value === data.nickname)) ? true : false }>Save</Button>}
-            {!activeRow.isEditing && !data.default && <Button variant="link" className="p-0 mr-3 text-decoration-none loaded" title="Delete" onClick={() => onDelete(data, index)} disabled={data.default || activeRow.isEditing || data.private_key === app.activeUser.private_key}><i className="sila-icon sila-icon-delete text-lg"></i></Button>}
+            {!activeRow.isEditing && !data.default && <Button variant="link" className="p-0 mr-3 text-decoration-none loaded" title="Delete" onClick={() => onDelete(data, index)} disabled={data.default || activeRow.isEditing || data.private_key === app.activeUser.private_key}><i className="fas fa-trash text-lg"></i></Button>}
           </InputGroup.Append>
         </InputGroup>
         {activeRow.isEditing && activeRow.index === index && activeRow.error && <Form.Control.Feedback type="none" className="text-danger">{activeRow.error}</Form.Control.Feedback>}

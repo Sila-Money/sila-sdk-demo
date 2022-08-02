@@ -4,10 +4,12 @@
 .badge {
   font-weight: 500;
   transition: background-color $transition-duration $ease-in-out-circ, color $transition-duration $ease-in-out-circ, border-color $transition-duration $ease-in-out-circ;
-  
+
   // opaque
   &.opaque {
-    @each $color, $value in $theme-colors {
+
+    @each $color,
+    $value in $theme-colors {
       &.badge-#{$color} {
         background: rgba($value, 0.1);
         border: 0;
@@ -24,13 +26,16 @@
 
 // outline badge variation
 .badge-outline {
-  @each $color, $value in $theme-colors {
+
+  @each $color,
+  $value in $theme-colors {
     &.badge-#{$color} {
       border: 1px solid $value;
       background: rgba($value, 0.06);
       color: $value;
     }
   }
+
   &.badge-secondary {
     color: #6C6C6C;
   }

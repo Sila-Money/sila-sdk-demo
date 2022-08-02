@@ -2,41 +2,37 @@
 
 // Grays colors
 $white: #fff !default;
-$gray-almost-white: #E9E9E9 !default;
-$gray-lightest: #D5D5D5 !default;
-$gray-lighter: #909090 !default;
-$gray-light: #898989 !default;
-$gray-medium: #787878 !default;
-$gray-blue-light: #A5B5B9 !default;
-$gray-blue: #6C7792 !default;
-$gray-dark: #222222 !default;
-$gray-darker: #121212 !default;
+$gray-light: #F3F3F3 !default;
+$gray-medium: #B4BAC7 !default;
 $black: #000 !default;
-
-$gray-100: $gray-almost-white;
+$gray-100: $gray-light;
 
 // Theme colors
-$primary: #3F63F7 !default;
-$primary-hover: #4E70F8 !default;
-$primary-nav: #5638FF !default;
-$secondary: rgba($black, 0.10) !default;
+$primary: #0030FC !default;
+$primary-hover: #315AFC !default;
+$primary-active: #5638FF !default;
+$primary-dark: #0023B3 !default;
+$primary-darker: #00146B !default;
+$primary-alt: #F7FAFC !default;
+$accent-primary:  #a906df  !default;
+$accent-secondary: #00a3fe !default;
+$secondary: #DEE6FC !default;
 $warning: #F16203 !default;
+$warning-alt: #FCF9F7 !default;
 $danger: #ED5555 !default;
 $success: #2ECC91 !default;
-$light: #F9FAFF !default;
-$light-blue: #F4F6FF !default;
+$success-alt: #EDFCFB !default;
+$success-dark: #227153 !default;
+$info: #6C7792 !default;
+$caution: #F2C10F !default;
 
 // Misc colors
-$border-color: #D8D8D8;
-$border-color-light: #EEEDED;
-$body-background-color: #FFF;
-
-//Tables
-$thGray: #E6E6E6;
-$thText: #777777;
+$border-color: $secondary;
+$body-background-color: $primary-alt;
+$info-background-color: #F8F9F9;
 
 // Border radius
-$border-radius: 0.1875rem !default;
+$border-radius: 0.75rem !default;
 $border-radius-lg: $border-radius !default;
 $border-radius-sm: $border-radius !default;
 
@@ -49,50 +45,58 @@ $transition-base: all $transition-duration $ease-in-out-circ !default;
 $transition-fade: opacity 200ms ease-in-out !default;
 $transition-collapse: height 350ms ease-in-out !default;
 
+// Light
+$light: $white;
+
 // Cards
 $card-cap-bg: $white;
 
 // Typography & Fonts
-$font-family-base: "Lato";
+$font-family-accent: "Poppins", sans-serif;
+$font-family-base: "Inter", sans-serif;
 
 // Disable Google Fonts imports
 $enable-fonts-import: false;
 
 // Use the System UI font instead of Poppins.
-$font-family-poppins-first: "GT America Extended";
+$font-family-poppins-first: $font-family-base;
 
 // Headers
-$headings-color: $black;
+$headings-color: $primary-dark;
 
 // Body
 $body-background: $body-background-color;
-$body-color: $gray-darker;
+$body-color: $primary-darker;
 $body-font-size: 0.875rem;
 
-$font-size-tiny: 0.5rem;
+$font-size-xs: 0.625rem;
 $font-size-sm: 0.75rem;
 $font-size-lg: 1.125rem;
+$font-size-xl: 1.313rem;
+$font-size-xxl: 1.5rem;
+$font-size-xxxl: 2rem;
 
 // Buttons
-$btn-font-size: $body-font-size;
-$btn-font-weight: 400;
+$btn-font-size: $font-size-sm;
+$btn-font-weight: 700;
 $btn-border-radius: $border-radius;
 $btn-padding-y: 0.9375rem;
 $btn-padding-x: 1.875rem;
 $btn-disabled-opacity: .54;
-$btn-link-disabled-color: $gray-blue;
+$btn-link-disabled-color: $info;
 
-$btn-font-size-sm: $body-font-size;
+$btn-font-size-sm: $font-size-sm;
 $btn-padding-y-sm: 0.4286rem;
 $btn-padding-x-sm: 0.875rem;
 $btn-border-radius-sm: $border-radius;
 
-
 // Inputs
-$input-color: $gray-dark;
+$input-color: $body-color;
+$input-border-color: $border-color;
 $input-btn-padding-y: 0.4375rem;
 $input-btn-padding-x: 0.75rem;
-
+$input-btn-padding-y-sm: 0.4375rem;
+$input-btn-padding-x-sm: 0.75rem;
 $input-group-padding-y: 0.75rem;
 $input-group-padding-x: 0.625rem;
 
@@ -107,7 +111,7 @@ $custom-select-line-height: 1.5;
 $input-padding-x-sm: 0.625rem;
 
 $input-border-radius: $border-radius;
-$input-border-radius-sm: $border-radius;
+$input-border-radius-sm: $border-radius-sm;
 $input-focus-border-color: $primary;
 $input-focus-box-shadow: none;
 

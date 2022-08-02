@@ -144,7 +144,7 @@ const DocumentUpload = ({ history, page, previous, next }) => {
                   <td className="text-center">
                     <div className="d-flex py-2 justify-content-center">
                       <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none mx-1 px-1" onClick={() => onDocumentView(document) }>
-                        <i className="sila-icon sila-icon-view text-lg"></i>
+                        <i className="fas fa-eye text-lg"></i>
                       </Button>
                     </div>
                   </td>

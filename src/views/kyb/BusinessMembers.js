@@ -27,7 +27,7 @@ const RoleDescription = ({ role }) => {
       delay={{ show: 250, hide: 400 }}
       overlay={(props) => <Tooltip id={`${role}-tooltip`} className="ml-2 w-100" {...props}>{description}</Tooltip>}
     >
-      <i className="sila-icon sila-icon-info text-primary ml-2"></i>
+      <i className="sila-icon info text-primary ml-2"></i>
     </OverlayTrigger>
   );
 };
@@ -154,7 +154,7 @@ const BusinessMembers = ({ page, previous, next, isActive }) => {
                           delay={{ show: 250, hide: 400 }}
                           overlay={(props) => <Tooltip id="edit-tooltip" {...props}>Edit</Tooltip>}
                         >
-                          <Button variant="link" className="p-1 mr-2 text-decoration-none" as={NavLink} to={{ pathname: `/members/${member.user_handle}`, state: { role: member.role, from: page } }}><i className="sila-icon sila-icon-edit text-lg"></i></Button>
+                          <Button variant="link" className="p-1 mr-2 text-decoration-none" as={NavLink} to={{ pathname: `/members/${member.user_handle}`, state: { role: member.role, from: page } }}><i className="fas fa-pen text-lg"></i></Button>
                         </OverlayTrigger>
                         <OverlayTrigger
                           placement="top"

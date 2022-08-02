@@ -110,7 +110,7 @@ const RegisterBusiness = ({ page, previous, next, isActive }) => {
 
       {!app.activeUser && <p className="text-muted mb-3">This page represents <a href="https://docs.silamoney.com/docs/register" target="_blank" rel="noopener noreferrer">/register</a> functionality.</p>}
 
-      {!app.activeUser && <p className="text-right mb-2"><Button variant="link" className="text-muted font-italic p-0 text-decoration-none" onClick={() => setShow(true)}><span className="lnk">What's the difference between registering an individual and a business?</span> <i className="sila-icon sila-icon-info text-primary ml-2"></i></Button></p>}
+      {!app.activeUser && <p className="text-right mb-2"><Button variant="link" className="text-muted font-italic p-0 text-decoration-none" onClick={() => setShow(true)}><span className="lnk">What's the difference between registering an individual and a business?</span> <i className="sila-icon info text-primary ml-2"></i></Button></p>}
 
       <RegisterBusinessForm handle={app.settings.kybHandle} onSuccess={registerUser} onShowKybModal={(showKybModal) => setShowKybModal(showKybModal)} onConfirm={setConfirm}>
 

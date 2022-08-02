@@ -17,7 +17,7 @@ html {
 // Body
 body {
   background: $body-background;
-  font-size: 0.9375rem;
+  font-size: 14px;
   font-weight: 400;
 }
 
@@ -37,51 +37,58 @@ label {
 }
 
 // Strong / Bold
-strong,
-b {
+strong, b {
   font-weight: normal;
-  font-weight: 500;
+  font-weight: 700;
 }
 
 // headers
-h1,
-h2,
-h3,
-.modal-title {
-  font-weight: 700;
-  letter-spacing: 0.03em;
-}
-
-h1,
-.modal-title {
-  font-size: 2rem;
-}
-
-h2 {
-  font-size: 1.375rem;
-}
-
-h3 {
-  font-size: 1.25rem;
-}
-
-h4 {
-  font-size: 1.25rem;
+h1, h3, h4, h5 {
   font-weight: 500;
 }
+h1 {
+  font-size: 2rem;
+  font-weight: 500;
+  font-family: $font-family-accent;
+}
+h2 {
+  font-size: 1.625m;
+  font-weight: 600;
+  font-family: $font-family-accent;
+}
+h3 {
+  font-size: $font-size-lg;
+}
+h4 {
+  font-size: 1rem;
+}
+h5 {
+  font-size: 0.9rem;
+}
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  line-height: 1.5;
+  color: $body-color;
+}
 
+// Reset font
+pre, code, kbd, samp {
+  font-family: $font-family-base;
+  font-size: $body-font-size;
+}
 
-@include media-breakpoint-down(md) {
-  h1,
-  .modal-title {
-    font-size: 1.875rem;
-  }
+// Autocomplete reset
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px #ffffff inset !important;
+  font-weight: inherit;
+}
 
-  h2 {
-    font-size: 1.4375rem;
-  }
-
-  h3 {
-    font-size: 1.1875rem;
-  }
+// Scroll bar reset
+.overflow-auto {
+  -ms-overflow-style: auto;
 }

@@ -1,21 +1,61 @@
 // Button adjustments
 
 .btn {
+  font-family: $font-family-accent;
+  font-size: $font-size-sm;
+
+  // all buttons
+  &:not(.dropdown-toggle) {
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+  }
 
   // disabled
+  &.disabled,
   &:disabled {
-    cursor: default !important;
     background: $white !important;
-    color: $text-light-color !important;
-    i {
-      color: $gray-lighter !important;
-    }
-    &:not(.btn-link) {
-      border-color: $gray-almost-white !important;
+    border: 1px solid $gray-medium !important;
+    color: $info !important;
+    &.btn-link {
+      border: 0 !important;
     }
   }
 
+  &:not(.disabled),
   &:not(:disabled) {
+
+    // Link
+    &.btn-link {
+
+      // change color on hover
+      &.hover {
+        &:hover,
+        &:active,
+        &.active {
+          color: $primary !important;
+        }
+      }
+    }
+
+    // Back & Next
+    &.back,
+    &.next {
+      &::before,
+      &::after {
+        @include sila-icon;
+        display: inline-block;
+        vertical-align: baseline;
+      }
+    }
+
+    &.back::before {
+      content: $sila-icon-arrow-left;
+      margin-right: 0.5rem;
+    }
+    &.next::after {
+      content: $sila-icon-arrow-right;
+      margin-left: 0.5rem;
+    }
 
     // Primary
     &[class*="btn-primary"] {
@@ -23,42 +63,49 @@
         background: $primary-hover;
         border-color: $primary-hover;
       }
+      &:active {
+        background: $success;
+        border-color: $success;
+      }
     }
 
     // Secondary
     &[class*="btn-secondary"] {
-      background: $border-color-light;
-      border-color: darken($border-color-light, 10%);
-      color: $gray-medium;
+      background: $border-color;
+      border-color: darken($border-color, 10%);
+      color: $body-color;
       &:hover {
-        background: $gray-medium;
-        border-color: $gray-medium;
-        color: $white;
+        background: darken($border-color, 10%);
+        border-color: darken($border-color, 10%);
       }
     }
 
     // Light outline
     &[class*="btn-outline-light"] {
       background: $white;
-      border-color: $gray-almost-white;
-      color: $text-light-color;
-      &:hover {
-        color: $text-light-color;
-        border-color: $white;
-        box-shadow: 0 1px 12px rgba($black, .12);
+      border-color: $border-color;
+      &:not(.dropdown-toggle) {
+        color: $primary;
       }
-      &.important {
+      &.dropdown-toggle {
+        color: $info;
+      }
+      &:hover {
+        background: $border-color;
         color: $body-color;
+        border-color: $border-color;
+      }
+      &:active {
+        border: 1px solid $gray-medium;
+        color: $primary;
+        box-shadow: none;
       }
     }
 
     // Secondary outline
     &[class*="btn-outline-secondary"] {
-      color: $gray-medium;
+      color: $body-color;
       &:hover {
-        color: $gray-medium;
-      }
-      &.important {
         color: $body-color;
       }
     }
@@ -66,8 +113,9 @@
     // Primary outline - pill
     &[class*="btn-outline-primary"] {
       background: $white;
-      &:hover {
-        background: #FBFCFD;
+      &:hover,
+      &:active {
+        background: $primary-alt;
         color: $primary;
       }
       &.pill {
@@ -75,21 +123,47 @@
       }
     }
 
-    // Link
-    &[class*="btn-link"] {
-      i {
-        color: $gray-medium;
-      }
-      &:hover {
-        i {
-          color: $primary;
-        }
-      }
+    // Circle buttons
+    &[class*="btn-circle"] {
+      width: 35px;
+      height: 35px;
+      line-height: 35px;
+      text-align: center;
+      padding: 0;
+      border-radius: 50% !important;
+    }
+    
+    &[class*="btn-circle"] i {
+      position: relative;
+      top: -1px;
     }
 
-    // Dropdown toggle
-    &.dropdown-toggle::after {
-      margin-left: 0.5rem;
+    &[class*="btn-circle-tiny"] {
+      width: 20px;
+      height: 20px;
+      line-height: 20px;
+      font-size: 0.6rem;
+    }
+    
+    &[class*="btn-circle-sm"] {
+      width: 25px;
+      height: 25px;
+      line-height: 25px;
+      font-size: $font-size-sm;
+    }
+    
+    &[class*="btn-circle-lrg"] {
+      width: 50px;
+      height: 50px;
+      line-height: 50px;
+      font-size: 1rem;
+    }
+    
+    &[class*="btn-circle-xl"] {
+      width: 70px;
+      height: 70px;
+      line-height: 70px;
+      font-size: 1.3rem;
     }
 
     // Checkbox and radio buttons
@@ -104,5 +178,6 @@
         }
       }
     }
+
   }
 }

@@ -212,7 +212,7 @@ const Transact = ({ page, previous, next, isActive }) => {
           delay={{ show: 250, hide: 400 }}
           overlay={(props) => <Tooltip id="balance-tooltip" className="ml-2" {...props}>Gets Sila Balance</Tooltip>}
         >
-          <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none" onClick={() =>refreshBalance(true)}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
+          <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none" onClick={() =>refreshBalance(true)}><i className="fas fa-sync-alt text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
         </OverlayTrigger>
       </div>
 
@@ -293,7 +293,7 @@ const Transact = ({ page, previous, next, isActive }) => {
                 }}>
                   <InputGroup>
                     <InputGroup.Prepend>
-                      <InputGroup.Text><i className="sila-icon sila-icon-sila"></i></InputGroup.Text>
+                      <InputGroup.Text><i className="sila-icon sila"></i></InputGroup.Text>
                     </InputGroup.Prepend>
                     <Form.Control type="number" name="issue" id="issue" className="m-0" value={forms.issue.values.issue || ''} placeholder="# of Sila" isInvalid={forms.issue.errors.issue ? true : false} onChange={(e) => handleChange(e, 'issue')} />
                     {forms.issue.errors.issue && <Form.Control.Feedback type="invalid">{forms.issue.errors.issue}</Form.Control.Feedback>}
@@ -330,7 +330,7 @@ const Transact = ({ page, previous, next, isActive }) => {
                     <Col sm="12" md="6">
                       <InputGroup className="mb-2 mb-md-0">
                         <InputGroup.Prepend>
-                          <InputGroup.Text><i className="sila-icon sila-icon-sila"></i></InputGroup.Text>
+                          <InputGroup.Text><i className="sila-icon sila"></i></InputGroup.Text>
                         </InputGroup.Prepend>
                         <Form.Control type="number" name="transfer" id="transfer" value={forms.transfer.values.transfer || ''} onChange={(e) => handleChange(e, 'transfer')} isInvalid={forms.transfer.errors.transfer ? true : false} placeholder="# of Sila" />
                         {forms.transfer.errors.transfer && <Form.Control.Feedback type="invalid">{forms.transfer.errors.transfer}</Form.Control.Feedback>}
@@ -384,7 +384,7 @@ const Transact = ({ page, previous, next, isActive }) => {
                 }}>
                   <InputGroup>
                     <InputGroup.Prepend>
-                      <InputGroup.Text><i className="sila-icon sila-icon-sila"></i></InputGroup.Text>
+                      <InputGroup.Text><i className="sila-icon sila"></i></InputGroup.Text>
                     </InputGroup.Prepend>
                     <Form.Control type="number" name="redeem" id="redeem" className="m-0" value={forms.redeem.values.redeem || ''} placeholder="# of Sila" isInvalid={forms.redeem.errors.redeem ? true : false} onChange={(e) => handleChange(e, 'redeem')} />
                     {forms.redeem.errors.redeem && <Form.Control.Feedback type="invalid">{forms.redeem.errors.redeem}</Form.Control.Feedback>}

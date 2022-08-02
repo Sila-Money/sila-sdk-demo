@@ -386,7 +386,7 @@ const RegisterUserForm = ({ className, handle, onSuccess, onShowKycModal, onConf
           value={preferredKyc}
           options={KYC_ARRAY} />
 
-        <p className="text-right text-muted mb-1"><Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none" onClick={() => onShowKycModal(true)}><span className="lnk">What's the difference between these KYC levels?</span><i className="sila-icon sila-icon-info text-primary ml-2"></i></Button></p>
+        <p className="text-right text-muted mb-1"><Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none" onClick={() => onShowKycModal(true)}><span className="lnk">What's the difference between these KYC levels?</span><i className="sila-icon info text-primary ml-2"></i></Button></p>
         {preferredKyc === INSTANT_ACH_KYC && !app.activeUser && <Alert variant="warning" className="mb-1 py-1">For the first time user, use DOC KYC or KYC lite before testing out Instant ACH functionality.</Alert>}
         {preferredKyc === DEFAULT_KYC && !app.activeUser && <DefaultKYCForm errors={errors} app={app} />}
         {preferredKyc === LITE_KYC && !app.activeUser && <KYCLiteForm errors={errors} app={app} />}

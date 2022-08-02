@@ -18,13 +18,10 @@ import Accounts from '../views/Accounts';
 import Transact from '../views/Transact';
 import Errors from '../views/Errors';
 
-import indvidualIcon from '../assets/images/indvidual.svg';
-import businessIcon from '../assets/images/business.svg';
-
 export const flows = {
   kyc: {
     name: 'Individual Onboarding (KYC)',
-    icon: indvidualIcon,
+    icon: <i className="sila-icon individual text-xxxl align-self-center"></i>,
     permissions: (app) => 
       !app.activeUser || 
       (app.activeUser && !app.activeUser.business && !app.activeUser.business_handle),
@@ -40,7 +37,7 @@ export const flows = {
   },
   kyb: {
     name: 'Business Onboarding (KYB)',
-    icon: businessIcon,
+    icon: <i className="sila-icon business text-xxxl align-self-center"></i>,
     permissions: (app) => 
       !app.activeUser || 
       (app.activeUser && app.activeUser.business) || 

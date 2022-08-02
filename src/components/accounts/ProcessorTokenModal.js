@@ -66,7 +66,7 @@ const LinkAccountModal = ({ show, onSuccess, onResponse }) => {
         <Modal.Body>
 
           <p className="text-lg mb-2">Sila has partnered with Plaid to allow us to link bank accounts using your Plaid integration.</p>
-          <p className="text-meta mb-5">More information available <a href="https://plaid.com/docs/auth/partnerships/sila-money/" target="_blank" rel="noopener noreferrer">here</a>.</p>
+          <p className="text-info mb-5">More information available <a href="https://plaid.com/docs/auth/partnerships/sila-money/" target="_blank" rel="noopener noreferrer">here</a>.</p>
 
           <Form.Group className="mb-3">
             <Form.Label htmlFor="processorToken">Account Name</Form.Label>

@@ -1,45 +1,131 @@
 // Popover adjustments
 
 .popover {
-  box-shadow: $box-shadow-light;
-  border: 1px solid $border-color-light;
+  box-shadow: $box-shadow;
+  border: 1px solid $border-color;
+
+  &:not(.white) {
+    background: $primary-alt;
+  }
+}
+
+.popover-body {
+  padding: 0.75rem;
+  min-width: 5rem;
+}
+
+.bs-popover-top,
+.bs-popover-bottom {
+
+  .arrow {
+    bottom: calc((0.75rem + 1px) * -1);
+    width: 3rem;
+    height: 0.75rem;
+  }
 }
 
 .bs-popover-top {
-  .arrow::before {
-    border-top-color: $border-color-light;
+  margin-bottom: 1rem;
+
+  .arrow {
+    margin-left: -0.75rem !important;
+
+    &::before,
+    &::after {
+      border-width: 0.75rem 3em 0;
+    }
+
+    &::before {
+      border-top-color: $border-color;
+    }
   }
 
-  .arrow::after {
-    border-top-color: $white;
+  &:not(.white) {
+    .arrow::after {
+      border-top-color: $primary-alt;
+    }
   }
+
+  &.white {
+    .arrow::after {
+      border-top-color: $white;
+    }
+  }
+
 }
 
 .bs-popover-right {
-  .arrow::before {
-    border-right-color: $border-color-light;
+  margin-left: 1rem;
+
+  .arrow {
+    &::before {
+      border-right-color: $border-color;
+    }
   }
 
-  .arrow::after {
-    border-right-color: $white;
+  &:not(.white) {
+    .arrow::after {
+      border-right-color: $primary-alt;
+    }
   }
+
+  &.white {
+    .arrow::after {
+      border-right-color: $white;
+    }
+  }
+
 }
 
 .bs-popover-bottom {
-  .arrow::before {
-    border-bottom-color: $border-color-light;
+  margin-top: 1rem;
+
+  .arrow {
+    margin-left: -1.5rem !important;
+
+    &::before,
+    &::after {
+      border-width: 0 3rem 0.5rem 3rem;
+    }
+
+    &::before {
+      border-bottom-color: $border-color;
+    }
   }
 
-  .arrow::after {
-    border-bottom-color: $white;
+  &:not(.white) {
+    .arrow::after {
+      border-bottom-color: $primary-alt;
+    }
   }
+
+  &.white {
+    .arrow::after {
+      border-bottom-color: $white;
+    }
+  }
+
 }
 
 .bs-popover-left {
-  .arrow::before {
-    border-left-color: $border-color-light;
+  margin-right: 1rem;
+
+  .arrow {
+    &::before {
+      border-left-color: $border-color;
+    }
   }
-  .arrow::after {
-    border-left-color: $white;
+
+  &:not(.white) {
+    .arrow::after {
+      border-left-color: $primary-alt;
+    }
   }
+
+  &.white {
+    .arrow::after {
+      border-left-color: $white;
+    }
+  }
+
 }

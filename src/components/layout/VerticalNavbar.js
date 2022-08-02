@@ -74,7 +74,7 @@ const VerticalNav = ({ className, routes }) => {
   return (
     <>
       <nav
-        className="vertical-navbar overflow-auto d-none d-lg-block"
+        className="vertical-navbar overflow-auto custom-scrollbar d-none d-lg-block"
         onMouseEnter={() => setShow(true)}
         onMouseLeave={() => setShow(false)}>
         <ul className={classes}>

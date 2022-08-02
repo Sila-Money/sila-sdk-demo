@@ -361,7 +361,7 @@ const AddDataForm = ({ errors, entityuuid, onLoaded, onErrors, onUpdateUuid, act
         <div className="sms-notifications p-0 col-md-6 col-sm-12">
           {(activeUser && activeUser.smsOptIn) && <div className="text-left">
             SMS Notifications: <span className="text-primary">{activeUser.smsConfirmed ? 'Confirmed' : 'Requested'}</span>
-            <Button variant="link" disabled={activeUser.smsConfirmed} className="ml-3 p-0 text-reset text-decoration-none loaded" onClick={getRefreshSMSstatus}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
+            <Button variant="link" disabled={activeUser.smsConfirmed} className="ml-3 p-0 text-reset text-decoration-none loaded" onClick={getRefreshSMSstatus}><i className="fas fa-sync-alt text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
           </div>}
         </div>
         <div className="p-0 text-right col-sm-12 col-md-6">

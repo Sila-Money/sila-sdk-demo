@@ -69,12 +69,13 @@
     .nav-progress-top,
     &:not(.active) .nav-progress-bottom,
     +.nav-item .nav-progress-top {
-        background: #CED7F3;
+        background: $info;
+        /* TESTING */
     }
 
     &:not(.active) .nav-circle {
         border-color: $primary;
-        @extend .sila-icon-success;
+        @extend .sila-icon.check;
 
         .number {
             display: none;
@@ -98,14 +99,14 @@
     &.active .nav-progress-bottom,
     &.active~* .nav-progress-top,
     &.active~* .nav-progress-bottom {
-        background: $gray-blue-light;
+        background: $primary-alt;
         opacity: 0.12;
     }
 
     &.active~* .nav-circle {
         background: white;
-        border-color: $gray-lightest;
-        color: $gray-lightest;
+        border-color: $info;
+        color: $info;
     }
 
     &.active .nav-progress-bottom,

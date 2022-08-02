@@ -139,7 +139,7 @@ const MainSidebar = () => {
     <>
       <Col
         as="section"
-        className="main-sidebar col-12 d-none d-md-flex flex-column overflow-auto"
+        className="main-sidebar col-12 d-none d-md-flex flex-column overflow-auto custom-scrollbar"
         lg={{ span: 4 }}
         md={{ span: 4 }}
       >

@@ -147,7 +147,7 @@ const RequestKYC = ({ history, page, previous, next }) => {
 
       <div className="d-lg-flex justify-content-lg-between">
         <p className="text-muted mb-3">This page represents <a href="https://docs.silamoney.com/docs/request_kyc" target="_blank" rel="noopener noreferrer">/request_kyc</a> and <a href="https://docs.silamoney.com/docs/check_kyc" target="_blank" rel="noopener noreferrer">/check_kyc</a> functionality.</p>
-        <p className="mb-3"><Button variant="link" className="text-muted font-italic p-0 text-decoration-none" onClick={() => setShow(true)}><span className="lnk">What’s the difference between KYC and KYB?</span> <i className="sila-icon sila-icon-info text-primary ml-2"></i></Button></p>
+        <p className="mb-3"><Button variant="link" className="text-muted font-italic p-0 text-decoration-none" onClick={() => setShow(true)}><span className="lnk">What’s the difference between KYC and KYB?</span> <i className="sila-icon info text-primary ml-2"></i></Button></p>
       </div>
 
       <p className="mb-2"><Button className="float-right" onClick={requestKyc} disabled={disabledRequestButton}>Request {app.settings.flow.toUpperCase()}</Button></p>
@@ -161,7 +161,7 @@ const RequestKYC = ({ history, page, previous, next }) => {
           delay={{ show: 250, hide: 400 }}
           overlay={(props) => <Tooltip id={`${app.settings.flow}-tooltip`} className="ml-2" {...props}>Checks {app.settings.flow.toUpperCase()}</Tooltip>}
         >
-          <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none loaded" onClick={() => checkKyc('onclick')} disabled={disabledRequestButton}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh Status</span></Button>
+          <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none loaded" onClick={() => checkKyc('onclick')} disabled={disabledRequestButton}><i className="fas fa-sync-alt text-primary mr-2"></i><span className="lnk text-lg">Refresh Status</span></Button>
         </OverlayTrigger>}
       </div>
 

@@ -57,21 +57,21 @@ const InstitutionsModal = ({ institutions, errors, isFetching, show, onSearch, o
       </Modal.Header>
       <Modal.Body>
         <Form noValidate validated={true} autoComplete="off" onSubmit={searchInstitution}>
-          <Form.Group className="mb-3 input-italic" controlId="institutionName">
+          <Form.Group className="mb-3" controlId="institutionName">
             <InputGroup className="mb-0">
               <Form.Control ref={institutionNameRef} placeholder="Search by institution name" aria-label="Search by institution name" name="institutionName" isInvalid={Boolean(errors && errors.search_filters && errors.search_filters.institution_name)} />
               <InputGroup.Append className="d-flex justify-content-between align-items-center">
-                <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={searchInstitution}><i className="sila-icon sila-icon-search text-lg"></i></Button>
+                <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={searchInstitution}><i className="fas fa-search text-lg"></i></Button>
               </InputGroup.Append>
             </InputGroup>
             {errors && errors.search_filters && errors.search_filters.institution_name && <Form.Control.Feedback type="none" className="text-danger">{errors.search_filters.institution_name}</Form.Control.Feedback>}
           </Form.Group>
 
-          <Form.Group className="mb-0 input-italic" controlId="RoutingNumber">
+          <Form.Group className="mb-0" controlId="RoutingNumber">
             <InputGroup className="mb-0">
               <Form.Control ref={routingNumberRef} placeholder="Search by routing number" aria-label="Search by routing number" name="RoutingNumber" type="number" isInvalid={Boolean(errors && errors.search_filters && errors.search_filters.routing_number)} />
               <InputGroup.Append className="d-flex justify-content-between align-items-center">
-                <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={searchInstitution}><i className="sila-icon sila-icon-search text-lg"></i></Button>
+                <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={searchInstitution}><i className="fas fa-search text-lg"></i></Button>
               </InputGroup.Append>
             </InputGroup>
             {errors && errors.search_filters && errors.search_filters.routing_number && <Form.Control.Feedback type="none" className="text-danger">{errors.search_filters.routing_number}</Form.Control.Feedback>}
@@ -84,7 +84,7 @@ const InstitutionsModal = ({ institutions, errors, isFetching, show, onSearch, o
           <Button variant="link" className="p-0 new-registration shadow-none btn btn-link ml-auto" onClick={clearSearch}><span className="lnk text-lg">Clear search results</span></Button>
         </div>}
 
-        <div className="position-relative p-0 overflow-auto" style={{ height: 500 }}>
+        <div className="position-relative p-0 overflow-auto custom-scrollbar" style={{ height: 500 }}>
           {isFetching && <Loader overlay />}
           <Table bordered responsive className="headborder">
             <thead>
@@ -104,9 +104,9 @@ const InstitutionsModal = ({ institutions, errors, isFetching, show, onSearch, o
                     <td>{institution.name}</td>
                     <td>{institution.routing_number}</td>
                     <td>{institution.address ? `${institution.address.city}, ${institution.address.state}, ${institution.address.postal_code}` : ''}</td>
-                    <td className="text-center">{institution.products.includes('auth') ? <i className="sila-icon sila-icon-blue-dot" style={{fontSize:'7px'}}></i>  : ''}</td>
-                    <td className="text-center">{institution.products.includes('balance') ? <i className="sila-icon sila-icon-blue-dot" style={{fontSize:'7px'}}></i> : ''}</td>
-                    <td className="text-center">{institution.products.includes('identity') ? <i className="sila-icon sila-icon-blue-dot" style={{fontSize:'7px'}}></i> : ''}</td>
+                    <td className="text-center">{institution.products.includes('auth') ? <i className="fas fa-circle" style={{fontSize:'7px'}}></i>  : ''}</td>
+                    <td className="text-center">{institution.products.includes('balance') ? <i className="fas fa-circle" style={{fontSize:'7px'}}></i> : ''}</td>
+                    <td className="text-center">{institution.products.includes('identity') ? <i className="fas fa-circle" style={{fontSize:'7px'}}></i> : ''}</td>
                   </tr>
                 ) :
                 <tr className="loaded">
