@@ -14,8 +14,6 @@ const SelectMenu = ({ fullWidth, className, show, id, variant, options, onChange
   );
   const buttonClasses = classNames(
     className,
-    size !== 'sm' && 'p-3',
-    'text-left text-reset  pr-5',
     fullWidth && 'w-100'
   );
   const menuClasses = classNames(

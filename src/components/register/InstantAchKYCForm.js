@@ -7,7 +7,7 @@ import { STATES_ARRAY } from '../../constants';
 const InstantAchKYCForm = ({ errors, isHide, app, children }) => {
   return (
     <div className={isHide ? 'd-none' : undefined}>
-      <p className="text-muted mb-1">This KYC Level requires us to gather more information from you. Please fill out the required fields below.</p>
+      <p className="text-info mb-4">This KYC Level requires us to gather more information from you. Please fill out the required fields below.</p>
 
       <p className="text-lg text-warning mb-1">All fields are required for this KYC level.</p>
       <Form.Row>

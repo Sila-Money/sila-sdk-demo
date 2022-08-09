@@ -452,7 +452,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, acti
       <Form className="mt-2" noValidate validated={validated} autoComplete="off" onSubmit={register}>
         {!loaded && <Loader overlay />}
 
-        <p className="text-muted mb-1">Please fill out the below fields for this business member.</p>
+        <p className="text-info mb-1">Please fill out the below fields for this business member.</p>
 
         <p className="text-right text-lg text-warning mb-2">All fields are required for this Business Member.</p>
 
@@ -620,7 +620,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, acti
 
         {action !== 'update-member' && <div className="d-flex">
           <Button type="submit" className="ml-auto" disabled={!handle}>{currentRole && currentRole.name === 'controlling_officer' ? 'Link as Controlling Officer' : currentRole && currentRole.name === 'beneficial_owner' ? 'Link as Beneficial Owner' : 'Register'}</Button>
-          {onMoreInfoNeeded && <Button variant="outline-light" className="ml-3 text-muted text-uppercase" onClick={() => { onMoreInfoNeeded(false) }}>Cancel</Button>}
+          {onMoreInfoNeeded && <Button variant="outline-light" className="ml-3 text-info text-uppercase" onClick={() => { onMoreInfoNeeded(false) }}>Cancel</Button>}
         </div>}
         {action && action === 'update-member' && showUpdateBtn && <Button type="submit" className="ml-auto d-flex mt-2">Update data</Button>}
       </Form>

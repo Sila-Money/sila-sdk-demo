@@ -47,8 +47,8 @@ $sila-icon-arrow-right: "\e914";
   &.apps:before {
     content: "\e90f";
   }
-  &.developer:before {
-    content: "\e910";
+  &.developers:before {
+    content: "\e905";
   }
   &.support:before {
     content: "\e911";
@@ -92,7 +92,7 @@ $sila-icon-arrow-right: "\e914";
   &.comment:before {
     content: "\e906";
   }
-  &.disabled-checked1:before {
+  &.disabled-checked:before {
     content: "\e903";
   }
   &.enable-task:before {

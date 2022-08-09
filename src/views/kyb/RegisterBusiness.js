@@ -102,15 +102,15 @@ const RegisterBusiness = ({ page, previous, next, isActive }) => {
 
       <h1 className="mb-1">{app.activeUser ? 'Registered Business' : 'Business Information'}</h1>
 
-      <p className="mb-1 text-muted text-lg">{app.activeUser ? "We've gathered some information to see if you meet KYB guidelines. If you'd like to add, update or delete information, you can do so here." : "We need to gather some information to see if this business meets KYB guidelines."}</p>
+      <p className="mb-1 text-info text-lg">{app.activeUser ? "We've gathered some information to see if you meet KYB guidelines. If you'd like to add, update or delete information, you can do so here." : "We need to gather some information to see if this business meets KYB guidelines."}</p>
 
-      <p className="mb-1 text-muted text-lg">To register a new end-user as a business instead of an individual, the following must be sent in the request:</p>
+      <p className="mb-1 text-info text-lg">To register a new end-user as a business instead of an individual, the following must be sent in the request:</p>
 
-      {app.activeUser && <p className="text-muted mb-3">This page represents <a href="https://docs.silamoney.com/docs/addregistration-data" target="_blank" rel="noopener noreferrer">/add</a>, <a href="https://docs.silamoney.com/docs/updateregistration-data" target="_blank" rel="noopener noreferrer">/update,</a> and <a href="https://docs.silamoney.com/docs/deleteregistration-data" target="_blank" rel="noopener noreferrer">/delete</a> functionality.</p>}
+      {app.activeUser && <p className="text-info mb-3">This page represents <a href="https://docs.silamoney.com/docs/addregistration-data" target="_blank" rel="noopener noreferrer">/add</a>, <a href="https://docs.silamoney.com/docs/updateregistration-data" target="_blank" rel="noopener noreferrer">/update,</a> and <a href="https://docs.silamoney.com/docs/deleteregistration-data" target="_blank" rel="noopener noreferrer">/delete</a> functionality.</p>}
 
-      {!app.activeUser && <p className="text-muted mb-3">This page represents <a href="https://docs.silamoney.com/docs/register" target="_blank" rel="noopener noreferrer">/register</a> functionality.</p>}
+      {!app.activeUser && <p className="text-info mb-3">This page represents <a href="https://docs.silamoney.com/docs/register" target="_blank" rel="noopener noreferrer">/register</a> functionality.</p>}
 
-      {!app.activeUser && <p className="text-right mb-2"><Button variant="link" className="text-muted font-italic p-0 text-decoration-none" onClick={() => setShow(true)}><span className="lnk">What's the difference between registering an individual and a business?</span> <i className="sila-icon info text-primary ml-2"></i></Button></p>}
+      {!app.activeUser && <p className="text-right mb-2"><Button variant="link" className="text-info font-italic p-0 text-decoration-none" onClick={() => setShow(true)}><span className="lnk">What's the difference between registering an individual and a business?</span> <i className="sila-icon info text-primary ml-2"></i></Button></p>}
 
       <RegisterBusinessForm handle={app.settings.kybHandle} onSuccess={registerUser} onShowKybModal={(showKybModal) => setShowKybModal(showKybModal)} onConfirm={setConfirm}>
 

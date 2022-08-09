@@ -5,7 +5,7 @@
   border: 1px solid $border-color;
 
   &:not(.white) {
-    background: $primary-alt;
+    background: $primary-light;
   }
 }
 
@@ -42,7 +42,7 @@
 
   &:not(.white) {
     .arrow::after {
-      border-top-color: $primary-alt;
+      border-top-color: $primary-light;
     }
   }
 
@@ -65,7 +65,7 @@
 
   &:not(.white) {
     .arrow::after {
-      border-right-color: $primary-alt;
+      border-right-color: $primary-light;
     }
   }
 
@@ -95,7 +95,7 @@
 
   &:not(.white) {
     .arrow::after {
-      border-bottom-color: $primary-alt;
+      border-bottom-color: $primary-light;
     }
   }
 
@@ -118,7 +118,7 @@
 
   &:not(.white) {
     .arrow::after {
-      border-left-color: $primary-alt;
+      border-left-color: $primary-light;
     }
   }
 

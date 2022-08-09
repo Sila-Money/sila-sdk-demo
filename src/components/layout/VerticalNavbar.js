@@ -23,7 +23,7 @@ const NavItem = ({ route, number, show }) => {
     onMouseLeave={() => setHover(false)}
     style={(hover || isActive) && show && isEnabled && subRoutes && subRoutes.length ? { marginTop: `-${(subRoutes.length * 2 + 1) / 2}rem`, paddingBottom: `${subRoutes.length * 2 + 1}rem` } : undefined}>
     <div className="nav-content">
-      {isEnabled && !route.placeholder ? <NavLink to={{ pathname: route.path, state: { from: route.page } }} className="nav-title">{route.title}</NavLink> : <div className={`nav-title${!isActive ? ' text-muted' : ''}`}>{route.title}</div>}
+      {isEnabled && !route.placeholder ? <NavLink to={{ pathname: route.path, state: { from: route.page } }} className="nav-title">{route.title}</NavLink> : <div className={`nav-title${!isActive ? ' text-info' : ''}`}>{route.title}</div>}
       {subRoutes && <div className="nav-links">{subRoutes.map((route, index) =>
         <NavLink key={index} to={{ pathname: route.path, state: { from: route.page } }} className="d-block mt-2 text-sm">{route.title}</NavLink>
       )}</div>}
@@ -40,11 +40,11 @@ const MobileMenu = ({ routes }) => {
   const currentRoute = routes.find(route => route.path === location.pathname) || routes[0];
   return (
     <Col
-      className="mobile-menu d-block d-lg-none p-4 position-fixed border-bottom border-light"
+      className="mobile-menu d-block d-lg-none p-4 position-fixed border-bottom"
       lg={{ span: 8 }}
       md={{ span: 8 }}
       sm={12}>
-      <DropdownButton size="lg" variant="secondary" title={currentRoute.title}>
+      <DropdownButton size="lg" variant="outline-light" title={currentRoute.title}>
         {routes.filter(route => (app.activeUser && app.success.some(success => success.handle === app.activeUser.handle && success.page === route.path)) || location.pathname.includes(route.path)).map((route, index) => {
           const subRoutes = route.routes ? route.routes.filter(subroute => !subroute.disabled) : false;
           return (
@@ -74,7 +74,7 @@ const VerticalNav = ({ className, routes }) => {
   return (
     <>
       <nav
-        className="vertical-navbar overflow-auto custom-scrollbar d-none d-lg-block"
+        className="vertical-navbar overflow-auto custom-scrollbar d-none d-lg-block border-right"
         onMouseEnter={() => setShow(true)}
         onMouseLeave={() => setShow(false)}>
         <ul className={classes}>

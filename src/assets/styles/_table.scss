@@ -57,7 +57,7 @@
         }
 
         &:not(.disabled) {
-          background: $primary-alt !important;
+          background: $primary-light !important;
         }
       }
     }
@@ -97,7 +97,7 @@
   }
 
   &-striped tbody tr:nth-of-type(odd) {
-    background: $primary-alt;
+    background: $primary-light;
   }
 
   &-bordered {
@@ -111,6 +111,30 @@
     }
     tbody tr:last-child td {
       border-bottom: 0;
+    }
+  }
+
+  &-filter {
+    .filter {
+      .options {
+        .term-message {
+          position: sticky;
+          top: 0;
+          left: 0;
+          z-index: 2;
+        }
+
+        .results {
+          position: relative;
+          z-index: 1;
+        }
+      }
+    }
+  }
+
+  &.collapsed {
+    tr:first-child td {
+      border-top: 0;
     }
   }
 

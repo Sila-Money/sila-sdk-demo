@@ -30,7 +30,7 @@ const Home = ({ page, history }) => {
       <Container className="mt-5">
         <Row className="justify-content-center">
           {Object.keys(flows).map(key => <Col key={key} lg="12" xl="6" className="text-center px-5">
-            <Button onClick={(e) => handleClick(e, key)} disabled={!flows[key].permissions(app)} className="jumbotron w-100 d-flex flex-column text-center align-items-center" size="lg" variant="outline-light"><span className="badge-light rounded-circle d-block p-3 mb-3 d-flex justify-content-center" style={{ width: 70, height: 70 }}>{flows[key].icon}</span>{flows[key].name}</Button>
+            <Button onClick={(e) => handleClick(e, key)} disabled={!flows[key].permissions(app)} className="jumbotron w-100 d-flex flex-column text-center align-items-center shadow text-lg font-weight-normal text-info text-transform-none" size="lg" variant="outline-light">{flows[key].icon}<span className="d-block mt-4">{flows[key].name}</span></Button>
           </Col>)}
         </Row>
       </Container>

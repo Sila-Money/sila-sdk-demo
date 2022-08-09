@@ -69,8 +69,7 @@
     .nav-progress-top,
     &:not(.active) .nav-progress-bottom,
     +.nav-item .nav-progress-top {
-        background: $info;
-        /* TESTING */
+        background: #CED7F3;
     }
 
     &:not(.active) .nav-circle {
@@ -99,13 +98,13 @@
     &.active .nav-progress-bottom,
     &.active~* .nav-progress-top,
     &.active~* .nav-progress-bottom {
-        background: $primary-alt;
+        background: $primary-light;
         opacity: 0.12;
     }
 
     &.active~* .nav-circle {
         background: white;
-        border-color: $info;
+        border-color: #CED7F3;
         color: $info;
     }
 

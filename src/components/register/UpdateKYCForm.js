@@ -105,7 +105,7 @@ const UpdateKYCForm = ({ errors, preferredKyc, entityuuid, onLoaded, onConfirm, 
 
   return (
     <>
-      <p className="text-muted mb-1">This KYC Level requires us to gather more information from you. Please fill out the required fields below.</p>
+      <p className="text-info mb-4">This KYC Level requires us to gather more information from you. Please fill out the required fields below.</p>
 
       <p className="text-lg text-warning mb-1">All fields are required for this KYC level.</p>
       <Form.Row>

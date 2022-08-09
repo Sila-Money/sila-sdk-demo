@@ -1,0 +1,73 @@
+// Carousel adjustments
+
+.carousel-control-prev,
+.carousel-control-next,
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  width: 1.9rem;
+  height: 1.9rem;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  opacity: 1;
+  bottom: 50%;
+  top: auto;
+
+  &:hover,
+  &:focus {
+    opacity: 1;
+  }
+
+  &:hover {
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+      background: $primary;
+      color: $white;
+    }
+  }
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  @include sila-icon;
+  border-radius: 50%;
+  line-height: 1.9rem;
+  text-align: center;
+  background: $primary-accent;
+  color: $primary;
+  font-size: 1rem;
+}
+
+.carousel-control-prev-icon {
+  display: none;
+}
+
+.carousel-control-next-icon {
+  &::before {
+    content: $sila-icon-arrow-right;
+  }
+}
+
+.carousel-indicators {
+  margin-bottom: 0;
+
+  li {
+    border-radius: 50%;
+    background-color: #D5D5D5;
+    width: 7px;
+    height: 7px;
+    margin-left: 7px;
+    margin-right: 7px;
+    margin-bottom: -10px;
+
+    &.active {
+      background-color: $primary;
+    }
+  }
+}
+
+.carousel-item {
+  padding-right: 3rem;
+}

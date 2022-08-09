@@ -1,13 +1,13 @@
 import React from 'react';
 import { Fade, Spinner } from 'react-bootstrap';
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
 const AlertMessage = ({ message, type, noIcon, loading }) => {
-  const icon = type === 'success' ? 'success' : type === 'danger' ? 'danger' : type === 'wait' ? 'wait' : 'info';
   return (
     <Fade in={true}>
-      <div className={!noIcon ? 'd-flex align-items-center position-relative' : undefined}>
-        {!noIcon && type !== 'warning' ? <i className={`mr-3 sila-icon sila-icon-${icon} text-${type && type !== 'wait' ? type : 'primary'}`}></i> : !noIcon ? <i className="fas fa-exclamation text-warning mr-3"></i> : null}
+      <div className={classNames(!noIcon && 'd-flex align-items-center position-relative', `text-${type ? type : 'warning'}`)}>
+        {!noIcon && <i className={classNames('mr-3', type === 'success' && 'sila-icon check', type === 'wait' && 'sila-icon info', (!type || type === 'warning') && 'fas fa-exclamation')}></i>}
         {loading && <Spinner animation="border" role="status" variant="primary" size="sm" className="mr-2"></Spinner>}
         <span className="message">{message}</span>
       </div>

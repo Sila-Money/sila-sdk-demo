@@ -21,7 +21,7 @@ const KYBFormFieldType = ({ fieldType, errors, app, onEditing, onSave }) => {
       {fieldType && fieldType === 'doing_business_as' && <Form.Group controlId="businessDBA" className="required">
         <Form.Control placeholder="DBA (If Applicable)" name="doing_business_as" className="p-2" autoFocus onChange={onEditing} onKeyDown={handleKeypress} defaultValue={app.activeUser ? app.activeUser.doing_business_as : undefined} isInvalid={Boolean(errors.entity && errors.entity.doing_business_as)} />
         {errors.entity && errors.entity.doing_business_as && <Form.Control.Feedback type="invalid">{errors.entity.doing_business_as}</Form.Control.Feedback>}
-        <Form.Text className="text-muted">Optional business name if it differs from the legally registered name.</Form.Text>
+        <Form.Text className="text-info">Optional business name if it differs from the legally registered name.</Form.Text>
       </Form.Group>}
 
       {fieldType && fieldType === 'email' && <Form.Group controlId="businessEmail" className="required">

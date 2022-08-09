@@ -52,9 +52,9 @@ const BusinessType = ({ page, previous, next }) => {
 
       <h1 className="mb-1">Business Type and Category</h1>
 
-      <p className="mb-1 text-lg text-muted">Please choose your business type and category. This will determine the information we need to collect from you moving forward.</p>
+      <p className="mb-1 text-lg text-info">Please choose your business type and category. This will determine the information we need to collect from you moving forward.</p>
 
-      <p className="text-muted mb-3">This page represents <a href="https://docs.silamoney.com/docs/get_business_types" target="_blank" rel="noopener noreferrer">/get_business_types</a> and <a href="https://docs.silamoney.com/docs/get_naics_categories" target="_blank" rel="noopener noreferrer">/get_naics_categories</a> functionality.</p>
+      <p className="text-info mb-3">This page represents <a href="https://docs.silamoney.com/docs/get_business_types" target="_blank" rel="noopener noreferrer">/get_business_types</a> and <a href="https://docs.silamoney.com/docs/get_naics_categories" target="_blank" rel="noopener noreferrer">/get_naics_categories</a> functionality.</p>
 
       {(!types || !categories) && <Loader />}
 

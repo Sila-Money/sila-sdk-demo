@@ -375,7 +375,7 @@ const RegisterBusinessForm = ({ className, children, onSuccess, onShowKybModal, 
       <Form noValidate className={className} validated={validated} autoComplete="off" onSubmit={register}>
         {!loaded && <Loader overlay fixed />}
 
-        <Form.Label className="text-muted mr-5">Please choose your preferred KYB level, if you are a first time user, we suggest the KYB Standard flow:</Form.Label>
+        <Form.Label className="text-info mr-5">Please choose your preferred KYB level, if you are a first time user, we suggest the KYB Standard flow:</Form.Label>
         <SelectMenu fullWidth
           title={preferredKyb ? KYB_ARRAY.find(option => option.value === preferredKyb).label : 'Choose KYB level'}
           onChange={(value) => onKybLevelChange(value)}
@@ -384,7 +384,7 @@ const RegisterBusinessForm = ({ className, children, onSuccess, onShowKybModal, 
           options={KYB_ARRAY}
           disabledOptions={(businessTypes && businessTypes.includes(app.settings.kybBusinessType)) ? ['KYB-STANDARD'] : []} />
 
-        <p className="text-right text-muted mb-1"><Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none" onClick={() => onShowKybModal(true)}><span className="lnk">What's the difference between the KYB levels?</span><i className="sila-icon info text-primary ml-2"></i></Button></p>
+        <p className="text-right text-info mb-1"><Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none" onClick={() => onShowKybModal(true)}><span className="lnk">What's the difference between the KYB levels?</span><i className="sila-icon info text-primary ml-2"></i></Button></p>
         {preferredKyb === KYB_STANDARD && !app.activeUser && <StandardKYBForm errors={errors} app={app} />}
         {preferredKyb === KYB_LITE && !app.activeUser && <LiteKYBForm businessTypes={businessTypes} errors={errors} app={app} />}
         {preferredKyb === KYB_RECEIVE_ONLY && !app.activeUser && <ReceiveOnlyKYBForm errors={errors} app={app} />}

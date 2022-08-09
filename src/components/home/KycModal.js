@@ -18,9 +18,9 @@ const KycModal = ({ show, onHide }) => {
             <p><span className="font-weight-bold">If it's your first time using the demo,</span> we recommend you start with DOC KYC to gain a proper understanding of the process. <Button variant="link" className="p-0 new-registration shadow-none btn btn-link ml-auto" href="https://docs.silamoney.com/docs/kyckyb-levels#kyc" target="_blank" rel="noopener noreferrer"><span className="lnk text-lg">Read more about the KYC levels on our docs!</span></Button></p>
           </li>
         </ul>
-        <CardGroup className="mb-4">
-          <Card>
-            <Card.Header className="text-center bg-light">
+        <CardGroup className="mb-4 border-0 rounded overflow-hidden">
+          <Card className="border">
+            <Card.Header className="text-center bg-info">
               <Card.Title className="text-primary mb-0">DOC_KYC</Card.Title>
             </Card.Header>
             <Card.Body>
@@ -29,8 +29,8 @@ const KycModal = ({ show, onHide }) => {
               </Card.Text>
             </Card.Body>
           </Card>
-          <Card>
-            <Card.Header className="text-center bg-light">
+          <Card className="border">
+            <Card.Header className="text-center bg-info">
               <Card.Title className="text-primary mb-0">KYC Lite</Card.Title>
             </Card.Header>
             <Card.Body>
@@ -42,8 +42,8 @@ const KycModal = ({ show, onHide }) => {
               </Card.Text>
             </Card.Body>
           </Card>
-          <Card>
-            <Card.Header className="text-center bg-light">
+          <Card className="border">
+            <Card.Header className="text-center bg-info">
               <Card.Title className="text-primary mb-0">Instant ACH</Card.Title>
             </Card.Header>
             <Card.Body>
@@ -55,8 +55,8 @@ const KycModal = ({ show, onHide }) => {
               </Card.Text>
             </Card.Body>
           </Card>
-          <Card>
-            <Card.Header className="text-center bg-light">
+          <Card className="border">
+            <Card.Header className="text-center bg-info">
               <Card.Title className="text-primary mb-0">Receive Only</Card.Title>
             </Card.Header>
             <Card.Body>
@@ -69,7 +69,7 @@ const KycModal = ({ show, onHide }) => {
             </Card.Body>
           </Card>
         </CardGroup>
-        <p className="text-center mb-0"><Button href="https://docs.silamoney.com/docs/limits-overview" target="_blank" rel="noopener noreferrer" variant="outline-primary" size="sm">See API Limits in our docs</Button></p>
+        <p className="text-center mb-0"><Button href="https://docs.silamoney.com/docs/limits-overview" target="_blank" rel="noopener noreferrer" variant="outline-light">See API Limits in our docs</Button></p>
       </Modal.Body>
     </Modal>
   );

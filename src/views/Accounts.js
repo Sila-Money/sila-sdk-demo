@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Container, Table, Button, Tab, Row, Col, Nav, Form, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Container, Table, Button, Tab, Row, Col, Nav, Form, OverlayTrigger, Tooltip, Card } from 'react-bootstrap';
 
 import { useAppContext } from '../components/context/AppDataProvider';
 
@@ -412,31 +412,31 @@ const Accounts = ({ page, previous, next, isActive }) => {
       {!generateProcessorPages.isGpPage && <>
         <h1 className="mb-1">Link a Bank Account</h1>
 
-        <p className="text-muted text-lg mb-1">We've partnered with Plaid to connect bank accounts to the Sila platform. This helps us ensure account ownership.</p>
+        <p className="text-info text-lg mb-1">We've partnered with Plaid to connect bank accounts to the Sila platform. This helps us ensure account ownership.</p>
 
-        <p className="text-muted text-lg mb-1">Connect via Account Routing: We also have the ability to connect bank accounts with just an account and routing number "This feature required Compliance Approval for processing"</p>
+        <p className="text-info text-lg mb-1">Connect via Account Routing: We also have the ability to connect bank accounts with just an account and routing number "This feature required Compliance Approval for processing"</p>
 
-        <p className="text-muted text-lg mb-1">Connect Via Plaid Link" The Sila will support Legacy public token and Link integration for the near term, however, this functionality is marked for deprecation.</p>
+        <p className="text-info text-lg mb-1">Connect Via Plaid Link" The Sila will support Legacy public token and Link integration for the near term, however, this functionality is marked for deprecation.</p>
 
-        <p className="text-muted text-lg mb-1">Connect via Processor Token: Please seek a direct relationship with Plaid to use our Processor Token functionality</p>
+        <p className="text-info text-lg mb-1">Connect via Processor Token: Please seek a direct relationship with Plaid to use our Processor Token functionality</p>
 
-        <p className="text-muted mb-3">This page represents <a href="https://docs.silamoney.com/docs/get_accounts" target="_blank" rel="noopener noreferrer">/get_accounts</a>, <a href="https://docs.silamoney.com/docs/get_institutions" target="_blank" rel="noopener noreferrer">/get_institutions</a>, <a href="https://docs.silamoney.com/docs/plaid_link_token" target="_blank" rel="noopener noreferrer">/plaid_link_token</a>, <a href="https://docs.silamoney.com/docs/link_account" target="_blank" rel="noopener noreferrer">/link_account</a>, <a href="https://docs.silamoney.com/docs/delete_account-1" target="_blank" rel="noopener noreferrer">/delete_account</a>, and <a href="https://docs.silamoney.com/docs/plaid_sameday_auth" target="_blank" rel="noopener noreferrer">/plaid_sameday_auth</a> functionality.</p>
+        <p className="text-info mb-3">This page represents <a href="https://docs.silamoney.com/docs/get_accounts" target="_blank" rel="noopener noreferrer">/get_accounts</a>, <a href="https://docs.silamoney.com/docs/get_institutions" target="_blank" rel="noopener noreferrer">/get_institutions</a>, <a href="https://docs.silamoney.com/docs/plaid_link_token" target="_blank" rel="noopener noreferrer">/plaid_link_token</a>, <a href="https://docs.silamoney.com/docs/link_account" target="_blank" rel="noopener noreferrer">/link_account</a>, <a href="https://docs.silamoney.com/docs/delete_account-1" target="_blank" rel="noopener noreferrer">/delete_account</a>, and <a href="https://docs.silamoney.com/docs/plaid_sameday_auth" target="_blank" rel="noopener noreferrer">/plaid_sameday_auth</a> functionality.</p>
 
         <div className="d-flex mb-2">
           <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none loaded" onClick={() => getAccounts(undefined)}><i className="fas fa-sync-alt text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
         </div>
 
-        <div className="accounts position-relative mb-3">
+        <Card className="accounts border rounded overflow-hidden position-relative mb-3">
           {(!loaded || !plaidToken) && <Loader overlay />}
           <Table bordered responsive>
             <thead>
               <tr>
-                <th className="text-lg bg-secondary text-dark font-weight-bold text-nowrap">Account #</th>
-                <th className="text-lg bg-secondary text-dark font-weight-bold">Name</th>
-                <th className="text-lg bg-secondary text-dark font-weight-bold">Type</th>
-                <th className="text-lg bg-secondary text-dark font-weight-bold">Balance</th>
-                <th className="text-lg bg-secondary text-dark font-weight-bold">Status</th>
-                <th className="text-lg bg-secondary text-dark font-weight-bold text-center">Action</th>
+                <th className="text-nowrap">Account #</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Balance</th>
+                <th>Status</th>
+                <th className="text-center">Action</th>
               </tr>
             </thead>
             <tbody ref={tbodyRef}>
@@ -491,8 +491,8 @@ const Accounts = ({ page, previous, next, isActive }) => {
               }
             </tbody>
           </Table>
-          {accounts.find(acc => acc.account_link_status === 'microdeposit_pending_manual_verification') && <p className="text-muted mt-4">With Same Day Micro-deposits, Plaid verfies the deposit within 1 business days Within the Sandbox timeframe, it’s only takes a few minutes. To jump back into your session, we’ll need you to retrieve a public token from Plaid. From there, two microdeposits should appear in your account within minutes. We will need you to verify the amount of these depsoits in order to launch Phase 2.</p>}
-        </div>
+          {accounts.find(acc => acc.account_link_status === 'microdeposit_pending_manual_verification') && <p className="text-info mt-4">With Same Day Micro-deposits, Plaid verfies the deposit within 1 business days Within the Sandbox timeframe, it’s only takes a few minutes. To jump back into your session, we’ll need you to retrieve a public token from Plaid. From there, two microdeposits should appear in your account within minutes. We will need you to verify the amount of these depsoits in order to launch Phase 2.</p>}
+        </Card>
 
         {plaidToken && <div className="d-block d-xl-flex align-items-center mb-2 loaded">
           <div className="ml-auto">
@@ -511,7 +511,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
 
       {generateProcessorPages.isGpPage && <>
         <h1 className="mb-1 mt-3">{generateProcessorPages.isTutorial ? 'Tutorial: Generating a Plaid Processor Token' : 'Generate a Plaid Processor Token'}</h1>
-        <p className="text-muted mb-3">One of the most popular methods to connect a bank account via Plaid is through the use of a Processor Token. We can generate a processor token using your sandbox credentials. Credentials are held locally, and are completely secure.</p>
+        <p className="text-info mb-3">One of the most popular methods to connect a bank account via Plaid is through the use of a Processor Token. We can generate a processor token using your sandbox credentials. Credentials are held locally, and are completely secure.</p>
 
         <Container className="border p-0">
           <Tab.Container id="generate-plaid-processor" defaultActiveKey="0" activeKey={`${tabKey}`} onSelect={(k) => setTabKey(k)}>
@@ -521,10 +521,10 @@ const Accounts = ({ page, previous, next, isActive }) => {
                 <Nav variant="pills" className="flex-column">
                   {generateProcessorPages.gpRoutes.map((option, index) => <Nav.Item key={index}>
                     <Nav.Link eventKey={`${index}`} className="p-3 border-bottom" disabled={option.disabled}>
-                      <p className={`d-flex text-uppercase text-primary font-weight-bold mb-1 ${option.disabled ? 'text-muted' : ''}`}>
+                      <p className={`d-flex text-uppercase text-primary font-weight-bold mb-1 ${option.disabled ? 'text-info' : ''}`}>
                         {!option.disabled && tabKey !== index && <i className="mr-2 sila-icon check text-primary text-sm"></i>} {`Step ${index+1}`}
                       </p>
-                      <p className={`mb-0 text-dark font-weight-bold ${option.disabled ? 'text-muted' : ''}`}>{option.title}</p>
+                      <p className={`mb-0 text-dark font-weight-bold ${option.disabled ? 'text-info' : ''}`}>{option.title}</p>
                     </Nav.Link>
                   </Nav.Item>)}
                 </Nav>

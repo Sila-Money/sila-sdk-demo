@@ -57,7 +57,7 @@ $mobile-menu-height: 6.25rem !default;
 
 // Main sidebar
 $main-sidebar-height: calc(100vh) !default;
-$main-sidebar-background: #F9FAFC !default;
+$main-sidebar-background: $primary-light !default;
 $dropdown-icon-transition: transform $transition-duration ease-in-out;
 
 // Pagination

@@ -13,9 +13,9 @@ const KybVsKycModal = ({ show, onHide }) => {
       </Modal.Header>
       <Modal.Body>
         <p className="text-center mb-4">Know Your Customer (KYC) is a federally-mandated process to verify the identity of users of financial products and services (ie, your end users) and assess their perceived risk of committing fraud. Sila supports KYC on individual end users and KYB (Know Your Business) on business end users. To that end, Sila is required to perform KYC/KYB validation on all (individual and business) end users of any app that uses the Sila API. Registered users who have not met KYC/KYB requirements won’t be able to make transactions on the Sila platform.</p>
-        <CardGroup>
-          <Card>
-            <Card.Header className="text-center bg-light">
+        <CardGroup className="roudned border-0 overflow-hidden">
+          <Card className="border">
+            <Card.Header className="text-center bg-info">
               <Card.Title className="text-primary mb-0">KYC</Card.Title>
             </Card.Header>
             <Card.Body>
@@ -27,8 +27,8 @@ const KybVsKycModal = ({ show, onHide }) => {
               </Card.Text>
             </Card.Body>
           </Card>
-          <Card>
-            <Card.Header className="text-center bg-light">
+          <Card className="border">
+            <Card.Header className="text-center bg-info">
               <Card.Title className="text-primary mb-0">KYB</Card.Title>
             </Card.Header>
             <Card.Body>

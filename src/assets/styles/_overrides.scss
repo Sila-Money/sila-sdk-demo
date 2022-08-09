@@ -10,31 +10,30 @@ $gray-100: $gray-light;
 // Theme colors
 $primary: #0030FC !default;
 $primary-hover: #315AFC !default;
-$primary-active: #5638FF !default;
-$primary-dark: #0023B3 !default;
-$primary-darker: #00146B !default;
-$primary-alt: #F7FAFC !default;
-$accent-primary:  #a906df  !default;
-$accent-secondary: #00a3fe !default;
-$secondary: #DEE6FC !default;
-$warning: #F16203 !default;
-$warning-alt: #FCF9F7 !default;
-$danger: #ED5555 !default;
-$success: #2ECC91 !default;
-$success-alt: #EDFCFB !default;
-$success-dark: #227153 !default;
+$primary-light: #F7FAFC !default;
+$primary-dark: #00146B !default;
+$primary-accent: #DEE6FC !default;
+$secondary: #D5DADF !default;
+$warning: #FC8A00 !default;
+$warning-dark: #E87500 !default;
+$warning-accent: #FCEDDE !default;
+$danger: #CC4900 !default;
+$danger-accent: #FCF9F7 !default;
+$success: #00C9C2 !default;
+$success-accent: #EDFCFB !default;
+$success-dark: #009691 !default;
 $info: #6C7792 !default;
 $caution: #F2C10F !default;
 
 // Misc colors
 $border-color: $secondary;
-$body-background-color: $primary-alt;
+$body-background-color: $white;
 $info-background-color: #F8F9F9;
 
 // Border radius
 $border-radius: 0.75rem !default;
 $border-radius-lg: $border-radius !default;
-$border-radius-sm: $border-radius !default;
+$border-radius-sm: 0.188rem !default;
 
 // Easings
 $ease-in-out-circ: cubic-bezier(.27, .01, .38, 1.06);
@@ -66,7 +65,7 @@ $headings-color: $primary-dark;
 
 // Body
 $body-background: $body-background-color;
-$body-color: $primary-darker;
+$body-color: $primary-dark;
 $body-font-size: 0.875rem;
 
 $font-size-xs: 0.625rem;
@@ -77,7 +76,7 @@ $font-size-xxl: 1.5rem;
 $font-size-xxxl: 2rem;
 
 // Buttons
-$btn-font-size: $font-size-sm;
+$btn-font-size: $body-font-size;
 $btn-font-weight: 700;
 $btn-border-radius: $border-radius;
 $btn-padding-y: 0.9375rem;
@@ -88,7 +87,7 @@ $btn-link-disabled-color: $info;
 $btn-font-size-sm: $font-size-sm;
 $btn-padding-y-sm: 0.4286rem;
 $btn-padding-x-sm: 0.875rem;
-$btn-border-radius-sm: $border-radius;
+$btn-border-radius-sm: $border-radius-sm;
 
 // Inputs
 $input-color: $body-color;
@@ -102,22 +101,25 @@ $input-group-padding-x: 0.625rem;
 
 // Forms
 $input-font-size: $body-font-size;
+$input-font-size-lg: $input-font-size;
 $input-padding-y: 0.9375rem;
 $input-padding-x: 0.9375rem;
-$input-border-radius-lg: $border-radius;
+$input-padding-y-lg: $input-padding-y;
+$input-padding-x-lg: $input-padding-x;
 
 $custom-select-line-height: 1.5;
 
 $input-padding-x-sm: 0.625rem;
 
-$input-border-radius: $border-radius;
+$input-border-radius: $border-radius-sm;
 $input-border-radius-sm: $border-radius-sm;
+$input-border-radius-lg: $border-radius;
 $input-focus-border-color: $primary;
 $input-focus-box-shadow: none;
 
-$custom-select-border-radius: $border-radius;
+$custom-select-border-radius: $border-radius-sm;
 
-$custom-file-border-radius: $border-radius;
+$custom-file-border-radius: $border-radius-sm;
 
 // Navs
 $nav-link-padding-x: 0.625rem;

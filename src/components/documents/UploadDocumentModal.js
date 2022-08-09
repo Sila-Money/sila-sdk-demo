@@ -161,7 +161,7 @@ const UploadDocumentModal = ({ activeUser, documentTypes, show, onClose, onSucce
       <Form noValidate validated={validated} autoComplete="off" encType="multipart/form-data" onSubmit={onDocumentSubmit}>
         {isUploading && <Loader />}
         <Modal.Body>
-          <p className="text-muted mb-4">Please make sure all information on the document is visible and clear. We accept files in these formats: PNG, JPG, and PDF, no larger than 20MB.</p>
+          <p className="text-info mb-4">Please make sure all information on the document is visible and clear. We accept files in these formats: PNG, JPG, and PDF, no larger than 20MB.</p>
 
           <Form.Group className="mb-3 required">
             <Form.Label>Choose your document type:</Form.Label>

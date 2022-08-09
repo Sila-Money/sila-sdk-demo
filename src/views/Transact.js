@@ -203,7 +203,7 @@ const Transact = ({ page, previous, next, isActive }) => {
 
       {userAccounts.length === 0 && <Alert variant="warning" className="mb-4">An active account is required to initiate a transaction.  <NavLink to="/accounts" className="text-reset text-underline">Link an account</NavLink></Alert>}
 
-      <p className="text-muted mb-3">This page represents <a href="https://docs.silamoney.com/docs/get_sila_balance" target="_blank" rel="noopener noreferrer">/get_sila_balance</a>, <a href="https://docs.silamoney.com/docs/issue_sila" target="_blank" rel="noopener noreferrer">/issue_sila</a>, <a href="https://docs.silamoney.com/docs/redeem_sila" target="_blank" rel="noopener noreferrer">/redeem_sila</a>, <a href="https://docs.silamoney.com/docs/transfer_sila" target="_blank" rel="noopener noreferrer">/transfer_sila</a>, and <a href="https://docs.silamoney.com/docs/get_transactions" target="_blank" rel="noopener noreferrer">/get_transactions</a> functionality. Learn more about the ACH processing schedule <a href="https://docs.silamoney.com/docs/ach-processing-schedule#instant-ach-3" target="_blank" rel="noopener noreferrer">here.</a></p>
+      <p className="text-info mb-3">This page represents <a href="https://docs.silamoney.com/docs/get_sila_balance" target="_blank" rel="noopener noreferrer">/get_sila_balance</a>, <a href="https://docs.silamoney.com/docs/issue_sila" target="_blank" rel="noopener noreferrer">/issue_sila</a>, <a href="https://docs.silamoney.com/docs/redeem_sila" target="_blank" rel="noopener noreferrer">/redeem_sila</a>, <a href="https://docs.silamoney.com/docs/transfer_sila" target="_blank" rel="noopener noreferrer">/transfer_sila</a>, and <a href="https://docs.silamoney.com/docs/get_transactions" target="_blank" rel="noopener noreferrer">/get_transactions</a> functionality. Learn more about the ACH processing schedule <a href="https://docs.silamoney.com/docs/ach-processing-schedule#instant-ach-3" target="_blank" rel="noopener noreferrer">here.</a></p>
 
       <div className="d-flex mb-2">
         <h2 className="mb-0">Wallet Balance</h2>
@@ -216,8 +216,8 @@ const Transact = ({ page, previous, next, isActive }) => {
         </OverlayTrigger>
       </div>
 
-      <CardGroup className="mb-3">
-        <Card>
+      <CardGroup className="mb-3 rounded overflow-hidden">
+        <Card className="border rounded-left overflow-hidden">
           <Form.Group className="select mb-0">
             <Card.Header className="bg-secondary p-3">
               <Form.Label className="m-0" htmlFor="wallet"><h3 className="m-0">Wallet</h3></Form.Label>
@@ -228,7 +228,7 @@ const Transact = ({ page, previous, next, isActive }) => {
           </Form.Group>
         </Card>
 
-        <Card>
+        <Card className="border rounded-right overflow-hidden">
           <Form.Group className="mb-0">
             <Card.Header className="bg-secondary p-3">
               <Form.Label className="m-0" htmlFor="balance"><h3 className="m-0">Amount in Sila</h3></Form.Label>
@@ -243,7 +243,7 @@ const Transact = ({ page, previous, next, isActive }) => {
       {userAccounts.length !== 0 && <h2 className="mb-2">Transactions</h2>}
 
       {userAccounts.length !== 0 && <Tab.Container defaultActiveKey="issue">
-        <Card>
+        <Card className="border">
           <Card.Header className="d-flex bg-secondary">
             <Nav variant="pills" defaultActiveKey="issue">
               <Nav.Item>
@@ -261,7 +261,7 @@ const Transact = ({ page, previous, next, isActive }) => {
           <Card.Body className="p-3">
             <Tab.Content>
               <Tab.Pane eventKey="issue">
-                <Form.Label className="text-muted mr-5">Choose a processing type:</Form.Label>
+                <Form.Label className="text-info mr-5">Choose a processing type:</Form.Label>
                 <SelectMenu fullWidth
                   title={forms.issue.values.processing_type ? PROCESSING_TYPES.find(option => option.value === forms.issue.values.processing_type).label : 'Processing type'}
                   onChange={(value) => onProcessingTypeChange(value, 'issue')}
@@ -270,7 +270,7 @@ const Transact = ({ page, previous, next, isActive }) => {
                   options={PROCESSING_TYPES} />
                 {forms.issue.errors.processing_type && <Form.Control.Feedback type="none" className="text-danger mb-3">{forms.issue.errors.processing_type}</Form.Control.Feedback>}
 
-                <p className="text-muted mb-2">Add Sila to your wallet by debiting a linked account. One Sila = 1¢.</p>
+                <p className="text-info mb-2">Add Sila to your wallet by debiting a linked account. One Sila = 1¢.</p>
                 <Form noValidate validated={forms.issue.validated} autoComplete="off" className="d-flex mt-auto" onSubmit={(e) => {
                   e.preventDefault();
                   const amount = parseFloat(e.target.issue.value);
@@ -302,7 +302,7 @@ const Transact = ({ page, previous, next, isActive }) => {
                 </Form>
               </Tab.Pane>
               <Tab.Pane eventKey="transfer">
-                <p className="text-muted mb-2">Transfer Sila from your selected linked wallet to another user.  Destination suggestions are scoped to entities created in this application, but all Sila accounts can recieve Sila.</p>
+                <p className="text-info mb-2">Transfer Sila from your selected linked wallet to another user.  Destination suggestions are scoped to entities created in this application, but all Sila accounts can recieve Sila.</p>
                 <Form noValidate validated={forms.transfer.validated} autoComplete="off" className="d-flex" onSubmit={(e) => {
                   e.preventDefault();
                   const amount = parseFloat(e.target.transfer.value);
@@ -352,7 +352,7 @@ const Transact = ({ page, previous, next, isActive }) => {
                 </Form>
               </Tab.Pane>
               <Tab.Pane eventKey="redeem">
-                <Form.Label className="text-muted mr-5">Choose a processing type:</Form.Label>
+                <Form.Label className="text-info mr-5">Choose a processing type:</Form.Label>
                 <SelectMenu fullWidth
                   title={forms.redeem.values.processing_type ? PROCESSING_TYPES.find(option => option.value === forms.redeem.values.processing_type).label : 'Processing type'}
                   onChange={(value) => onProcessingTypeChange(value, 'redeem')}
@@ -361,7 +361,7 @@ const Transact = ({ page, previous, next, isActive }) => {
                   options={PROCESSING_TYPES} />
                 {forms.redeem.errors.processing_type && <Form.Control.Feedback type="none" className="text-danger mb-2">{forms.redeem.errors.processing_type}</Form.Control.Feedback>}
 
-                <p className="text-muted mb-2">Convert Sila from your selected linked wallet to dollars in your primary linked account.</p>
+                <p className="text-info mb-2">Convert Sila from your selected linked wallet to dollars in your primary linked account.</p>
                 <Form noValidate validated={forms.redeem.validated} autoComplete="off" className="d-flex mt-auto" onSubmit={(e) => {
                   e.preventDefault();
                   const amount = parseFloat(e.target.redeem.value);
