@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { Form, InputGroup, Button } from 'react-bootstrap';
 
 import { useAppContext } from '../context/AppDataProvider';
@@ -8,29 +9,27 @@ const Wallet = ({ data, activeRow, onHandleChange, onHandleKeypress, onUpdate, o
   const { app } = useAppContext();
 
   return (
-    <div key={data.blockchain_address} className="wallet loaded">
-      <Form.Group controlId="formGroupWalletName" className={!activeRow.isEditing && 'readonly mb-3'}>
-        <InputGroup className="mb-3">
-          {activeRow.isEditing && activeRow.index === index ? <Form.Control
-            autoFocus
-            aria-label="Wallet Name"
-            name="nickname"
-            onChange={onHandleChange}
-            onKeyPress={(e) => onHandleKeypress(e, data, index)}
-            placeholder={`${data.nickname ? data.nickname : activeRow.isEditing ? 'Wallet Name' : 'Generated Wallet'}${data.default ? ' (Default)' : ''}`}
-            readOnly={ activeRow.isEditing ? activeRow.index === index ? false : true : true }
-            defaultValue={data.nickname}
-          /> : <div className="form-control" style={{ whiteSpace: 'pre' }}>{`${data.nickname} ${data.default ? ' (Default)' : ''}`}</div>}
-          <InputGroup.Append className="d-flex justify-content-between align-items-center">
-            {!activeRow.isEditing && !data.default && <Button variant="link" onClick={(e) => onUpdate({ ...data, default: true }, index)}>Make default</Button>}
-            <Button variant="link" className="p-0 mr-3 text-decoration-none loaded" title="Edit" onClick={() => { onEdit(index); }}><i className={`fas fa-pen text-lg ${activeRow.isEditing && activeRow.index === index ? 'text-primary' : ''} `}></i></Button>
-            {activeRow.isEditing && activeRow.index === index && <Button className="p-1 text-decoration-none mr-3 px-3" onClick={(e) => onUpdate(data, index)} disabled={(activeRow.isEditing && (!activeRow.value || activeRow.value === data.nickname)) ? true : false }>Save</Button>}
-            {!activeRow.isEditing && !data.default && <Button variant="link" className="p-0 mr-3 text-decoration-none loaded" title="Delete" onClick={() => onDelete(data, index)} disabled={data.default || activeRow.isEditing || data.private_key === app.activeUser.private_key}><i className="fas fa-trash text-lg"></i></Button>}
-          </InputGroup.Append>
-        </InputGroup>
-        {activeRow.isEditing && activeRow.index === index && activeRow.error && <Form.Control.Feedback type="none" className="text-danger">{activeRow.error}</Form.Control.Feedback>}
-      </Form.Group>
-    </div>
+    <Form.Group key={data.blockchain_address} className={classNames('wallet loaded mb-4', !activeRow.isEditing && 'readonly')} controlId="formGroupWalletName">
+      <InputGroup>
+        {activeRow.isEditing && activeRow.index === index ? <Form.Control
+          autoFocus
+          aria-label="Wallet Name"
+          name="nickname"
+          onChange={onHandleChange}
+          onKeyPress={(e) => onHandleKeypress(e, data, index)}
+          placeholder={`${data.nickname ? data.nickname : activeRow.isEditing ? 'Wallet Name' : 'Generated Wallet'}${data.default ? ' (Default)' : ''}`}
+          readOnly={activeRow.isEditing ? activeRow.index === index ? false : true : true}
+          defaultValue={data.nickname}
+        /> : <div className="form-control" style={{ whiteSpace: 'pre' }}>{`${data.nickname} ${data.default ? ' (Default)' : ''}`}</div>}
+        <InputGroup.Append className="d-flex justify-content-between align-items-center">
+          {!activeRow.isEditing && !data.default && <Button variant="link" onClick={(e) => onUpdate({ ...data, default: true }, index)}>Make default</Button>}
+          <Button variant="link" className="p-0 mr-3 text-decoration-none loaded" title="Edit" onClick={() => { onEdit(index); }}><i className={`fas fa-pen text-lg ${activeRow.isEditing && activeRow.index === index ? 'text-primary' : ''} `}></i></Button>
+          {activeRow.isEditing && activeRow.index === index && <Button className="p-1 text-decoration-none mr-3 px-3" onClick={(e) => onUpdate(data, index)} disabled={(activeRow.isEditing && (!activeRow.value || activeRow.value === data.nickname)) ? true : false}>Save</Button>}
+          {!activeRow.isEditing && !data.default && <Button variant="link" className="p-0 mr-3 text-decoration-none loaded" title="Delete" onClick={() => onDelete(data, index)} disabled={data.default || activeRow.isEditing || data.private_key === app.activeUser.private_key}><i className="fas fa-trash text-lg"></i></Button>}
+        </InputGroup.Append>
+      </InputGroup>
+      {activeRow.isEditing && activeRow.index === index && activeRow.error && <Form.Control.Feedback type="none" className="text-danger">{activeRow.error}</Form.Control.Feedback>}
+    </Form.Group>
   );
 };
 
@@ -42,11 +41,11 @@ Wallet.propTypes = {
   /**
    * Nickname change function
    */
-   onHandleChange: PropTypes.func.isRequired,
-   /**
-   * key enter function
-   */
-    onHandleKeypress: PropTypes.func.isRequired,
+  onHandleChange: PropTypes.func.isRequired,
+  /**
+  * key enter function
+  */
+  onHandleKeypress: PropTypes.func.isRequired,
   /**
    * Update wallet function
    */

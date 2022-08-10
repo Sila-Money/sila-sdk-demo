@@ -7,7 +7,7 @@ const AlertMessage = ({ message, type, noIcon, loading }) => {
   return (
     <Fade in={true}>
       <div className={classNames(!noIcon && 'd-flex align-items-center position-relative', `text-${type ? type : 'warning'}`)}>
-        {!noIcon && <i className={classNames('mr-3', type === 'success' && 'sila-icon check', type === 'wait' && 'sila-icon info', (!type || type === 'warning') && 'fas fa-exclamation')}></i>}
+        {!noIcon && <i className={classNames('mr-3', type === 'success' && 'sila-icon check', type === 'wait' && 'sila-icon info', (!type || (type !== 'success' && type !== 'wait')) && 'fas fa-exclamation')}></i>}
         {loading && <Spinner animation="border" role="status" variant="primary" size="sm" className="mr-2"></Spinner>}
         <span className="message">{message}</span>
       </div>

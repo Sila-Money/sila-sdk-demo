@@ -9,7 +9,7 @@ const KycModal = ({ show, onHide }) => {
       aria-labelledby="about-modal-title"
       onHide={onHide}>
       <Modal.Header className="text-center" closeButton>
-        <Modal.Title id="about-modal-title">What's the difference between the KYC levels?</Modal.Title>
+        <Modal.Title as="h3" id="about-modal-title">What's the difference between the KYC levels?</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <p>Sila offers various KYC levels for our customers to assign to their end-users. A KYC level determines the verification requirements and transaction limits for an end-user. A level with more thorough verification requirements will allow an end-user to make larger transactions, whereas a level with less thorough verification requirements will restrict the end-user's to smaller transaction amounts. <span className="text-primary font-weight-bold">Levels other than our DOC KYC level are currently granted on a case-by case basis.</span></p>

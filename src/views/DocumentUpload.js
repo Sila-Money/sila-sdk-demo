@@ -115,7 +115,7 @@ const DocumentUpload = ({ history, page, previous, next }) => {
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 
-      <h1 className="mb-1">Document Upload</h1>
+      <h1 className="mb-4">Document Upload</h1>
 
       {app.settings.flow === 'kyc' && <p className="text-lg text-info mb-1">When a user registers for Doc KYC, supporting documents are necessary to aid in verifying the identity of the end-user. All new and previously uploaded documents will be displayed below, with the ability to preview each. To test the documents endpoints, you may upload dummy documents here.</p>}
 

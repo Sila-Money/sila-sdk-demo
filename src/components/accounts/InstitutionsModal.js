@@ -58,7 +58,7 @@ const InstitutionsModal = ({ institutions, errors, isFetching, show, onSearch, o
       aria-labelledby="institution-modal-title"
       onHide={onCancel}>
       <Modal.Header className="text-left" closeButton>
-        <Modal.Title id="institution-modal-title">Routing Number Directory</Modal.Title>
+        <Modal.Title as="h3" id="institution-modal-title">Routing Number Directory</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form noValidate validated={true} autoComplete="off" onSubmit={searchInstitution}>

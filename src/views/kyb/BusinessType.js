@@ -50,7 +50,7 @@ const BusinessType = ({ page, previous, next }) => {
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 
-      <h1 className="mb-1">Business Type and Category</h1>
+      <h1 className="mb-4">Business Type and Category</h1>
 
       <p className="mb-1 text-lg text-info">Please choose your business type and category. This will determine the information we need to collect from you moving forward.</p>
 

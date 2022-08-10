@@ -9,7 +9,7 @@ const ProcessorTokenFlowModal = ({ show, onShowProcessorTokenModal, onShowGenera
       aria-labelledby="processor-token-flow-modal-title"
       onHide={onHide}>
       <Modal.Header className="text-left border-bottom p-4" closeButton>
-        <Modal.Title id="processor-token-flow-modal-title" className="text-lgr">Choose you preferred method:</Modal.Title>
+        <Modal.Title as="h3" id="processor-token-flow-modal-title" className="text-lgr">Choose you preferred method:</Modal.Title>
       </Modal.Header>
       <Modal.Body className="p-4">
         <p className="mb-4 text-info">We've provided a few different options here for the processor token flow, depending on where you are at in your process with Plaid, and what you would like to learn! Please choose one of the three options below:</p>

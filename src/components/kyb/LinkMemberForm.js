@@ -109,14 +109,14 @@ const LinkMemberForm = ({ member, onLinked, onUnlinked, onShowImDone, onShowMemb
   return (
     <>
       {moreInfoNeeded && <>
-        <h1 className="mb-1">More Information Needed</h1>
+        <h1 className="mb-4">More Information Needed</h1>
         <p className="text-info text-lg mb-3">To link this business member to the {moreInfoNeeded.label} role, we will need to gather more personal informaton before we can move on with the business registration (KYB) process.</p>
 
         <MemberKYBForm handle={member.user_handle} activeMember={member} currentRole={moreInfoNeeded} moreInfoNeeded={moreInfoNeeded} onMoreInfoNeeded={(status) => { setMoreInfoNeeded(status); if(onShowMemberForm) onShowMemberForm(true); }} onSuccess={updateActiveUser} />
       </>}
 
       {!moreInfoNeeded && <>
-        <h1 className="mb-1">Link or unlink  {member.entity.entity_name} to this Business</h1>
+        <h1 className="mb-4">Link or unlink  {member.entity.entity_name} to this Business</h1>
 
         <p className="text-info text-lg mb-3">Link or unlink your individual business member account to your role in this business. It is possible for one individual account to be linked as more than one role. You may provide an optional title to your account (such as CEO, CTO, etc,) as well as provide us with your ownership stake, if applicable. </p>
 

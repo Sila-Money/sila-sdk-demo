@@ -97,7 +97,7 @@ const BusinessMembers = ({ page, previous, next, isActive }) => {
 
         {!showCongrats && <>
 
-          <h1 className="mb-1">Certify</h1>
+          <h1 className="mb-4">Certify</h1>
 
           <p className="text-info text-lg mb-1">Your team has successfully gone through the KYB process and have been verified. Let’s certify that all the information you have on hand is correct and get you ready to transact. First step is to get your business members certified, then you can certify your business.</p>
 
@@ -119,7 +119,7 @@ const BusinessMembers = ({ page, previous, next, isActive }) => {
               </Col>
             </Row>
 
-            {members.every(member => member.beneficial_owner_certification_status.includes('not_required')) && <Alert variant="info" className="mb-4">Under this business type, business members are not required to be certified.  However, the business itself requires certification in order to transact.</Alert>}
+            {members.every(member => member.beneficial_owner_certification_status.includes('not_required')) && <Alert variant="primary" className="mb-4">Under this business type, business members are not required to be certified.  However, the business itself requires certification in order to transact.</Alert>}
 
             <Card className="mb-4 text-nowrap">
               <Table responsive>
@@ -172,7 +172,7 @@ const BusinessMembers = ({ page, previous, next, isActive }) => {
 
           <Sketch setup={confetti.setup} draw={confetti.draw} windowResized={confetti.windowResized} />
 
-          <h1 className="mb-1">Congratulations!</h1>
+          <h1 className="mb-4">Congratulations!</h1>
 
           <p className="text-info text-lg mb-3">You’ve completed all verification steps. This business is now ready to link bank accounts, create wallets, and transact!</p>
 

@@ -66,7 +66,7 @@ const TransactionsModal = ({ show, onHide, transactions, onRefresh, formatNumber
       aria-labelledby="manage-settings-modal-title"
       onHide={onHide}>
       <Modal.Header className="text-center" closeButton>
-        <Modal.Title id="manage-settings-modal-title">Transactions</Modal.Title>
+        <Modal.Title as="h3" id="manage-settings-modal-title">Transactions</Modal.Title>
       </Modal.Header>
       <Modal.Body className="transactions position-relative">
         <p className="text-right mb-4">

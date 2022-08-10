@@ -155,7 +155,7 @@ const UploadDocumentModal = ({ activeUser, documentTypes, show, onClose, onSucce
       aria-labelledby="upload-document-modal-title"
       onHide={onCancel}>
       <Modal.Header className="text-center" closeButton>
-        <Modal.Title id="upload-document-modal-title" className="d-flex">Upload a Document</Modal.Title>
+        <Modal.Title as="h3" id="upload-document-modal-title" className="d-flex">Upload a Document</Modal.Title>
       </Modal.Header>
       
       <Form noValidate validated={validated} autoComplete="off" encType="multipart/form-data" onSubmit={onDocumentSubmit}>

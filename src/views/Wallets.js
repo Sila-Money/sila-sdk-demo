@@ -65,11 +65,11 @@ const Wallets = ({ page, previous, next, isActive }) => {
         let newArr = [...wallets];
         newArr[index]['nickname'] = activeRow.value ? activeRow.value : wallet.nickname;
         setWallets(newArr);
-        setActiveRow({...activeRow, isEditing: false, index: undefined, value: undefined, error: undefined, isNew: false});
+        setActiveRow({ ...activeRow, isEditing: false, index: undefined, value: undefined, error: undefined, isNew: false });
         result.alert = { message: 'Wallet saved!', type: 'success' };
         if (newWallet.default || wallets.length === 1) result.activeUser = { ...activeUser, private_key: newWallet.private_key, cryptoAddress: newWallet.blockchain_address }
       } else {
-        setActiveRow({...activeRow, error : res.data && res.data.validation_details ? res.data.validation_details.nickname : res.data.message });
+        setActiveRow({ ...activeRow, error: res.data && res.data.validation_details ? res.data.validation_details.nickname : res.data.message });
       }
 
       setAppData({
@@ -118,11 +118,11 @@ const Wallets = ({ page, previous, next, isActive }) => {
           nickname: res.data.wallet_nickname
         }
         setWallets([...wallets, newWalletData]);
-        setActiveRow({...activeRow, isNew: false, error: undefined, value: undefined});
+        setActiveRow({ ...activeRow, isNew: false, error: undefined, value: undefined });
         registerWallets = [...app.wallets, { ...newWalletData }];
         result.alert = { message: 'Wallet saved!', type: 'success' };
       } else {
-        setActiveRow({...activeRow, error : res.data && res.data.validation_details ? res.data.validation_details.wallet.nickname : res.data.message });
+        setActiveRow({ ...activeRow, error: res.data && res.data.validation_details ? res.data.validation_details.wallet.nickname : res.data.message });
       }
 
       setAppData({
@@ -181,13 +181,13 @@ const Wallets = ({ page, previous, next, isActive }) => {
   }
 
   const handleChange = (e) => {
-    setActiveRow({...activeRow, value: e.target.value.trim() || undefined});
+    setActiveRow({ ...activeRow, value: e.target.value.trim() || undefined });
   }
 
   const handleKeypress = (e, wallet, index) => {
     if (e.key === 'Enter') {
-      if(activeRow.isEditing && wallet && typeof(index) !== undefined && activeRow.value && activeRow.value !== wallet.nickname) updateWallet(wallet, index);
-      if(activeRow.isNew) registerWallet();
+      if (activeRow.isEditing && wallet && typeof (index) !== undefined && activeRow.value && activeRow.value !== wallet.nickname) updateWallet(wallet, index);
+      if (activeRow.isNew) registerWallet();
     }
   };
 
@@ -201,7 +201,7 @@ const Wallets = ({ page, previous, next, isActive }) => {
 
   useEffect(() => {
     setAppData({
-      success: wallets.length && !isActive ? [...app.success, { handle:  app.settings.kybHandle || activeUser.handle, page }] :  app.success,
+      success: wallets.length && !isActive ? [...app.success, { handle: app.settings.kybHandle || activeUser.handle, page }] : app.success,
       users: app.settings.kybHandle ? app.users.map(({ active, ...u }) => u.handle === app.settings.kybHandle ? { ...u, active: true } : u) : app.users
     }, () => {
       updateApp({ activeUser: app.settings.kybHandle ? app.users.find(u => u.handle === app.settings.kybHandle) : activeUser, kyc: {}, kyb: {} });
@@ -211,7 +211,7 @@ const Wallets = ({ page, previous, next, isActive }) => {
   useEffect(() => {
     const checkIfClickedOutside = (e) => {
       if (activeRow.isEditing && walletsBodyRef.current && !walletsBodyRef.current.contains(e.target)) {
-        setActiveRow({...activeRow, isEditing: false, error: undefined, index: undefined, value: undefined});
+        setActiveRow({ ...activeRow, isEditing: false, error: undefined, index: undefined, value: undefined });
       }
     }
     document.addEventListener('mousedown', checkIfClickedOutside)
@@ -223,21 +223,23 @@ const Wallets = ({ page, previous, next, isActive }) => {
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 
-      <h1 className="mb-1">Wallets</h1>
+      <h1 className="mb-4">Wallets</h1>
 
       <p className="text-lg text-muted mb-1">An Ethereum wallet has been automatically generated for this business by this demo. Per best practice, the private keys are stored locally on your computer and never sent over the network.</p>
 
-      <p className="text-muted mb-3">This page represents <a href="https://docs.silamoney.com/docs/register_wallet" target="_blank" rel="noopener noreferrer">/register_wallet</a>, <a href="https://docs.silamoney.com/docs/delete_wallet" target="_blank" rel="noopener noreferrer">/delete_wallet</a>, <a href="https://docs.silamoney.com/docs/update_wallet" target="_blank" rel="noopener noreferrer">/update_wallet</a>, and <a href="https://docs.silamoney.com/docs/get_wallets" target="_blank" rel="noopener noreferrer">/get_wallets</a> functionality.</p>
+      <p className="text-muted mb-4">This page represents <a href="https://docs.silamoney.com/docs/register_wallet" target="_blank" rel="noopener noreferrer">/register_wallet</a>, <a href="https://docs.silamoney.com/docs/delete_wallet" target="_blank" rel="noopener noreferrer">/delete_wallet</a>, <a href="https://docs.silamoney.com/docs/update_wallet" target="_blank" rel="noopener noreferrer">/update_wallet</a>, and <a href="https://docs.silamoney.com/docs/get_wallets" target="_blank" rel="noopener noreferrer">/get_wallets</a> functionality.</p>
 
-      <Form noValidate autoComplete="off" className="position-relative mt-2" onSubmit={submitWallet}>
+      <Form noValidate autoComplete="off" className="position-relative" onSubmit={submitWallet}>
+        
         {!loaded && <Loader overlay />}
-        <span ref={walletsBodyRef}>
-          {wallets.map((wallet, index) => <Wallet key={index} data={wallet} activeRow={activeRow} onHandleChange={handleChange} onHandleKeypress={handleKeypress} onUpdate={updateWallet} onEdit={editWallet} onDelete={deleteWallet} index={index} />)}
-        </span>
 
-        {activeRow.isNew && <div className="wallet loaded">
-          <Form.Group controlId="formGroupAddWalletName">
-            <InputGroup className="mb-3">
+        <div ref={walletsBodyRef}>
+          {wallets.map((wallet, index) => <Wallet key={index} data={wallet} activeRow={activeRow} onHandleChange={handleChange} onHandleKeypress={handleKeypress} onUpdate={updateWallet} onEdit={editWallet} onDelete={deleteWallet} index={index} />)}
+        </div>
+
+        {activeRow.isNew &&
+          <Form.Group className="wallet loaded mb-4" controlId="formGroupAddWalletName">
+            <InputGroup>
               <Form.Control
                 autoFocus
                 aria-label="New Wallet Name"
@@ -253,8 +255,8 @@ const Wallets = ({ page, previous, next, isActive }) => {
               </InputGroup.Append>
             </InputGroup>
             {activeRow.error && <Form.Control.Feedback type="none" className="text-danger">{activeRow.error}</Form.Control.Feedback>}
-          </Form.Group>
-        </div>}
+          </Form.Group>}
+
       </Form>
 
       <div className="d-flex">

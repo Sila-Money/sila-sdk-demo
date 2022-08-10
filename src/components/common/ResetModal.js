@@ -25,7 +25,7 @@ const ResetModal = () => {
       aria-labelledby="reset-app-modal-title"
       onHide={() => handleHide()}>
       <Modal.Header as="h4" closeButton>
-        <Modal.Title id="reset-app-modal-title">Reset App?</Modal.Title>
+        <Modal.Title as="h3" id="reset-app-modal-title">Reset App?</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <p className="text-lg text-info mb-0">This will clear all user data from the App. Users will still be registered with Sila. Are you sure you want to reset?</p>

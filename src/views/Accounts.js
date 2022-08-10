@@ -410,7 +410,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
       {!generateProcessorPages.isGpPage && <>
-        <h1 className="mb-1">Link a Bank Account</h1>
+        <h1 className="mb-4">Link a Bank Account</h1>
 
         <p className="text-info text-lg mb-1">We've partnered with Plaid to connect bank accounts to the Sila platform. This helps us ensure account ownership.</p>
 
@@ -420,13 +420,13 @@ const Accounts = ({ page, previous, next, isActive }) => {
 
         <p className="text-info text-lg mb-1">Connect via Processor Token: Please seek a direct relationship with Plaid to use our Processor Token functionality</p>
 
-        <p className="text-info mb-3">This page represents <a href="https://docs.silamoney.com/docs/get_accounts" target="_blank" rel="noopener noreferrer">/get_accounts</a>, <a href="https://docs.silamoney.com/docs/get_institutions" target="_blank" rel="noopener noreferrer">/get_institutions</a>, <a href="https://docs.silamoney.com/docs/plaid_link_token" target="_blank" rel="noopener noreferrer">/plaid_link_token</a>, <a href="https://docs.silamoney.com/docs/link_account" target="_blank" rel="noopener noreferrer">/link_account</a>, <a href="https://docs.silamoney.com/docs/delete_account-1" target="_blank" rel="noopener noreferrer">/delete_account</a>, and <a href="https://docs.silamoney.com/docs/plaid_sameday_auth" target="_blank" rel="noopener noreferrer">/plaid_sameday_auth</a> functionality.</p>
+        <p className="text-info mb-4">This page represents <a href="https://docs.silamoney.com/docs/get_accounts" target="_blank" rel="noopener noreferrer">/get_accounts</a>, <a href="https://docs.silamoney.com/docs/get_institutions" target="_blank" rel="noopener noreferrer">/get_institutions</a>, <a href="https://docs.silamoney.com/docs/plaid_link_token" target="_blank" rel="noopener noreferrer">/plaid_link_token</a>, <a href="https://docs.silamoney.com/docs/link_account" target="_blank" rel="noopener noreferrer">/link_account</a>, <a href="https://docs.silamoney.com/docs/delete_account-1" target="_blank" rel="noopener noreferrer">/delete_account</a>, and <a href="https://docs.silamoney.com/docs/plaid_sameday_auth" target="_blank" rel="noopener noreferrer">/plaid_sameday_auth</a> functionality.</p>
 
         <div className="d-flex mb-2">
           <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none loaded" onClick={() => getAccounts(undefined)}><i className="fas fa-sync-alt text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
         </div>
 
-        <Card className="accounts border rounded overflow-hidden position-relative mb-3">
+        <Card className="accounts border rounded overflow-hidden position-relative mb-4">
           {(!loaded || !plaidToken) && <Loader overlay />}
           <Table bordered responsive>
             <thead>
@@ -520,7 +520,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
               <Col sm={3} className="border-right p-0">
                 <Nav variant="pills" className="flex-column">
                   {generateProcessorPages.gpRoutes.map((option, index) => <Nav.Item key={index}>
-                    <Nav.Link eventKey={`${index}`} className="p-3 border-bottom" disabled={option.disabled}>
+                    <Nav.Link eventKey={`${index}`} className="p-3 border-bottom rounded-0" disabled={option.disabled}>
                       <p className={`d-flex text-uppercase text-primary font-weight-bold mb-1 ${option.disabled ? 'text-info' : ''}`}>
                         {!option.disabled && tabKey !== index && <i className="mr-2 sila-icon check text-primary text-sm"></i>} {`Step ${index+1}`}
                       </p>

@@ -9,7 +9,7 @@ const KybModal = ({ show, onHide }) => {
       aria-labelledby="about-modal-title"
       onHide={onHide}>
       <Modal.Header className="text-center" closeButton>
-        <Modal.Title id="about-modal-title">What's the difference between the KYB levels?</Modal.Title>
+        <Modal.Title as="h3" id="about-modal-title">What's the difference between the KYB levels?</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <p>Sila offers various KYB levels for our customers to assign to their businesses. <span className="text-primary font-weight-bold">Most businesses are in standard level. </span>Unlike with KYC, with KYB the KYC_LEVEL does not need to be specified explicitly by your API request. Instead, KYB levels are applied to the business entity based on the business type.</p>

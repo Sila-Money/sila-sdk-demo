@@ -70,7 +70,7 @@ const SettingsModal = () => {
       aria-labelledby="manage-settings-modal-title"
       onHide={handleHide}>
       <Modal.Header className="text-center" closeButton>
-        <Modal.Title id="manage-settings-modal-title">App Settings</Modal.Title>
+        <Modal.Title as="h3" id="manage-settings-modal-title">App Settings</Modal.Title>
       </Modal.Header>
       <Form noValidate validated={validated} autoComplete="off" onSubmit={handleAuth}>
         <Modal.Body>

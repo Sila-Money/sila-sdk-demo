@@ -60,7 +60,7 @@ const LinkAccountModal = ({ show, onSuccess, onResponse }) => {
       aria-labelledby="link-account-modal-title"
       onHide={() => { resetForm(); updateApp({ manageProcessorToken: false }); }}>
       <Modal.Header className="text-center" closeButton>
-        <Modal.Title id="link-account-modal-title">Link via Processor Token</Modal.Title>
+        <Modal.Title as="h3" id="link-account-modal-title">Link via Processor Token</Modal.Title>
       </Modal.Header>
       <Form noValidate validated={validated} autoComplete="off" onSubmit={linkAccount}>
         <Modal.Body>

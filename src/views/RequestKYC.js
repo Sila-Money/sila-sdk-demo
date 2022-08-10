@@ -141,7 +141,7 @@ const RequestKYC = ({ history, page, previous, next }) => {
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
       
-      <h1 className="mb-1">Request {app.settings.flow.toUpperCase()}</h1>
+      <h1 className="mb-4">Request {app.settings.flow.toUpperCase()}</h1>
 
       <p className="text-lg text-info mb-1">{app.settings.flow === 'kyc' ? 'We must verify that all users of the Sila platform are who they say they are, present a low fraud risk, and are not on any watchlists. We do this by submitting end-user information for KYC review by our identity verification partner, Alloy. The user will not be able to transact until the user is verified.  With great power comes great responsibility.' : 'We must verify that all users of the Sila platform are who they say they are, present a low fraud risk, and are not on any watchlists. The members of this business will be submitted for KYC review and their end-user information will be reviewed by our identity verification partner, Alloy. The business will not be able to transact until all users are verified. Additionally, the business will be submited for KYB review, to ensure that all information is correct.'}</p>
 
@@ -152,7 +152,7 @@ const RequestKYC = ({ history, page, previous, next }) => {
 
       <p className="mb-4"><Button className="float-right" onClick={requestKyc} disabled={disabledRequestButton}>Request {app.settings.flow.toUpperCase()}</Button></p>
 
-      {app[app.settings.flow].alert && (app[app.settings.flow].alert.type === 'primary' || app[app.settings.flow].alert.type === 'wait') && <Alert variant="info" className="mb-4 loaded">Verification may take a few minutes, so make sure to refresh and check your status.</Alert>}
+      {app[app.settings.flow].alert && (app[app.settings.flow].alert.type === 'primary' || app[app.settings.flow].alert.type === 'wait') && <Alert variant="primary" className="mb-4 loaded">Verification may take a few minutes, so make sure to refresh and check your status.</Alert>}
 
       <div className="d-flex mb-2">
         <h2 className="mb-0">{app.settings.flow.toUpperCase()} Review Status</h2>

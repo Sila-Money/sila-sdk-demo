@@ -87,7 +87,7 @@ const GenerateProcessorTokenModal = ({ show, onHide }) => {
       aria-labelledby="generate-processor-token-modal-title"
       onHide={onHide}>
       <Modal.Header className="text-left border-bottom p-4" closeButton>
-        <Modal.Title id="generate-processor-token-modal-title" className="text-lgr">Generate a Plaid Processor Token</Modal.Title>
+        <Modal.Title as="h3" id="generate-processor-token-modal-title" className="text-lgr">Generate a Plaid Processor Token</Modal.Title>
       </Modal.Header>
       <Modal.Body className="p-4">
         <Container className="p-4">
