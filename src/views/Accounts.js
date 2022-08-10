@@ -473,9 +473,9 @@ const Accounts = ({ page, previous, next, isActive }) => {
                     <td className="text-center">
                       <div className="d-flex py-2 justify-content-center">
                         <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none mx-1 px-1" onClick={() => onEditToggle(index, acc.account_name, acc.active)}>
-                          <i className={`fas fa-pen text-lg ${activeRow.isEditing && activeRow.rowNumber === index ? 'text-primary' : ''}`}></i>
+                          <i className={`fas fa-pen text-lg ${activeRow.isEditing && activeRow.rowNumber === index ? 'text-primary' : 'text-info-link'}`}></i>
                         </Button>
-                        {(activeRow.isEditing && activeRow.rowNumber === index) ? <Button className="p-1 text-decoration-none mx-1 px-1" onClick={(e) => onSave(index)} disabled={(activeRow.isEditing && activeRow.new_account_name === activeRow.account_name && activeRow.status === isChecked) ? true : false }>Save</Button> : <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none mx-2 px-2" onClick={(e) => onDelete(index, acc.account_name)}><i className={`fas fa-trash text-lg ${(activeRow.isDeleting && activeRow.rowNumber === index) ? 'text-primary' : undefined }`}></i></Button>}
+                        {(activeRow.isEditing && activeRow.rowNumber === index) ? <Button className="p-1 text-decoration-none mx-1 px-1" onClick={(e) => onSave(index)} disabled={(activeRow.isEditing && activeRow.new_account_name === activeRow.account_name && activeRow.status === isChecked) ? true : false }>Save</Button> : <Button variant="link" className="text-reset font-italic p-0 text-decoration-none shadow-none mx-2 px-2" onClick={(e) => onDelete(index, acc.account_name)}><i className={`fas fa-trash text-lg ${(activeRow.isDeleting && activeRow.rowNumber === index) ? 'text-primary' : 'text-info-link' }`}></i></Button>}
                       </div>
                     </td>
                   </tr>
