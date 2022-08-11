@@ -118,7 +118,7 @@ const BusinessMembers = ({ page, previous, next, isActive }) => {
 
       <h1 className="mb-4">Business Information</h1>
 
-      <p className="text-info text-lg mb-1">We need to collect information on the following individuals. Each business type requires different roles to be registered, below you will see which ones are required for your business and which are optional. Add the required business members to get started with the process, and add any additional business members as necessary.</p>
+      <p className="text-info text-lg mb-4">We need to collect information on the following individuals. Each business type requires different roles to be registered, below you will see which ones are required for your business and which are optional. Add the required business members to get started with the process, and add any additional business members as necessary.</p>
 
       <p className="text-info mb-3">This page represents <a href="https://docs.silamoney.com/docs/get_business_roles" target="_blank" rel="noopener noreferrer">/get_business_roles</a>, <a href="https://docs.silamoney.com/docs/unlink_business_member" target="_blank" rel="noopener noreferrer">/unlink_business_member</a>, and <a href="https://docs.silamoney.com/docs/get_entity" target="_blank" rel="noopener noreferrer">/get_entity</a> functionality.</p>
 

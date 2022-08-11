@@ -5,8 +5,13 @@
   background: $info-background-color !important;
 }
 
-// Alt background color
-.bg-alt {
+// Primary accent backgorund
+.bg-primary-accent {
+  background: $primary-accent !important;
+}
+
+// Primary light background
+.bg-primary-light {
   background: $primary-light !important;
 }
 

@@ -99,7 +99,7 @@ const BusinessMembers = ({ page, previous, next, isActive }) => {
 
           <h1 className="mb-4">Certify</h1>
 
-          <p className="text-info text-lg mb-1">Your team has successfully gone through the KYB process and have been verified. Let’s certify that all the information you have on hand is correct and get you ready to transact. First step is to get your business members certified, then you can certify your business.</p>
+          <p className="text-info text-lg mb-4">Your team has successfully gone through the KYB process and have been verified. Let’s certify that all the information you have on hand is correct and get you ready to transact. First step is to get your business members certified, then you can certify your business.</p>
 
           <p className="text-info mb-3">This page represents <a href="https://docs.silamoney.com/docs/certify_business" target="_blank" rel="noopener noreferrer">/certify_business</a> functionality.</p>
 

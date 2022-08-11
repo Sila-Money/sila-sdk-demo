@@ -117,9 +117,9 @@ const DocumentUpload = ({ history, page, previous, next }) => {
 
       <h1 className="mb-4">Document Upload</h1>
 
-      {app.settings.flow === 'kyc' && <p className="text-lg text-info mb-1">When a user registers for Doc KYC, supporting documents are necessary to aid in verifying the identity of the end-user. All new and previously uploaded documents will be displayed below, with the ability to preview each. To test the documents endpoints, you may upload dummy documents here.</p>}
+      {app.settings.flow === 'kyc' && <p className="text-lg text-info mb-4">When a user registers for Doc KYC, supporting documents are necessary to aid in verifying the identity of the end-user. All new and previously uploaded documents will be displayed below, with the ability to preview each. To test the documents endpoints, you may upload dummy documents here.</p>}
 
-      {app.settings.flow === 'kyb' && <p className="text-lg text-info mb-1">When a user registers for Doc KYB, supporting documents are necessary to aid verifying that the business is legitamate, as well as verifying the identities of the business members. All new and previously uploaded documents will be displayed below, with the ability to preview each. To test the documents endpoints, you may upload dummy documents here.</p>}
+      {app.settings.flow === 'kyb' && <p className="text-lg text-info mb-4">When a user registers for Doc KYB, supporting documents are necessary to aid verifying that the business is legitamate, as well as verifying the identities of the business members. All new and previously uploaded documents will be displayed below, with the ability to preview each. To test the documents endpoints, you may upload dummy documents here.</p>}
 
       <p className="text-info mb-3">This page represents <a href="https://docs.silamoney.com/docs/documents" target="_blank" rel="noopener noreferrer">/documents</a>, <a href="https://docs.silamoney.com/docs/get_documents" target="_blank" rel="noopener noreferrer">/get_document</a>, <a href="https://docs.silamoney.com/docs/list_documents" target="_blank" rel="noopener noreferrer">/list_documents</a>, and <a href="https://docs.silamoney.com/docs/document_types" target="_blank" rel="noopener noreferrer">/document_types</a> functionality.</p>
 

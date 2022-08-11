@@ -91,33 +91,33 @@ const MemberDetails = ({ page, match, history, location }) => {
 
           <Row className="mb-0">
             <Col md="12" lg="6" className="mb-3">
-              <p className="pb-2 mb-1 border-bottom text-lg">{`${member.entity.first_name} ${member.entity.last_name}`}</p>
+              <p className="pb-2 mb-4 border-bottom text-lg">{`${member.entity.first_name} ${member.entity.last_name}`}</p>
               <p className="mb-0 text-info">Full Name</p>
             </Col>
             <Col md="12" lg="6" className="mb-3">
-              <p className="pb-2 mb-1 border-bottom text-lg">{member.emails.length ? member.emails[0].email : 'N/A'}</p>
+              <p className="pb-2 mb-4 border-bottom text-lg">{member.emails.length ? member.emails[0].email : 'N/A'}</p>
               <p className="mb-0 text-info">Email</p>
             </Col>
           </Row>
 
           <Row className="mb-0">
             <Col md="12" lg="6" className="mb-3">
-              <p className="pb-2 mb-1 border-bottom text-lg">{member.phones.length ? member.phones[0].phone : 'N/A'}</p>
+              <p className="pb-2 mb-4 border-bottom text-lg">{member.phones.length ? member.phones[0].phone : 'N/A'}</p>
               <p className="mb-0 text-info">Phone</p>
             </Col>
             <Col md="12" lg="6" className="mb-3">
-              <p className="pb-2 mb-1 border-bottom text-lg">{member.identities.length ? member.identities[0].identity : 'N/A'}</p>
+              <p className="pb-2 mb-4 border-bottom text-lg">{member.identities.length ? member.identities[0].identity : 'N/A'}</p>
               <p className="mb-0 text-info">SSN (Last 4 digits)</p>
             </Col>
           </Row>
 
           <Row className="mb-0">
             <Col md={beneficialOwner && 12} lg={beneficialOwner && 6} className="mb-3">
-              <p className="pb-2 mb-1 border-bottom text-lg">{member.addresses.length ? `${member.addresses[0].street_address_1} ${member.addresses[0].city}, ${member.addresses[0].state} ${member.addresses[0].postal_code}` : 'N/A'}</p>
+              <p className="pb-2 mb-4 border-bottom text-lg">{member.addresses.length ? `${member.addresses[0].street_address_1} ${member.addresses[0].city}, ${member.addresses[0].state} ${member.addresses[0].postal_code}` : 'N/A'}</p>
               <p className="mb-0 text-info">Home Address</p>
             </Col>
             {beneficialOwner && <Col md="12" lg="6" className="mb-3">
-              <p className="pb-2 mb-1 border-bottom text-lg">{`${Math.round(beneficialOwner.ownership_stake * 100)}%`}</p>
+              <p className="pb-2 mb-4 border-bottom text-lg">{`${Math.round(beneficialOwner.ownership_stake * 100)}%`}</p>
               <p className="mb-0 text-info">Ownership Percentage</p>
             </Col>}
           </Row>

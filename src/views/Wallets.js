@@ -225,7 +225,7 @@ const Wallets = ({ page, previous, next, isActive }) => {
 
       <h1 className="mb-4">Wallets</h1>
 
-      <p className="text-lg text-muted mb-1">An Ethereum wallet has been automatically generated for this business by this demo. Per best practice, the private keys are stored locally on your computer and never sent over the network.</p>
+      <p className="text-lg text-muted mb-4">An Ethereum wallet has been automatically generated for this business by this demo. Per best practice, the private keys are stored locally on your computer and never sent over the network.</p>
 
       <p className="text-muted mb-4">This page represents <a href="https://docs.silamoney.com/docs/register_wallet" target="_blank" rel="noopener noreferrer">/register_wallet</a>, <a href="https://docs.silamoney.com/docs/delete_wallet" target="_blank" rel="noopener noreferrer">/delete_wallet</a>, <a href="https://docs.silamoney.com/docs/update_wallet" target="_blank" rel="noopener noreferrer">/update_wallet</a>, and <a href="https://docs.silamoney.com/docs/get_wallets" target="_blank" rel="noopener noreferrer">/get_wallets</a> functionality.</p>
 

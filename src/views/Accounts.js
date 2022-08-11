@@ -412,13 +412,9 @@ const Accounts = ({ page, previous, next, isActive }) => {
       {!generateProcessorPages.isGpPage && <>
         <h1 className="mb-4">Link a Bank Account</h1>
 
-        <p className="text-info text-lg mb-1">We've partnered with Plaid to connect bank accounts to the Sila platform. This helps us ensure account ownership.</p>
+        <p className="text-info text-lg mb-4">We've partnered with Plaid to connect bank accounts to the Sila platform. This helps us ensure account ownership.</p>
 
-        <p className="text-info text-lg mb-1">Connect via Account Routing: We also have the ability to connect bank accounts with just an account and routing number "This feature required Compliance Approval for processing"</p>
-
-        <p className="text-info text-lg mb-1">Connect Via Plaid Link" The Sila will support Legacy public token and Link integration for the near term, however, this functionality is marked for deprecation.</p>
-
-        <p className="text-info text-lg mb-1">Connect via Processor Token: Please seek a direct relationship with Plaid to use our Processor Token functionality</p>
+        <p className="text-info text-lg mb-4">We also have the ability to connect bank accounts with just an account and routing number, if your product is dependent on receiving account information over the phone, on a form, or similar. This feature needs to be approved by Sila for use.</p>
 
         <p className="text-info mb-4">This page represents <a href="https://docs.silamoney.com/docs/get_accounts" target="_blank" rel="noopener noreferrer">/get_accounts</a>, <a href="https://docs.silamoney.com/docs/get_institutions" target="_blank" rel="noopener noreferrer">/get_institutions</a>, <a href="https://docs.silamoney.com/docs/plaid_link_token" target="_blank" rel="noopener noreferrer">/plaid_link_token</a>, <a href="https://docs.silamoney.com/docs/link_account" target="_blank" rel="noopener noreferrer">/link_account</a>, <a href="https://docs.silamoney.com/docs/delete_account-1" target="_blank" rel="noopener noreferrer">/delete_account</a>, and <a href="https://docs.silamoney.com/docs/plaid_sameday_auth" target="_blank" rel="noopener noreferrer">/plaid_sameday_auth</a> functionality.</p>
 
@@ -510,8 +506,8 @@ const Accounts = ({ page, previous, next, isActive }) => {
       </>}
 
       {generateProcessorPages.isGpPage && <>
-        <h1 className="mb-1 mt-3">{generateProcessorPages.isTutorial ? 'Tutorial: Generating a Plaid Processor Token' : 'Generate a Plaid Processor Token'}</h1>
-        <p className="text-info mb-3">One of the most popular methods to connect a bank account via Plaid is through the use of a Processor Token. We can generate a processor token using your sandbox credentials. Credentials are held locally, and are completely secure.</p>
+        <h1 className="mb-4 mt-3">{generateProcessorPages.isTutorial ? 'Tutorial: Generating a Plaid Processor Token' : 'Generate a Plaid Processor Token'}</h1>
+        <p className="text-info mb-4">One of the most popular methods to connect a bank account via Plaid is through the use of a Processor Token. We can generate a processor token using your sandbox credentials. Credentials are held locally, and are completely secure.</p>
 
         <Container className="border p-0">
           <Tab.Container id="generate-plaid-processor" defaultActiveKey="0" activeKey={`${tabKey}`} onSelect={(k) => setTabKey(k)}>
@@ -521,7 +517,7 @@ const Accounts = ({ page, previous, next, isActive }) => {
                 <Nav variant="pills" className="flex-column">
                   {generateProcessorPages.gpRoutes.map((option, index) => <Nav.Item key={index}>
                     <Nav.Link eventKey={`${index}`} className="p-3 border-bottom rounded-0" disabled={option.disabled}>
-                      <p className={`d-flex text-uppercase text-primary font-weight-bold mb-1 ${option.disabled ? 'text-info' : ''}`}>
+                      <p className={`d-flex text-uppercase text-primary font-weight-bold mb-4 ${option.disabled ? 'text-info' : ''}`}>
                         {!option.disabled && tabKey !== index && <i className="mr-2 sila-icon check text-primary text-sm"></i>} {`Step ${index+1}`}
                       </p>
                       <p className={`mb-0 text-dark font-weight-bold ${option.disabled ? 'text-info' : ''}`}>{option.title}</p>

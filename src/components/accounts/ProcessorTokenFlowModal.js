@@ -13,7 +13,7 @@ const ProcessorTokenFlowModal = ({ show, onShowProcessorTokenModal, onShowGenera
       </Modal.Header>
       <Modal.Body className="p-4">
         <p className="mb-4 text-info">We've provided a few different options here for the processor token flow, depending on where you are at in your process with Plaid, and what you would like to learn! Please choose one of the three options below:</p>
-        <Container className="bg-primary-light p-0">
+        <Container className="bg-primary-accent p-4 rounded">
           <Row className="mb-4 align-items-center">
             <Col sm={4}><Button onClick={() => onShowGenerateProcessorTokenPage(true)} block className="mb-2 p-3">Processor Token Tutorial</Button></Col>
             <Col sm={8}>

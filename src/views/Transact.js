@@ -188,7 +188,7 @@ const Transact = ({ page, previous, next, isActive }) => {
 
       <Row className="mb-2">
         <Col sm="12" md="5">
-          <h1 className="mb-0">Transact</h1>
+          <h1 className="mb-4">Transact</h1>
         </Col>
         <Col sm="12" md="2" className="text-right d-none d-md-block">
           <label className="font-weight-bold mt-2">Account:</label>
@@ -206,7 +206,7 @@ const Transact = ({ page, previous, next, isActive }) => {
       <p className="text-info mb-4">This page represents <a href="https://docs.silamoney.com/docs/get_sila_balance" target="_blank" rel="noopener noreferrer">/get_sila_balance</a>, <a href="https://docs.silamoney.com/docs/issue_sila" target="_blank" rel="noopener noreferrer">/issue_sila</a>, <a href="https://docs.silamoney.com/docs/redeem_sila" target="_blank" rel="noopener noreferrer">/redeem_sila</a>, <a href="https://docs.silamoney.com/docs/transfer_sila" target="_blank" rel="noopener noreferrer">/transfer_sila</a>, and <a href="https://docs.silamoney.com/docs/get_transactions" target="_blank" rel="noopener noreferrer">/get_transactions</a> functionality. Learn more about the ACH processing schedule <a href="https://docs.silamoney.com/docs/ach-processing-schedule#instant-ach-3" target="_blank" rel="noopener noreferrer">here.</a></p>
 
       <div className="d-flex mb-2">
-        <h2 className="mb-0">Wallet Balance</h2>
+        <h2 className="mb-4">Wallet Balance</h2>
         <OverlayTrigger
           placement="right"
           delay={{ show: 250, hide: 400 }}
@@ -240,7 +240,7 @@ const Transact = ({ page, previous, next, isActive }) => {
         </Card>
       </CardGroup>
 
-      {userAccounts.length !== 0 && <h2 className="mb-2">Transactions</h2>}
+      {userAccounts.length !== 0 && <h2 className="mb-4">Transactions</h2>}
 
       {userAccounts.length !== 0 && <Tab.Container defaultActiveKey="issue">
         <Card className="border">

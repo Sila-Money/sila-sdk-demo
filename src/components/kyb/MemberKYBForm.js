@@ -452,7 +452,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, acti
       <Form className="mt-2" noValidate validated={validated} autoComplete="off" onSubmit={register}>
         {!loaded && <Loader overlay />}
 
-        <p className="text-info mb-1">Please fill out the below fields for this business member.</p>
+        <p className="text-info mb-4">Please fill out the below fields for this business member.</p>
 
         <p className="text-right text-lg text-warning mb-2">All fields are required for this Business Member.</p>
 
