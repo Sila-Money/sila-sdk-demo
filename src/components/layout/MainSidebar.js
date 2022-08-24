@@ -65,7 +65,7 @@ const Response = ({ response, index, onLoad, onLoaded }) => {
       open && 'open',
       index !== 0 && 'mt-2'
     )}>
-      {response.endpoint && <Button variant="link" onClick={() => setOpen(!open)} className={classNames('mb-1 endpoint font-weight-bold p-0 no-underline loaded', open ? 'text-primary' : 'text-info-link')}><i class={`fas fa-arrow-alt-circle-${open ? 'up' : 'down'} mr-2`}></i> From endpoint {response.endpoint}:</Button>}
+      {response.endpoint && <Button variant="link" onClick={() => setOpen(!open)} className={classNames('mb-1 endpoint font-weight-bold p-0 no-underline loaded', open ? 'text-primary' : 'text-info-link')}><i className={`fas fa-arrow-alt-circle-${open ? 'up' : 'down'} mr-2`}></i> From endpoint {response.endpoint}:</Button>}
       <Collapse in={open}>
         {response.alert ? <AlertMessage noHide message={response.message} style={response.style} /> : response.result ?
           <SyntaxHighlighter
