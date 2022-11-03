@@ -29,19 +29,7 @@
     @include transition(opacity .2s);
 
     .endpoint {
-      cursor: pointer;
-
-      &::before {
-        content: "\f13a";
-        @include fas-icon;
-        color: $gray-medium;
-        font-weight: bold;
-        display: block;
-        width: 1em;
-        margin-left: -1.5rem;
-        float: left;
-        margin-top: 4px;
-      }
+      margin-left: -1.5rem;
     }
 
     &.new {
@@ -56,13 +44,6 @@
         position: absolute;
         top: 0;
         left: 0;
-      }
-    }
-
-    &.open {
-      .endpoint::before {
-        content: "\f139";
-        color: $primary;
       }
     }
 
@@ -83,37 +64,6 @@
 .tip-container {
   background: $main-sidebar-background;
   overflow: hidden;
-
-  .carousel,
-  .carousel-inner,
-  .carousel-item {
-    height: 100%;
-  }
-
-  .carousel {
-    padding-top: 70px;
-  }
-
-  .carousel-control-prev,
-  .carousel-control-next {
-    width: 9px;
-  }
-
-  .carousel-control-prev {
-    left: -10px;
-  }
-
-  .carousel-control-next {
-    right: -10px;
-  }
-
-  .carousel-control-prev-icon {
-    background-image: url(../../images/arrow_left.svg);
-  }
-
-  .carousel-control-next-icon {
-    background-image: url(../../images/arrow_right.svg);
-  }
 }
 
 @include media-breakpoint-up(sm) {
@@ -136,7 +86,7 @@
 @include media-breakpoint-down(md) {
   .tip-container {
     p {
-      font-size: $font-size-sm
+      font-size: $font-size-sm;
     }
   }
 }

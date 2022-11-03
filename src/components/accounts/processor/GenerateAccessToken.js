@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Row, Col, Button } from 'react-bootstrap';
+import { Form, Button } from 'react-bootstrap';
 
 import { useAppContext } from '../../context/AppDataProvider';
 import plaidApi from '../../../api/plaid';
@@ -68,11 +68,9 @@ const GenerateAccessToken = ({ step, title, context, isTutorial, allPlaidTokens,
         {errors && errors.publicToken && <Form.Control.Feedback type="invalid">{errors.publicToken}</Form.Control.Feedback>}
       </Form.Group>
     
-      <div className="mt-2 mb-2 loaded">
-        <Row className="mt-2 justify-content-end">
-          <Col lg="12" xl="3"><Button block variant="outline-light" className="mb-2" onClick={() => onTabKey(step-2)}>Previous</Button></Col>
-          <Col lg="12" xl="5"><Button block className="mb-2" type="submit">Generate an Access Token</Button></Col>
-        </Row>
+      <div className="mt-2 d-flex justify-content-end">
+        <Button variant="outline-light" className="mb-2 mb-md-0" onClick={() => onTabKey(step-2)}>Previous</Button>
+        <Button className="ml-0 ml-md-4" type="submit">Generate an Access Token</Button>
       </div>
     </Form>}
   </>);

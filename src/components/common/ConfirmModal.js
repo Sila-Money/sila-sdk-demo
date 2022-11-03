@@ -8,13 +8,13 @@ const ConfirmModal = ({ show, onHide, onSuccess, message, buttonLabel }) => {
       show={show ? true : false}
       onHide={onHide}>
       <Modal.Header className="text-center" closeButton>&nbsp;</Modal.Header>
-      <Modal.Body className="text-center">
-        <p className="text-lg mb-4">{message}</p>
-        <p>
-          <Button variant="outline-primary" size="sm" className="mr-3" style={{ width: '100px' }} onClick={onHide}>Cancel</Button>
-          <Button variant="primary" size="sm" style={{ width: '100px' }} onClick={onSuccess}>{buttonLabel ? buttonLabel : 'OK'}</Button>
-        </p>
+      <Modal.Body>
+        <p className="text-lg text-info mb-0">{message}</p>
       </Modal.Body>
+      <Modal.Footer>
+        <Button variant="outline-primary" onClick={onHide}>Cancel</Button>
+        <Button variant="primary" onClick={onSuccess}>{buttonLabel ? buttonLabel : 'OK'}</Button>
+      </Modal.Footer>
     </Modal>
   );
 };

@@ -27,7 +27,7 @@ const RoleDescription = ({ role }) => {
       delay={{ show: 250, hide: 400 }}
       overlay={(props) => <Tooltip id={`${role}-tooltip`} className="ml-2 w-100" {...props}>{description}</Tooltip>}
     >
-      <i className="sila-icon sila-icon-info text-primary ml-2"></i>
+      <i className="sila-icon info text-primary ml-2"></i>
     </OverlayTrigger>
   );
 };
@@ -116,11 +116,11 @@ const BusinessMembers = ({ page, previous, next, isActive }) => {
   return (
     <Container fluid className={`main-content-container d-flex flex-column flex-grow-1 loaded ${page.replace('/', '')}`}>
 
-      <h1 className="mb-1">Business Information</h1>
+      <h1 className="mb-4">Business Information</h1>
 
-      <p className="text-muted text-lg mb-1">We need to collect information on the following individuals. Each business type requires different roles to be registered, below you will see which ones are required for your business and which are optional. Add the required business members to get started with the process, and add any additional business members as necessary.</p>
+      <p className="text-info text-lg mb-4">We need to collect information on the following individuals. Each business type requires different roles to be registered, below you will see which ones are required for your business and which are optional. Add the required business members to get started with the process, and add any additional business members as necessary.</p>
 
-      <p className="text-muted mb-3">This page represents <a href="https://docs.silamoney.com/docs/get_business_roles" target="_blank" rel="noopener noreferrer">/get_business_roles</a>, <a href="https://docs.silamoney.com/docs/unlink_business_member" target="_blank" rel="noopener noreferrer">/unlink_business_member</a>, and <a href="https://docs.silamoney.com/docs/get_entity" target="_blank" rel="noopener noreferrer">/get_entity</a> functionality.</p>
+      <p className="text-info mb-3">This page represents <a href="https://docs.silamoney.com/docs/get_business_roles" target="_blank" rel="noopener noreferrer">/get_business_roles</a>, <a href="https://docs.silamoney.com/docs/unlink_business_member" target="_blank" rel="noopener noreferrer">/unlink_business_member</a>, and <a href="https://docs.silamoney.com/docs/get_entity" target="_blank" rel="noopener noreferrer">/get_entity</a> functionality.</p>
 
       <div className="members position-relative">
         {!loaded ? <Loader overlay /> : <>
@@ -154,7 +154,7 @@ const BusinessMembers = ({ page, previous, next, isActive }) => {
                           delay={{ show: 250, hide: 400 }}
                           overlay={(props) => <Tooltip id="edit-tooltip" {...props}>Edit</Tooltip>}
                         >
-                          <Button variant="link" className="p-1 mr-2 text-decoration-none" as={NavLink} to={{ pathname: `/members/${member.user_handle}`, state: { role: member.role, from: page } }}><i className="sila-icon sila-icon-edit text-lg"></i></Button>
+                          <Button variant="link" className="p-1 mr-2 text-decoration-none" as={NavLink} to={{ pathname: `/members/${member.user_handle}`, state: { role: member.role, from: page } }}><i className="fas fa-pen text-lg"></i></Button>
                         </OverlayTrigger>
                         <OverlayTrigger
                           placement="top"

@@ -37,7 +37,7 @@ const MainNavbar = ({ stickyTop }) => {
       <Navbar type="light" className="p-0">
         <Container className="my-auto justify-content-between">
           <Navbar.Brand as={NavLink} to="/">
-            <SilaLogo id="main-logo" className="d-inline-block align-middle mr-1 logo" />
+            <SilaLogo id="main-logo" className="d-inline-block align-middle mr-1 logo" height="46" />
           </Navbar.Brand>
           <Navbar.Collapse className="d-block d-md-flex justify-content-end">
             <Navbar.Text>

@@ -74,7 +74,7 @@
 
     &:not(.active) .nav-circle {
         border-color: $primary;
-        @extend .sila-icon-success;
+        @extend .sila-icon.check;
 
         .number {
             display: none;
@@ -98,14 +98,14 @@
     &.active .nav-progress-bottom,
     &.active~* .nav-progress-top,
     &.active~* .nav-progress-bottom {
-        background: $gray-blue-light;
+        background: #CED7F3;
         opacity: 0.12;
     }
 
     &.active~* .nav-circle {
         background: white;
-        border-color: $gray-lightest;
-        color: $gray-lightest;
+        border-color: #CED7F3;
+        color: $info;
     }
 
     &.active .nav-progress-bottom,

@@ -22,24 +22,5 @@
       border-bottom-left-radius: 0 !important;
     }
   }
-  .tab-pane {
-    &.show {
-      .dropdown {
-        .dropdown-toggle {
-          &:after {
-            -webkit-transform: rotate(0) scale(2);
-            transform: rotate(0) scale(2);
-          }
-        }
-        &.show {
-          .dropdown-toggle {
-            &:after {
-              -webkit-transform: rotate(180deg) scale(2);
-              transform: rotate(180deg) scale(2);
-            }
-          }
-        }
-      }
-    }
-  }
+
 }

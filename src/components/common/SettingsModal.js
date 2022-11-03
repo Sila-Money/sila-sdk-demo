@@ -70,13 +70,13 @@ const SettingsModal = () => {
       aria-labelledby="manage-settings-modal-title"
       onHide={handleHide}>
       <Modal.Header className="text-center" closeButton>
-        <Modal.Title id="manage-settings-modal-title">App Settings</Modal.Title>
+        <Modal.Title as="h3" id="manage-settings-modal-title">App Settings</Modal.Title>
       </Modal.Header>
       <Form noValidate validated={validated} autoComplete="off" onSubmit={handleAuth}>
         <Modal.Body>
 
           <h4 className="mb-2">Enter App Credentials</h4>
-          <p className="text-muted mb-4">Get your App credentials from the <a href="https://console.silamoney.com/" target="_blank" rel="noopener noreferrer">Sila Console</a>.</p>
+          <p className="text-info mb-4">Get your App credentials from the <a href="https://console.silamoney.com/" target="_blank" rel="noopener noreferrer">Sila Console</a>.</p>
 
           <Form.Group className="mb-3">
             <Form.Label htmlFor="auth_handle">App Handle</Form.Label>
@@ -106,7 +106,7 @@ const SettingsModal = () => {
 
           <div className="d-flex flex-row">
             <i className="fas fa-info-circle mr-2" style={{ fontSize: '2rem', opacity: '0.1' }}></i>
-            <p className="text-sm text-muted"><strong className="text-uppercase">MAKE SURE YOU SAVE YOUR PRIVATE KEY!</strong><br />Keep your private keys secure; leave them out of your source code and never store them in an unsafe place. If they are ever compromised, please immediately replace your keys using the <a href="https://console.silamoney.com/" target="_blank" rel="noopener noreferrer">Sila Console</a>.</p>
+            <p className="text-sm text-info"><strong className="text-uppercase">MAKE SURE YOU SAVE YOUR PRIVATE KEY!</strong><br />Keep your private keys secure; leave them out of your source code and never store them in an unsafe place. If they are ever compromised, please immediately replace your keys using the <a href="https://console.silamoney.com/" target="_blank" rel="noopener noreferrer">Sila Console</a>.</p>
           </div>
 
           {errors.auth && <AlertMessage noHide message={errors.auth} type="danger" />}

@@ -105,9 +105,9 @@ const UpdateKYCForm = ({ errors, preferredKyc, entityuuid, onLoaded, onConfirm, 
 
   return (
     <>
-      <p className="text-muted mb-1">This KYC Level requires us to gather more information from you. Please fill out the required fields below.</p>
+      <p className="text-info mb-4">This KYC Level requires us to gather more information from you. Please fill out the required fields below.</p>
 
-      <p className="text-lg text-warning mb-1">All fields are required for this KYC level.</p>
+      <p className="text-warning mb-4">All fields are required for this KYC level.</p>
       <Form.Row>
         {activeUser && activeUser.firstName && <Form.Group as={Col} md="6" controlId="registerFirstName" className="required">
           <Form.Control required placeholder="First Name" name="firstName" defaultValue={activeUser.firstName} onChange={onChange} />
@@ -130,7 +130,7 @@ const UpdateKYCForm = ({ errors, preferredKyc, entityuuid, onLoaded, onConfirm, 
               onChange={onChange}
               isInvalid={Boolean(errors.contact && errors.contact.email)} />
             {preferredKyc === RECEIVE_ONLY_KYC && <InputGroup.Append className="d-flex justify-content-between align-items-center">
-              <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('email', 'Email')}><i className={`sila-icon sila-icon-delete text-lg ${activeDeleteField === 'email' ? 'text-primary' : undefined }`}></i></Button>
+              <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('email', 'Email')}><i className={`fas fa-trash text-lg ${activeDeleteField === 'email' ? 'text-primary' : undefined }`}></i></Button>
             </InputGroup.Append>}
             {errors.contact && errors.contact.email && <Form.Control.Feedback type="invalid">{errors.contact.email}</Form.Control.Feedback>}
           </InputGroup>
@@ -150,7 +150,7 @@ const UpdateKYCForm = ({ errors, preferredKyc, entityuuid, onLoaded, onConfirm, 
               mask="_" 
               isInvalid={Boolean(errors.contact && errors.contact.phone)} />
             {preferredKyc === RECEIVE_ONLY_KYC && <InputGroup.Append className="d-flex justify-content-between align-items-center">
-              <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('phone', 'Phone Number')}><i className={`sila-icon sila-icon-delete text-lg ${activeDeleteField === 'phone' ? 'text-primary' : undefined }`}></i></Button>
+              <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('phone', 'Phone Number')}><i className={`fas fa-trash text-lg ${activeDeleteField === 'phone' ? 'text-primary' : undefined }`}></i></Button>
             </InputGroup.Append>}
             {errors.contact && errors.contact.phone && <Form.Control.Feedback type="invalid">{errors.contact.phone}</Form.Control.Feedback>}
           </InputGroup>
@@ -176,7 +176,7 @@ const UpdateKYCForm = ({ errors, preferredKyc, entityuuid, onLoaded, onConfirm, 
               onChange={onChange}
               isInvalid={Boolean(errors.identity)} />
             {(preferredKyc === RECEIVE_ONLY_KYC || preferredKyc === LITE_KYC) && <InputGroup.Append className="d-flex justify-content-between align-items-center">
-              <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('ssn', 'Social Security Number')}><i className={`sila-icon sila-icon-delete text-lg ${activeDeleteField === 'ssn' ? 'text-primary' : undefined }`}></i></Button>
+              <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('ssn', 'Social Security Number')}><i className={`fas fa-trash text-lg ${activeDeleteField === 'ssn' ? 'text-primary' : undefined }`}></i></Button>
             </InputGroup.Append>}
             {errors.identity && <Form.Control.Feedback type="invalid">{errors.identity.identity_value || errors.identity}</Form.Control.Feedback>}
           </InputGroup>
@@ -193,7 +193,7 @@ const UpdateKYCForm = ({ errors, preferredKyc, entityuuid, onLoaded, onConfirm, 
             onChange={onChange}
             isInvalid={Boolean(errors.address && errors.address.street_address_1)} />
           {(preferredKyc === RECEIVE_ONLY_KYC || preferredKyc === LITE_KYC) && <InputGroup.Append className="d-flex justify-content-between align-items-center">
-            <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('address', 'Street Address')}><i className={`sila-icon sila-icon-delete text-lg ${activeDeleteField === 'address' ? 'text-primary' : undefined }`}></i></Button>
+            <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('address', 'Street Address')}><i className={`fas fa-trash text-lg ${activeDeleteField === 'address' ? 'text-primary' : undefined }`}></i></Button>
           </InputGroup.Append>}
           {errors.address && errors.address.street_address_1 && <Form.Control.Feedback type="invalid">{errors.address.street_address_1}</Form.Control.Feedback>}
         </InputGroup>
@@ -210,7 +210,7 @@ const UpdateKYCForm = ({ errors, preferredKyc, entityuuid, onLoaded, onConfirm, 
               onChange={onChange}
               isInvalid={Boolean(errors.address && errors.address.city)} />
             {(preferredKyc === RECEIVE_ONLY_KYC || preferredKyc === LITE_KYC) && <InputGroup.Append className="d-flex justify-content-between align-items-center">
-              <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('city', 'City')}><i className={`sila-icon sila-icon-delete text-lg ${activeDeleteField === 'city' ? 'text-primary' : undefined }`}></i></Button>
+              <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('city', 'City')}><i className={`fas fa-trash text-lg ${activeDeleteField === 'city' ? 'text-primary' : undefined }`}></i></Button>
             </InputGroup.Append>}
             {errors.address && errors.address.city && <Form.Control.Feedback type="invalid">{errors.address.city}</Form.Control.Feedback>}
           </InputGroup>
@@ -229,7 +229,7 @@ const UpdateKYCForm = ({ errors, preferredKyc, entityuuid, onLoaded, onConfirm, 
               {STATES_ARRAY.map((option, index) => <option key={index} value={option.value}>{option.label}</option>)}
             </Form.Control>
             {(preferredKyc === RECEIVE_ONLY_KYC || preferredKyc === LITE_KYC) && <InputGroup.Append className="d-flex justify-content-between align-items-center">
-              <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('state', 'State')}><i className={`sila-icon sila-icon-delete text-lg ${activeDeleteField === 'state' ? 'text-primary' : undefined }`}></i></Button>
+              <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('state', 'State')}><i className={`fas fa-trash text-lg ${activeDeleteField === 'state' ? 'text-primary' : undefined }`}></i></Button>
             </InputGroup.Append>}
             {errors.address && errors.address.state && <Form.Control.Feedback type="invalid">{errors.address.state}</Form.Control.Feedback>}
           </InputGroup>
@@ -245,7 +245,7 @@ const UpdateKYCForm = ({ errors, preferredKyc, entityuuid, onLoaded, onConfirm, 
               onChange={onChange}
               isInvalid={Boolean(errors.address && errors.address.postal_code)} />
             {(preferredKyc === RECEIVE_ONLY_KYC || preferredKyc === LITE_KYC) && <InputGroup.Append className="d-flex justify-content-between align-items-center">
-              <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('zip', 'Zip')}><i className={`sila-icon sila-icon-delete text-lg ${activeDeleteField === 'zip' ? 'text-primary' : undefined }`}></i></Button>
+              <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('zip', 'Zip')}><i className={`fas fa-trash text-lg ${activeDeleteField === 'zip' ? 'text-primary' : undefined }`}></i></Button>
             </InputGroup.Append>}
             {errors.address && errors.address.postal_code && <Form.Control.Feedback type="invalid">{errors.address.postal_code}</Form.Control.Feedback>}
           </InputGroup>

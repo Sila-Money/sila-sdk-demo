@@ -1,40 +1,36 @@
 // Dropdown adjustments
-
 .dropdown-item {
   transition: background-color $transition-duration $ease-in-out-circ, color $transition-duration $ease-in-out-circ;
+  color: $info;
 
-  &:nav,
-  &:nav {
-    transition: color $transition-duration $ease-in-out-circ;
-    color: $white !important;
+  &:hover {
+    color: $body-color;
   }
-  &.disabled,
-  &:disabled {
-    color: $gray-lightest !important;
+
+  &:active,
+  &:active {
+
+    .fas,
+    &[class^="text-"] {
+      transition: color $transition-duration $ease-in-out-circ;
+      color: $white !important;
+    }
   }
 }
 
 .dropdown-menu {
-  z-index: 1008;
-  min-width: 10rem;
+  min-width: 100%;
   padding: 10px 0;
   margin: 0 0 0;
   font-size: 1rem;
   background-color: $white;
-  border: 1px solid $border-color-light;
+  border: 1px solid $border-color;
   border-radius: .375rem;
-  box-shadow: $box-shadow-heavy;
-  white-space: nowrap;
-  max-height: 400px;
-  overflow-y: scroll;
-  .select-menu & {
-    min-width: 100%;
-  }
+  box-shadow: $box-shadow;
 }
 
 .dropdown-menu-small {
   padding: .25rem 0;
-  box-shadow: $box-shadow-light;
 
   .dropdown-item {
     padding: .375rem .875rem;
@@ -42,44 +38,57 @@
   }
 }
 
-.dropdown-toggle::after {
-  transform: rotate(0) scale(1);
-  transition: transform $transition-duration $ease-in-out-circ;
+.dropdown-toggle {
+  display: flex;
+  align-items: center;
+  padding-left: $input-padding-x;
+  padding-right: calc(19px + #{($input-padding-x * 2)}) !important;
+  font-weight: 400;
+  font-size: $body-font-size;
 
-  .select-menu & {
-    position: absolute;
-    top: $btn-padding-x-sm * 2;
-    right: $btn-padding-x;
-    width: 11px;
-    height: 7px;
+  &::after {
+    background-image: url("data:image/svg+xml,%3Csvg width='19' height='7' viewBox='0 0 19 7' xmlns='http://www.w3.org/2000/svg'%3E %3Cpath d='M10.1781 6.81418L18.7195 1.09697C19.0935 0.846099 19.0935 0.439653 18.7195 0.188151C18.3456 -0.0627163 17.7381 -0.0627163 17.3642 0.188152L9.50047 5.45189L1.63679 0.188786C1.26282 -0.0620819 0.655392 -0.0620818 0.280477 0.188786C-0.0934926 0.439654 -0.0934926 0.846733 0.280477 1.0976L8.82181 6.81482C9.19191 7.06183 9.80888 7.06183 10.1781 6.81418Z' fill='%23CFD4D9' /%3E %3C/svg%3E");
     background-size: cover;
-    background: 0 0 url("data:image/svg+xml,%3Csvg width='11' height='7' viewBox='0 0 11 7' xmlns='http://www.w3.org/2000/svg'%3E %3Cpath d='M5.48 6a.618.618 0 01-.412-.171L1.19 2.077a.63.63 0 01-.016-.885.62.62 0 01.879-.018L5.5 4.51l3.447-3.336a.62.62 0 01.88.018.63.63 0 01-.017.885L5.932 5.83a.618.618 0 01-.451.17z' fill='%23D5D5D5' fill-rule='nonzero' stroke='%23D5D5D5' stroke-width='.3'/%3E %3C/svg%3E") no-repeat;
-    border: 0;
-    margin: 0;
-    transform: rotate(0) scale(2);
+    width: 19px;
+    height: 7px;
+    position: absolute;
+    top: 50%;
+    right: $input-padding-x;
+    margin-top: -4px;
+    transition: $dropdown-icon-transition;
+    border: none;
+    will-change: transform;
+    margin-left: 0;
+
+    .dropdown.show & {
+      transform: rotate(180deg);
+    }
   }
 
-  .select-menu.dropdown-small & {
-    transform: rotate(0) scale(1);
-    top: $btn-padding-y;
-    right: $btn-padding-x-sm;
+  &.nav-link {
+    padding-right: calc(19px + #{($input-padding-x)}) !important;
+
+    &::after {
+      right: 0;
+    }
   }
 
-  .show &,
-  .select-menu.dropdown-small.show & {
-    transform: rotate(180deg) scale(1);
-  }
+  &.form-control {
+    &:focus::after {
+      background-image: url("data:image/svg+xml,%3Csvg width='19' height='7' viewBox='0 0 19 7' fill='{$primary}' xmlns='http://www.w3.org/2000/svg'%3E %3Cpath d='M10.1781 6.81418L18.7195 1.09697C19.0935 0.846099 19.0935 0.439653 18.7195 0.188151C18.3456 -0.0627163 17.7381 -0.0627163 17.3642 0.188152L9.50047 5.45189L1.63679 0.188786C1.26282 -0.0620819 0.655392 -0.0620818 0.280477 0.188786C-0.0934926 0.439654 -0.0934926 0.846733 0.280477 1.0976L8.82181 6.81482C9.19191 7.06183 9.80888 7.06183 10.1781 6.81418Z' fill='%233F63F7'/%3E %3C/svg%3E");
+    }
 
-  .select-menu.show & {
-    transform: rotate(180deg) scale(2);
-  }
+    .dropdown.show & {
+      border-color: $input-border-color;
+    }
 
-}
-
-.select-menu-height {
-  .select-menu {
-    .dropdown-menu {
-      max-height: 260px;
+    +.dropdown-menu {
+      box-shadow: none;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+      border-top: 0;
+      border-color: $input-border-color;
+      top: -2px !important;
     }
   }
 }

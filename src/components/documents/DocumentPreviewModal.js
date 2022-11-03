@@ -110,9 +110,9 @@ const DocumentPreviewModal = ({ data, show, onHide }) => {
       aria-labelledby="upload-document-modal-title"
       onHide={onCancel}>
       <Modal.Header className="text-center" closeButton>
-        <Modal.Title id="upload-document-modal-title" className="d-flex">Document Preview: {data ? data.filename : undefined} </Modal.Title>
+        <Modal.Title as="h3" id="upload-document-modal-title" className="d-flex">Document Preview: {data ? data.filename : undefined} </Modal.Title>
       </Modal.Header>
-      <Modal.Body ref={containerRef} className="p-0 overflow-auto position-relative" style={{ height: 500 }}>
+      <Modal.Body ref={containerRef} className="p-0 overflow-auto custom-scrollbar position-relative" style={{ height: 500 }}>
         {!data && !loading ? <Loader /> : <>
           {data && data.file_type === 'pdf' ? <>
             {totalPages > 1 ? <div className="d-flex justify-content-center">

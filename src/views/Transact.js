@@ -188,7 +188,7 @@ const Transact = ({ page, previous, next, isActive }) => {
 
       <Row className="mb-2">
         <Col sm="12" md="5">
-          <h1 className="mb-0">Transact</h1>
+          <h1 className="mb-4">Transact</h1>
         </Col>
         <Col sm="12" md="2" className="text-right d-none d-md-block">
           <label className="font-weight-bold mt-2">Account:</label>
@@ -203,21 +203,21 @@ const Transact = ({ page, previous, next, isActive }) => {
 
       {userAccounts.length === 0 && <Alert variant="warning" className="mb-4">An active account is required to initiate a transaction.  <NavLink to="/accounts" className="text-reset text-underline">Link an account</NavLink></Alert>}
 
-      <p className="text-muted mb-3">This page represents <a href="https://docs.silamoney.com/docs/get_sila_balance" target="_blank" rel="noopener noreferrer">/get_sila_balance</a>, <a href="https://docs.silamoney.com/docs/issue_sila" target="_blank" rel="noopener noreferrer">/issue_sila</a>, <a href="https://docs.silamoney.com/docs/redeem_sila" target="_blank" rel="noopener noreferrer">/redeem_sila</a>, <a href="https://docs.silamoney.com/docs/transfer_sila" target="_blank" rel="noopener noreferrer">/transfer_sila</a>, and <a href="https://docs.silamoney.com/docs/get_transactions" target="_blank" rel="noopener noreferrer">/get_transactions</a> functionality. Learn more about the ACH processing schedule <a href="https://docs.silamoney.com/docs/ach-processing-schedule#instant-ach-3" target="_blank" rel="noopener noreferrer">here.</a></p>
+      <p className="text-info mb-4">This page represents <a href="https://docs.silamoney.com/docs/get_sila_balance" target="_blank" rel="noopener noreferrer">/get_sila_balance</a>, <a href="https://docs.silamoney.com/docs/issue_sila" target="_blank" rel="noopener noreferrer">/issue_sila</a>, <a href="https://docs.silamoney.com/docs/redeem_sila" target="_blank" rel="noopener noreferrer">/redeem_sila</a>, <a href="https://docs.silamoney.com/docs/transfer_sila" target="_blank" rel="noopener noreferrer">/transfer_sila</a>, and <a href="https://docs.silamoney.com/docs/get_transactions" target="_blank" rel="noopener noreferrer">/get_transactions</a> functionality. Learn more about the ACH processing schedule <a href="https://docs.silamoney.com/docs/ach-processing-schedule#instant-ach-3" target="_blank" rel="noopener noreferrer">here.</a></p>
 
       <div className="d-flex mb-2">
-        <h2 className="mb-0">Wallet Balance</h2>
+        <h2 className="mb-4">Wallet Balance</h2>
         <OverlayTrigger
           placement="right"
           delay={{ show: 250, hide: 400 }}
           overlay={(props) => <Tooltip id="balance-tooltip" className="ml-2" {...props}>Gets Sila Balance</Tooltip>}
         >
-          <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none" onClick={() =>refreshBalance(true)}><i className="sila-icon sila-icon-refresh text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
+          <Button variant="link" className="p-0 ml-auto text-reset text-decoration-none" onClick={() =>refreshBalance(true)}><i className="fas fa-sync-alt text-primary mr-2"></i><span className="lnk text-lg">Refresh</span></Button>
         </OverlayTrigger>
       </div>
 
-      <CardGroup className="mb-3">
-        <Card>
+      <CardGroup className="mb-4 rounded overflow-hidden">
+        <Card className="border rounded-left overflow-hidden">
           <Form.Group className="select mb-0">
             <Card.Header className="bg-secondary p-3">
               <Form.Label className="m-0" htmlFor="wallet"><h3 className="m-0">Wallet</h3></Form.Label>
@@ -228,7 +228,7 @@ const Transact = ({ page, previous, next, isActive }) => {
           </Form.Group>
         </Card>
 
-        <Card>
+        <Card className="border rounded-right overflow-hidden">
           <Form.Group className="mb-0">
             <Card.Header className="bg-secondary p-3">
               <Form.Label className="m-0" htmlFor="balance"><h3 className="m-0">Amount in Sila</h3></Form.Label>
@@ -240,10 +240,10 @@ const Transact = ({ page, previous, next, isActive }) => {
         </Card>
       </CardGroup>
 
-      {userAccounts.length !== 0 && <h2 className="mb-2">Transactions</h2>}
+      {userAccounts.length !== 0 && <h2 className="mb-4">Transactions</h2>}
 
       {userAccounts.length !== 0 && <Tab.Container defaultActiveKey="issue">
-        <Card>
+        <Card className="border">
           <Card.Header className="d-flex bg-secondary">
             <Nav variant="pills" defaultActiveKey="issue">
               <Nav.Item>
@@ -261,7 +261,7 @@ const Transact = ({ page, previous, next, isActive }) => {
           <Card.Body className="p-3">
             <Tab.Content>
               <Tab.Pane eventKey="issue">
-                <Form.Label className="text-muted mr-5">Choose a processing type:</Form.Label>
+                <Form.Label className="text-info mr-5">Choose a processing type:</Form.Label>
                 <SelectMenu fullWidth
                   title={forms.issue.values.processing_type ? PROCESSING_TYPES.find(option => option.value === forms.issue.values.processing_type).label : 'Processing type'}
                   onChange={(value) => onProcessingTypeChange(value, 'issue')}
@@ -270,7 +270,7 @@ const Transact = ({ page, previous, next, isActive }) => {
                   options={PROCESSING_TYPES} />
                 {forms.issue.errors.processing_type && <Form.Control.Feedback type="none" className="text-danger mb-3">{forms.issue.errors.processing_type}</Form.Control.Feedback>}
 
-                <p className="text-muted mb-2">Add Sila to your wallet by debiting a linked account. One Sila = 1¢.</p>
+                <p className="text-info mb-2">Add Sila to your wallet by debiting a linked account. One Sila = 1¢.</p>
                 <Form noValidate validated={forms.issue.validated} autoComplete="off" className="d-flex mt-auto" onSubmit={(e) => {
                   e.preventDefault();
                   const amount = parseFloat(e.target.issue.value);
@@ -293,7 +293,7 @@ const Transact = ({ page, previous, next, isActive }) => {
                 }}>
                   <InputGroup>
                     <InputGroup.Prepend>
-                      <InputGroup.Text><i className="sila-icon sila-icon-sila"></i></InputGroup.Text>
+                      <InputGroup.Text><i className="sila-icon sila"></i></InputGroup.Text>
                     </InputGroup.Prepend>
                     <Form.Control type="number" name="issue" id="issue" className="m-0" value={forms.issue.values.issue || ''} placeholder="# of Sila" isInvalid={forms.issue.errors.issue ? true : false} onChange={(e) => handleChange(e, 'issue')} />
                     {forms.issue.errors.issue && <Form.Control.Feedback type="invalid">{forms.issue.errors.issue}</Form.Control.Feedback>}
@@ -302,7 +302,7 @@ const Transact = ({ page, previous, next, isActive }) => {
                 </Form>
               </Tab.Pane>
               <Tab.Pane eventKey="transfer">
-                <p className="text-muted mb-2">Transfer Sila from your selected linked wallet to another user.  Destination suggestions are scoped to entities created in this application, but all Sila accounts can recieve Sila.</p>
+                <p className="text-info mb-2">Transfer Sila from your selected linked wallet to another user.  Destination suggestions are scoped to entities created in this application, but all Sila accounts can recieve Sila.</p>
                 <Form noValidate validated={forms.transfer.validated} autoComplete="off" className="d-flex" onSubmit={(e) => {
                   e.preventDefault();
                   const amount = parseFloat(e.target.transfer.value);
@@ -330,7 +330,7 @@ const Transact = ({ page, previous, next, isActive }) => {
                     <Col sm="12" md="6">
                       <InputGroup className="mb-2 mb-md-0">
                         <InputGroup.Prepend>
-                          <InputGroup.Text><i className="sila-icon sila-icon-sila"></i></InputGroup.Text>
+                          <InputGroup.Text><i className="sila-icon sila"></i></InputGroup.Text>
                         </InputGroup.Prepend>
                         <Form.Control type="number" name="transfer" id="transfer" value={forms.transfer.values.transfer || ''} onChange={(e) => handleChange(e, 'transfer')} isInvalid={forms.transfer.errors.transfer ? true : false} placeholder="# of Sila" />
                         {forms.transfer.errors.transfer && <Form.Control.Feedback type="invalid">{forms.transfer.errors.transfer}</Form.Control.Feedback>}
@@ -352,7 +352,7 @@ const Transact = ({ page, previous, next, isActive }) => {
                 </Form>
               </Tab.Pane>
               <Tab.Pane eventKey="redeem">
-                <Form.Label className="text-muted mr-5">Choose a processing type:</Form.Label>
+                <Form.Label className="text-info mr-5">Choose a processing type:</Form.Label>
                 <SelectMenu fullWidth
                   title={forms.redeem.values.processing_type ? PROCESSING_TYPES.find(option => option.value === forms.redeem.values.processing_type).label : 'Processing type'}
                   onChange={(value) => onProcessingTypeChange(value, 'redeem')}
@@ -361,7 +361,7 @@ const Transact = ({ page, previous, next, isActive }) => {
                   options={PROCESSING_TYPES} />
                 {forms.redeem.errors.processing_type && <Form.Control.Feedback type="none" className="text-danger mb-2">{forms.redeem.errors.processing_type}</Form.Control.Feedback>}
 
-                <p className="text-muted mb-2">Convert Sila from your selected linked wallet to dollars in your primary linked account.</p>
+                <p className="text-info mb-2">Convert Sila from your selected linked wallet to dollars in your primary linked account.</p>
                 <Form noValidate validated={forms.redeem.validated} autoComplete="off" className="d-flex mt-auto" onSubmit={(e) => {
                   e.preventDefault();
                   const amount = parseFloat(e.target.redeem.value);
@@ -384,7 +384,7 @@ const Transact = ({ page, previous, next, isActive }) => {
                 }}>
                   <InputGroup>
                     <InputGroup.Prepend>
-                      <InputGroup.Text><i className="sila-icon sila-icon-sila"></i></InputGroup.Text>
+                      <InputGroup.Text><i className="sila-icon sila"></i></InputGroup.Text>
                     </InputGroup.Prepend>
                     <Form.Control type="number" name="redeem" id="redeem" className="m-0" value={forms.redeem.values.redeem || ''} placeholder="# of Sila" isInvalid={forms.redeem.errors.redeem ? true : false} onChange={(e) => handleChange(e, 'redeem')} />
                     {forms.redeem.errors.redeem && <Form.Control.Feedback type="invalid">{forms.redeem.errors.redeem}</Form.Control.Feedback>}

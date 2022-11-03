@@ -87,7 +87,7 @@ const GenerateProcessorTokenModal = ({ show, onHide }) => {
       aria-labelledby="generate-processor-token-modal-title"
       onHide={onHide}>
       <Modal.Header className="text-left border-bottom p-4" closeButton>
-        <Modal.Title id="generate-processor-token-modal-title" className="text-lgr">Generate a Plaid Processor Token</Modal.Title>
+        <Modal.Title as="h3" id="generate-processor-token-modal-title" className="text-lgr">Generate a Plaid Processor Token</Modal.Title>
       </Modal.Header>
       <Modal.Body className="p-4">
         <Container className="p-4">
@@ -99,10 +99,10 @@ const GenerateProcessorTokenModal = ({ show, onHide }) => {
                   <h4>Generate A Link Token</h4>
                 </Card.Header>
                 <Card.Body as="section" className="p-4">
-                  <p className={`mb-0 ${linkToken ? 'text-success' : 'text-muted font-italic'}`}>{linkToken || 'link-sandbox-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'}</p>
-                  <p className={`mb-0 ${publicToken ? 'text-success' : 'text-muted font-italic'}`}>{publicToken || 'public-sandbox-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'}</p>
-                  <p className={`mb-0 ${accessToken ? 'text-success' : 'text-muted font-italic'}`}>{accessToken || 'access-sandbox-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'}</p>
-                  <p className={`mb-0 ${processorToken ? 'text-success' : 'text-muted font-italic'}`}>{processorToken || 'processor-sandbox-xxxxx-xxxxx'}</p>
+                  <p className={`mb-0 ${linkToken ? 'text-success' : 'text-info font-italic'}`}>{linkToken || 'link-sandbox-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'}</p>
+                  <p className={`mb-0 ${publicToken ? 'text-success' : 'text-info font-italic'}`}>{publicToken || 'public-sandbox-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'}</p>
+                  <p className={`mb-0 ${accessToken ? 'text-success' : 'text-info font-italic'}`}>{accessToken || 'access-sandbox-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'}</p>
+                  <p className={`mb-0 ${processorToken ? 'text-success' : 'text-info font-italic'}`}>{processorToken || 'processor-sandbox-xxxxx-xxxxx'}</p>
                 </Card.Body>
                 <Card.Footer as="footer" className="p-4">
                   <Button onClick={createLinkToken} className="ml-auto mb-3">Generate Link Token</Button>

@@ -452,7 +452,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, acti
       <Form className="mt-2" noValidate validated={validated} autoComplete="off" onSubmit={register}>
         {!loaded && <Loader overlay />}
 
-        <p className="text-muted mb-1">Please fill out the below fields for this business member.</p>
+        <p className="text-info mb-4">Please fill out the below fields for this business member.</p>
 
         <p className="text-right text-lg text-warning mb-2">All fields are required for this Business Member.</p>
 
@@ -523,7 +523,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, acti
                 defaultValue={activeMember.address}
                 isInvalid={Boolean(errors.address || (errors.address && errors.address.street_address_1))} />
               {currentRole && currentRole.name === 'administrator' && <InputGroup.Append className="d-flex justify-content-between align-items-center">
-                <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('address', 'Home Address')}><i className={`sila-icon sila-icon-delete text-lg ${activeDeleteField === 'address' ? 'text-primary' : undefined }`}></i></Button>
+                <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('address', 'Home Address')}><i className={`fas fa-trash text-lg ${activeDeleteField === 'address' ? 'text-primary' : undefined }`}></i></Button>
               </InputGroup.Append>}
               {errors.address && <Form.Control.Feedback type="invalid">{errors.address.street_address_1 ? errors.address.street_address_1 : errors.address}</Form.Control.Feedback>}
             </InputGroup>
@@ -540,7 +540,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, acti
                   defaultValue={activeMember.city}
                   isInvalid={Boolean(errors.address && errors.address.city)} />
                 {currentRole && currentRole.name === 'administrator' && <InputGroup.Append className="d-flex justify-content-between align-items-center">
-                  <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('city', 'City')}><i className={`sila-icon sila-icon-delete text-lg ${activeDeleteField === 'city' ? 'text-primary' : undefined }`}></i></Button>
+                  <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('city', 'City')}><i className={`fas fa-trash text-lg ${activeDeleteField === 'city' ? 'text-primary' : undefined }`}></i></Button>
                 </InputGroup.Append>}
                 {errors.address && errors.address.city && <Form.Control.Feedback type="invalid">{errors.address.city}</Form.Control.Feedback>}
               </InputGroup>
@@ -559,7 +559,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, acti
                   {STATES_ARRAY.map((option, index) => <option key={index} value={option.value}>{option.label}</option>)}
                 </Form.Control>
                 {currentRole && currentRole.name === 'administrator' && <InputGroup.Append className="d-flex justify-content-between align-items-center">
-                  <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('state', 'State')}><i className={`sila-icon sila-icon-delete text-lg ${activeDeleteField === 'state' ? 'text-primary' : undefined }`}></i></Button>
+                  <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('state', 'State')}><i className={`fas fa-trash text-lg ${activeDeleteField === 'state' ? 'text-primary' : undefined }`}></i></Button>
                 </InputGroup.Append>}
                 {errors.address && errors.address.state && <Form.Control.Feedback type="invalid">{errors.address.state}</Form.Control.Feedback>}
               </InputGroup>
@@ -575,7 +575,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, acti
                   defaultValue={activeMember.zip}
                   isInvalid={Boolean(errors.address && errors.address.postal_code)} />
                 {currentRole && currentRole.name === 'administrator' && <InputGroup.Append className="d-flex justify-content-between align-items-center">
-                  <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('zip', 'Zip')}><i className={`sila-icon sila-icon-delete text-lg ${activeDeleteField === 'zip' ? 'text-primary' : undefined }`}></i></Button>
+                  <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('zip', 'Zip')}><i className={`fas fa-trash text-lg ${activeDeleteField === 'zip' ? 'text-primary' : undefined }`}></i></Button>
                 </InputGroup.Append>}
                 {errors.address && errors.address.postal_code && <Form.Control.Feedback type="invalid">{errors.address.postal_code}</Form.Control.Feedback>}
               </InputGroup>
@@ -593,7 +593,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, acti
                   defaultValue={activeMember.ssn}
                   isInvalid={errors.identity ? errors.identity : false} />
                 {currentRole && currentRole.name === 'administrator' && <InputGroup.Append className="d-flex justify-content-between align-items-center">
-                  <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('ssn', 'Social Security Number')}><i className={`sila-icon sila-icon-delete text-lg ${activeDeleteField === 'ssn' ? 'text-primary' : undefined }`}></i></Button>
+                  <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('ssn', 'Social Security Number')}><i className={`fas fa-trash text-lg ${activeDeleteField === 'ssn' ? 'text-primary' : undefined }`}></i></Button>
                 </InputGroup.Append>}
                 {errors.identity && <Form.Control.Feedback type="invalid">{errors.identity.identity_value || errors.identity}</Form.Control.Feedback>}
               </InputGroup>
@@ -610,7 +610,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, acti
                   defaultValue={activeMember.dateOfBirth}
                   isInvalid={Boolean(errors.entity && errors.entity.birthdate)} />
                 {currentRole && currentRole.name === 'administrator' && <InputGroup.Append className="d-flex justify-content-between align-items-center">
-                  <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('dateOfBirth', 'Date of Birth')}><i className={`sila-icon sila-icon-delete text-lg ${activeDeleteField === 'dateOfBirth' ? 'text-primary' : undefined }`}></i></Button>
+                  <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('dateOfBirth', 'Date of Birth')}><i className={`fas fa-trash text-lg ${activeDeleteField === 'dateOfBirth' ? 'text-primary' : undefined }`}></i></Button>
                 </InputGroup.Append>}
                 {errors.entity && errors.entity.birthdate && <Form.Control.Feedback type="invalid">{errors.entity.birthdate}</Form.Control.Feedback>}
               </InputGroup>
@@ -620,7 +620,7 @@ const MemberKYBForm = ({ handle, activeMember, currentRole, moreInfoNeeded, acti
 
         {action !== 'update-member' && <div className="d-flex">
           <Button type="submit" className="ml-auto" disabled={!handle}>{currentRole && currentRole.name === 'controlling_officer' ? 'Link as Controlling Officer' : currentRole && currentRole.name === 'beneficial_owner' ? 'Link as Beneficial Owner' : 'Register'}</Button>
-          {onMoreInfoNeeded && <Button variant="outline-light" className="ml-3 text-muted text-uppercase" onClick={() => { onMoreInfoNeeded(false) }}>Cancel</Button>}
+          {onMoreInfoNeeded && <Button variant="outline-light" className="ml-3 text-info text-uppercase" onClick={() => { onMoreInfoNeeded(false) }}>Cancel</Button>}
         </div>}
         {action && action === 'update-member' && showUpdateBtn && <Button type="submit" className="ml-auto d-flex mt-2">Update data</Button>}
       </Form>

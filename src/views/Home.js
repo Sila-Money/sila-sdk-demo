@@ -30,12 +30,12 @@ const Home = ({ page, history }) => {
       <Container className="mt-5">
         <Row className="justify-content-center">
           {Object.keys(flows).map(key => <Col key={key} lg="12" xl="6" className="text-center px-5">
-            <Button onClick={(e) => handleClick(e, key)} disabled={!flows[key].permissions(app)} className="jumbotron border-light w-100" size="lg" variant="outline-light"><span className="badge-light rounded-circle d-inline-block p-3 mb-3"><img src={flows[key].icon} width={32} height={32} alt={flows[key].name} /></span><br />{flows[key].name}</Button>
+            <Button onClick={(e) => handleClick(e, key)} disabled={!flows[key].permissions(app)} className="jumbotron w-100 d-flex flex-column text-center align-items-center shadow text-lg font-weight-normal text-info text-transform-none" size="lg" variant="outline-light">{flows[key].icon}<span className="d-block mt-4">{flows[key].name}</span></Button>
           </Col>)}
         </Row>
       </Container>
 
-      <p className="text-right"><Button variant="link" className="text-reset font-italic p-0 text-decoration-none" onClick={() => setShow(true)}><span className="lnk">What’s the difference between KYC and KYB?</span> <i className="sila-icon sila-icon-info text-primary ml-2"></i></Button></p>
+      <p className="text-right"><Button variant="link" className="text-reset font-italic p-0 text-decoration-none" onClick={() => setShow(true)}><span className="lnk">What’s the difference between KYC and KYB?</span> <i className="sila-icon info text-primary ml-2"></i></Button></p>
       <KybKycModal show={show} onHide={() => setShow(false)} />
 
     </Container>

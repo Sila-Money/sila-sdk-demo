@@ -104,7 +104,7 @@ const UpdateKYBForm = ({ errors, preferredKyb, entityuuid, onLoaded, onConfirm, 
   
   return (
     <>
-      <p className="text-lg text-warning mb-1">All fields are required for this KYB level.</p>
+      <p className="text-lg text-warning mb-4">All fields are required for this KYB level.</p>
 
       {activeUser && activeUser.entity_name && !activeUser.email && <Form.Group controlId="businessName" className="required">
         <Form.Control required placeholder="Legal Company Name" name="entity_name" defaultValue={activeUser ? activeUser.entity_name : undefined} onChange={onChange} isInvalid={Boolean(errors.entity && errors.entity.entity_name)} />
@@ -127,7 +127,7 @@ const UpdateKYBForm = ({ errors, preferredKyb, entityuuid, onLoaded, onConfirm, 
               onChange={onChange}
               isInvalid={Boolean(errors.contact && errors.contact.email)} />
             {preferredKyb === KYB_RECEIVE_ONLY && <InputGroup.Append className="d-flex justify-content-between align-items-center">
-              <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('email', 'Business Email')}><i className={`sila-icon sila-icon-delete text-lg ${activeDeleteField === 'email' ? 'text-primary' : undefined }`}></i></Button>
+              <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('email', 'Business Email')}><i className={`fas fa-trash text-lg ${activeDeleteField === 'email' ? 'text-primary' : undefined }`}></i></Button>
             </InputGroup.Append>}
             {errors.contact && errors.contact.email && <Form.Control.Feedback type="invalid">{errors.contact.email}</Form.Control.Feedback>}
           </InputGroup>
@@ -144,7 +144,7 @@ const UpdateKYBForm = ({ errors, preferredKyb, entityuuid, onLoaded, onConfirm, 
             onChange={onChange}
             isInvalid={Boolean(errors.address && errors.address.street_address_1)} />
           {preferredKyb === KYB_RECEIVE_ONLY && <InputGroup.Append className="d-flex justify-content-between align-items-center">
-            <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('address', 'Street Address')}><i className={`sila-icon sila-icon-delete text-lg ${activeDeleteField === 'address' ? 'text-primary' : undefined }`}></i></Button>
+            <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('address', 'Street Address')}><i className={`fas fa-trash text-lg ${activeDeleteField === 'address' ? 'text-primary' : undefined }`}></i></Button>
           </InputGroup.Append>}
           {errors.address && errors.address.street_address_1 && <Form.Control.Feedback type="invalid">{errors.address.street_address_1}</Form.Control.Feedback>}
         </InputGroup>
@@ -161,7 +161,7 @@ const UpdateKYBForm = ({ errors, preferredKyb, entityuuid, onLoaded, onConfirm, 
               onChange={onChange}
               isInvalid={Boolean(errors.address && errors.address.city)} />
             {preferredKyb === KYB_RECEIVE_ONLY && <InputGroup.Append className="d-flex justify-content-between align-items-center">
-              <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('city', 'City')}><i className={`sila-icon sila-icon-delete text-lg ${activeDeleteField === 'city' ? 'text-primary' : undefined }`}></i></Button>
+              <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('city', 'City')}><i className={`fas fa-trash text-lg ${activeDeleteField === 'city' ? 'text-primary' : undefined }`}></i></Button>
             </InputGroup.Append>}
             {errors.address && errors.address.city && <Form.Control.Feedback type="invalid">{errors.address.city}</Form.Control.Feedback>}
           </InputGroup>
@@ -179,7 +179,7 @@ const UpdateKYBForm = ({ errors, preferredKyb, entityuuid, onLoaded, onConfirm, 
               {STATES_ARRAY.map((option, index) => <option key={index} value={option.value}>{option.label}</option>)}
             </Form.Control>
             {preferredKyb === KYB_RECEIVE_ONLY && <InputGroup.Append className="d-flex justify-content-between align-items-center">
-              <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('state', 'State')}><i className={`sila-icon sila-icon-delete text-lg ${activeDeleteField === 'state' ? 'text-primary' : undefined }`}></i></Button>
+              <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('state', 'State')}><i className={`fas fa-trash text-lg ${activeDeleteField === 'state' ? 'text-primary' : undefined }`}></i></Button>
             </InputGroup.Append>}
             {errors.address && errors.address.state && <Form.Control.Feedback type="invalid">{errors.address.state}</Form.Control.Feedback>}
           </InputGroup>
@@ -194,7 +194,7 @@ const UpdateKYBForm = ({ errors, preferredKyb, entityuuid, onLoaded, onConfirm, 
               onChange={onChange}
               isInvalid={Boolean(errors.address && errors.address.postal_code)} />
             {preferredKyb === KYB_RECEIVE_ONLY && <InputGroup.Append className="d-flex justify-content-between align-items-center">
-              <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('zip', 'Zip')}><i className={`sila-icon sila-icon-delete text-lg ${activeDeleteField === 'zip' ? 'text-primary' : undefined }`}></i></Button>
+              <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('zip', 'Zip')}><i className={`fas fa-trash text-lg ${activeDeleteField === 'zip' ? 'text-primary' : undefined }`}></i></Button>
             </InputGroup.Append>}
             {errors.address && errors.address.postal_code && <Form.Control.Feedback type="invalid">{errors.address.postal_code}</Form.Control.Feedback>}
           </InputGroup>
@@ -215,7 +215,7 @@ const UpdateKYBForm = ({ errors, preferredKyb, entityuuid, onLoaded, onConfirm, 
               format="(###) ###-####" mask="_" 
               isInvalid={Boolean(errors.contact && errors.contact.phone)} />
             {preferredKyb === KYB_RECEIVE_ONLY && <InputGroup.Append className="d-flex justify-content-between align-items-center">
-              <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('phone', 'Phone Number')}><i className={`sila-icon sila-icon-delete text-lg ${activeDeleteField === 'phone' ? 'text-primary' : undefined }`}></i></Button>
+              <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('phone', 'Phone Number')}><i className={`fas fa-trash text-lg ${activeDeleteField === 'phone' ? 'text-primary' : undefined }`}></i></Button>
             </InputGroup.Append>}
             {errors.contact && errors.contact.phone && <Form.Control.Feedback type="invalid">{errors.contact.phone}</Form.Control.Feedback>}
           </InputGroup>
@@ -230,7 +230,7 @@ const UpdateKYBForm = ({ errors, preferredKyb, entityuuid, onLoaded, onConfirm, 
               onChange={onChange}
               isInvalid={Boolean(errors.identity)} />
             {(preferredKyb === KYB_RECEIVE_ONLY || preferredKyb === KYB_LITE) && <InputGroup.Append className="d-flex justify-content-between align-items-center">
-              <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('ein', 'Employer ID Number')}><i className={`sila-icon sila-icon-delete text-lg ${activeDeleteField === 'ein' ? 'text-primary' : undefined }`}></i></Button>
+              <Button variant="link" className="p-0 text-decoration-none shadow-none mx-3" onClick={(e) => onDelete('ein', 'Employer ID Number')}><i className={`fas fa-trash text-lg ${activeDeleteField === 'ein' ? 'text-primary' : undefined }`}></i></Button>
             </InputGroup.Append>}
             {errors.identity && <Form.Control.Feedback type="invalid">{errors.identity.identity_value || errors.identity}</Form.Control.Feedback>}
           </InputGroup>

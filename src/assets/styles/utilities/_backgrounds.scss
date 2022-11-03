@@ -1,11 +1,31 @@
-// Background adjustments
+// Background utilities
 
-// White background color
+// Info background color
+.bg-info {
+  background: $info-background-color !important;
+}
+
+// Primary accent backgorund
+.bg-primary-accent {
+  background: $primary-accent !important;
+}
+
+// Primary light background
+.bg-primary-light {
+  background: $primary-light !important;
+}
+
+// White backround color
 .bg-white {
-  background-color: $white;
+  background: $white !important;
 }
 
-// Primary background color
-.bg-primary {
-  background-color: $primary;
+// Transparent background
+.bg-transparent {
+  background: transparent !important;
 }
+
+// Success backround color
+.bg-success-alt {
+  background: $success-accent !important;
+} 

@@ -65,9 +65,9 @@ const RegisterMember = ({ page, location, history }) => {
           </Form.Check></div>}
 
         {!existing ? <div className="loaded">
-          {currentRole && currentRole.name === 'controlling_officer' && <p className="mb-3 text-muted text-lg">As a {currentRole.label}, personal information is required before we can move on with the business registration (KYB) process.</p>}
-          {currentRole && currentRole.name === 'administrator' && <p className="mb-3 text-muted text-lg">As the {currentRole.label}, personal information is required before we can move on with the business registration (KYB) process.</p>}
-          {currentRole && currentRole.name === 'beneficial_owner' && <p className="mb-3 text-muted text-lg">To link this business member to the Beneficial Owner role, we will need to gather more personal informaton before we can move on with the business registration (KYB) process.</p>}
+          {currentRole && currentRole.name === 'controlling_officer' && <p className="mb-3 text-info text-lg">As a {currentRole.label}, personal information is required before we can move on with the business registration (KYB) process.</p>}
+          {currentRole && currentRole.name === 'administrator' && <p className="mb-3 text-info text-lg">As the {currentRole.label}, personal information is required before we can move on with the business registration (KYB) process.</p>}
+          {currentRole && currentRole.name === 'beneficial_owner' && <p className="mb-3 text-info text-lg">To link this business member to the Beneficial Owner role, we will need to gather more personal informaton before we can move on with the business registration (KYB) process.</p>}
 
           <CheckHandleForm page={page} disabled={activeUser} onSuccess={(handle) => setHandle(handle)} />
 
@@ -75,7 +75,7 @@ const RegisterMember = ({ page, location, history }) => {
         </div>
           :
           <div className="mb-5 loaded position-relative select-menu-height" style={{ zIndex: 4 }}>
-            <p className="text-lg text-muted mb-2 loaded">Select the user you wish to link to the business.</p>
+            <p className="text-lg text-info mb-2 loaded">Select the user you wish to link to the business.</p>
             <SelectMenu fullWidth title="Choose a user..." options={app.users.filter(user => !user.business).map(user => ({ label: `${user.firstName} ${user.lastName} (${user.handle})`, value: user.handle }))} onChange={(handle) => handleActiveUser(undefined, app.users.find(user => user.handle === handle))} />
           </div>}
 
@@ -85,7 +85,7 @@ const RegisterMember = ({ page, location, history }) => {
 
         {member.loading ? <Loader /> : <div className="loaded">
           <LinkMemberForm member={{ ...activeUser, ...member }} onLinked={() => getEntity()} onUnlinked={() => getEntity()} onShowImDone={(status) => setShowImDoneButton(status)} />
-          {showImDoneButton && <p className="mt-3 mb-0 text-center"><Button variant="outline-light" className="text-muted text-uppercase" onClick={() => history.goBack()}>I'm Done</Button></p>}
+          {showImDoneButton && <p className="mt-3 mb-0 text-center"><Button variant="outline-light" className="text-info text-uppercase" onClick={() => history.goBack()}>I'm Done</Button></p>}
         </div>}
 
       </div>}

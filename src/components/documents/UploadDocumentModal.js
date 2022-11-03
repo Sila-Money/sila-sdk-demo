@@ -155,13 +155,13 @@ const UploadDocumentModal = ({ activeUser, documentTypes, show, onClose, onSucce
       aria-labelledby="upload-document-modal-title"
       onHide={onCancel}>
       <Modal.Header className="text-center" closeButton>
-        <Modal.Title id="upload-document-modal-title" className="d-flex">Upload a Document</Modal.Title>
+        <Modal.Title as="h3" id="upload-document-modal-title" className="d-flex">Upload a Document</Modal.Title>
       </Modal.Header>
       
       <Form noValidate validated={validated} autoComplete="off" encType="multipart/form-data" onSubmit={onDocumentSubmit}>
         {isUploading && <Loader />}
         <Modal.Body>
-          <p className="text-muted mb-4">Please make sure all information on the document is visible and clear. We accept files in these formats: PNG, JPG, and PDF, no larger than 20MB.</p>
+          <p className="text-info mb-4">Please make sure all information on the document is visible and clear. We accept files in these formats: PNG, JPG, and PDF, no larger than 20MB.</p>
 
           <Form.Group className="mb-3 required">
             <Form.Label>Choose your document type:</Form.Label>
@@ -176,10 +176,10 @@ const UploadDocumentModal = ({ activeUser, documentTypes, show, onClose, onSucce
           <div className="d-flex flex-row">
             <div {...getRootProps({style})}>
               <input {...getInputProps()} />
-              {!uploadedFile && <div className="my-3 text-center"><i className="sila-icon sila-icon-document ml-2" style={{fontSize:45}}></i><p className='d-flex align-items-center'>Drag your document here, or <Button variant="link" className="p-0 shadow-none btn btn-link text-underline font-lg font-weight-bold ml-1" onClick={open}> choose a file.</Button></p></div>}
+              {!uploadedFile && <div className="my-3 text-center"><i className="fas fa-file-alt ml-2" style={{fontSize:45}}></i><p className='d-flex align-items-center'>Drag your document here, or <Button variant="link" className="p-0 shadow-none btn btn-link text-underline font-lg font-weight-bold ml-1" onClick={open}> choose a file.</Button></p></div>}
               {uploadedFile && <div className="my-3 d-flex align-items-center w-100 justify-content-between">
                 <div className="col col-md-8 d-flex justify-content-start align-items-center">
-                  <i className="sila-icon sila-icon-document mr-4 text-primary" style={{fontSize:45}}></i>
+                  <i className="fas fa-file-alt mr-4 text-primary" style={{fontSize:45}}></i>
                   <div>
                     <p className="m-0 font-weight-bold d-flex text-break text-wrap">
                       {uploadedFile.name}
@@ -191,7 +191,7 @@ const UploadDocumentModal = ({ activeUser, documentTypes, show, onClose, onSucce
                   </div>
                 </div>
                 <div className="col d-flex justify-content-end align-items-center font-weight-bold">
-                  <i className="mr-2 sila-icon sila-icon-success text-success"></i>Ready to go!
+                  <i className="mr-2 sila-icon check text-success"></i>Ready to go!
                 </div>
               </div>}
             </div>

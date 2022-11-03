@@ -16,7 +16,7 @@
 .form-group {
   position: relative;
   margin-bottom: 1rem;
- 
+
   input[type="text"].form-control,
   input[type="search"].form-control,
   input[type="url"].form-control,
@@ -44,7 +44,7 @@
 
 // Custom controls
 .custom-control-label {
-  color: $gray-light;
+  color: $info;
 }
 
 // Field
@@ -57,27 +57,6 @@
   &::-ms-clear,
   &::-ms-expand {
     display: none;
-  }
-
-  .select & {
-    background-repeat: no-repeat;
-    background-position: center right calc(2.375rem / 4);
-    background-size: calc(2.375rem / 2) calc(2.375rem / 2);
-    background-image: url("data:image/svg+xml,%3Csvg width='11' height='7' viewBox='0 0 11 7' xmlns='http://www.w3.org/2000/svg'%3E %3Cpath d='M5.48 6a.618.618 0 01-.412-.171L1.19 2.077a.63.63 0 01-.016-.885.62.62 0 01.879-.018L5.5 4.51l3.447-3.336a.62.62 0 01.88.018.63.63 0 01-.017.885L5.932 5.83a.618.618 0 01-.451.17z' fill='%23D5D5D5' fill-rule='nonzero' stroke='%23D5D5D5' stroke-width='.3'/%3E %3C/svg%3E");
-    padding: $input-padding-y ($input-padding-x * 2) $input-padding-y $input-padding-x;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-
-    &:focus:not(.readonly) {
-      background-image: url("data:image/svg+xml,%3Csvg width='11' height='7' viewBox='0 0 11 7' xmlns='http://www.w3.org/2000/svg'%3E %3Cpath d='M5.48 6a.618.618 0 01-.412-.171L1.19 2.077a.63.63 0 01-.016-.885.62.62 0 01.879-.018L5.5 4.51l3.447-3.336a.62.62 0 01.88.018.63.63 0 01-.017.885L5.932 5.83a.618.618 0 01-.451.17z' fill='%233F63F7' fill-rule='nonzero' stroke='%233F63F7' stroke-width='.3'/%3E %3C/svg%3E");
-    }
-
-    &.empty {
-      color: $gray-light;
-      padding-top: $input-padding-y;
-      padding-bottom: $input-padding-y;
-    }
   }
 
   &[readonly] {
@@ -98,19 +77,112 @@
 
 }
 
-// Checkbox
-.custom-checkbox .custom-control-input:checked~.custom-control-label::before {
-  background: $white;
+// select
+select {
+
+  &.form-control {
+    background-repeat: no-repeat;
+    background-position: center right $input-padding-x;
+    background-image: url("data:image/svg+xml,%3Csvg width='19' height='7' viewBox='0 0 19 7' xmlns='http://www.w3.org/2000/svg'%3E %3Cpath d='M10.1781 6.81418L18.7195 1.09697C19.0935 0.846099 19.0935 0.439653 18.7195 0.188151C18.3456 -0.0627163 17.7381 -0.0627163 17.3642 0.188152L9.50047 5.45189L1.63679 0.188786C1.26282 -0.0620819 0.655392 -0.0620818 0.280477 0.188786C-0.0934926 0.439654 -0.0934926 0.846733 0.280477 1.0976L8.82181 6.81482C9.19191 7.06183 9.80888 7.06183 10.1781 6.81418Z' fill='%23CFD4D9'/%3E %3C/svg%3E");
+    padding-right: $input-padding-x * 2;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    color: $body-color;
+
+    &:focus:not(.readonly),
+    &.focused:not(.readonly) & {
+      background-image: url("data:image/svg+xml,%3Csvg width='19' height='7' viewBox='0 0 19 7' fill='{$primary}' xmlns='http://www.w3.org/2000/svg'%3E %3Cpath d='M10.1781 6.81418L18.7195 1.09697C19.0935 0.846099 19.0935 0.439653 18.7195 0.188151C18.3456 -0.0627163 17.7381 -0.0627163 17.3642 0.188152L9.50047 5.45189L1.63679 0.188786C1.26282 -0.0620819 0.655392 -0.0620818 0.280477 0.188786C-0.0934926 0.439654 -0.0934926 0.846733 0.280477 1.0976L8.82181 6.81482C9.19191 7.06183 9.80888 7.06183 10.1781 6.81418Z' fill='%233F63F7'/%3E %3C/svg%3E");
+    }
+    
+    option {
+      color: $body-color;
+      &:first-of-type {
+        color: $info;
+      }
+    }
+  }
+
+  select {
+    color: black;
+  }
+  /* with the :focus here, we show grey when using the element */
+  select:focus {
+    color: #9e9e9e;
+  }
+  option {
+    color: black;
+  }
+  option:first-of-type {
+    color: #9e9e9e;
+  }
+
 }
 
-.custom-checkbox .custom-control-input:checked~.custom-control-label::after {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%233F63F7' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3e%3c/svg%3e");
+// Border color
+.custom-control-label::before,
+.custom-file-label,
+.custom-select,
+.custom-checkbox .custom-control-input:checked~.custom-control-label::before {
+  background: $white;
+  border-color: $border-color;
+}
+
+// Checkbox
+.custom-checkbox .custom-control-input:checked~.custom-control-label {
+  &::before {
+    background: $white;
+  }
+
+  &::after {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%233F63F7' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3e%3c/svg%3e");
+  }
+}
+
+// Radio
+.radio {
+  label {
+    margin: 0 18px;
+    color: $body-color;
+  }
+
+  .input-group {
+    width: auto;
+
+    input {
+      width: 18px !important;
+      height: 18px;
+    }
+  }
+}
+
+// Switch
+.custom-switch .custom-control-input:checked~.custom-control-label::before {
+  background: $success;
+  border-color: $success;
+}
+
+// Disabled
+.form-control:disabled,
+.form-control[readonly] {
+  background-color: $white;
+}
+
+// Numbers
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
 }
 
 // Date
 .form-control[type="date"]:before {
   content: attr(placeholder) !important;
-  color: $gray-light;
+  color: $info;
   margin-right: 0.5em;
 }
 
@@ -120,7 +192,7 @@
 }
 
 .form-control[type="date"]:invalid::-webkit-datetime-edit {
-  color: $gray-light;
+  color: $info;
 }
 
 // Numbers
@@ -136,7 +208,7 @@ input[type=number] {
 
 // Select
 select.form-control option[value=""] {
-  color: $gray-light;
+  color: $info;
 }
 
 // Border color
@@ -185,51 +257,43 @@ select.form-control option[value=""] {
   border-color: $danger;
 }
 
-.was-validated .custom-control-input:valid ~ .custom-control-label::before,
-.was-validated .custom-control-input:valid:checked ~ .custom-control-label::before,
-.was-validated .custom-control-input:valid:focus ~ .custom-control-label::before {
+.was-validated .custom-control-input:valid~.custom-control-label::before,
+.was-validated .custom-control-input:valid:checked~.custom-control-label::before,
+.was-validated .custom-control-input:valid:focus~.custom-control-label::before {
   border-color: $border-color;
   background-color: transparent;
   outline: none;
   box-shadow: none;
 }
-.was-validated .custom-control-input:valid:focus:not(:checked) ~ .custom-control-label::before {
-  border-color:$primary;
+
+.was-validated .custom-control-input:valid:focus:not(:checked)~.custom-control-label::before {
+  border-color: $primary;
 }
 
-.custom-control-input:checked ~ .custom-control-label::before {
+.custom-control-input:checked~.custom-control-label::before {
   border-color: $success;
   background-color: $success;
-  box-shadow: $box-shadow-heavy;
+  box-shadow: $box-shadow;
 }
-.custom-control-input ~ .custom-control-label::before, .custom-control-input:focus:not(:checked) ~ .custom-control-label::before {
+
+.custom-control-input~.custom-control-label::before,
+.custom-control-input:focus:not(:checked)~.custom-control-label::before {
   border-color: $warning;
   background-color: $warning;
-  box-shadow: $box-shadow-heavy;
+  box-shadow: $box-shadow;
 }
+
 .custom-switch .custom-control-label::after {
   background-color: $white;
 }
 
-.custom-control-input[type=radio]:checked ~ .custom-control-label::before {
+.custom-control-input[type=radio]:checked~.custom-control-label::before {
   border-color: $primary;
   background-color: $primary;
 }
-.custom-control-input[type=radio]:not(:checked) ~ .custom-control-label::after, .custom-control-input[type=radio]:not(:checked) ~ .custom-control-label::before {
+
+.custom-control-input[type=radio]:not(:checked)~.custom-control-label::after,
+.custom-control-input[type=radio]:not(:checked)~.custom-control-label::before {
   border-color: $primary;
   background-color: transparent;
-}
-
-.bg-lightblue{
-  background-color: $light-blue !important;
-  border-color: $gray-almost-white;
-}
-.input-italic .form-control::-moz-placeholder {
-  font-style: italic;
-}
-.input-italic .form-control:-ms-input-placeholder {
-  font-style: italic;
-}
-.input-italic .form-control::-webkit-input-placeholder {
-  font-style: italic;
 }

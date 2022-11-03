@@ -1,21 +1,19 @@
-// Text color adjustments
-$text-light-color: $gray-blue !default;
-
 // Text font weights
 $text-semibold-font-weight: 400 !default;
 
 // Cards
+$card-headings-font-size: 1.438rem !default;
 $card-headings-font-weight: 500 !default;
 
 // Forms
-$custom-control-disabled-color: #becad6 !default;
+$custom-control-disabled-color: $gray-medium !default;
 
 // Navbar
 $navbar-brand-color: $primary !default;
 $navbar-brand-font-weight: 500 !default;
 
 // Nav
-$nav-link-color: $gray-blue !default;
+$nav-link-color: $info !default;
 $nav-link-icon-color: $nav-link-color !default;
 $nav-link-hover-color: $black !default;
 $nav-link-icon-font-size: 1.25rem !default;
@@ -59,7 +57,8 @@ $mobile-menu-height: 6.25rem !default;
 
 // Main sidebar
 $main-sidebar-height: calc(100vh) !default;
-$main-sidebar-background: #F9FAFC !default;
+$main-sidebar-background: $primary-light !default;
+$dropdown-icon-transition: transform $transition-duration ease-in-out;
 
 // Pagination
 $pagination-height: 4.5rem !default;
@@ -116,13 +115,13 @@ $input-height-lg:               calc(#{$input-height-inner-lg} + #{$input-height
 $input-transition:              box-shadow $transition-duration $ease-in-out-circ,
                                 border $transition-duration $ease-in-out-circ !default;
 
-$form-text-margin-top:     .25rem !default;
+$form-text-margin-top:          .25rem !default;
 
-$form-check-input-gutter:   1.25rem !default;
-$form-check-input-margin-y: .313rem !default;
-$form-check-input-margin-x: .313rem !default;
+$form-check-input-gutter:       1.25rem !default;
+$form-check-input-margin-y:     .313rem !default;
+$form-check-input-margin-x:     .313rem !default;
 
-$form-check-inline-margin-x: .75rem !default;
+$form-check-inline-margin-x:    .75rem !default;
 $form-check-inline-input-margin-x: .3125rem !default;
 
 $form-group-margin-bottom:       1rem !default;
@@ -134,14 +133,12 @@ $input-group-addon-border-color: $input-border-color !default;
 $input-group-addon-color:        $input-frozen-color !default;
 
 // UI
-$box-shadow:                     0 0 8px 0 rgba($black, 0.04);
-$box-shadow-heavy:               0 0.5rem 4rem rgba($black, .11), 0 10px 20px rgba($black, .05), 0 2px 3px rgba($black, .06);
-$box-shadow-light:               0 0.5rem 2rem rgba($black, .11), 0 3px 10px rgba($black, .05), 0 2px 3px rgba($black, .06);
+$box-shadow:                     0px 2px 10px rgba(18, 17, 39, 0.07);
 
 // Error(s) templates
-$splash-tpl-content-padding: 0 0.9375rem !default; // 0,15px
+$splash-tpl-content-padding:    0 0.9375rem !default; // 0,15px
 
-$splash-tpl-content-heading-color: $gray-lighter !default;
+$splash-tpl-content-heading-color: $primary !default;
 $splash-tpl-content-heading-font-weight: 700 !default;
 $splash-tpl-content-heading-font-size: 3.75rem !default; // 60px
 $splash-tpl-content-heading-margin-bottom: 1.5625rem !default; // 25px
@@ -150,7 +147,7 @@ $splash-tpl-content-subheading-font-weight: 500 !default;
 $splash-tpl-content-subheading-font-size: 2.1875rem !default; // 35px
 $splash-tpl-content-subheading-margin-bottom: 0.625rem !default; // 10px
 
-$splash-tpl-content-paragraph-color: $gray-blue !default;
+$splash-tpl-content-paragraph-color: $info !default;
 
 // Tab
 $min-height-50 : 50vh;

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Form, Row, Col, Button } from 'react-bootstrap';
+import { Form, Button } from 'react-bootstrap';
 import { usePlaidLink } from 'react-plaid-link';
 
 import { useAppContext } from '../../context/AppDataProvider';
@@ -32,7 +32,7 @@ const PlaidButton = ({ linkToken, onSuccess }) => {
     if (error) updateApp({ alert: { message: error, type: 'danger' } });
   }, [error]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return <Button block className="mb-2 text-nowrap" onClick={onOpen} disabled={!ready}>Launch Plaid Link</Button>;
+  return <Button className="ml-0 ml-md-4" onClick={onOpen} disabled={!ready}>Launch Plaid Link</Button>;
 };
 
 const GeneratePublicToken = ({ step, title, context, isTutorial, allPlaidTokens, onHandleClick, onPublicToken, onTabKey }) => {
@@ -52,11 +52,9 @@ const GeneratePublicToken = ({ step, title, context, isTutorial, allPlaidTokens,
         </Form.Group>
       </Form>
 
-      <div className="mt-2 mb-2 loaded">
-        <Row className="mt-2 justify-content-end">
-          <Col lg="12" xl="3"><Button block variant="outline-light" className="mb-2" onClick={() => onTabKey(step-2)}>Previous</Button></Col>
-          <Col lg="12" xl="3"><PlaidButton linkToken={allPlaidTokens.linkToken} onSuccess={publicToken} /></Col>
-        </Row>
+      <div className="d-flex justify-content-end">
+        <Button variant="outline-light" className="mb-2 mb-md-0" onClick={() => onTabKey(step-2)}>Previous</Button>
+        <PlaidButton linkToken={allPlaidTokens.linkToken} onSuccess={publicToken} />
       </div>
     </>}
   </>);

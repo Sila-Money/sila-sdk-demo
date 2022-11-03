@@ -69,7 +69,7 @@ export const COMMON_CONTENT_AND_LINKS = [{
     }
   ],
   'publicToken' : [{
-        content: 'To generate a public token, you must integrate with Plaid Link. Initialize Link by passing in the link_token you just generated. When the Link flow is completed, Link will pass back a public_token via the onSuccess callback.',
+        content: 'To generate a public token, you must integrate with Plaid Link. Initialize Link by passing in the link_token you just generated. When the Link flow is completed, Link will pass back a public_token via the onSuccess callback. You may watch the tutorial below to see how to accomplish this task.',
       },
       {
         link: 'https://plaid.com/docs/link/',

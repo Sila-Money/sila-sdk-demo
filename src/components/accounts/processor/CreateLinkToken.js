@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Cookies from 'js-cookie';
-import { Form, Row, Col, Button } from 'react-bootstrap';
+import { Form, Button } from 'react-bootstrap';
 
 import { useAppContext } from '../../context/AppDataProvider';
 import plaidApi from '../../../api/plaid';
@@ -95,12 +95,9 @@ const CreateLinkToken = ({ step, title, context, isTutorial, onHandleClick, onLi
         <Form.Control required id="secretKey" placeholder="secret_key" aria-label="Secret Key" name="secretKey" defaultValue={authCredentials.secretKey ? authCredentials.secretKey : undefined} isInvalid={Boolean(errors && errors.secretKey)} />
         {errors && errors.secretKey && <Form.Control.Feedback type="invalid">{errors.secretKey}</Form.Control.Feedback>}
       </Form.Group>
-
-      <div className="mt-2 mb-2 loaded">
-        <Row className="mt-2 justify-content-end">
-          <Col lg="12" xl="3"><Button block variant="outline-light" className="mb-2" onClick={() => onTabKey(step-2)}>Previous</Button></Col>
-          <Col lg="12" xl="4"><Button block className="mb-2" type="submit">Generate Link Token</Button></Col>
-        </Row>
+      <div className="mt-2 d-flex justify-content-end">
+        <Button variant="outline-light" className="mb-2 mb-md-0" onClick={() => onTabKey(step-2)}>Previous</Button>
+        <Button className="ml-0 ml-md-4" type="submit">Generate Link Token</Button>
       </div>
     </Form>}
   </>);
