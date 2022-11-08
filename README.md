@@ -1,4 +1,4 @@
-![Sila Logo](https://console.silamoney.com/static/images/sila-logo.png)
+![Sila Logo](https://console.silamoney.com/static/images/email/footer-logo.png)
 
 # Sila Demo App (API Explorer)
 
