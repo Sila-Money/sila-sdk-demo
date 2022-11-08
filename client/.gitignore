@@ -1,21 +1,15 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-node_modules/
-client/node_modules/
-*/.pnp
-*.pnp.js
-*/package-lock.json
-package-lock.json
+/node_modules
+/.pnp
+.pnp.js
 
 # testing
 /coverage
 
-# environment
-# .env
-
 # production
-/client/build
+/build
 
 # misc
 .DS_Store
@@ -25,4 +19,5 @@ package-lock.json
 .env.production.local
 
 npm-debug.log*
-
+yarn-debug.log*
+yarn-error.log*
