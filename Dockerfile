@@ -1,21 +1,20 @@
-FROM node:12.18-alpine3.9
+# pull official base image
+FROM node:13.12.0-alpine
 
-RUN mkdir /app
+# set working directory
 WORKDIR /app
 
-RUN apk update && \
-    apk upgrade && \
-	apk add git && \
-	apk add vim && \
-	git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime && \
-	sh ~/.vim_runtime/install_awesome_vimrc.sh && \
-	sh -c "$(wget -O- https://raw.githubusercontent.com/deluan/zsh-in-docker/master/zsh-in-docker.sh)"
+# add `/app/node_modules/.bin` to $PATH
+ENV PATH /app/node_modules/.bin:$PATH
 
+# install app dependencies
 COPY package.json package.json
 COPY client/package.json client/package.json
-RUN npm install --silent 
+RUN npm install --silent
 RUN cd client/ && npm install --silent
 
+# add app
 COPY . .
 
+# start app
 CMD ./scripts/start.sh

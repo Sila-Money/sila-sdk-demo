@@ -1,7 +1,7 @@
-const express = require("express")
+const express = require('express')
 const cookieParser = require('cookie-parser')
-const cors = require("cors")
-const path = require("path")
+const cors = require('cors')
+const path = require('path')
 const { Configuration, PlaidApi, PlaidEnvironments } = require('plaid')
 
 // Plaid configuration
@@ -36,11 +36,11 @@ app.use(require('body-parser').urlencoded({ extended: true }))
 app.use(cookieParser())
 
 // Redirect back to index.html if urls do not match
-app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "client/build", "index.html"))
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client/build', 'index.html'))
 })
 
-app.post("/link/token/create", async (req, res) => {
+app.post('/link/token/create', async (req, res) => {
 	configuration['baseOptions']['headers']['PLAID-CLIENT-ID'] = req.cookies['sila_demo_clientId'] || ''
 	configuration['baseOptions']['headers']['PLAID-SECRET'] = req.cookies['sila_demo_secretKey'] || ''
 	let resObj
@@ -59,7 +59,7 @@ app.post("/link/token/create", async (req, res) => {
 	res.json(resObj)
 })
 
-app.post("/item/public_token/exchange", async (req, res) => {
+app.post('/item/public_token/exchange', async (req, res) => {
 	let resObj
 	try {
 		const response = await plaidClient.itemPublicTokenExchange({public_token: req.body.public_token})
@@ -70,7 +70,7 @@ app.post("/item/public_token/exchange", async (req, res) => {
 	res.json(resObj)
 })
 
-app.post("/processor/token/create", async (req, res) => {
+app.post('/processor/token/create', async (req, res) => {
 	let resObj
 	try {
 		const response = await plaidClient.processorTokenCreate({
