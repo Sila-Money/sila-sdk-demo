@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  sila-sdk-demo:
+    build: '.'
+    env_file:
+      - 'client/.env'
+    tty: true
+    stdin_open: true
+    ports:
+      - '5000:5000'
