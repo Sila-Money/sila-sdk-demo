@@ -1,5 +1,5 @@
 #!/bin/sh
-git pull origin feature/SILA-4879-docker-init
+git pull origin develop
 npm install
 cd client
 npm install
