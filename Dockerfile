@@ -1,5 +1,5 @@
 # pull official base image
-FROM node:16.20.1-alpine
+FROM node:12.2.0-alpine
 
 # set working directory
 WORKDIR /app
@@ -11,7 +11,7 @@ ENV PATH /app/node_modules/.bin:$PATH
 COPY package.json package.json
 COPY client/package.json client/package.json
 RUN npm install --silent
-RUN cd client/ && npm install --silent
+RUN cd client/ && npm install --silent --ignore-scripts
 
 # add app
 COPY . .
